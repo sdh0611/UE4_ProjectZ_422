@@ -27,8 +27,7 @@ AZPickup::AZPickup()
 	{
 		ZLOG(Error, TEXT("Fail to find pickup static mesh..."));
 	}
-
-
+	
 }
 
 void AZPickup::OnInteraction(AZCharacter * NewCharacter)
@@ -36,7 +35,7 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 	ZLOG(Warning, TEXT("Interaction pickup!"));
 
 	// Code to test 
-	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(AZItem::StaticClass());
+	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
 	if (NewItem)
 	{
 		ZLOG(Warning, TEXT("Spawn item success!"));

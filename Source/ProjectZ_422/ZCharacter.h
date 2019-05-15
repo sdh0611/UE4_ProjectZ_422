@@ -43,6 +43,7 @@ private:
 	void Sprint();
 	void SprintRelease();
 	void Interaction();
+	void ToggleInventory();
 	virtual void Jump() override;
 
 
@@ -58,6 +59,9 @@ private:
 
 	UPROPERTY()
 	class AZInteractional* InteractionActor;
+
+	UPROPERTY()
+	class AZPlayerController* PlayerController;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)

@@ -4,6 +4,10 @@
 #include "ZCharacterItemStatusComponent.h"
 #include "ZItem.h"
 #include "ZCharacter.h"
+#include "ZPlayerController.h"
+#include "ZHUD.h"
+#include "ZUserHUD.h"
+#include "ZInventoryWidget.h"
 
 
 // Sets default values for this component's properties
@@ -27,6 +31,8 @@ void UZCharacterItemStatusComponent::BeginPlay()
 	Super::BeginPlay();
 
 	ItemList.Init(nullptr, MaxSizeOfItemList);
+
+	OwnerCharacter = Cast<AZCharacter>(GetOwner());
 }
 
 
@@ -58,7 +64,20 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem)
 			// 해당 Index에 Item포인터 할당.
 			ItemList[AllocatedIndex] = NewItem;
 			NewItem->SetInventoryIndex(AllocatedIndex);
-			NewItem->SetItemOwner(Cast<AZCharacter>(GetOwner()));
+			NewItem->SetItemOwner(OwnerCharacter);
+
+			// Inventory에 Update
+			auto PlayerController = Cast<AZPlayerController>(NewItem->GetItemOwner()->GetController());
+			if (PlayerController)
+			{
+				auto InventoryWidget = PlayerController->GetZHUD()->GetUserHUD()->GetInventoryWidget();
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddItemToInventory(NewItem);
+				}
+
+			}
+
 		}
 
 	}

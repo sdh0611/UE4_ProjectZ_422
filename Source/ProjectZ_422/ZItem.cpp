@@ -16,6 +16,7 @@ AZItem::AZItem()
 	ItemWeight = 0;
 	InventoryIndex = -1;
 	ItemOwner = nullptr;
+	ItemType = EItemType::Default;
 }
 
 // Called when the game starts or when spawned
@@ -139,5 +140,10 @@ AZCharacter * const AZItem::GetItemOwner() const
 bool AZItem::IsItemQuantityMaximum() const
 {
 	return CurrentQuantityOfItem == MaxQuantityOfItem;
+}
+
+EItemType AZItem::GetItemType() const
+{
+	return ItemType;
 }
 

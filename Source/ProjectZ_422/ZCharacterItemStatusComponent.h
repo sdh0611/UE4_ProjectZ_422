@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectZ_422.h"
 #include "Components/ActorComponent.h"
 #include "ZCharacterItemStatusComponent.generated.h"
 
@@ -71,6 +71,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true), Transient)
 	int32 CurrentWeight;
 
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true))
+	class AZCharacter* OwnerCharacter;
 
 };

@@ -6,6 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "ZItem.generated.h"
 
+UENUM(Blueprintable)
+enum class EItemType : uint8
+{
+	Default,
+	Weapon,
+	Recovery,
+	Doping,
+	Invalid
+};
+
+
 UCLASS()
 class PROJECTZ_422_API AZItem : public AActor
 {
@@ -48,6 +59,7 @@ public:
 	int32 GetInventoryIndex() const;
 	class AZCharacter* const GetItemOwner() const;
 	bool IsItemQuantityMaximum() const;
+	EItemType GetItemType() const;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
@@ -59,7 +71,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	int32 CurrentQuantityOfItem;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
 	int32 ItemWeight;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
@@ -67,5 +79,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	class AZCharacter* ItemOwner;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	EItemType ItemType;
 
 };

@@ -20,8 +20,19 @@ public:
 public:
 	virtual void OnInteraction(class AZCharacter* NewCharacter) override;
 
+public:
+	/*
+		Item을 생성하기 위한 클래스 정보를 담는 변수.
+		나중에 Pickup이 처음 생성되는 경우, BeginePlay() 메소드에서 
+		Game database로 부터 랜덤하게 Item 정보를 가져와 ItemClass변수를 초기화하도록 수정할 것.
+		현재는 Test를 위해 에디터에서 설정.
+	*/
+	UPROPERTY(EditAnywhere, Category = Pickup)
+	TSubclassOf<class AZItem> SpawnItemClass;
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
 	class UStaticMeshComponent* Mesh;
 
+	
 };

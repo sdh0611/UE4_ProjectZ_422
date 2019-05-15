@@ -4,12 +4,14 @@
 #include "ZCharacter.h"
 #include "ZInteractional.h"
 #include "ZCharacterItemStatusComponent.h"
+#include "ZPlayerController.h"
+#include "ZHUD.h"
+#include "ZUserHUD.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
-#include "GameFramework/Controller.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
@@ -81,6 +83,8 @@ void AZCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PlayerController = Cast<AZPlayerController>(GetController());
+
 }
 
 // Called every frame
@@ -124,6 +128,7 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AZCharacter::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AZCharacter::SprintRelease);
 	PlayerInputComponent->BindAction(TEXT("Interaction"), IE_Pressed, this, &AZCharacter::Interaction);
+	PlayerInputComponent->BindAction(TEXT("ToggleInventory"), IE_Pressed, this, &AZCharacter::ToggleInventory);
 
 
 }
@@ -142,7 +147,7 @@ AZInteractional * AZCharacter::GetInteractionalInView()
 {
 	FVector CamLoc;
 	FRotator CamRot;
-	GetController()->GetActorEyesViewPoint(CamLoc, CamRot);
+	GetController()->GetPlayerViewPoint(CamLoc, CamRot);
 	
 	const FVector Direction = CamRot.Vector();
 	const FVector TraceStart = CamLoc;
@@ -182,7 +187,7 @@ void AZCharacter::MoveRight(float NewAxisValue)
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 	AddMovementInput(Direction, NewAxisValue);
-	
+
 }
 
 void AZCharacter::LookUp(float NewAxisValue)
@@ -262,6 +267,29 @@ void AZCharacter::Interaction()
 	{
 		InteractionActor->OnInteraction(this);
 	}
+}
+
+void AZCharacter::ToggleInventory()
+{
+	auto HUD = PlayerController->GetZHUD();
+	if (HUD)
+	{
+		auto UserHUDWidget = HUD->GetUserHUD();
+		if (UserHUDWidget)
+		{
+			if (UserHUDWidget->IsInventoryOnScreen())
+			{
+				// Inventory가 화면에 있는 경우.
+				UserHUDWidget->RemoveInventoryWidget();
+			}
+			else
+			{
+				// Inventory가 화면에 없는 경우.
+				UserHUDWidget->DrawInventoryWidget();
+			}
+		}
+	}
+
 }
 
 void AZCharacter::Jump()
