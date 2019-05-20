@@ -25,8 +25,20 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	void AddItem(class AZItem* NewItem);
-	void RemoveItem(int32 InventoryIndex, bool bDestroy);
+	/*
+		Item을 습득할 때 호출하게 될 메소드.
+	*/
+	void AddItem(class AZItem* NewItem, class AZPickup* OwnerPickup = nullptr);
+	/*
+		Weapon을 장착할 때 호출하는 메소드.
+		AddItem() 안에서 호출될 것.
+		@ Return : Character가 들게될 CurrentWeapon값
+	*/
+	class AZWeapon* const EquipWeapon(class AZWeapon* NewWeapon);
+	/*
+		Item을 List 내에서 제거할 때 호출하게 될 메소드.
+	*/
+	void RemoveItem(int32 InventoryIndex, bool bIsDropped = false);
 
 public:
 	void SetMaxSizeOfItemList(int32 NewMaxSize);
@@ -57,6 +69,13 @@ private:
 private:
 	UPROPERTY(VisibleAnywhere, Category = ItemStatus)
 	TArray<class AZItem*> ItemList;
+
+	/*
+		WepaonInventory에 들어갈 Item들을 관리하는 컨테이너.
+		ItemList와 포인터 공유
+	*/
+	UPROPERTY(VisibleAnywhere, Category = ItemStatus)
+	TArray<class AZWeapon*> WeaponInventory;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true))

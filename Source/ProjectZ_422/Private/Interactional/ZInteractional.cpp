@@ -29,17 +29,15 @@ void AZInteractional::OnInteraction(AZCharacter * NewCharacter)
 {
 	// Test codes
 	ZLOG(Warning, TEXT("OnInteraction!"));
-
-	Destroy();
 }
 
 void AZInteractional::OnFocus()
 {
-	ZLOG(Warning, TEXT("Focus."));
+	//ZLOG(Warning, TEXT("Focus."));
 }
 
 void AZInteractional::OnFocusEnd()
 {
-	ZLOG(Warning, TEXT("FocusEnd."));
+	//ZLOG(Warning, TEXT("FocusEnd."));
 }
 

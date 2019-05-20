@@ -18,7 +18,19 @@ public:
 	AZPickup();
 
 public:
+	virtual void BeginPlay() override;
 	virtual void OnInteraction(class AZCharacter* NewCharacter) override;
+
+public:
+	void WhenSpawnedByItem();
+
+public:
+	void SetActive(bool NewState);
+	void SetItem(class AZItem* NewItem);
+
+public:
+	class AZItem* const GetItem() const;
+	bool IsActive() const;
 
 public:
 	/*
@@ -32,7 +44,12 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
+	bool bIsActive;
+
+	UPROPERTY(VisibleAnywhere, Category = Pickup)
 	class UStaticMeshComponent* Mesh;
 
-	
+	UPROPERTY(VisibleAnywhere, Category = Pickup)
+	class AZItem* Item;
+
 };

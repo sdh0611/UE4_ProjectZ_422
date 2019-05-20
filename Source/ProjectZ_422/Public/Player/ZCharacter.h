@@ -27,10 +27,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+	FHitResult GetTraceHit(const FVector& TraceStart, const FVector& TraceEnd);
+	FHitResult GetTraceHitFromActorCameraView(float Distance);
+
+public:
 	void SetIsSprinting(bool NewState);
+	void SetCurrentWeapon(class AZWeapon* NewWeapon);
 
 public:
 	bool IsSprinting();
+	bool IsEquipWeapon();
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
 
@@ -46,6 +52,9 @@ private:
 	void ToggleInventory();
 	virtual void Jump() override;
 
+public:
+	static const FName MainWeaponSocketName;
+	static const FName SecondaryWeaponSocketName;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = State)
@@ -62,6 +71,12 @@ private:
 
 	UPROPERTY()
 	class AZPlayerController* PlayerController;
+
+	UPROPERTY(VisibleAnywhere, Category = Character)
+	class AZWeapon* CurrentWeapon;
+
+	UPROPERTY(VisibleAnywhere, Category = Character)
+	class UZCharacterAnimInstance* AnimInstance;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)

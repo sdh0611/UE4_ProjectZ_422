@@ -33,11 +33,17 @@ void UZInventoryWidget::NativeConstruct()
 
 void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 {
-	auto NewInventoryItemWidget = CreateWidget<UZInventoryItemWidget>(GetOwningPlayer(), InventoryItemWidgetClass);
-	if (NewInventoryItemWidget)
+	ZLOG_S(Warning);
+	auto Widget = CreateWidget<UZInventoryItemWidget>(GetOwningPlayer(), InventoryItemWidgetClass);
+	if (Widget)
 	{
-		ItemHolder->AddChild(NewInventoryItemWidget);
-		NewInventoryItemWidget->BindItem(NewItem);
+		ItemHolder->AddChild(Widget);
+		Widget->BindItem(NewItem);
 	}
+	else
+	{
+		ZLOG(Warning, TEXT("Widget pool not available!"));
+	}
+
 
 }

@@ -7,6 +7,8 @@
 #include "ZPlayerController.h"
 #include "ZHUD.h"
 #include "ZUserHUD.h"
+#include "ZWeapon.h"
+#include "ZCharacterAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
@@ -16,7 +18,8 @@
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 
-
+const FName AZCharacter::MainWeaponSocketName = FName(TEXT("weapon_r"));
+const FName AZCharacter::SecondaryWeaponSocketName = FName(TEXT("weapon_secondary"));
 
 // Sets default values
 AZCharacter::AZCharacter()
@@ -38,7 +41,7 @@ AZCharacter::AZCharacter()
 	}
 
 	// Init character anim instance
-	static ConstructorHelpers::FClassFinder<UAnimInstance>
+	static ConstructorHelpers::FClassFinder<UZCharacterAnimInstance>
 		ANIM_CHARACTER(TEXT("AnimBlueprint'/Game/Animation/Blueprint/ZCharacter_AnimBlueprint.ZCharacter_AnimBlueprint_C'"));
 	if (ANIM_CHARACTER.Succeeded())
 	{
@@ -76,6 +79,8 @@ AZCharacter::AZCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	bUseControllerRotationYaw = false;
+
+	CurrentWeapon = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -84,7 +89,9 @@ void AZCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	PlayerController = Cast<AZPlayerController>(GetController());
-
+	auto ZAnimInstance = Cast<UZCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	check(nullptr != ZAnimInstance);
+	AnimInstance = ZAnimInstance;
 }
 
 // Called every frame
@@ -133,14 +140,67 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+FHitResult AZCharacter::GetTraceHit(const FVector & TraceStart, const FVector & TraceEnd)
+{
+	FCollisionQueryParams TraceParams;
+	TraceParams.bTraceComplex = false;
+	TraceParams.bReturnPhysicalMaterial = false;
+	TraceParams.AddIgnoredActor(this);
+
+	FHitResult Hit;
+	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
+
+	return Hit;
+}
+
+FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
+{
+	FVector CamLoc;
+	FRotator CamRot;
+	PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+
+	const FVector Direction = CamRot.Vector();
+	const FVector TraceStart = GetActorLocation();
+	const FVector TraceEnd = TraceStart + (Direction * Distance);
+
+	return GetTraceHit(TraceStart, TraceEnd);
+}
+
 void AZCharacter::SetIsSprinting(bool NewState)
 {
 	bIsSprinting = NewState;
 }
 
+void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
+{
+	ZLOG_S(Warning);
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->SetIsEquipped(false);
+	}
+
+	CurrentWeapon = NewWeapon;
+	if (NewWeapon)
+	{
+		NewWeapon->SetIsEquipped(true);
+		AnimInstance->SetIsEquipWeapon(true);
+		bUseControllerRotationYaw = true;
+	}
+	else
+	{
+		AnimInstance->SetIsEquipWeapon(false);
+		bUseControllerRotationYaw = false;
+	}
+}
+
 bool AZCharacter::IsSprinting()
 {
 	return bIsSprinting;
+}
+
+bool AZCharacter::IsEquipWeapon()
+{
+	return (CurrentWeapon != nullptr);
 }
 
 AZInteractional * AZCharacter::GetInteractionalInView()

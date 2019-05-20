@@ -9,7 +9,10 @@
 UZCharacterAnimInstance::UZCharacterAnimInstance()
 {
 	CurrentPawnSpeed = 0.f;
-
+	CurrentPawnDirection = 0.f;
+	bIsFalling = false;
+	bIsCrouching = false;
+	bIsEquipWeapon = false;
 }
 
 void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -22,6 +25,7 @@ void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FVector Speed = Pawn->GetVelocity();
 		Speed.Z = 0.f;
 		CurrentPawnSpeed = Speed.Size();
+		CurrentPawnDirection = CalculateDirection(Pawn->GetVelocity(), Pawn->GetActorRotation());
 
 		auto Character = Cast<AZCharacter>(Pawn);
 		if (Character)
@@ -30,4 +34,14 @@ void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			bIsCrouching = Character->GetCharacterMovement()->IsCrouching();
 		}
 	}
+}
+
+void UZCharacterAnimInstance::SetIsEquipWeapon(bool NewState)
+{
+	bIsEquipWeapon = NewState;
+}
+
+bool UZCharacterAnimInstance::IsEquipWeapon() const
+{
+	return bIsEquipWeapon;
 }

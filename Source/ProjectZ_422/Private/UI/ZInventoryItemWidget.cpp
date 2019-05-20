@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 
+
 UZInventoryItemWidget::UZInventoryItemWidget(const FObjectInitializer& ObjectInitializer)
 	:UUserWidget(ObjectInitializer)
 {
@@ -33,7 +34,8 @@ void UZInventoryItemWidget::NativeConstruct()
 	auto NewDropButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Drop")));
 	check(nullptr != NewDropButton);
 	DropButton = NewDropButton;
-	DropButton->OnClicked.AddDynamic(this, &UZInventoryItemWidget::ClearWidget);
+	DropButton->OnClicked.AddDynamic(this, &UZInventoryItemWidget::OnDropButtonClicked);
+	
 }
 
 void UZInventoryItemWidget::BindItem(AZItem * NewItem)
@@ -44,17 +46,58 @@ void UZInventoryItemWidget::BindItem(AZItem * NewItem)
 		return;
 	}
 
+	ZLOG(Warning, TEXT("Bind item pointer."));
+
 	Item = NewItem;
 
 	ItemName->SetText(FText::FromString(Item->GetItemName()));
 
 	FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
 	QuantityOfItem->SetText(FText::FromString(Quantity));
+
+	// Item 정보 갱신을 위한 델리게이트 바인딩.
+	NewItem->OnItemInfoChanged.AddUObject(this, &UZInventoryItemWidget::UpdateWidget);	
+	// Item 목록에서 삭제하기 위한 델리게이트 바인딩.
+	NewItem->OnItemRemoved.AddUObject(this, &UZInventoryItemWidget::ClearWidget);
 }
+
+AZItem * const UZInventoryItemWidget::GetBindingItem() const
+{
+	return Item;
+}
+
 
 void UZInventoryItemWidget::ClearWidget()
 {
+	ZLOG_S(Warning);
+	// Delegate 해제
+	Item->OnItemInfoChanged.RemoveAll(this);
+	Item->OnItemRemoved.RemoveAll(this);
+
 	Item = nullptr;
 
 	RemoveFromParent();
+}
+
+void UZInventoryItemWidget::UpdateWidget()
+{
+	if (nullptr == Item)
+	{
+		ZLOG(Error, TEXT("Item is null"));
+		return;
+	}
+	ZLOG_S(Warning);
+
+	ItemName->SetText(FText::FromString(Item->GetItemName()));
+
+	FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
+	QuantityOfItem->SetText(FText::FromString(Quantity));
+
+}
+
+// 폐기예정(5.18)
+void UZInventoryItemWidget::OnDropButtonClicked()
+{
+	Item->OnDropped();
+	//ClearWidget();
 }

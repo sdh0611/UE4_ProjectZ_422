@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectZ_422.h"
 #include "Animation/AnimInstance.h"
 #include "ZCharacterAnimInstance.generated.h"
 
@@ -20,14 +20,26 @@ public:
 public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+public:
+	void SetIsEquipWeapon(bool NewState);
+
+public:
+	bool IsEquipWeapon() const;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	float CurrentPawnDirection;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsFalling;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsCrouching;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsEquipWeapon;
 
 };
