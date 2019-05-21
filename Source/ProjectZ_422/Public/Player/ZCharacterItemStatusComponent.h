@@ -29,16 +29,28 @@ public:
 		Item을 습득할 때 호출하게 될 메소드.
 	*/
 	void AddItem(class AZItem* NewItem, class AZPickup* OwnerPickup = nullptr);
+
 	/*
 		Weapon을 장착할 때 호출하는 메소드.
 		AddItem() 안에서 호출될 것.
 		@ Return : Character가 들게될 CurrentWeapon값
 	*/
 	class AZWeapon* const EquipWeapon(class AZWeapon* NewWeapon);
+
 	/*
 		Item을 List 내에서 제거할 때 호출하게 될 메소드.
 	*/
 	void RemoveItem(int32 InventoryIndex, bool bIsDropped = false);
+
+	/*
+		Character의 DropWeapon에서 호출되는 메소드.
+	*/
+	void DropWeapon(int32 WeaponInventoryIndex);
+
+	/*
+		WeaponInventory로부터 Weapon 포인터를 얻어올 때 사용하는 메소드.
+	*/
+	class AZWeapon* const GetWeaponFromWeaponInventory(int32 NewWeaponIndex);
 
 public:
 	void SetMaxSizeOfItemList(int32 NewMaxSize);

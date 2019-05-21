@@ -22,9 +22,11 @@ public:
 
 public:
 	void SetIsEquipWeapon(bool NewState);
+	void SetIsAiming(bool NewState);
 
 public:
 	bool IsEquipWeapon() const;
+	bool IsAiming() const;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
@@ -41,5 +43,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsEquipWeapon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsAiming;
+
 
 };

@@ -249,9 +249,18 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 			/*
 				주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에 무기가 있는 경우.
 			*/
+			if (OwnerCharacter->IsEquipWeapon())
+			{
+				// Secondary Weapon 소켓에 Weapon 부착
+				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::SecondaryWeaponSocketName);
+			}
+			else
+			{
+				OwnerCharacter->SetCurrentWeapon(NewWeapon);
+				// Main Weapon 소켓에 Weapon 부착
+				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::MainWeaponSocketName);
+			}
 
-			// Secondary Weapon 소켓에 Weapon 부착
-			NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::SecondaryWeaponSocketName);
 		}
 		else
 		{
@@ -314,6 +323,33 @@ void UZCharacterItemStatusComponent::RemoveItem(int32 InventoryIndex, bool bIsDr
 	// 해당 Index의 Item 포인터를 nullptr로 변경.
 	ItemList[InventoryIndex] = nullptr;
 
+}
+
+void UZCharacterItemStatusComponent::DropWeapon(int32 WeaponInventoryIndex)
+{
+	if (!WeaponInventory.IsValidIndex(WeaponInventoryIndex))
+	{
+		return;
+	}
+
+	if (nullptr == WeaponInventory[WeaponInventoryIndex])
+	{
+		return;
+	}
+
+
+	WeaponInventory[WeaponInventoryIndex]->OnDropped();
+
+}
+
+AZWeapon * const UZCharacterItemStatusComponent::GetWeaponFromWeaponInventory(int32 NewWeaponIndex)
+{
+	if (!WeaponInventory.IsValidIndex(NewWeaponIndex))
+	{
+		return nullptr;
+	}
+	
+	return WeaponInventory[NewWeaponIndex];
 }
 
 void UZCharacterItemStatusComponent::SetMaxSizeOfItemList(int32 NewMaxSize)

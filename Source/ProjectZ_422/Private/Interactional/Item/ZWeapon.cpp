@@ -3,13 +3,17 @@
 
 #include "ZWeapon.h"
 #include "ZCharacter.h"
+#include "ZProjectile.h"
+#include "ZPlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
-
+#include "DrawDebugHelpers.h"
 
 
 AZWeapon::AZWeapon()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	ItemType = EItemType::Weapon;
 
 	// Code to test
@@ -27,15 +31,55 @@ AZWeapon::AZWeapon()
 		WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
 	}
 
+	static ConstructorHelpers::FClassFinder<AZProjectile>
+		PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZProjectile'"));
+	if (PROJECTILE.Succeeded())
+	{
+		ProjectileClass = PROJECTILE.Class;
+	}
+
 	// -1 : Player에게 습득되지 않은 상태
 	WeaponInventoryIndex = -1;
 	bIsEquipped = false;
+
+	// Code for test
+	FireDelay = 0.15f;
+	FireTimer = 0.f;
+	bWantsToFire = false;
+
+	MaxQuantityOfItem = 1;
 }
 
 void AZWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AZWeapon::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (ProjectileClass)
+	{
+		if (IsWantsToFire())
+		{
+			FireTimer += DeltaTime;
+			if (FireTimer >= FireDelay)
+			{
+				Fire();
+				FireTimer = 0.f;
+			}
+		}
+		else
+		{
+			if (FireTimer != 0.f)
+			{
+				FireTimer = 0.f;
+			}
+		}
+	}
+
 }
 
 void AZWeapon::OnRemoved()
@@ -80,7 +124,22 @@ void AZWeapon::SetWeaponInventoryIndex(int32 NewIndex)
 
 void AZWeapon::SetIsEquipped(bool NewState)
 {
+	if (!NewState)
+	{
+		SetWantsToFire(false);
+	}
+
 	bIsEquipped = NewState;
+}
+
+void AZWeapon::SetWantsToFire(bool NewState)
+{
+	if (NewState)
+	{
+		Fire();
+	}
+
+	bWantsToFire = NewState;
 }
 
 int32 AZWeapon::GetWeaponInventoryIndex() const
@@ -91,4 +150,54 @@ int32 AZWeapon::GetWeaponInventoryIndex() const
 bool AZWeapon::IsEquipped() const
 {
 	return bIsEquipped;
+}
+
+bool AZWeapon::IsWantsToFire() const
+{
+	return bWantsToFire;
+}
+
+void AZWeapon::Fire()
+{
+	ZLOG(Warning, TEXT("Weapon Fire!!"));
+
+	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+	FVector LaunchDirection = FVector::ZeroVector;
+
+	FVector CamLoc;
+	FRotator CamRot;
+	auto Controller = ItemOwner->GetController();
+	if (Controller)
+	{
+		Controller->GetPlayerViewPoint(CamLoc, CamRot);
+	}
+
+	FVector StartLoc = CamLoc;
+	FVector EndLoc = StartLoc + 10000.f * CamRot.Vector();
+
+	FCollisionQueryParams TraceParams(TEXT("WeaponTrace"), true, this);
+	TraceParams.bReturnPhysicalMaterial = false;
+
+	FHitResult Hit;
+	GetWorld()->LineTraceSingleByProfile(Hit, StartLoc, EndLoc, TEXT("WeaponTrace"), TraceParams);
+	if (Hit.bBlockingHit)
+	{
+		LaunchDirection = Hit.ImpactPoint - MuzzleLocation;
+	}
+	else
+	{
+		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = ItemOwner;
+
+	AZProjectile* Projectile = GetWorld()->SpawnActor<AZProjectile>(ProjectileClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
+	if (Projectile)
+	{
+		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+	}
+
+	DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 1000.f, FColor::Red, false, 0.5f);
 }

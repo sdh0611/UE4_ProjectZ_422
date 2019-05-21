@@ -11,6 +11,7 @@ AZGameMode::AZGameMode()
 	DefaultPawnClass = AZCharacter::StaticClass();
 	PlayerControllerClass = AZPlayerController::StaticClass();
 	HUDClass = AZHUD::StaticClass();
+	
 }
 
 void AZGameMode::BeginPlay()

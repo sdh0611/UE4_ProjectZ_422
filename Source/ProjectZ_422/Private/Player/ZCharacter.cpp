@@ -71,9 +71,14 @@ AZCharacter::AZCharacter()
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 
 	bIsSprinting = false;
+	bIsAiming = false;
 	WalkSpeed = 500.f;
+	WalkSpeedCrouched = 250.f;
 	SprintSpeed = 800.f;
+	AimingWalkSpeed = 200.f;
+	AimingWalkSpeedCrouched = 150.f;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
@@ -136,6 +141,14 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AZCharacter::SprintRelease);
 	PlayerInputComponent->BindAction(TEXT("Interaction"), IE_Pressed, this, &AZCharacter::Interaction);
 	PlayerInputComponent->BindAction(TEXT("ToggleInventory"), IE_Pressed, this, &AZCharacter::ToggleInventory);
+	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AZCharacter::Attack);
+	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Released, this, &AZCharacter::AttackEnd);
+	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Pressed, this, &AZCharacter::Aim);
+	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Released, this, &AZCharacter::AimRelease);
+	PlayerInputComponent->BindAction(TEXT("DropWeapon"), IE_Pressed, this, &AZCharacter::DropWeapon);
+	PlayerInputComponent->BindAction(TEXT("Slot1"), IE_Pressed, this, &AZCharacter::Slot1);
+	PlayerInputComponent->BindAction(TEXT("Slot2"), IE_Pressed, this, &AZCharacter::Slot2);
+
 
 
 }
@@ -171,6 +184,11 @@ void AZCharacter::SetIsSprinting(bool NewState)
 	bIsSprinting = NewState;
 }
 
+void AZCharacter::SetIsAiming(bool NewState)
+{
+	bIsAiming = NewState;
+}
+
 void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 {
 	ZLOG_S(Warning);
@@ -185,11 +203,13 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		NewWeapon->SetIsEquipped(true);
 		AnimInstance->SetIsEquipWeapon(true);
 		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 	else
 	{
 		AnimInstance->SetIsEquipWeapon(false);
 		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 }
 
@@ -201,6 +221,11 @@ bool AZCharacter::IsSprinting()
 bool AZCharacter::IsEquipWeapon()
 {
 	return (CurrentWeapon != nullptr);
+}
+
+bool AZCharacter::IsAiming()
+{
+	return bIsAiming;
 }
 
 AZInteractional * AZCharacter::GetInteractionalInView()
@@ -220,7 +245,7 @@ AZInteractional * AZCharacter::GetInteractionalInView()
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, TraceParams);
 
-	DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 0.1f);
+	//DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 0.1f);
 
 	return Cast<AZInteractional>(HitResult.GetActor());
 }
@@ -321,6 +346,20 @@ void AZCharacter::SprintRelease()
 	}
 }
 
+void AZCharacter::Jump()
+{
+	// Character가 현재 앉은 상태인지 체크.
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		// 앉은 상태라면 UnCrouch() 메소드 실행
+		ACharacter::UnCrouch();
+	}
+	else
+	{
+		Super::Jump();
+	}
+}
+
 void AZCharacter::Interaction()
 {
 	if (InteractionActor)
@@ -352,18 +391,107 @@ void AZCharacter::ToggleInventory()
 
 }
 
-void AZCharacter::Jump()
+void AZCharacter::Attack()
 {
-	// Character가 현재 앉은 상태인지 체크.
-	if (GetCharacterMovement()->IsCrouching())
+	if (IsEquipWeapon())
 	{
-		// 앉은 상태라면 UnCrouch() 메소드 실행
-		ACharacter::UnCrouch();
-	}
-	else
-	{
-		Super::Jump();
+		CurrentWeapon->SetWantsToFire(true);
 	}
 }
 
+void AZCharacter::AttackEnd()
+{
+	if (IsEquipWeapon())
+	{
+		CurrentWeapon->SetWantsToFire(false);
+	}
 
+}
+
+void AZCharacter::Aim()
+{
+	if (!IsEquipWeapon())
+	{
+		return;
+	}
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	if (IsSprinting())
+	{
+		SprintRelease();
+	}
+
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		GetCharacterMovement()->MaxWalkSpeedCrouched = AimingWalkSpeedCrouched;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = AimingWalkSpeed;
+	}
+
+	SetIsAiming(true);
+	AnimInstance->SetIsAiming(true);
+}
+
+void AZCharacter::AimRelease()
+{
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+	SetIsAiming(false);
+	AnimInstance->SetIsAiming(false);
+}
+
+void AZCharacter::DropWeapon()
+{
+	if (IsEquipWeapon())
+	{
+		ItemStatusComponent->DropWeapon(CurrentWeapon->GetWeaponInventoryIndex());
+	}
+}
+
+void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
+{
+	// 해당 Slot에 Weapon이 없는 경우(null인 경우)
+	if (nullptr == ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex))
+	{
+		return;
+	}
+
+	if (IsEquipWeapon())
+	{
+		if (CurrentWeapon->GetWeaponInventoryIndex() == NewWeaponIndex)
+		{
+			return;
+		}
+
+		// 기존 Weapon은 Secondary socket으로 옮김.
+		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
+	}
+
+	SetCurrentWeapon(ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex));
+	// 새 Weapon은 Main socket으로 옮김.
+	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, MainWeaponSocketName);
+	
+
+}
+
+void AZCharacter::Slot1()
+{
+	SwitchWeapon(0);
+}
+
+void AZCharacter::Slot2()
+{
+	SwitchWeapon(1);
+}

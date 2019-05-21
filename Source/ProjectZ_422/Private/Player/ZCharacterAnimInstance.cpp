@@ -41,7 +41,17 @@ void UZCharacterAnimInstance::SetIsEquipWeapon(bool NewState)
 	bIsEquipWeapon = NewState;
 }
 
+void UZCharacterAnimInstance::SetIsAiming(bool NewState)
+{
+	bIsAiming = NewState;
+}
+
 bool UZCharacterAnimInstance::IsEquipWeapon() const
 {
 	return bIsEquipWeapon;
+}
+
+bool UZCharacterAnimInstance::IsAiming() const
+{
+	return bIsAiming;
 }

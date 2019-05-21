@@ -32,15 +32,20 @@ public:
 
 public:
 	void SetIsSprinting(bool NewState);
+	void SetIsAiming(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
 
 public:
 	bool IsSprinting();
 	bool IsEquipWeapon();
+	bool IsAiming();
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
 
 private:
+	/*
+		Character 기본 움직임들
+	*/
 	void MoveForward(float NewAxisValue);
 	void MoveRight(float NewAxisValue);
 	void LookUp(float NewAxisValue);
@@ -48,9 +53,22 @@ private:
 	void ToggleCrouch();
 	void Sprint();
 	void SprintRelease();
+	virtual void Jump() override;
+
+	/*
+		Item 관련 동작들
+	*/
 	void Interaction();
 	void ToggleInventory();
-	virtual void Jump() override;
+	void Attack();
+	void AttackEnd();
+	void Aim();
+	void AimRelease();
+	void DropWeapon();
+	void SwitchWeapon(int32 NewWeaponIndex);
+	void Slot1();
+	void Slot2();
+
 
 public:
 	static const FName MainWeaponSocketName;
@@ -60,11 +78,23 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = State)
 	bool bIsSprinting;
 	
+	UPROPERTY(VisibleAnywhere, Category = State)
+	bool bIsAiming;
+
 	UPROPERTY(EditAnywhere, Category = Stat)
 	float WalkSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Stat)
+	float WalkSpeedCrouched;
+
+	UPROPERTY(EditAnywhere, Category = Stat)
 	float SprintSpeed;
+
+	UPROPERTY(EditAnywhere, Category = Stat)
+	float AimingWalkSpeed;
+
+	UPROPERTY(EditAnywhere, Category = Stat)
+	float AimingWalkSpeedCrouched;
 
 	UPROPERTY()
 	class AZInteractional* InteractionActor;
