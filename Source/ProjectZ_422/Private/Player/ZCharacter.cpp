@@ -145,6 +145,7 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Released, this, &AZCharacter::AttackEnd);
 	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Pressed, this, &AZCharacter::Aim);
 	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Released, this, &AZCharacter::AimRelease);
+	PlayerInputComponent->BindAction(TEXT("Reload"), IE_Pressed, this, &AZCharacter::Reload);
 	PlayerInputComponent->BindAction(TEXT("DropWeapon"), IE_Pressed, this, &AZCharacter::DropWeapon);
 	PlayerInputComponent->BindAction(TEXT("Slot1"), IE_Pressed, this, &AZCharacter::Slot1);
 	PlayerInputComponent->BindAction(TEXT("Slot2"), IE_Pressed, this, &AZCharacter::Slot2);
@@ -202,6 +203,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 	{
 		NewWeapon->SetIsEquipped(true);
 		AnimInstance->SetIsEquipWeapon(true);
+		NewWeapon->OnWeaponFired.AddUObject(AnimInstance, &UZCharacterAnimInstance::PlayFireMontage);
 		bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
@@ -253,6 +255,11 @@ AZInteractional * AZCharacter::GetInteractionalInView()
 UZCharacterItemStatusComponent * const AZCharacter::GetItemStatusComponent() const
 {
 	return ItemStatusComponent;
+}
+
+AZWeapon * const AZCharacter::GetCurrentWeapon()
+{
+	return CurrentWeapon;
 }
 
 void AZCharacter::MoveForward(float NewAxisValue)
@@ -310,6 +317,19 @@ void AZCharacter::ToggleCrouch()
 
 void AZCharacter::Sprint()
 {
+	if (IsAiming())
+	{
+		return;
+	}
+
+	if (IsEquipWeapon())
+	{
+		if (CurrentWeapon->IsReloading())
+		{
+			return;
+		}
+	}
+	
 	auto MyCharacterMovement = GetCharacterMovement();
 	if (MyCharacterMovement)
 	{
@@ -324,6 +344,7 @@ void AZCharacter::Sprint()
 			// SprintSpeed로 값을 변경하고 Sprint 상태 변경
 			MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
 			SetIsSprinting(true);
+			AnimInstance->SetIsSprinting(true);
 		}
 
 	}
@@ -341,6 +362,7 @@ void AZCharacter::SprintRelease()
 			// WalkSpeed로 값을 변경하고 Sprint 상태 변경
 			MyCharacterMovement->MaxWalkSpeed = WalkSpeed;
 			SetIsSprinting(false);
+			AnimInstance->SetIsSprinting(false);
 		}
 
 	}
@@ -348,6 +370,19 @@ void AZCharacter::SprintRelease()
 
 void AZCharacter::Jump()
 {
+	if (IsEquipWeapon())
+	{
+		if (CurrentWeapon->IsReloading())
+		{
+			return;
+		}
+	}
+
+	if (IsAiming())
+	{
+		AimRelease();
+	}
+
 	// Character가 현재 앉은 상태인지 체크.
 	if (GetCharacterMovement()->IsCrouching())
 	{
@@ -414,6 +449,13 @@ void AZCharacter::Aim()
 	{
 		return;
 	}
+	else
+	{
+		if (CurrentWeapon->IsReloading())
+		{
+			return;
+		}
+	}
 
 	if (GetCharacterMovement()->IsFalling())
 	{
@@ -450,6 +492,49 @@ void AZCharacter::AimRelease()
 	}
 	SetIsAiming(false);
 	AnimInstance->SetIsAiming(false);
+}
+
+void AZCharacter::Reload()
+{
+	if (!IsEquipWeapon())
+	{
+		return;
+	}
+	else
+	{
+		if (CurrentWeapon->IsReloading())
+		{
+			return;
+		}
+		else
+		{
+			if (!CurrentWeapon->IsCanReload())
+			{
+				return;
+			}
+		}
+	}
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	if (IsSprinting())
+	{
+		SprintRelease();
+	}
+
+	if (IsAiming())
+	{
+		AimRelease();
+	}
+
+
+
+	CurrentWeapon->SetIsReloading(true);
+	AnimInstance->PlayMontage(TEXT("ReloadRifle"));
+
 }
 
 void AZCharacter::DropWeapon()

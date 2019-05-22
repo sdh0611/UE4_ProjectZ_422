@@ -21,12 +21,22 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
+	void PlayMontage(const FString& MontageName);
+	void PlayFireMontage();
+
+public:
 	void SetIsEquipWeapon(bool NewState);
 	void SetIsAiming(bool NewState);
+	void SetIsSprinting(bool NewState);
 
 public:
 	bool IsEquipWeapon() const;
 	bool IsAiming() const;
+	bool IsSprinting() const;
+
+private:
+	UFUNCTION()
+	void AnimNotify_ReloadCheck();
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
@@ -34,6 +44,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnDirection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	float AimYaw;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	float AimPitch;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsFalling;
@@ -47,5 +63,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsAiming;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsSprinting;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Montage, Meta = (AllowPrivateAccess = true))
+	TMap<FString, class UAnimMontage*>MontageTable;
 
 };

@@ -41,6 +41,7 @@ public:
 	bool IsAiming();
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
+	class AZWeapon* const GetCurrentWeapon();
 
 private:
 	/*
@@ -64,6 +65,7 @@ private:
 	void AttackEnd();
 	void Aim();
 	void AimRelease();
+	void Reload();
 	void DropWeapon();
 	void SwitchWeapon(int32 NewWeaponIndex);
 	void Slot1();

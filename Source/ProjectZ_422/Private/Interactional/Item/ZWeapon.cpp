@@ -41,11 +41,14 @@ AZWeapon::AZWeapon()
 	// -1 : Player에게 습득되지 않은 상태
 	WeaponInventoryIndex = -1;
 	bIsEquipped = false;
-
+	bWantsToFire = false;
+	bIsReloading = false;
+	FireTimer = 0.f;
 	// Code for test
 	FireDelay = 0.15f;
-	FireTimer = 0.f;
-	bWantsToFire = false;
+
+	CurrentAmmo = 0;
+	MaxAmmo = 30;
 
 	MaxQuantityOfItem = 1;
 }
@@ -108,6 +111,23 @@ void AZWeapon::OnDropped()
 	Super::OnDropped();
 }
 
+void AZWeapon::Reload()
+{
+	SetIsReloading(false);
+	if (CurrentAmmo >= MaxAmmo)
+	{
+		return;
+	}
+	ZLOG_S(Warning);
+
+	CurrentAmmo = MaxAmmo;
+}
+
+bool AZWeapon::IsCanReload() const
+{
+	return CurrentAmmo < MaxAmmo;
+}
+
 
 
 void AZWeapon::SetWeaponInventoryIndex(int32 NewIndex)
@@ -142,6 +162,11 @@ void AZWeapon::SetWantsToFire(bool NewState)
 	bWantsToFire = NewState;
 }
 
+void AZWeapon::SetIsReloading(bool NewState)
+{
+	bIsReloading = NewState;
+}
+
 int32 AZWeapon::GetWeaponInventoryIndex() const
 {
 	return WeaponInventoryIndex;
@@ -157,8 +182,23 @@ bool AZWeapon::IsWantsToFire() const
 	return bWantsToFire;
 }
 
+bool AZWeapon::IsReloading() const
+{
+	return bIsReloading;
+}
+
 void AZWeapon::Fire()
 {
+	if (IsReloading())
+	{
+		return;
+	}
+
+	if (CheckNeedToReload())
+	{
+		return;
+	}
+
 	ZLOG(Warning, TEXT("Weapon Fire!!"));
 
 	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
@@ -197,7 +237,22 @@ void AZWeapon::Fire()
 	if (Projectile)
 	{
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+		if (CurrentAmmo > 0)
+		{
+			--CurrentAmmo;
+		}
+		else
+		{
+			ZLOG(Warning, TEXT("Reload!"));
+		}
 	}
 
+	OnWeaponFired.Broadcast();
+
 	DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 1000.f, FColor::Red, false, 0.5f);
+}
+
+bool AZWeapon::CheckNeedToReload()
+{
+	return CurrentAmmo < 1;
 }

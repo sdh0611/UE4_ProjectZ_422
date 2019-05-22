@@ -6,6 +6,8 @@
 #include "ZItem.h"
 #include "ZWeapon.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnWeaponFired);
+
 /**
  * 
  */
@@ -23,19 +25,28 @@ public:
 	virtual void OnRemoved() override;
 	virtual void OnDropped() override;
 
+public:
+	void Reload();
+	bool IsCanReload() const;
 
 public:
 	void SetWeaponInventoryIndex(int32 NewIndex);
 	void SetIsEquipped(bool NewState);
 	void SetWantsToFire(bool NewState);
+	void SetIsReloading(bool NewState);
 
 public:
 	int32 GetWeaponInventoryIndex() const;
 	bool IsEquipped() const;
 	bool IsWantsToFire() const;
+	bool IsReloading() const;
 
 private:
 	void Fire();
+	bool CheckNeedToReload();
+
+public:
+	FOnWeaponFired OnWeaponFired;
 
 private:
 	// 사격시 생성되는 총알의 클래스.
@@ -54,13 +65,24 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	bool bIsEquipped;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
-	float FireDelay;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bWantsToFire;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bIsReloading;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float FireTimer;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	bool bWantsToFire;
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float FireDelay;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	int32 CurrentAmmo;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	int32 MaxAmmo;
+
+
 
 };
