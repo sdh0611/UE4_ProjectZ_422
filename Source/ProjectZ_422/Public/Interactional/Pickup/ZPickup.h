@@ -52,4 +52,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
 	class AZItem* Item;
 
+	// Code for test
+	UPROPERTY(EditAnywhere, Category = Pickup)
+	FString Name;
+
 };

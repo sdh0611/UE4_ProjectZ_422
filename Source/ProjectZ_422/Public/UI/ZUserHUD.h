@@ -18,21 +18,41 @@ public:
 	virtual void NativeConstruct() override;
 	
 public:
-	// 화면에 Inventory를 띄우기 위한 메소드.
+	/*
+		화면에 Widget을 띄우기 위한 메소드들
+	*/
 	void DrawInventoryWidget();
-	// 화면에서 Inventory를 지우기 위한 메소드.
+	void DrawShopWidget();
+	/*
+		화면에서 Widget을지우기 위한 메소드들
+	 */
 	void RemoveInventoryWidget();
+	void RemoveShopWidget();
 
 public:
+	/*
+		각각의 Widget의 상태를 얻어오는 메소드들
+	*/
 	bool IsInventoryOnScreen() const;
+	bool IsShopWidgetOnScreen() const;
+	/*
+		Widget을 얻어오기 위한 Get메소드들
+	*/
 	class UZInventoryWidget* const GetInventoryWidget() const;
+	class UZShopWidget* const GetShopWidget() const;
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
 	bool bIsInventoryOnScreen;
 
+	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
+	bool bIsShopOnScreen;
+
 	UPROPERTY()
 	class UZInventoryWidget* InventoryWidget;
+
+	UPROPERTY()
+	class UZShopWidget* ShopWidget;
 
 
 };

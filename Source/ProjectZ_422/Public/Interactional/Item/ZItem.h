@@ -22,6 +22,45 @@ enum class EItemType : uint8
 	Invalid
 };
 
+static FString GetItemTypeEnumAsString(EItemType ItemType)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EItemType"), true);
+	if (nullptr == EnumPtr)
+	{
+		return FString(TEXT("Invalid"));
+	}
+
+	FString Concated = EnumPtr->GetNameStringByValue((int64)ItemType);
+	Concated.RemoveFromStart(TEXT("EItemType::"));
+
+	return Concated;
+}
+
+static EItemType GetItemTypeFromString(const FString& ItemTypeName)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EItemType"), true);
+	if (nullptr == EnumPtr)
+	{
+		return EItemType::Invalid;
+	}
+
+	if (ItemTypeName == TEXT("Weapon"))
+	{
+		return EItemType::Weapon;
+	}
+	else if (ItemTypeName == TEXT("Recovery"))
+	{
+		return EItemType::Recovery;
+	}
+	else if (ItemTypeName == TEXT("Doping"))
+	{
+		return EItemType::Doping;
+	}
+
+	return EItemType::Invalid;
+}
+
+
 
 UCLASS()
 class PROJECTZ_422_API AZItem : public AActor
@@ -40,9 +79,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Item의 동작에 대한 메소드.
+	/*
+		Item의 동작에 대한 메소드.
+	*/
 	UFUNCTION(BlueprintCallable, Category = Item)
 	virtual void OnUsed();
+
+	/*
+		Item이 Player에 의해 Drop될 때 호출될 메소드.
+	*/
+	UFUNCTION(BlueprintCallable, Category = Item)
+	virtual void OnDropped();
 
 	/*
 		Item이 제거될 경우 호출될 메소드.
@@ -51,10 +98,10 @@ public:
 	virtual void OnRemoved();
 
 	/*
-		Item이 Player에 의해 Drop될 때 호출될 메소드.
+		Item생성 시 ItemData를 적용하기 위한 메소드.
+		각 아이템 분류별로 오버라이딩.
 	*/
-	UFUNCTION(BlueprintCallable, Category = Item)
-	virtual void OnDropped();
+	virtual void InitItemData(const struct FZItemData* const NewItemData);
 
 public:
 	/*

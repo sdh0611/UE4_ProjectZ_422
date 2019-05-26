@@ -17,4 +17,15 @@ class PROJECTZ_422_API AZDoping : public AZItem
 public:
 	AZDoping();
 
+public:
+	virtual void InitItemData(const struct FZItemData* NewItemData) override;
+
+
+private:
+	UPROPERTY(EditAnywhere, Category = Recovery)
+	float DopingAmount;
+
+	UPROPERTY(EditAnywhere, Category = Recovery)
+	float DopingTime;
+
 };

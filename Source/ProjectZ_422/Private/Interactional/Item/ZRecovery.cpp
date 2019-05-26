@@ -10,4 +10,18 @@ AZRecovery::AZRecovery()
 
 	// Code to test
 	ItemName = TEXT("Recovery");
+
+	RecoveryAmount = 10.f;
+	RecoveryDelay = 1.f;
+}
+
+void AZRecovery::InitItemData(const FZItemData * NewItemData)
+{
+	Super::InitItemData(NewItemData);
+
+	auto NewRecoveryData = static_cast<const FZRecoveryData*>(NewItemData);
+
+	RecoveryAmount = NewRecoveryData->RecoveryAmount;
+	RecoveryDelay = NewRecoveryData->RecoveryDelay;
+
 }

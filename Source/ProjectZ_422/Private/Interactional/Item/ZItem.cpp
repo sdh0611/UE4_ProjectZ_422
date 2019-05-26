@@ -25,6 +25,8 @@ AZItem::AZItem()
 	ItemOwner = nullptr;
 	ItemType = EItemType::Default;
 	Pickup = nullptr;
+
+	PickupClass = AZPickup::StaticClass();
 }
 
 // Called when the game starts or when spawned
@@ -49,6 +51,62 @@ void AZItem::OnUsed()
 
 }
 
+void AZItem::OnDropped()
+{
+	ZLOG_S(Warning);
+
+	/*
+		Pickup Spawn지점 설정
+	*/
+	FVector SpawnLocation;
+	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
+	if (Hit.bBlockingHit)
+	{
+		SpawnLocation = Hit.ImpactPoint;
+	}
+	else
+	{
+		SpawnLocation = Hit.TraceEnd;
+	}
+
+
+	if (Pickup)
+	{
+		/*
+			만약 Pickup에서 생성된 Item이라면
+		*/
+		// Pickup 활성화
+		ZLOG(Warning, TEXT("Spawn actor."));
+		Pickup->SetActive(true);
+		Pickup->SetActorLocation(SpawnLocation);
+		Pickup->WhenSpawnedByItem();
+	}
+	else
+	{
+		/*
+			만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
+		*/
+		// Pickup 생성
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		check(nullptr != NewPickup);
+		NewPickup->SetItem(this);
+		NewPickup->WhenSpawnedByItem();
+
+	}
+
+	// ItemStatusComponent에서 해당 Item제거
+	ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
+
+	//// Set ItemOwner null
+	//SetItemOwner(nullptr);
+
+	OnItemRemoved.Broadcast();
+
+	SetActive(false);
+}
+
 void AZItem::OnRemoved()
 {
 	ZLOG_S(Warning);
@@ -69,56 +127,21 @@ void AZItem::OnRemoved()
 	}
 }
 
-void AZItem::OnDropped()
+void AZItem::InitItemData(const FZItemData * const NewItemData)
 {
-	ZLOG_S(Warning);
-
 	/*
-		Pickup Spawn지점 설정
+		Data 유효성 체크
 	*/
-	FVector SpawnLocation;
-	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
-	if (Hit.bBlockingHit)
+	if (nullptr == NewItemData)
 	{
-		SpawnLocation = Hit.ImpactPoint;
-	}
-	else
-	{
-		SpawnLocation = Hit.TraceEnd;
+		ZLOG(Error, TEXT("Invalid data."));
+		return;
 	}
 
-	
-	if (Pickup)
-	{
-		/*
-			만약 Pickup에서 생성된 Item이라면
-		*/
-		// Pickup 활성화
-		ZLOG(Warning, TEXT("Spawn actor."));
-		Pickup->SetActive(true);
-		Pickup->SetActorLocation(SpawnLocation);
-		Pickup->WhenSpawnedByItem();
-	}
-	else
-	{
-		/*
-			만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
-		*/
-		// Pickup 생성
-
-
-	}
-
-	// ItemStatusComponent에서 해당 Item제거
-	ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
-
-	//// Set ItemOwner null
-	//SetItemOwner(nullptr);
-
-	OnItemRemoved.Broadcast();
-
-	SetActive(false);
+	ItemName = NewItemData->ItemName;
+	ItemWeight = NewItemData->ItemWeight;
 }
+
 
 int32 AZItem::AdjustQuantity(int32 Value) 
 {

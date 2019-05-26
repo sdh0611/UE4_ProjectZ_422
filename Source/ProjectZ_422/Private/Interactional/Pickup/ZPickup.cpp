@@ -34,6 +34,8 @@ AZPickup::AZPickup()
 
 	Item = nullptr;
 	bIsActive = true;
+
+	Name = TEXT("Default");
 }
 
 void AZPickup::BeginPlay()
@@ -61,6 +63,12 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 		if (NewItem)
 		{
 			ZLOG(Warning, TEXT("Spawn item success!"));
+			// Code for test
+			if (NewItem->GetItemType() == EItemType::Weapon)
+			{
+				ZLOG(Warning, TEXT("%s"), *Name);
+				Cast<AZWeapon>(NewItem)->InitWeaponData(Cast<UZGameInstance>(GetGameInstance())->GetWeaponDataByName(Name));
+			}
 			// Add item in character's item status component.
 			NewCharacter->GetItemStatusComponent()->AddItem(NewItem, this);
 		}
@@ -81,6 +89,7 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 
 void AZPickup::WhenSpawnedByItem()
 {
+	SetActive(true);
 	Mesh->AddTorqueInRadians(GetActorForwardVector() * 400000.f);
 }
 
@@ -110,6 +119,30 @@ void AZPickup::SetActive(bool NewState)
 
 void AZPickup::SetItem(AZItem * NewItem)
 {
+	if (nullptr == Item)
+	{
+		auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
+		check(nullptr != ZGameInstance);
+
+		auto ItemMesh = ZGameInstance->GetStaticMesh(NewItem->GetItemName());
+		check(nullptr != ItemMesh);
+
+		Mesh->SetStaticMesh(ItemMesh);
+	}
+	else
+	{
+		if (Item->GetItemName() != NewItem->GetItemName())
+		{
+			auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
+			check(nullptr != ZGameInstance);
+
+			auto ItemMesh = ZGameInstance->GetStaticMesh(NewItem->GetItemName());
+			check(nullptr != ItemMesh);
+
+			Mesh->SetStaticMesh(ItemMesh);
+		}
+	}
+
 	Item = NewItem;
 }
 

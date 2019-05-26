@@ -7,6 +7,7 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZInventoryWidget.h"
+#include "ZShopWidget.h"
 #include "ZPickup.h"
 #include "ZWeapon.h"
 #include "ZRecovery.h"
@@ -26,6 +27,8 @@ UZCharacterItemStatusComponent::UZCharacterItemStatusComponent()
 	CurrentSizeOfItemList = 0;
 	MaxWeight = 100;
 	CurrentWeight = 0;
+	CurrentMoney = 0;
+	OwnerCharacter = nullptr;
 }
 
 
@@ -57,6 +60,8 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 		TODO(5.19) : EquipWeapon의 OnDropped를 실행하는 부분에서 버그발생.
 						-> ItemOwner가 null인데 ItemOwner를 불러서 생긴 현상. 이거 고치자
 	*/
+
+	ZLOG(Warning, TEXT("%s"), *NewItem->GetItemName());
 
 	switch (NewItem->GetItemType())
 	{
@@ -117,16 +122,26 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 				OwnerPickup->SetItem(NewItem);
 			}
 
-			// Inventory에 Update
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 			if (PlayerController)
 			{
+				// Inventory에 Update
 				auto InventoryWidget = PlayerController->GetZHUD()->GetUserHUD()->GetInventoryWidget();
 				if (InventoryWidget)
 				{
 					InventoryWidget->AddItemToInventory(NewItem);
 				}
 
+				// ShopSellWidget Update
+				if (PlayerController->GetZHUD()->GetUserHUD()->IsShopWidgetOnScreen())
+				{
+					ZLOG(Warning, TEXT("Add Item to SellWidget"));
+					auto ShopSellWidget = PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget();
+					if (ShopSellWidget)
+					{
+						ShopSellWidget->AddItemToSellWidget(NewItem);
+					}
+				}
 			}
 
 		}
@@ -352,6 +367,16 @@ AZWeapon * const UZCharacterItemStatusComponent::GetWeaponFromWeaponInventory(in
 	return WeaponInventory[NewWeaponIndex];
 }
 
+void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
+{
+	CurrentMoney += Value;
+	if (CurrentMoney < 0)
+	{
+		CurrentMoney = 0;
+	}
+	ZLOG(Warning, TEXT("Current money : %d$"), CurrentMoney);
+}
+
 void UZCharacterItemStatusComponent::SetMaxSizeOfItemList(int32 NewMaxSize)
 {
 	if (!FMath::IsWithinInclusive<int32>(NewMaxSize, 0, CurrentSizeOfItemList))
@@ -409,6 +434,16 @@ void UZCharacterItemStatusComponent::SetCurrentWeight(int32 NewCurrentWeight)
 	CurrentWeight = NewCurrentWeight;
 }
 
+void UZCharacterItemStatusComponent::SetCurrentMoney(int32 NewCurrentMoney)
+{
+	if (NewCurrentMoney < 0)
+	{
+		return;
+	}
+
+	CurrentMoney = NewCurrentMoney;
+}
+
 int32 UZCharacterItemStatusComponent::GetMaxSizeOfItemList() const
 {
 	return MaxSizeOfItemList;
@@ -429,6 +464,11 @@ int32 UZCharacterItemStatusComponent::GetCurrentWeight() const
 	return CurrentWeight;
 }
 
+int32 UZCharacterItemStatusComponent::GetCurrentMoney() const
+{
+	return CurrentMoney;
+}
+
 AZItem * UZCharacterItemStatusComponent::GetItemByIndex(int32 ItemIndex) const
 {
 	if (!FMath::IsWithinInclusive<int32>(ItemIndex, 0, MaxSizeOfItemList))
@@ -442,6 +482,11 @@ AZItem * UZCharacterItemStatusComponent::GetItemByIndex(int32 ItemIndex) const
 bool UZCharacterItemStatusComponent::IsItemListFull() const
 {
 	return CurrentSizeOfItemList == MaxSizeOfItemList;
+}
+
+const TArray<class AZItem*>& UZCharacterItemStatusComponent::GetItemList() const
+{
+	return ItemList;
 }
 
 int32 UZCharacterItemStatusComponent::AllocateInventoryIndex()

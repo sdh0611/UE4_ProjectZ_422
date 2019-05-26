@@ -40,6 +40,13 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 		MontageTable.Add(TEXT("ReloadRifle"), MONTAGE_RELOAD_RIFLE.Object);
 	}
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>
+		MONTAGE_EQUIP_RIFLE(TEXT("AnimMontage'/Game/Animation/AnimStarterPack/Animations/Montage/Equip_Rifle_Standing_Montage.Equip_Rifle_Standing_Montage'"));
+	if (MONTAGE_EQUIP_RIFLE.Succeeded())
+	{
+		MontageTable.Add(TEXT("EquipRifle"), MONTAGE_EQUIP_RIFLE.Object);
+	}
+
 
 
 }
@@ -141,5 +148,19 @@ void UZCharacterAnimInstance::AnimNotify_ReloadCheck()
 		check(nullptr != Player);
 		Player->GetCurrentWeapon()->Reload();
 
+	}
+}
+
+void UZCharacterAnimInstance::AnimNotify_WeaponSwitchCheck()
+{
+	
+}
+
+void UZCharacterAnimInstance::AnimNotify_SwitchEndCheck()
+{
+	auto Pawn = TryGetPawnOwner();
+	if (::IsValid(Pawn))
+	{
+		Cast<AZCharacter>(Pawn)->SetIsSwitchingWeapon(false);
 	}
 }

@@ -24,6 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	void SetDamage(float NewDamage);
 	void FireInDirection(const FVector& Direction);
 
 	UFUNCTION()

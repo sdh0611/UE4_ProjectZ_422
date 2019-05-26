@@ -5,6 +5,7 @@
 #include "ZCharacter.h"
 #include "ZProjectile.h"
 #include "ZPlayerController.h"
+#include "ZGameInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
@@ -46,9 +47,11 @@ AZWeapon::AZWeapon()
 	FireTimer = 0.f;
 	// Code for test
 	FireDelay = 0.15f;
+	Damage = 1.f;
 
 	CurrentAmmo = 0;
 	MaxAmmo = 30;
+	WeaponType = EWeaponType::AR;
 
 	MaxQuantityOfItem = 1;
 }
@@ -109,6 +112,28 @@ void AZWeapon::OnDropped()
 	//SetWeaponInventoryIndex(-1);
 
 	Super::OnDropped();
+}
+
+void AZWeapon::InitItemData(const FZItemData * const NewItemData)
+{
+	Super::InitItemData(NewItemData);
+
+	auto NewWeaponData = static_cast<const FZWeaponData*>(NewItemData);
+
+	Damage = NewWeaponData->Damage;
+	FireDelay = NewWeaponData->FireDelay;
+	auto SKMesh = Cast<UZGameInstance>(GetGameInstance())->GetSkeletalMesh(ItemName);
+	check(nullptr != SKMesh);
+	WeaponMesh->SetSkeletalMesh(SKMesh);
+
+	MaxAmmo = NewWeaponData->MaxAmmo;
+	WeaponType = GetWeaponTypeFromString(NewWeaponData->WeaponType);
+
+}
+
+void AZWeapon::InitWeaponData(const FZWeaponData * const NewWeaponData)
+{
+
 }
 
 void AZWeapon::Reload()
@@ -236,6 +261,7 @@ void AZWeapon::Fire()
 	AZProjectile* Projectile = GetWorld()->SpawnActor<AZProjectile>(ProjectileClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
 	if (Projectile)
 	{
+		Projectile->SetDamage(Damage);
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
 		if (CurrentAmmo > 0)
 		{

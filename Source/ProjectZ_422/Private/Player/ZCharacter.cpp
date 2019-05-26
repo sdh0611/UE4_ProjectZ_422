@@ -9,6 +9,7 @@
 #include "ZUserHUD.h"
 #include "ZWeapon.h"
 #include "ZCharacterAnimInstance.h"
+#include "ZPlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
@@ -81,9 +82,10 @@ AZCharacter::AZCharacter()
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 
 	CurrentWeapon = nullptr;
 }
@@ -121,6 +123,7 @@ void AZCharacter::Tick(float DeltaTime)
 
 	}
 
+	//CheckCharacterRotation(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -149,6 +152,9 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("DropWeapon"), IE_Pressed, this, &AZCharacter::DropWeapon);
 	PlayerInputComponent->BindAction(TEXT("Slot1"), IE_Pressed, this, &AZCharacter::Slot1);
 	PlayerInputComponent->BindAction(TEXT("Slot2"), IE_Pressed, this, &AZCharacter::Slot2);
+
+	// For debug
+	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
 
 
 
@@ -190,6 +196,11 @@ void AZCharacter::SetIsAiming(bool NewState)
 	bIsAiming = NewState;
 }
 
+void AZCharacter::SetIsSwitchingWeapon(bool NewState)
+{
+	bIsSwitchingWeapon = NewState;
+}
+
 void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 {
 	ZLOG_S(Warning);
@@ -204,13 +215,13 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		NewWeapon->SetIsEquipped(true);
 		AnimInstance->SetIsEquipWeapon(true);
 		NewWeapon->OnWeaponFired.AddUObject(AnimInstance, &UZCharacterAnimInstance::PlayFireMontage);
-		bUseControllerRotationYaw = true;
+		//bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 	}
 	else
 	{
 		AnimInstance->SetIsEquipWeapon(false);
-		bUseControllerRotationYaw = false;
+		//bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
 }
@@ -228,6 +239,11 @@ bool AZCharacter::IsEquipWeapon()
 bool AZCharacter::IsAiming()
 {
 	return bIsAiming;
+}
+
+bool AZCharacter::IsSwitchingWeapon()
+{
+	return bIsSwitchingWeapon;
 }
 
 AZInteractional * AZCharacter::GetInteractionalInView()
@@ -262,11 +278,30 @@ AZWeapon * const AZCharacter::GetCurrentWeapon()
 	return CurrentWeapon;
 }
 
+void AZCharacter::CheckCharacterRotation(float DeltaTime)
+{
+	const FRotator ActorRotation = GetActorRotation();
+	const FRotator ControlRotation = GetControlRotation();
+	if (FMath::Abs<float>(ActorRotation.Yaw - ControlRotation.Yaw) > 90.f)
+	{
+		//Rotate = ActorRotation.Yaw - ControlRotation.Yaw;
+		FRotator Rot = FMath::RInterpTo(ActorRotation, FRotator(0.f, ControlRotation.Yaw, 0.f), DeltaTime, 15.f);
+		AddActorLocalRotation(Rot);
+	}
+	
+
+}
+
 void AZCharacter::MoveForward(float NewAxisValue)
 {
 	const FRotator Rotation = GetController()->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+	if (NewAxisValue < 0)
+	{
+		SprintRelease();
+	}
 
 	AddMovementInput(Direction, NewAxisValue);
 
@@ -345,6 +380,7 @@ void AZCharacter::Sprint()
 			MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
 			SetIsSprinting(true);
 			AnimInstance->SetIsSprinting(true);
+			//bUseControllerRotationYaw = false
 		}
 
 	}
@@ -363,6 +399,10 @@ void AZCharacter::SprintRelease()
 			MyCharacterMovement->MaxWalkSpeed = WalkSpeed;
 			SetIsSprinting(false);
 			AnimInstance->SetIsSprinting(false);
+			//if (IsEquipWeapon())
+			//{
+			//	bUseControllerRotationYaw = true
+			//}
 		}
 
 	}
@@ -397,6 +437,19 @@ void AZCharacter::Jump()
 
 void AZCharacter::Interaction()
 {
+	if (IsEquipWeapon())
+	{
+		if (CurrentWeapon->IsReloading())
+		{
+			return;
+		}
+
+		if (IsSwitchingWeapon())
+		{
+			return;
+		}
+	}
+
 	if (InteractionActor)
 	{
 		InteractionActor->OnInteraction(this);
@@ -428,19 +481,32 @@ void AZCharacter::ToggleInventory()
 
 void AZCharacter::Attack()
 {
-	if (IsEquipWeapon())
+	if (!IsEquipWeapon())
 	{
-		CurrentWeapon->SetWantsToFire(true);
+		return;
 	}
+
+	if (CurrentWeapon->IsReloading())
+	{
+		return;
+	}
+
+	if (IsSwitchingWeapon())
+	{
+		return;
+	}
+
+	CurrentWeapon->SetWantsToFire(true);
 }
 
 void AZCharacter::AttackEnd()
 {
-	if (IsEquipWeapon())
+	if (!IsEquipWeapon())
 	{
-		CurrentWeapon->SetWantsToFire(false);
+		return;
 	}
 
+	CurrentWeapon->SetWantsToFire(false);
 }
 
 void AZCharacter::Aim()
@@ -455,6 +521,11 @@ void AZCharacter::Aim()
 		{
 			return;
 		}
+	}
+
+	if (IsSwitchingWeapon())
+	{
+		return;
 	}
 
 	if (GetCharacterMovement()->IsFalling())
@@ -515,6 +586,11 @@ void AZCharacter::Reload()
 		}
 	}
 
+	if (IsSwitchingWeapon())
+	{
+		return;
+	}
+
 	if (GetCharacterMovement()->IsFalling())
 	{
 		return;
@@ -531,7 +607,6 @@ void AZCharacter::Reload()
 	}
 
 
-
 	CurrentWeapon->SetIsReloading(true);
 	AnimInstance->PlayMontage(TEXT("ReloadRifle"));
 
@@ -539,10 +614,18 @@ void AZCharacter::Reload()
 
 void AZCharacter::DropWeapon()
 {
-	if (IsEquipWeapon())
+	if (!IsEquipWeapon())
 	{
-		ItemStatusComponent->DropWeapon(CurrentWeapon->GetWeaponInventoryIndex());
+		return;
 	}
+
+	if (CurrentWeapon->IsReloading())
+	{
+		return;
+	}
+
+	ItemStatusComponent->DropWeapon(CurrentWeapon->GetWeaponInventoryIndex());
+
 }
 
 void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
@@ -560,6 +643,11 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 			return;
 		}
 
+		if (CurrentWeapon->IsReloading())
+		{
+			return;
+		}
+
 		// 기존 Weapon은 Secondary socket으로 옮김.
 		CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
 	}
@@ -567,7 +655,8 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	SetCurrentWeapon(ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex));
 	// 새 Weapon은 Main socket으로 옮김.
 	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, MainWeaponSocketName);
-	
+	SetIsSwitchingWeapon(true);
+	AnimInstance->PlayMontage(TEXT("EquipRifle"));
 
 }
 
@@ -579,4 +668,11 @@ void AZCharacter::Slot1()
 void AZCharacter::Slot2()
 {
 	SwitchWeapon(1);
+}
+
+void AZCharacter::AddMoney()
+{
+	ZLOG_S(Warning);
+	ItemStatusComponent->AdjustMoney(500);
+
 }

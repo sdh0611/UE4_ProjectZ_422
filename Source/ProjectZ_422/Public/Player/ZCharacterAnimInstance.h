@@ -38,6 +38,12 @@ private:
 	UFUNCTION()
 	void AnimNotify_ReloadCheck();
 
+	UFUNCTION()
+	void AnimNotify_WeaponSwitchCheck();
+
+	UFUNCTION()
+	void AnimNotify_SwitchEndCheck();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed;

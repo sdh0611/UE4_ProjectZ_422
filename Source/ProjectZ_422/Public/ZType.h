@@ -37,3 +37,146 @@ public:
 	FString StaticMeshPath;
 
 };
+
+
+USTRUCT(BlueprintType)
+struct FZSkeletalMeshData : public FTableRowBase
+{
+
+	GENERATED_BODY()
+
+public:
+	FZSkeletalMeshData()
+		:Name(TEXT("")), SkeletalMeshPath(TEXT(""))
+	{
+
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
+		FString Name;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
+		FString SkeletalMeshPath;
+
+};
+
+/*
+	ItemData
+*/
+
+USTRUCT(BlueprintType)
+struct FZItemData : public FTableRowBase
+{
+
+	GENERATED_BODY()
+
+public:
+	FZItemData()
+		: ItemName(TEXT("")), ItemWeight(0)
+	{
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	int32 ItemWeight;	
+};
+
+
+USTRUCT(BlueprintType)
+struct FZWeaponData : public FZItemData
+{
+
+	GENERATED_BODY()
+
+public:
+	FZWeaponData()
+		: FZItemData(), Damage(0.f), FireDelay(1.f), MaxAmmo(30), WeaponType(TEXT("Default"))
+	{
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float Damage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float FireDelay;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	int32 MaxAmmo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString WeaponType;
+
+};
+
+USTRUCT(BlueprintType)
+struct FZRecoveryData : public FZItemData
+{
+	GENERATED_BODY()
+
+public:
+	FZRecoveryData()
+		: FZItemData(), RecoveryAmount(0.f), RecoveryDelay(1.f)
+	{
+	}
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float RecoveryAmount;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float RecoveryDelay;
+
+};
+
+USTRUCT(BlueprintType)
+struct FZDopingData : public FZItemData
+{
+	GENERATED_BODY()
+
+public:
+	FZDopingData()
+		: FZItemData(), DopingAmount(0.f), DopingTime(1.f)
+	{
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float DopingAmount;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float DopingTime;
+
+};
+
+/*
+	Shop data
+*/
+
+USTRUCT(BlueprintType)
+struct FZShopItemData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FZShopItemData()
+	{
+
+	}
+
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	int32 ItemPrice;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemExplanation;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemImagePath;
+
+};

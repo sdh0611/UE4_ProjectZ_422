@@ -56,6 +56,17 @@ void AZProjectile::Tick(float DeltaTime)
 
 }
 
+void AZProjectile::SetDamage(float NewDamage)
+{
+	if (NewDamage < 0.f)
+	{
+		return;
+	}
+
+	Damage = NewDamage;
+
+}
+
 void AZProjectile::FireInDirection(const FVector & Direction)
 {
 	Movement->Velocity = Direction * Movement->InitialSpeed;
@@ -65,7 +76,7 @@ void AZProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor
 {
 	if (OtherActor != this)
 	{
-		ZLOG(Warning, TEXT("Hit at %s"), *OtherActor->GetName());
+		ZLOG(Warning, TEXT("Hit at %s, Damage : %f"), *OtherActor->GetName(), Damage);
 		Destroy();
 	}
 

@@ -33,17 +33,25 @@ public:
 public:
 	void SetIsSprinting(bool NewState);
 	void SetIsAiming(bool NewState);
+	void SetIsSwitchingWeapon(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
 
 public:
 	bool IsSprinting();
 	bool IsEquipWeapon();
 	bool IsAiming();
+	bool IsSwitchingWeapon();
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
 	class AZWeapon* const GetCurrentWeapon();
 
 private:
+	void CheckCharacterRotation(float DeltaTime);
+
+private:
+	/*
+		키 입력과 관련된 메소드들
+	*/
 	/*
 		Character 기본 움직임들
 	*/
@@ -71,6 +79,10 @@ private:
 	void Slot1();
 	void Slot2();
 
+	/*
+		디버깅용
+	*/
+	void AddMoney();
 
 public:
 	static const FName MainWeaponSocketName;
@@ -82,6 +94,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category = State)
 	bool bIsAiming;
+
+	UPROPERTY(VisibleAnywhere, Category = State)
+	bool bIsSwitchingWeapon;
 
 	UPROPERTY(EditAnywhere, Category = Stat)
 	float WalkSpeed;
@@ -109,6 +124,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Character)
 	class UZCharacterAnimInstance* AnimInstance;
+
+	FRotator Rotate;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)

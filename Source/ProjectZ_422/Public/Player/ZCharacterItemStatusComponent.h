@@ -52,19 +52,27 @@ public:
 	*/
 	class AZWeapon* const GetWeaponFromWeaponInventory(int32 NewWeaponIndex);
 
+	/*
+		돈 계산을 위한 메소드.
+	*/
+	void AdjustMoney(int32 Value);
+
 public:
 	void SetMaxSizeOfItemList(int32 NewMaxSize);
 	void SetCurrentSizeOfItemList(int32 NewCurrentSize);
 	void SetMaxWeight(int32 NewMaxWeight);
 	void SetCurrentWeight(int32 NewCurrentWeight);
+	void SetCurrentMoney(int32 NewCurrentMoney);
 
 public:
 	int32 GetMaxSizeOfItemList() const;
 	int32 GetCurrentSizeOfItemList() const;
 	int32 GetMaxWeight() const;
 	int32 GetCurrentWeight() const;
+	int32 GetCurrentMoney() const;
 	class AZItem* GetItemByIndex(int32 ItemIndex) const;
 	bool IsItemListFull() const;
+	const TArray<class AZItem*>& GetItemList() const;
 
 private:
 	/*
@@ -101,6 +109,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true), Transient)
 	int32 CurrentWeight;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true), Transient)
+	int32 CurrentMoney;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true))
 	class AZCharacter* OwnerCharacter;

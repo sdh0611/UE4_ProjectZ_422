@@ -17,4 +17,13 @@ class PROJECTZ_422_API AZRecovery : public AZItem
 public:
 	AZRecovery();
 
+public:
+	virtual void InitItemData(const struct FZItemData* NewItemData) override;
+
+private:
+	UPROPERTY(EditAnywhere, Category = Recovery)
+	float RecoveryAmount;
+
+	UPROPERTY(EditAnywhere, Category = Recovery)
+	float RecoveryDelay;
 };
