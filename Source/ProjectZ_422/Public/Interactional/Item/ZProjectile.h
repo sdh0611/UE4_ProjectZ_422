@@ -32,6 +32,12 @@ public:
 		FVector NormalImpulse, const FHitResult& Hit);
 
 private:
+	void TraceProjectile();
+
+private:
+	FVector PreLocation;
+
+private:
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	class USphereComponent* Sphere;
 

@@ -244,7 +244,7 @@ void AZWeapon::Fire()
 	TraceParams.bReturnPhysicalMaterial = false;
 
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByProfile(Hit, StartLoc, EndLoc, TEXT("WeaponTrace"), TraceParams);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartLoc, EndLoc, ECollisionChannel::ECC_GameTraceChannel4,TraceParams);
 	if (Hit.bBlockingHit)
 	{
 		LaunchDirection = Hit.ImpactPoint - MuzzleLocation;

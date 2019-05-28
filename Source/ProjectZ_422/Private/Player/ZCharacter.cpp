@@ -8,8 +8,10 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZWeapon.h"
+#include "ZProjectile.h"
 #include "ZCharacterAnimInstance.h"
 #include "ZPlayerController.h"
+#include "ZCharacterStatusComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
@@ -50,6 +52,8 @@ AZCharacter::AZCharacter()
 		GetMesh()->SetAnimInstanceClass(ANIM_CHARACTER.Class);
 	}
 
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
+
 	// Create main camera spring arm.
 	MainCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("MainCameraSpringArm"));
 	MainCameraSpringArm->TargetArmLength = 200.f;
@@ -67,10 +71,13 @@ AZCharacter::AZCharacter()
 	// Create item status component.
 	ItemStatusComponent = CreateDefaultSubobject<UZCharacterItemStatusComponent>(TEXT("ItemStatusComponent"));
 	
+	// Create character status component
+	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
+	
 	// Set Character Properties
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch= true;
 	GetCharacterMovement()->JumpZVelocity = 700.f;
-
+	
 	bIsSprinting = false;
 	bIsAiming = false;
 	WalkSpeed = 500.f;
@@ -99,6 +106,7 @@ void AZCharacter::BeginPlay()
 	auto ZAnimInstance = Cast<UZCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	check(nullptr != ZAnimInstance);
 	AnimInstance = ZAnimInstance;
+	
 }
 
 // Called every frame
@@ -122,6 +130,8 @@ void AZCharacter::Tick(float DeltaTime)
 		InteractionActor = NewInteractionActor;
 
 	}
+
+	
 
 	//CheckCharacterRotation(DeltaTime);
 }
@@ -158,6 +168,25 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 
 
+}
+
+float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent PointDamage = static_cast<const FPointDamageEvent&>(DamageEvent);
+		ZLOG(Warning, TEXT("Hit at %s"), *PointDamage.HitInfo.BoneName.ToString());
+	}
+
+	StatusComponent->AdjustCurrentHP(-FinalDamage);
+	if (StatusComponent->IsDead())
+	{
+		ZLOG(Warning, TEXT("Dead!!"));
+	}
+
+	return FinalDamage;
 }
 
 FHitResult AZCharacter::GetTraceHit(const FVector & TraceStart, const FVector & TraceEnd)

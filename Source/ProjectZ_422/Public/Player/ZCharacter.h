@@ -26,6 +26,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, 
+		class AController* EventInstigator, class AActor* DamageCauser) override;
+
 public:
 	FHitResult GetTraceHit(const FVector& TraceStart, const FVector& TraceEnd);
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
@@ -136,5 +139,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
 	class UZCharacterItemStatusComponent* ItemStatusComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
+	class UZCharacterStatusComponent* StatusComponent;
 
 };

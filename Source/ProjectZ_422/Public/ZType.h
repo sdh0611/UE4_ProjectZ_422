@@ -17,6 +17,15 @@ class PROJECTZ_422_API UZType : public UObject
 	
 };
 
+/*
+	Physics material 관련 매크로
+*/
+#define SURFACE_HEAD SurfaceType1 
+#define SURFACE_BODY SurfaceType2
+/*
+	Mesh관련 데이터형
+*/
+
 USTRUCT(BlueprintType)
 struct FZStaticMeshData : public FTableRowBase
 {

@@ -2,11 +2,12 @@
 
 
 #include "ZProjectile.h"
+#include "ZCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "ConstructorHelpers.h"
-
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 // Sets default values
 AZProjectile::AZProjectile()
@@ -30,6 +31,8 @@ AZProjectile::AZProjectile()
 		ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
 	}	
 
+	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->InitialSpeed = 3000.f;
 	Movement->MaxSpeed = 3000.f;
@@ -39,6 +42,8 @@ AZProjectile::AZProjectile()
 
 	Damage = 10.f;
 	LifeSpan = 3.f;
+
+	PreLocation = FVector::ZeroVector;
 }
 
 // Called when the game starts or when spawned
@@ -47,13 +52,14 @@ void AZProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	SetLifeSpan(LifeSpan);
+	PreLocation = GetActorLocation();
 }
 
 // Called every frame
 void AZProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	TraceProjectile();
 }
 
 void AZProjectile::SetDamage(float NewDamage)
@@ -76,7 +82,39 @@ void AZProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor
 {
 	if (OtherActor != this)
 	{
-		ZLOG(Warning, TEXT("Hit at %s, Damage : %f"), *OtherActor->GetName(), Damage);
+		ZLOG_S(Warning);
+		Destroy();
+	}
+
+}
+
+void AZProjectile::TraceProjectile()
+{
+	FVector CurLocation = GetActorLocation();
+	FCollisionQueryParams CollisionParams(NAME_None, false, this);
+	CollisionParams.bReturnPhysicalMaterial = true;
+
+	FHitResult Hit;
+	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, ECollisionChannel::ECC_GameTraceChannel3, CollisionParams);
+	if (Hit.bBlockingHit)
+	{
+		auto Character = Cast<AZCharacter>(Hit.GetActor());
+		if (Character)
+		{		
+			FPointDamageEvent DamageEvent;
+			DamageEvent.HitInfo = Hit;
+			DamageEvent.ShotDirection = CurLocation - PreLocation;
+			DamageEvent.Damage = Damage;
+
+			UPhysicalMaterial* PhysicalMaterial = Hit.PhysMaterial.Get();
+			if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+			{
+				ZLOG(Error, TEXT("Headshot."));
+				DamageEvent.Damage *= 4.f;
+			}
+
+		Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
+		}
 		Destroy();
 	}
 

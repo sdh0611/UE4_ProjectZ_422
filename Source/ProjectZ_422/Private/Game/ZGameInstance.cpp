@@ -117,7 +117,7 @@ const FZRecoveryData * const UZGameInstance::GetRecoveryDataByName(const FString
 		}
 	}
 
-	return nullptr;;
+	return nullptr;
 }
 
 const FZDopingData * const UZGameInstance::GetDopingDataByRowIndex(int32 RowIndex)

@@ -27,7 +27,7 @@ UZCharacterItemStatusComponent::UZCharacterItemStatusComponent()
 	CurrentSizeOfItemList = 0;
 	MaxWeight = 100;
 	CurrentWeight = 0;
-	CurrentMoney = 0;
+	CurrentMoney = 500;
 	OwnerCharacter = nullptr;
 }
 
