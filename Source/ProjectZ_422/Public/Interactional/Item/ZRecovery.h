@@ -19,6 +19,7 @@ public:
 
 public:
 	virtual void InitItemData(const struct FZItemData* NewItemData) override;
+	virtual void OnUsed() override;
 
 private:
 	UPROPERTY(EditAnywhere, Category = Recovery)

@@ -7,7 +7,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-
+#include "Materials/Material.h"
 
 void UZShopSellItemWidget::NativeConstruct()
 {
@@ -16,6 +16,7 @@ void UZShopSellItemWidget::NativeConstruct()
 	auto NewItemImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_Item")));
 	check(nullptr != NewItemImage);
 	ItemImage = NewItemImage;
+	//ItemImage->SetBrushFromMaterial(Material);
 
 	auto NewItemName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Name")));
 	check(nullptr != NewItemName);

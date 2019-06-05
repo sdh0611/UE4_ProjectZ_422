@@ -108,15 +108,21 @@ public:
 	void SetIsEquipped(bool NewState);
 	void SetWantsToFire(bool NewState);
 	void SetIsReloading(bool NewState);
+	void SetCurrentAmmo(int32 NewAmmo);
+	void SetMaxAmmo(int32 NewAmmo);
+
 
 public:
 	int32 GetWeaponInventoryIndex() const;
 	bool IsEquipped() const;
 	bool IsWantsToFire() const;
 	bool IsReloading() const;
+	int32 GetCurrentAmmo() const;
+	int32 GetMaxAmmo() const;
 
-private:
-	void Fire();
+
+protected:
+	virtual void Fire();
 	bool CheckNeedToReload();
 
 public:

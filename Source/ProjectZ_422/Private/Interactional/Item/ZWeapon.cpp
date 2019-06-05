@@ -146,6 +146,7 @@ void AZWeapon::Reload()
 	ZLOG_S(Warning);
 
 	CurrentAmmo = MaxAmmo;
+	OnItemInfoChanged.Broadcast();
 }
 
 bool AZWeapon::IsCanReload() const
@@ -192,6 +193,17 @@ void AZWeapon::SetIsReloading(bool NewState)
 	bIsReloading = NewState;
 }
 
+void AZWeapon::SetCurrentAmmo(int32 NewAmmo)
+{
+	CurrentAmmo = FMath::Clamp<int32>(NewAmmo, 0, NewAmmo);
+
+}
+
+void AZWeapon::SetMaxAmmo(int32 NewAmmo)
+{
+	MaxAmmo = FMath::Clamp<int32>(NewAmmo, 0, NewAmmo);
+}
+
 int32 AZWeapon::GetWeaponInventoryIndex() const
 {
 	return WeaponInventoryIndex;
@@ -210,6 +222,16 @@ bool AZWeapon::IsWantsToFire() const
 bool AZWeapon::IsReloading() const
 {
 	return bIsReloading;
+}
+
+int32 AZWeapon::GetCurrentAmmo() const
+{
+	return CurrentAmmo;
+}
+
+int32 AZWeapon::GetMaxAmmo() const
+{
+	return MaxAmmo;
 }
 
 void AZWeapon::Fire()
@@ -274,6 +296,7 @@ void AZWeapon::Fire()
 	}
 
 	OnWeaponFired.Broadcast();
+	OnItemInfoChanged.Broadcast();
 
 	DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 1000.f, FColor::Red, false, 0.5f);
 }

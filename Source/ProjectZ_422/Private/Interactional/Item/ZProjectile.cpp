@@ -93,6 +93,7 @@ void AZProjectile::TraceProjectile()
 	FVector CurLocation = GetActorLocation();
 	FCollisionQueryParams CollisionParams(NAME_None, false, this);
 	CollisionParams.bReturnPhysicalMaterial = true;
+	CollisionParams.AddIgnoredActor(Instigator);
 
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, ECollisionChannel::ECC_GameTraceChannel3, CollisionParams);
@@ -113,7 +114,7 @@ void AZProjectile::TraceProjectile()
 				DamageEvent.Damage *= 4.f;
 			}
 
-		Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
+			Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
 		}
 		Destroy();
 	}

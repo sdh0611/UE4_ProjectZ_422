@@ -38,15 +38,20 @@ public:
 	void SetIsAiming(bool NewState);
 	void SetIsSwitchingWeapon(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
+	void SetCurrentSpeed(float NewSpeed);
+
 
 public:
 	bool IsSprinting();
 	bool IsEquipWeapon();
 	bool IsAiming();
 	bool IsSwitchingWeapon();
+	float GetCurrentSpeed() const;
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
+	class UZCharacterStatusComponent* const GetStatusComponent() const;
 	class AZWeapon* const GetCurrentWeapon();
+
 
 private:
 	void CheckCharacterRotation(float DeltaTime);
@@ -86,6 +91,8 @@ private:
 		µð¹ö±ë¿ë
 	*/
 	void AddMoney();
+	void DamageSelf();
+
 
 public:
 	static const FName MainWeaponSocketName;

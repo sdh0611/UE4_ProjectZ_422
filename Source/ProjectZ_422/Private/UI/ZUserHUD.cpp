@@ -4,6 +4,10 @@
 #include "ZUserHUD.h"
 #include "ZInventoryWidget.h"
 #include "ZShopWidget.h"
+#include "ZHPBarWidget.h"
+#include "ZCurrentWeaponInfoWidget.h"
+#include "ZCharacter.h"
+#include "ZCharacterStatusComponent.h"
 
 void UZUserHUD::NativeConstruct()
 {
@@ -17,6 +21,18 @@ void UZUserHUD::NativeConstruct()
 	check(nullptr != NewShopWidget);
 	ShopWidget = NewShopWidget;
 
+	auto NewHPBarWidget = Cast<UZHPBarWidget>(GetWidgetFromName(TEXT("UI_HPBar")));
+	check(nullptr != NewHPBarWidget);
+	HPBarWidget = NewHPBarWidget;
+
+	auto NewCurrnetWeaponInfoWidget = Cast<UZCurrentWeaponInfoWidget>(GetWidgetFromName(TEXT("UI_CurrentWeaponInfo")));
+	check(nullptr != NewCurrnetWeaponInfoWidget);
+	CurrentWeaponInfoWidget = NewCurrnetWeaponInfoWidget;
+
+	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
+	check(nullptr != Player);
+	HPBarWidget->BindStatus(Player->GetStatusComponent());
+	
 }
 
 void UZUserHUD::DrawInventoryWidget()
@@ -101,4 +117,9 @@ UZInventoryWidget * const UZUserHUD::GetInventoryWidget() const
 UZShopWidget * const UZUserHUD::GetShopWidget() const
 {
 	return ShopWidget;
+}
+
+UZCurrentWeaponInfoWidget * const UZUserHUD::GetCurrentWeaponInfoWidget() const
+{
+	return CurrentWeaponInfoWidget;
 }

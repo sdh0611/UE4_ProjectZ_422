@@ -2,6 +2,8 @@
 
 
 #include "ZRecovery.h"
+#include "ZCharacter.h"
+#include "ZCharacterStatusComponent.h"
 
 AZRecovery::AZRecovery()
 {
@@ -24,4 +26,11 @@ void AZRecovery::InitItemData(const FZItemData * NewItemData)
 	RecoveryAmount = NewRecoveryData->RecoveryAmount;
 	RecoveryDelay = NewRecoveryData->RecoveryDelay;
 
+}
+
+void AZRecovery::OnUsed()
+{
+	ItemOwner->GetStatusComponent()->AdjustCurrentHP(RecoveryAmount);
+
+	Super::OnUsed();
 }

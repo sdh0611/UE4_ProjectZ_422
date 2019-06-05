@@ -7,6 +7,7 @@
 #include "ZPlayerController.h"
 #include "ZHUD.h"
 #include "ZUserHUD.h"
+#include "ZCurrentWeaponInfoWidget.h"
 #include "ZWeapon.h"
 #include "ZProjectile.h"
 #include "ZCharacterAnimInstance.h"
@@ -165,6 +166,7 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	// For debug
 	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
+	PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);
 
 
 
@@ -246,14 +248,32 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		NewWeapon->OnWeaponFired.AddUObject(AnimInstance, &UZCharacterAnimInstance::PlayFireMontage);
 		//bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
+		// CurrentWeaponInfo widget에 바인딩
+		PlayerController->GetZHUD()->GetUserHUD()->GetCurrentWeaponInfoWidget()->BindWeapon(CurrentWeapon);
 	}
 	else
 	{
 		AnimInstance->SetIsEquipWeapon(false);
 		//bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
+		PlayerController->GetZHUD()->GetUserHUD()->GetCurrentWeaponInfoWidget()->ClearWidget();
 	}
 }
+
+void AZCharacter::SetCurrentSpeed(float NewSpeed)
+{
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed= NewSpeed;
+	}
+
+}
+
+
 
 bool AZCharacter::IsSprinting()
 {
@@ -273,6 +293,22 @@ bool AZCharacter::IsAiming()
 bool AZCharacter::IsSwitchingWeapon()
 {
 	return bIsSwitchingWeapon;
+}
+
+float AZCharacter::GetCurrentSpeed() const
+{
+	float CurrentSpeed = 0.f;
+
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+	}
+	else
+	{
+		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	}
+
+	return CurrentSpeed;
 }
 
 AZInteractional * AZCharacter::GetInteractionalInView()
@@ -300,6 +336,11 @@ AZInteractional * AZCharacter::GetInteractionalInView()
 UZCharacterItemStatusComponent * const AZCharacter::GetItemStatusComponent() const
 {
 	return ItemStatusComponent;
+}
+
+UZCharacterStatusComponent * const AZCharacter::GetStatusComponent() const
+{
+	return StatusComponent;
 }
 
 AZWeapon * const AZCharacter::GetCurrentWeapon()
@@ -704,4 +745,9 @@ void AZCharacter::AddMoney()
 	ZLOG_S(Warning);
 	ItemStatusComponent->AdjustMoney(500);
 
+}
+
+void AZCharacter::DamageSelf()
+{
+	StatusComponent->AdjustCurrentHP(-10.f);
 }

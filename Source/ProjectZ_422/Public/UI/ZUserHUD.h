@@ -40,6 +40,7 @@ public:
 	*/
 	class UZInventoryWidget* const GetInventoryWidget() const;
 	class UZShopWidget* const GetShopWidget() const;
+	class UZCurrentWeaponInfoWidget* const GetCurrentWeaponInfoWidget() const;
 
 private:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
@@ -54,5 +55,10 @@ private:
 	UPROPERTY()
 	class UZShopWidget* ShopWidget;
 
+	UPROPERTY()
+	class UZHPBarWidget* HPBarWidget;
+
+	UPROPERTY()
+	class UZCurrentWeaponInfoWidget* CurrentWeaponInfoWidget;
 
 };

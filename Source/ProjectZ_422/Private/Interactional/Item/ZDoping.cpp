@@ -2,6 +2,8 @@
 
 
 #include "ZDoping.h"
+#include "ZCharacter.h"
+#include "ZCharacterStatusComponent.h"
 
 AZDoping::AZDoping()
 {
@@ -21,4 +23,11 @@ void AZDoping::InitItemData(const FZItemData * NewItemData)
 	DopingAmount = NewDopingData->DopingAmount;
 	DopingTime = NewDopingData->DopingTime;
 
+}
+
+void AZDoping::OnUsed()
+{
+	ItemOwner->GetStatusComponent()->AdjustCurrentDopingGage(DopingAmount);
+
+	Super::OnUsed();
 }
