@@ -6,6 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "ZCharacterAnimInstance.generated.h"
 
+DECLARE_DELEGATE(FOnGrenadeThrow);
+
 /**
  * 
  */
@@ -22,15 +24,17 @@ public:
 
 public:
 	void PlayMontage(const FString& MontageName);
-	void PlayFireMontage();
+	void PlayFireRifleMontage();
+	void PlayThrowGrenadeMontage();
+	void BindFireMontage(class AZWeapon* NewWeapon);
 
 public:
-	void SetIsEquipWeapon(bool NewState);
+	void SetIsEquipGun(bool NewState);
 	void SetIsAiming(bool NewState);
 	void SetIsSprinting(bool NewState);
 
 public:
-	bool IsEquipWeapon() const;
+	bool IsEquipGun() const;
 	bool IsAiming() const;
 	bool IsSprinting() const;
 
@@ -43,6 +47,12 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_SwitchEndCheck();
+
+	UFUNCTION()
+	void AnimNotify_ThrowCheck();
+
+public:
+	FOnGrenadeThrow OnGrenadeThrow;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
@@ -64,13 +74,19 @@ private:
 	bool bIsCrouching;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
-	bool bIsEquipWeapon;
+	bool bIsEquipGun;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsAiming;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsSprinting;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	class AZCharacter* OwnerCharacter;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	class UAnimMontage* CurrentPlayMontage;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Montage, Meta = (AllowPrivateAccess = true))

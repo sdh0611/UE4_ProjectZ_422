@@ -3,6 +3,7 @@
 
 #include "ZCurrentWeaponInfoWidget.h"
 #include "ZWeapon.h"
+#include "ZGun.h"
 #include "Components/TextBlock.h"
 
 void UZCurrentWeaponInfoWidget::NativeConstruct()
@@ -38,13 +39,38 @@ void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
 
 	WeaponName->SetText(FText::FromString(Weapon->GetItemName()));
 
-	CurrentAmmo->SetText(FText::FromString(FString::FromInt(Weapon->GetCurrentAmmo())));
+	switch (NewWeapon->GetWeaponCategory())
+	{
+		case EWeaponCategory::Gun:
+		{
+			auto Gun = Cast<AZGun>(NewWeapon);
 
-	MaxAmmo->SetText(FText::FromString(FString::FromInt(Weapon->GetMaxAmmo())));
+			CurrentAmmo->SetText(FText::FromString(FString::FromInt(Gun->GetCurrentAmmo())));
+			MaxAmmo->SetText(FText::FromString(FString::FromInt(Gun->GetMaxAmmo())));
+			break;
+		}
+		case EWeaponCategory::Grenade:
+		{
+			FText Text = FText::FromString(FString::FromInt(NewWeapon->GetCurrentQuantityOfItem()));
+			CurrentAmmo->SetText(Text);
+			MaxAmmo->SetText(Text);
+			break;
+		}
+		case EWeaponCategory::Knife:
+		{
+			CurrentAmmo->SetText(FText::GetEmpty());
+			MaxAmmo->SetText(FText::GetEmpty());
+			break;
+		}
+		default:
+		{
+			ZLOG(Error, TEXT("Invalid category."));
+			break;
+		}
+	}
 
 	Weapon->OnItemInfoChanged.AddUObject(this, &UZCurrentWeaponInfoWidget::UpdateWidget);
 	Weapon->OnItemRemoved.AddUObject(this, &UZCurrentWeaponInfoWidget::ClearWidget);
-
 }
 
 void UZCurrentWeaponInfoWidget::UpdateWidget()
@@ -55,7 +81,31 @@ void UZCurrentWeaponInfoWidget::UpdateWidget()
 		return;
 	}
 
-	CurrentAmmo->SetText(FText::FromString(FString::FromInt(Weapon->GetCurrentAmmo())));
+	switch (Weapon->GetWeaponCategory())
+	{
+		case EWeaponCategory::Gun:
+		{
+			auto Gun = Cast<AZGun>(Weapon);
+			CurrentAmmo->SetText(FText::FromString(FString::FromInt(Gun->GetCurrentAmmo())));
+			break;
+		}
+		case EWeaponCategory::Grenade:
+		{
+			FText Text = FText::FromString(FString::FromInt(Weapon->GetCurrentQuantityOfItem()));
+			CurrentAmmo->SetText(Text);
+			MaxAmmo->SetText(Text);
+			break;
+		}
+		case EWeaponCategory::Knife:
+		{
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+
 }
 
 void UZCurrentWeaponInfoWidget::ClearWidget()

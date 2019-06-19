@@ -4,3 +4,4 @@ Name,ItemName,ItemPrice,ItemExplanation,ItemType,ItemImagePath
 3,Bandage,2,RecoveryHealth 10points.,Recovery,
 4,FirstkitAid,20,Recovery health 70points.,Recovery,
 5,Doping,2,Doping 30points,Doping,
+6,Grenade,30,This is Grenade,Weapon,

@@ -10,6 +10,8 @@
 #include "ZShopWidget.h"
 #include "ZGameInstance.h"
 #include "ZWeapon.h"
+#include "ZGun.h"
+#include "ZGrenade.h"
 #include "ZRecovery.h"
 #include "ZDoping.h"
 #include "Components/StaticMeshComponent.h"
@@ -105,8 +107,35 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 	{
 		case EItemType::Weapon:
 		{
-			SpawnItemClass = WeaponClass;
+			
+			//SpawnItemClass = WeaponClass;
 			ItemData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
+			auto WeaponData = static_cast<const FZWeaponData*>(ItemData);
+			switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
+			{
+				case EWeaponCategory::Gun:
+				{
+					SpawnItemClass = AZGun::StaticClass();
+					break;
+				}
+				case EWeaponCategory::Knife:
+				{
+					 //SpawnItemClass = AZKnife::StaticClass();
+					break;
+				}
+				case EWeaponCategory::Grenade:
+				{
+					ZLOG(Error, TEXT("Buy Grenade."));
+					SpawnItemClass = AZGrenade::StaticClass();
+					break;
+				}
+				default:
+				{
+					ZLOG(Error, TEXT("Invalid type."));
+					return;
+				}
+			}
+
 			break;
 		}
 		case EItemType::Recovery:
@@ -140,6 +169,8 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 		ZLOG(Error, TEXT("Invalid item data."));
 		return;
 	}
+	ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
+
 	NewItem->InitItemData(ItemData);
 	NewItem->SetCurrentQuantityOfItem(Quantity);
 	ItemStatusComponent->AddItem(NewItem);

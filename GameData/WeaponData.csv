@@ -1,3 +1,4 @@
-Name,Damage,FireDelay,MaxAmmo,WeaponType,ItemName,ItemWeight
-1,10,0.07,30,AR,M4A1,0
-2,20,0.13,30,AR,AK-47,0
+Name,Damage,FireDelay,MaxAmmo,ExplosionRadius,WeaponCategory,WeaponType,ItemName,ItemWeight
+1,10,0.07,30,0,Gun,AR,M4A1,0
+2,20,0.13,30,0,Gun,AR,AK-47,0
+3,100,5,0,100,Grenade,Grenade,Grenade,0

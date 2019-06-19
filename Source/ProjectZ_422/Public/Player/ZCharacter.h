@@ -51,7 +51,7 @@ public:
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
 	class UZCharacterStatusComponent* const GetStatusComponent() const;
 	class AZWeapon* const GetCurrentWeapon();
-
+	class UZCharacterAnimInstance* const GetCharacterAnimInstance();
 
 private:
 	void CheckCharacterRotation(float DeltaTime);
@@ -86,6 +86,7 @@ private:
 	void SwitchWeapon(int32 NewWeaponIndex);
 	void Slot1();
 	void Slot2();
+	void Slot4();
 
 	/*
 		µð¹ö±ë¿ë
@@ -97,6 +98,8 @@ private:
 public:
 	static const FName MainWeaponSocketName;
 	static const FName SecondaryWeaponSocketName;
+	static const FName ThirdWeaponSocketName;
+	static const FName GrenadeWeaponSocketName;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = State)
@@ -129,7 +132,7 @@ private:
 	UPROPERTY()
 	class AZPlayerController* PlayerController;
 
-	UPROPERTY(VisibleAnywhere, Category = Character)
+	UPROPERTY(VisibleAnywhere, Category = Character, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	class AZWeapon* CurrentWeapon;
 
 	UPROPERTY(VisibleAnywhere, Category = Character)

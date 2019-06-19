@@ -14,4 +14,31 @@ class PROJECTZ_422_API AZGrenade : public AZWeapon
 {
 	GENERATED_BODY()
 	
+public:
+	AZGrenade();
+
+public:
+	virtual void Tick(float DeltaTime) override;
+	virtual void InitItemData(const FZItemData* const NewItemData) override;
+	virtual void Fire() override;
+
+public:
+	/*
+		AnimMontage의 애님 노티파이 타이밍에 실행될 메소드.
+	*/
+	void ThrowGrenade();
+
+public:
+	void SetIsThrown(bool NewState);
+
+public:
+	bool IsThrown() const;
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = Grenade)
+	bool bIsThrown;
+
+	UPROPERTY(EditAnywhere, Category = Grenade)
+	float ExplosionRadius;
+
 };

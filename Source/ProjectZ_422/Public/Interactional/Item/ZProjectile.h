@@ -25,27 +25,27 @@ public:
 
 public:
 	void SetDamage(float NewDamage);
-	void FireInDirection(const FVector& Direction);
+	virtual void FireInDirection(const FVector& Direction);
 
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, 
+	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, 
 		FVector NormalImpulse, const FHitResult& Hit);
 
-private:
-	void TraceProjectile();
+protected:
+	TSubclassOf<class UDamageType> DamageType;
 
-private:
-	FVector PreLocation;
-
-private:
-	UPROPERTY(VisibleAnywhere, Category = Projectile)
-	class USphereComponent* Sphere;
+protected:
+	//UPROPERTY(VisibleAnywhere, Category = Projectile)
+	//class USphereComponent* Sphere;
 
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	class UStaticMeshComponent* ProjectileMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	class UProjectileMovementComponent* Movement;
+
+	UPROPERTY(VisibleAnywhere, Category = Projectile)
+	class URadialForceComponent* RadialForce;
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	float Damage;

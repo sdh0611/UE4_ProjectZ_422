@@ -67,7 +67,7 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 			if (NewItem->GetItemType() == EItemType::Weapon)
 			{
 				ZLOG(Warning, TEXT("%s"), *Name);
-				Cast<AZWeapon>(NewItem)->InitWeaponData(Cast<UZGameInstance>(GetGameInstance())->GetWeaponDataByName(Name));
+				Cast<AZWeapon>(NewItem)->InitItemData(Cast<UZGameInstance>(GetGameInstance())->GetWeaponDataByName(Name));
 			}
 			// Add item in character's item status component.
 			NewCharacter->GetItemStatusComponent()->AddItem(NewItem, this);

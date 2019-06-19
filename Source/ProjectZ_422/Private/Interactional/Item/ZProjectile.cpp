@@ -15,35 +15,24 @@ AZProjectile::AZProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-	Sphere->InitSphereRadius(5.f);
-	Sphere->OnComponentHit.AddDynamic(this, &AZProjectile::OnHit);
-	RootComponent = Sphere;
+	//Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	//Sphere->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
+	//Sphere->InitSphereRadius(4.f);
+	//Sphere->OnComponentHit.AddDynamic(this, &AZProjectile::OnHit);
+	//RootComponent = Sphere;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-	ProjectileMesh->SetupAttachment(Sphere);
-	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		SM_PROJECTILE(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/Ammunition/SM_Shell_556x45.SM_Shell_556x45'"));
-	if (SM_PROJECTILE.Succeeded())
-	{
-		ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
-	}	
+	//ProjectileMesh->SetupAttachment(Sphere);
+	RootComponent = ProjectileMesh;
 
-	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
-	Movement->InitialSpeed = 3000.f;
 	Movement->MaxSpeed = 3000.f;
 	Movement->bRotationFollowsVelocity = true;
-	// Code for test
-	Movement->ProjectileGravityScale = 0.f;
 
 	Damage = 10.f;
 	LifeSpan = 3.f;
 
-	PreLocation = FVector::ZeroVector;
 }
 
 // Called when the game starts or when spawned
@@ -51,15 +40,12 @@ void AZProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetLifeSpan(LifeSpan);
-	PreLocation = GetActorLocation();
 }
 
 // Called every frame
 void AZProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	TraceProjectile();
 }
 
 void AZProjectile::SetDamage(float NewDamage)
@@ -75,49 +61,15 @@ void AZProjectile::SetDamage(float NewDamage)
 
 void AZProjectile::FireInDirection(const FVector & Direction)
 {
-	Movement->Velocity = Direction * Movement->InitialSpeed;
+
 }
 
 void AZProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
 {
-	if (OtherActor != this)
-	{
+	//if (OtherActor != this)
+	//{
 		ZLOG_S(Warning);
-		Destroy();
-	}
+	//	Destroy();
+	//}
 
 }
-
-void AZProjectile::TraceProjectile()
-{
-	FVector CurLocation = GetActorLocation();
-	FCollisionQueryParams CollisionParams(NAME_None, false, this);
-	CollisionParams.bReturnPhysicalMaterial = true;
-	CollisionParams.AddIgnoredActor(Instigator);
-
-	FHitResult Hit;
-	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, ECollisionChannel::ECC_GameTraceChannel3, CollisionParams);
-	if (Hit.bBlockingHit)
-	{
-		auto Character = Cast<AZCharacter>(Hit.GetActor());
-		if (Character)
-		{		
-			FPointDamageEvent DamageEvent;
-			DamageEvent.HitInfo = Hit;
-			DamageEvent.ShotDirection = CurLocation - PreLocation;
-			DamageEvent.Damage = Damage;
-
-			UPhysicalMaterial* PhysicalMaterial = Hit.PhysMaterial.Get();
-			if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
-			{
-				ZLOG(Error, TEXT("Headshot."));
-				DamageEvent.Damage *= 4.f;
-			}
-
-			Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
-		}
-		Destroy();
-	}
-
-}
-

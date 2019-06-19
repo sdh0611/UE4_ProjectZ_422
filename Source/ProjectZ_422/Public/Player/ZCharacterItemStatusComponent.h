@@ -12,6 +12,14 @@ class PROJECTZ_422_API UZCharacterItemStatusComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	enum EWeaponSlot : uint8
+	{
+		Main1 = 0,
+		Main2,
+		Knife,
+		Grenade
+	};
+
 public:	
 	// Sets default values for this component's properties
 	UZCharacterItemStatusComponent();
@@ -93,6 +101,7 @@ private:
 	/*
 		WepaonInventory에 들어갈 Item들을 관리하는 컨테이너.
 		ItemList와 포인터 공유
+		[Gun1] [Gun2] [Knife] [Grenade]
 	*/
 	UPROPERTY(VisibleAnywhere, Category = ItemStatus)
 	TArray<class AZWeapon*> WeaponInventory;

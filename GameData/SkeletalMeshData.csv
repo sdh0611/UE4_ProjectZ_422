@@ -1,5 +1,4 @@
 ,Name,SkeletalMeshPath
 1,M4A1,SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SK_AR4.SK_AR4'
 2,AK-47,SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SK_KA47.SK_KA47'
-3,Recovery,
-4,Doping,
+3,Grenade,SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade/SK_G67.SK_G67'

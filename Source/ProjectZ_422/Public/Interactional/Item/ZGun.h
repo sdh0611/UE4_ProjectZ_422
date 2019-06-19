@@ -21,8 +21,44 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-protected:
-	virtual void Fire();
+public:
+	virtual void InitItemData(const FZItemData* const NewItemData) override;
+	virtual void Fire() override;
+	virtual void FireEnd() override;
 
+public:
+	void Reload();
+
+public:
+	void SetIsReloading(bool NewState);
+	void SetCurrentAmmo(int32 NewAmmo);
+	void SetMaxAmmo(int32 NewAmmo);
+	void SetWantsToFire(bool NewState);
+
+public:
+	bool IsCanReload() const;
+	bool IsReloading() const;
+	bool IsWantsToFire() const;
+	int32 GetCurrentAmmo() const;
+	int32 GetMaxAmmo() const;
+
+protected:
+	bool CheckNeedToReload();
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bIsReloading;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bWantsToFire;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	int32 CurrentAmmo;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	int32 MaxAmmo;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float FireTimer;
 
 };

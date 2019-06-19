@@ -4,6 +4,7 @@
 #include "ZCharacterAnimInstance.h"
 #include "ZCharacter.h"
 #include "ZWeapon.h"
+#include "ZGun.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ConstructorHelpers.h"
 
@@ -15,7 +16,7 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 	AimPitch = 0.f;
 	bIsFalling = false;
 	bIsCrouching = false;
-	bIsEquipWeapon = false;
+	bIsEquipGun= false;
 	bIsAiming = false;
 	bIsSprinting = false;
 
@@ -47,8 +48,8 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 		MontageTable.Add(TEXT("EquipRifle"), MONTAGE_EQUIP_RIFLE.Object);
 	}
 
-
-
+	OwnerCharacter = nullptr;
+	CurrentPlayMontage = nullptr;
 }
 
 void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -82,7 +83,19 @@ void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		{
 			bIsFalling = Character->GetCharacterMovement()->IsFalling();
 			bIsCrouching = Character->GetCharacterMovement()->IsCrouching();
+			//if (nullptr == Character->GetCurrentWeapon())
+			//{
+			//	if (CurrentPlayMontage)
+			//	{
+			//		if (!Montage_IsPlaying(CurrentPlayMontage))
+			//		{
+			//			SetIsEquipWeapon(false);
+			//		}
+			//	}
+			//}
+
 		}
+
 	}
 }
 
@@ -90,15 +103,18 @@ void UZCharacterAnimInstance::PlayMontage(const FString & MontageName)
 {
 	if (!MontageTable.Contains(MontageName))
 	{
+		ZLOG(Error, TEXT("No montage %s"), *MontageName);
 		return;
 	}
-	MontageTable[MontageName];
-
+	ZLOG(Error, TEXT("Play Montage : %s"), *MontageName);
+	CurrentPlayMontage = MontageTable[MontageName];
+	
 	Montage_Play(MontageTable[MontageName]);
 }
 
-void UZCharacterAnimInstance::PlayFireMontage()
+void UZCharacterAnimInstance::PlayFireRifleMontage()
 {
+	
 	if (IsAiming())
 	{
 		PlayMontage(TEXT("FireRifleAim"));
@@ -109,10 +125,69 @@ void UZCharacterAnimInstance::PlayFireMontage()
 	}
 }
 
-void UZCharacterAnimInstance::SetIsEquipWeapon(bool NewState)
+void UZCharacterAnimInstance::PlayThrowGrenadeMontage()
 {
-	bIsEquipWeapon = NewState;
+	/*
+		해당 애니메이션은 Anim Blueprint에서 추가해줬음.
+	*/
+	ZLOG_S(Error);
+	PlayMontage(TEXT("ThrowGrenade"));
 }
+
+void UZCharacterAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
+{
+	switch (NewWeapon->GetWeaponType())
+	{
+		case EWeaponType::Pistol:
+		{
+			/*
+				권총류
+				->임시로 라이플 애니메이션으로 바인딩
+			*/
+			//NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayFireRifleMontage);
+			break;
+		}
+		case EWeaponType::Knife:
+		{
+			/*
+				근접무기
+				->임시로 라이플 애니메이션으로 바인딩
+			*/
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayFireRifleMontage);
+
+			break;
+		}
+		case EWeaponType::Grenade:
+		{
+			/*
+				투척물
+			*/
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayThrowGrenadeMontage);
+			break;
+		}
+		case EWeaponType::Invalid:
+		{
+			ZLOG(Error, TEXT("Invalid type."));
+			return;
+		}
+		default:
+		{
+			/*
+				라이플류
+			*/
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayFireRifleMontage);
+			break;
+		}
+
+	}
+
+}
+
+void UZCharacterAnimInstance::SetIsEquipGun(bool NewState)
+{
+	bIsEquipGun= NewState;
+}
+
 
 void UZCharacterAnimInstance::SetIsAiming(bool NewState)
 {
@@ -124,10 +199,11 @@ void UZCharacterAnimInstance::SetIsSprinting(bool NewState)
 	bIsSprinting = NewState;
 }
 
-bool UZCharacterAnimInstance::IsEquipWeapon() const
+bool UZCharacterAnimInstance::IsEquipGun() const
 {
-	return bIsEquipWeapon;
+	return bIsEquipGun;
 }
+
 
 bool UZCharacterAnimInstance::IsAiming() const
 {
@@ -146,7 +222,7 @@ void UZCharacterAnimInstance::AnimNotify_ReloadCheck()
 	{
 		auto Player = Cast<AZCharacter>(Pawn);
 		check(nullptr != Player);
-		Player->GetCurrentWeapon()->Reload();
+		Cast<AZGun>(Player->GetCurrentWeapon())->Reload();
 
 	}
 }
@@ -162,5 +238,13 @@ void UZCharacterAnimInstance::AnimNotify_SwitchEndCheck()
 	if (::IsValid(Pawn))
 	{
 		Cast<AZCharacter>(Pawn)->SetIsSwitchingWeapon(false);
+	}
+}
+
+void UZCharacterAnimInstance::AnimNotify_ThrowCheck()
+{
+	if (OnGrenadeThrow.IsBound())
+	{
+		OnGrenadeThrow.Execute();
 	}
 }

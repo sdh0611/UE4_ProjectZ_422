@@ -101,7 +101,8 @@ struct FZWeaponData : public FZItemData
 
 public:
 	FZWeaponData()
-		: FZItemData(), Damage(0.f), FireDelay(1.f), MaxAmmo(30), WeaponType(TEXT("Default"))
+		: FZItemData(), Damage(0.f), FireDelay(1.f), MaxAmmo(30), ExplosionRadius(0.f), 
+		WeaponCategory(TEXT("Invalid")), WeaponType(TEXT("Default"))
 	{
 	}
 
@@ -113,6 +114,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	int32 MaxAmmo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float ExplosionRadius;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString WeaponCategory;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString WeaponType;
