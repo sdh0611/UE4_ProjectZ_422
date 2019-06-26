@@ -4,10 +4,11 @@
 
 #include "ProjectZ_422.h"
 #include "GameFramework/Character.h"
+#include "ZBaseCharacter.h"
 #include "ZCharacter.generated.h"
 
 UCLASS()
-class PROJECTZ_422_API AZCharacter : public ACharacter
+class PROJECTZ_422_API AZCharacter : public AZBaseCharacter
 {
 	GENERATED_BODY()
 
@@ -26,32 +27,28 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, 
-		class AController* EventInstigator, class AActor* DamageCauser) override;
+	//virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, 
+	//	class AController* EventInstigator, class AActor* DamageCauser) override;
 
 public:
-	FHitResult GetTraceHit(const FVector& TraceStart, const FVector& TraceEnd);
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
 
 public:
-	void SetIsSprinting(bool NewState);
 	void SetIsAiming(bool NewState);
 	void SetIsSwitchingWeapon(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
-	void SetCurrentSpeed(float NewSpeed);
+	virtual void SetCurrentSpeed(float NewSpeed) override;
 
 
 public:
-	bool IsSprinting();
 	bool IsEquipWeapon();
 	bool IsAiming();
 	bool IsSwitchingWeapon();
 	float GetCurrentSpeed() const;
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
-	class UZCharacterStatusComponent* const GetStatusComponent() const;
 	class AZWeapon* const GetCurrentWeapon();
-	class UZCharacterAnimInstance* const GetCharacterAnimInstance();
+	class UZPlayerAnimInstance* const GetCharacterAnimInstance();
 
 private:
 	void CheckCharacterRotation(float DeltaTime);
@@ -101,10 +98,7 @@ public:
 	static const FName ThirdWeaponSocketName;
 	static const FName GrenadeWeaponSocketName;
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = State)
-	bool bIsSprinting;
-	
+private:	
 	UPROPERTY(VisibleAnywhere, Category = State)
 	bool bIsAiming;
 
@@ -112,13 +106,7 @@ private:
 	bool bIsSwitchingWeapon;
 
 	UPROPERTY(EditAnywhere, Category = Stat)
-	float WalkSpeed;
-
-	UPROPERTY(EditAnywhere, Category = Stat)
 	float WalkSpeedCrouched;
-
-	UPROPERTY(EditAnywhere, Category = Stat)
-	float SprintSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Stat)
 	float AimingWalkSpeed;
@@ -135,8 +123,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Character, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	class AZWeapon* CurrentWeapon;
 
-	UPROPERTY(VisibleAnywhere, Category = Character)
-	class UZCharacterAnimInstance* AnimInstance;
+	//UPROPERTY(VisibleAnywhere, Category = Character)
+	//class UZCharacterAnimInstance* AnimInstance;
 
 	FRotator Rotate;
 
@@ -150,7 +138,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
 	class UZCharacterItemStatusComponent* ItemStatusComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
-	class UZCharacterStatusComponent* StatusComponent;
+	//UPROPERTY(VisibleAnywhere, Category = ZCharacter)
+	//class UZCharacterStatusComponent* StatusComponent;
 
 };

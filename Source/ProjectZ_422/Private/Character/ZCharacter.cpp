@@ -13,6 +13,7 @@
 #include "ZGrenade.h"
 #include "ZProjectile.h"
 #include "ZCharacterAnimInstance.h"
+#include "ZPlayerAnimInstance.h"
 #include "ZPlayerController.h"
 #include "ZCharacterStatusComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -76,8 +77,8 @@ AZCharacter::AZCharacter()
 	// Create item status component.
 	ItemStatusComponent = CreateDefaultSubobject<UZCharacterItemStatusComponent>(TEXT("ItemStatusComponent"));
 	
-	// Create character status component
-	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
+	//// Create character status component
+	//StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
 	
 	// Set Character Properties
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch= true;
@@ -177,38 +178,25 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
-{
-	ZLOG_S(Warning);
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
-	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
-	{
-		FPointDamageEvent PointDamage = static_cast<const FPointDamageEvent&>(DamageEvent);
-		ZLOG(Warning, TEXT("Hit at %s"), *PointDamage.HitInfo.BoneName.ToString());
-	}
-
-	StatusComponent->AdjustCurrentHP(-FinalDamage);
-	if (StatusComponent->IsDead())
-	{
-		ZLOG(Warning, TEXT("Dead!!"));
-	}
-
-	return FinalDamage;
-}
-
-FHitResult AZCharacter::GetTraceHit(const FVector & TraceStart, const FVector & TraceEnd)
-{
-	FCollisionQueryParams TraceParams;
-	TraceParams.bTraceComplex = false;
-	TraceParams.bReturnPhysicalMaterial = false;
-	TraceParams.AddIgnoredActor(this);
-
-	FHitResult Hit;
-	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
-
-	return Hit;
-}
+//float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+//{
+//	ZLOG_S(Warning);
+//	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+//	
+//	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+//	{
+//		FPointDamageEvent PointDamage = static_cast<const FPointDamageEvent&>(DamageEvent);
+//		ZLOG(Warning, TEXT("Hit at %s"), *PointDamage.HitInfo.BoneName.ToString());
+//	}
+//
+//	StatusComponent->AdjustCurrentHP(-FinalDamage);
+//	if (StatusComponent->IsDead())
+//	{
+//		ZLOG(Warning, TEXT("Dead!!"));
+//	}
+//
+//	return FinalDamage;
+//}
 
 FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
 {
@@ -221,11 +209,6 @@ FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
 	const FVector TraceEnd = TraceStart + (Direction * Distance);
 
 	return GetTraceHit(TraceStart, TraceEnd);
-}
-
-void AZCharacter::SetIsSprinting(bool NewState)
-{
-	bIsSprinting = NewState;
 }
 
 void AZCharacter::SetIsAiming(bool NewState)
@@ -241,23 +224,34 @@ void AZCharacter::SetIsSwitchingWeapon(bool NewState)
 void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 {
 	ZLOG_S(Warning);
+	/* AnimInstance 체크 */
+	auto CharacterAnim = GetCharacterAnimInstance();
+	check(CharacterAnim != nullptr);
+
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->SetIsEquipped(false);
+		/*
+			장착하고 있는 Weapon이 바뀔 때 마다 AnimInstance와 관련된 Delegate를 전부 비워줌.
+			RemoveAll의 코스트가 어느 정도인지 모르기때문에 가능하다면 바꾸는걸로
+		*/
+		CurrentWeapon->OnWeaponFired.RemoveAll(CharacterAnim);
 	}
 
 	CurrentWeapon = NewWeapon;
+
 	if (NewWeapon)
 	{
 		NewWeapon->SetIsEquipped(true);
 		/*
 			WeaponCategory가 Gun인 경우에만 AnimInstance에 값 설정.
 		*/
+
 		if (EWeaponCategory::Gun == NewWeapon->GetWeaponCategory())
 		{
-			AnimInstance->SetIsEquipGun(true);
+			CharacterAnim->SetIsEquipGun(true);
 		}
-		AnimInstance->BindFireMontage(NewWeapon);
+		CharacterAnim->BindFireMontage(NewWeapon);
 		//bUseControllerRotationYaw = true;
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		// CurrentWeaponInfo widget에 바인딩
@@ -265,7 +259,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 	}
 	else
 	{
-		AnimInstance->SetIsEquipGun(false);
+		CharacterAnim->SetIsEquipGun(false);
 		//bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		PlayerController->GetZHUD()->GetUserHUD()->GetCurrentWeaponInfoWidget()->ClearWidget();
@@ -283,13 +277,6 @@ void AZCharacter::SetCurrentSpeed(float NewSpeed)
 		GetCharacterMovement()->MaxWalkSpeed= NewSpeed;
 	}
 
-}
-
-
-
-bool AZCharacter::IsSprinting()
-{
-	return bIsSprinting;
 }
 
 bool AZCharacter::IsEquipWeapon()
@@ -350,19 +337,14 @@ UZCharacterItemStatusComponent * const AZCharacter::GetItemStatusComponent() con
 	return ItemStatusComponent;
 }
 
-UZCharacterStatusComponent * const AZCharacter::GetStatusComponent() const
-{
-	return StatusComponent;
-}
-
 AZWeapon * const AZCharacter::GetCurrentWeapon()
 {
 	return CurrentWeapon;
 }
 
-UZCharacterAnimInstance * const AZCharacter::GetCharacterAnimInstance()
+UZPlayerAnimInstance * const AZCharacter::GetCharacterAnimInstance()
 {
-	return AnimInstance;
+	return Cast<UZPlayerAnimInstance>(AnimInstance);
 }
 
 void AZCharacter::CheckCharacterRotation(float DeltaTime)
@@ -486,7 +468,9 @@ void AZCharacter::Sprint()
 			// SprintSpeed로 값을 변경하고 Sprint 상태 변경
 			MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
 			SetIsSprinting(true);
-			AnimInstance->SetIsSprinting(true);
+			auto CharacterAnim = GetCharacterAnimInstance();
+			check(nullptr != CharacterAnim);
+			CharacterAnim->SetIsSprinting(true);
 			//bUseControllerRotationYaw = false
 		}
 
@@ -505,7 +489,10 @@ void AZCharacter::SprintRelease()
 			// WalkSpeed로 값을 변경하고 Sprint 상태 변경
 			MyCharacterMovement->MaxWalkSpeed = WalkSpeed;
 			SetIsSprinting(false);
-			AnimInstance->SetIsSprinting(false);
+
+			auto CharacterAnim = GetCharacterAnimInstance();
+			check(nullptr != CharacterAnim);
+			CharacterAnim->SetIsSprinting(false);
 			//if (IsEquipWeapon())
 			//{
 			//	bUseControllerRotationYaw = true
@@ -667,6 +654,7 @@ void AZCharacter::Attack()
 
 	//CurrentWeapon->SetWantsToFire(true);
 	CurrentWeapon->Fire();
+	//GetCharacterAnimInstance()->PlayFireMontage(CurrentWeapon);
 }
 
 void AZCharacter::AttackEnd()
@@ -739,7 +727,9 @@ void AZCharacter::Aim()
 	}
 
 	SetIsAiming(true);
-	AnimInstance->SetIsAiming(true);
+	auto CharacterAnim = GetCharacterAnimInstance();
+	check(nullptr != CharacterAnim);
+	CharacterAnim->SetIsAiming(true);
 }
 
 void AZCharacter::AimRelease()
@@ -753,7 +743,9 @@ void AZCharacter::AimRelease()
 		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	}
 	SetIsAiming(false);
-	AnimInstance->SetIsAiming(false);
+	auto CharacterAnim = GetCharacterAnimInstance();
+	check(nullptr != CharacterAnim); 
+	CharacterAnim->SetIsAiming(false);
 }
 
 void AZCharacter::Reload()
@@ -803,7 +795,9 @@ void AZCharacter::Reload()
 		}
 
 		Weapon->SetIsReloading(true);
-		AnimInstance->PlayMontage(TEXT("ReloadRifle"));
+		auto CharacterAnim = GetCharacterAnimInstance();
+		check(nullptr != CharacterAnim);
+		CharacterAnim->PlayMontage(TEXT("ReloadRifle"));
 
 	}
 
@@ -902,6 +896,8 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	}
 
 	SetCurrentWeapon(ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex));
+	auto CharacterAnim = GetCharacterAnimInstance();
+	check(nullptr != CharacterAnim);
 	switch (CurrentWeapon->GetWeaponCategory())
 	{
 		case EWeaponCategory::Gun:
@@ -916,7 +912,7 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 				return;
 			}
 			// Gun이므로 true 셋팅
-			AnimInstance->SetIsEquipGun(true);
+			CharacterAnim->SetIsEquipGun(true);
 
 			break;
 		}
@@ -927,12 +923,12 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 			*/
 			ZLOG_S(Warning);
 			// Gun이 아니므로 false 셋팅
-			AnimInstance->SetIsEquipGun(false);
+			CharacterAnim->SetIsEquipGun(false);
 			// OnGrenadeThrow에 바인딩.
 			auto Grenade = Cast<AZGrenade>(CurrentWeapon);
 			check(nullptr != Grenade);
 			ZLOG(Error, TEXT("Bind ThrowGrenade"));
-			AnimInstance->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
+			CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
 
 			break;
 		}
@@ -940,7 +936,7 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	// 새 Weapon은 Main socket으로 옮김.
 	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, MainWeaponSocketName);
 	SetIsSwitchingWeapon(true);
-	AnimInstance->PlayMontage(TEXT("EquipRifle"));
+	CharacterAnim->PlayMontage(TEXT("EquipRifle"));
 
 }
 

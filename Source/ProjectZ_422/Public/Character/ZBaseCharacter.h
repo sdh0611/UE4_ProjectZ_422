@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectZ_422.h"
 #include "GameFramework/Character.h"
 #include "ZBaseCharacter.generated.h"
 
@@ -32,8 +32,6 @@ public:
 public:
 	FHitResult GetTraceHit(const FVector& TraceStart, const FVector& TraceEnd);
 
-	FHitResult GetTraceHitFromActorCameraView(float Distance);
-
 public:
 	void SetIsSprinting(bool NewState);
 
@@ -47,16 +45,14 @@ public:
 	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
 	virtual float GetCurrentSpeed() const;
 
-	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
-
 	class UZCharacterStatusComponent* const GetStatusComponent() const;
 
-	class UZCharacterAnimInstance* const GetCharacterAnimInstance();
+	class UAnimInstance* const GetAnimInstance();
 
-private:
+protected:
 	void CheckCharacterRotation(float DeltaTime);
 
-private:
+protected:
 	UPROPERTY(VisibleAnywhere, Category = State)
 	bool bIsSprinting;
 
@@ -68,14 +64,11 @@ private:
 
 	/* AnimInstance는 캐릭터마다 다르므로 파생 클래스의 BeginPlay에서 초기화 해줄 것. */
 	UPROPERTY(VisibleAnywhere, Category = Character)
-	class UZCharacterAnimInstance* AnimInstance;
+	class UAnimInstance* AnimInstance;
 
 	FRotator Rotate;
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
-	class UZCharacterItemStatusComponent* ItemStatusComponent;
-
+protected:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
 	class UZCharacterStatusComponent* StatusComponent;
 };

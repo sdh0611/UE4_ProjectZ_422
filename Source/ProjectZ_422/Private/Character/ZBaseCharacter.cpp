@@ -3,7 +3,6 @@
 
 #include "ZBaseCharacter.h"
 #include "ZCharacterStatusComponent.h"
-#include "ZCharacterItemStatusComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -14,9 +13,6 @@ AZBaseCharacter::AZBaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	// Create item status component.
-	ItemStatusComponent = CreateDefaultSubobject<UZCharacterItemStatusComponent>(TEXT("ItemStatusComponent"));
 
 	// Create character status component
 	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
@@ -90,19 +86,6 @@ FHitResult AZBaseCharacter::GetTraceHit(const FVector & TraceStart, const FVecto
 	return Hit;
 }
 
-FHitResult AZBaseCharacter::GetTraceHitFromActorCameraView(float Distance)
-{
-	FVector CamLoc;
-	FRotator CamRot;
-	GetController()->GetPlayerViewPoint(CamLoc, CamRot);
-
-	const FVector Direction = CamRot.Vector();
-	const FVector TraceStart = GetActorLocation();
-	const FVector TraceEnd = TraceStart + (Direction * Distance);
-
-	return GetTraceHit(TraceStart, TraceEnd);
-}
-
 void AZBaseCharacter::SetIsSprinting(bool NewState)
 {
 	bIsSprinting = NewState;
@@ -128,17 +111,12 @@ float AZBaseCharacter::GetCurrentSpeed() const
 	return GetCharacterMovement()->MaxWalkSpeed;
 }
 
-UZCharacterItemStatusComponent * const AZBaseCharacter::GetItemStatusComponent() const
-{
-	return ItemStatusComponent;
-}
-
 UZCharacterStatusComponent * const AZBaseCharacter::GetStatusComponent() const
 {
 	return StatusComponent;
 }
 
-UZCharacterAnimInstance * const AZBaseCharacter::GetCharacterAnimInstance()
+UAnimInstance * const AZBaseCharacter::GetAnimInstance()
 {
 	return AnimInstance;
 }

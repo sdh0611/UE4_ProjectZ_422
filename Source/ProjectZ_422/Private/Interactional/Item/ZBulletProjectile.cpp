@@ -3,6 +3,7 @@
 
 #include "ZBulletProjectile.h"
 #include "ZCharacter.h"
+#include "ZBaseCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -67,7 +68,7 @@ void AZBulletProjectile::TraceBullet()
 	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, ECollisionChannel::ECC_GameTraceChannel3, CollisionParams);
 	if (Hit.bBlockingHit)
 	{
-		auto Character = Cast<AZCharacter>(Hit.GetActor());
+		auto Character = Cast<AZBaseCharacter>(Hit.GetActor());
 		if (Character)
 		{
 			FPointDamageEvent DamageEvent;
