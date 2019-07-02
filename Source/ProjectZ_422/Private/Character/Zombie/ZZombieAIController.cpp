@@ -11,8 +11,8 @@
 #include "ConstructorHelpers.h"
 
 const FName AZZombieAIController::HomePosKey(TEXT("HomePos"));
-const FName AZZombieAIController::PatrolPosKey(TEXT("PatrolPos"));
-
+const FName AZZombieAIController::TargetPosKey(TEXT("TargetPos"));
+const FName AZZombieAIController::TargetActorKey(TEXT("TargetActor"));
 
 AZZombieAIController::AZZombieAIController()
 {
@@ -30,6 +30,9 @@ AZZombieAIController::AZZombieAIController()
 		ZombieBB = BB_ZOMBIE.Object;
 	}
 
+	//HomePosKey = TEXT("HomePos");
+	//TargetPosKey = TEXT("TargetPos");
+	//TargetActorKey = TEXT("TargetActor");
 }
 
 void AZZombieAIController::OnPossess(APawn * InPawn)
@@ -41,8 +44,10 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 		if (!RunBehaviorTree(ZombieBT))
 		{
 			ZLOG(Error, TEXT("Couldn't run BT."));
+			return;
 		}
 	}
+
 
 
 }

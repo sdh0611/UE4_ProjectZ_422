@@ -22,6 +22,9 @@ public:
 
 
 private:
+	UPROPERTY()
 	class USphereComponent* Sphere;
 
+	UPROPERTY()
+	class UPawnSensingComponent* Sense;
 };

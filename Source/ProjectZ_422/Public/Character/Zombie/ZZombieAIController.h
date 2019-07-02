@@ -22,8 +22,15 @@ public:
 	virtual void OnUnPossess() override;
 	
 public:
+	/* 추적 실패할 시 돌아올 좌표값 키네임 */
 	static const FName HomePosKey;
-	static const FName PatrolPosKey;
+
+	/* 추적 대상의 실시간 좌표값 키네임 */
+	static const FName TargetPosKey;
+
+	/* 실시간 추적 대상 키네임 */
+	static const FName TargetActorKey;
+
 
 
 private:
