@@ -40,7 +40,9 @@ public:
 
 
 public:
-	bool IsSprinting();
+	bool IsDead() const;
+
+	bool IsSprinting() const;
 
 	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
 	virtual float GetCurrentSpeed() const;

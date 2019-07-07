@@ -17,8 +17,22 @@ class PROJECTZ_422_API AZZombie : public AZBaseCharacter
 public:
 	AZZombie();
 
+public:
+	virtual void BeginPlay() override;
 
 public:
+	UFUNCTION()
+	void OnSeePlayer(APawn* Pawn);
+
+public:
+	void MileeAttack();
+
+public:
+	class UZCharacterAnimInstance* const GetZombieAnimInstance() const;
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	float AttackDamage;
 
 
 private:
@@ -27,4 +41,7 @@ private:
 
 	UPROPERTY()
 	class UPawnSensingComponent* Sense;
+
+	//UPROPERTY()
+	//class UZCharacterAnimInstance* ZombieAnimInstance;
 };

@@ -101,7 +101,12 @@ void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
-bool AZBaseCharacter::IsSprinting()
+bool AZBaseCharacter::IsDead() const
+{
+	return StatusComponent->IsDead();
+}
+
+bool AZBaseCharacter::IsSprinting() const
 {
 	return bIsSprinting;
 }

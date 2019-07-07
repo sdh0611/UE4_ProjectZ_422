@@ -22,6 +22,9 @@ public:
 	virtual void OnUnPossess() override;
 	
 public:
+	void SetTargetPawn(class APawn* Target);
+
+public:
 	/* 추적 실패할 시 돌아올 좌표값 키네임 */
 	static const FName HomePosKey;
 
@@ -30,8 +33,7 @@ public:
 
 	/* 실시간 추적 대상 키네임 */
 	static const FName TargetActorKey;
-
-
+	
 
 private:
 	UPROPERTY()
