@@ -3,6 +3,7 @@
 
 #include "ZZombie.h"
 #include "ZZombieAIController.h"
+#include "ZCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -29,6 +30,43 @@ AZZombie::AZZombie()
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetupAttachment(GetCapsuleComponent());
 	 
-	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Sense"));
+	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
+	Sense->SetPeripheralVisionAngle(60.f);
+	Sense->SightRadius = 2000;
+	Sense->HearingThreshold = 600;
+	Sense->LOSHearingThreshold = 1200;
+	
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+
+}
+
+void AZZombie::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (Sense)
+	{
+		Sense->OnSeePawn.AddDynamic(this, &AZZombie::OnSeePlayer);
+	}
+
+}
+
+void AZZombie::OnSeePlayer(APawn * Pawn)
+{
+	ZLOG_S(Warning);
+	auto ZombieController = Cast<AZZombieAIController>(GetController());
+
+	auto Player = Cast<AZCharacter>(Pawn);
+	if (ZombieController && Player)
+	{
+		if (!Player->IsDead())
+		{
+			/* Target ¼³Á¤ */
+			ZombieController->SetTargetPawn(Player);
+		}
+	}
 
 }

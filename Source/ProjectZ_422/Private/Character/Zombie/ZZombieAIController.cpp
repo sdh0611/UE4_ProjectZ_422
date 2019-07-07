@@ -12,7 +12,7 @@
 
 const FName AZZombieAIController::HomePosKey(TEXT("HomePos"));
 const FName AZZombieAIController::TargetPosKey(TEXT("TargetPos"));
-const FName AZZombieAIController::TargetActorKey(TEXT("TargetActor"));
+const FName AZZombieAIController::TargetActorKey(TEXT("TargetPawn"));
 
 AZZombieAIController::AZZombieAIController()
 {
@@ -57,5 +57,15 @@ void AZZombieAIController::OnUnPossess()
 	Super::OnUnPossess();
 
 
+
+}
+
+void AZZombieAIController::SetTargetPawn(APawn* Target)
+{
+	if (Blackboard)
+	{
+		Blackboard->SetValueAsObject(TargetActorKey, Target);
+		Blackboard->SetValueAsVector(TargetPosKey, Target->GetActorLocation());
+	}
 
 }

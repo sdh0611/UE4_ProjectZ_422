@@ -17,8 +17,12 @@ class PROJECTZ_422_API AZZombie : public AZBaseCharacter
 public:
 	AZZombie();
 
+public:
+	virtual void BeginPlay() override;
 
 public:
+	UFUNCTION()
+	void OnSeePlayer(APawn* Pawn);
 
 
 private:
