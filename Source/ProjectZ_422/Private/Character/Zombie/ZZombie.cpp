@@ -4,7 +4,10 @@
 #include "ZZombie.h"
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
+<<<<<<< HEAD
 #include "ZCharacterAnimInstance.h"
+=======
+>>>>>>> origin/branch0621
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -49,6 +52,7 @@ AZZombie::AZZombie()
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+<<<<<<< HEAD
 
 	AttackDamage = 10.f;
 
@@ -75,6 +79,27 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 	ZLOG_S(Warning);
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 
+=======
+
+}
+
+void AZZombie::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (Sense)
+	{
+		Sense->OnSeePawn.AddDynamic(this, &AZZombie::OnSeePlayer);
+	}
+
+}
+
+void AZZombie::OnSeePlayer(APawn * Pawn)
+{
+	ZLOG_S(Warning);
+	auto ZombieController = Cast<AZZombieAIController>(GetController());
+
+>>>>>>> origin/branch0621
 	auto Player = Cast<AZCharacter>(Pawn);
 	if (ZombieController && Player)
 	{
@@ -86,8 +111,11 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 	}
 
 }
+<<<<<<< HEAD
 
 UZCharacterAnimInstance * const AZZombie::GetZombieAnimInstance() const
 {
 	return Cast<UZCharacterAnimInstance>(AnimInstance);
 }
+=======
+>>>>>>> origin/branch0621

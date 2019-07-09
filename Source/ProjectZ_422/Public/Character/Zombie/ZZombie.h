@@ -19,6 +19,7 @@ public:
 
 public:
 	virtual void BeginPlay() override;
+<<<<<<< HEAD
 
 public:
 	UFUNCTION()
@@ -33,6 +34,12 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	float AttackDamage;
+=======
+
+public:
+	UFUNCTION()
+	void OnSeePlayer(APawn* Pawn);
+>>>>>>> origin/branch0621
 
 
 private:
