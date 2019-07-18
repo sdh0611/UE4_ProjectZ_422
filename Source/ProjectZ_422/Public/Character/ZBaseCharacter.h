@@ -49,7 +49,7 @@ public:
 
 	class UZCharacterStatusComponent* const GetStatusComponent() const;
 
-	class UAnimInstance* const GetAnimInstance();
+	class UAnimInstance* GetAnimInstance() const;
 
 protected:
 	void CheckCharacterRotation(float DeltaTime);
@@ -64,13 +64,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Stat)
 	float SprintSpeed;
 
-	/* AnimInstance는 캐릭터마다 다르므로 파생 클래스의 BeginPlay에서 초기화 해줄 것. */
-	UPROPERTY(VisibleAnywhere, Category = Character)
-	class UAnimInstance* AnimInstance;
-
 	FRotator Rotate;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
 	class UZCharacterStatusComponent* StatusComponent;
+
+private:
+	/* AnimInstance는 캐릭터마다 다르므로 파생 클래스의 BeginPlay에서 초기화 해줄 것. */
+	UPROPERTY(VisibleAnywhere, Category = Character)
+	class UAnimInstance* AnimInstance;
+
 };

@@ -4,10 +4,7 @@
 #include "ZZombie.h"
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
-<<<<<<< HEAD
 #include "ZCharacterAnimInstance.h"
-=======
->>>>>>> origin/branch0621
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -41,30 +38,27 @@ AZZombie::AZZombie()
 	Sphere->SetRelativeLocation(GetActorLocation());
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetupAttachment(GetCapsuleComponent());
-	 
+
 	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
 	Sense->SetPeripheralVisionAngle(60.f);
 	Sense->SightRadius = 2000;
 	Sense->HearingThreshold = 600;
 	Sense->LOSHearingThreshold = 1200;
-	
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
-<<<<<<< HEAD
+
 
 	AttackDamage = 10.f;
+	bIsAttacking = false;
 
 }
 
 void AZZombie::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto NewAnimInstance = Cast<UZCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	check(nullptr != NewAnimInstance);
-	AnimInstance = NewAnimInstance;
 
 	if (Sense)
 	{
@@ -79,27 +73,6 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 	ZLOG_S(Warning);
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 
-=======
-
-}
-
-void AZZombie::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (Sense)
-	{
-		Sense->OnSeePawn.AddDynamic(this, &AZZombie::OnSeePlayer);
-	}
-
-}
-
-void AZZombie::OnSeePlayer(APawn * Pawn)
-{
-	ZLOG_S(Warning);
-	auto ZombieController = Cast<AZZombieAIController>(GetController());
-
->>>>>>> origin/branch0621
 	auto Player = Cast<AZCharacter>(Pawn);
 	if (ZombieController && Player)
 	{
@@ -111,11 +84,22 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 	}
 
 }
-<<<<<<< HEAD
+
+void AZZombie::Attack()
+{
+	//ZLOG_S(Warning);
+	auto ZombieAnim = GetZombieAnimInstance();
+	check(nullptr != ZombieAnim);
+	ZombieAnim->PlayMontage(TEXT("Attack"));
+}
+
+void AZZombie::AttackEnd()
+{
+	OnAttackEnd.Execute();
+}
 
 UZCharacterAnimInstance * const AZZombie::GetZombieAnimInstance() const
 {
-	return Cast<UZCharacterAnimInstance>(AnimInstance);
+	return Cast<UZCharacterAnimInstance>(GetAnimInstance());
 }
-=======
->>>>>>> origin/branch0621
+

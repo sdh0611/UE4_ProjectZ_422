@@ -3,6 +3,7 @@
 
 #include "ZBaseCharacter.h"
 #include "ZCharacterStatusComponent.h"
+#include "ZCharacterAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -36,7 +37,9 @@ void AZBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	auto ZAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+	check(nullptr != ZAnimInstance);
+	AnimInstance = ZAnimInstance;
 }
 
 // Called every frame
@@ -121,7 +124,7 @@ UZCharacterStatusComponent * const AZBaseCharacter::GetStatusComponent() const
 	return StatusComponent;
 }
 
-UAnimInstance * const AZBaseCharacter::GetAnimInstance()
+UAnimInstance * AZBaseCharacter::GetAnimInstance() const
 {
 	return AnimInstance;
 }

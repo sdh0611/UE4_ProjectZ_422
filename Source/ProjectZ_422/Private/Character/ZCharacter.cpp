@@ -108,11 +108,7 @@ void AZCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PlayerController = Cast<AZPlayerController>(GetController());
-	auto ZAnimInstance = Cast<UZCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	check(nullptr != ZAnimInstance);
-	AnimInstance = ZAnimInstance;
-	
+	PlayerController = Cast<AZPlayerController>(GetController());	
 }
 
 // Called every frame
@@ -246,7 +242,6 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		/*
 			WeaponCategory가 Gun인 경우에만 AnimInstance에 값 설정.
 		*/
-
 		if (EWeaponCategory::Gun == NewWeapon->GetWeaponCategory())
 		{
 			CharacterAnim->SetIsEquipGun(true);
@@ -344,7 +339,7 @@ AZWeapon * const AZCharacter::GetCurrentWeapon()
 
 UZPlayerAnimInstance * const AZCharacter::GetCharacterAnimInstance()
 {
-	return Cast<UZPlayerAnimInstance>(AnimInstance);
+	return Cast<UZPlayerAnimInstance>(GetAnimInstance());
 }
 
 void AZCharacter::CheckCharacterRotation(float DeltaTime)

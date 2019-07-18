@@ -6,6 +6,8 @@
 #include "ZBaseCharacter.h"
 #include "ZZombie.generated.h"
 
+DECLARE_DELEGATE(FOnAttackEnd);
+
 /**
  * 
  */
@@ -19,28 +21,27 @@ public:
 
 public:
 	virtual void BeginPlay() override;
-<<<<<<< HEAD
 
 public:
 	UFUNCTION()
 	void OnSeePlayer(APawn* Pawn);
 
 public:
-	void MileeAttack();
+	void Attack();
+	void AttackEnd();
 
 public:
 	class UZCharacterAnimInstance* const GetZombieAnimInstance() const;
 
+public:
+	FOnAttackEnd OnAttackEnd;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	float AttackDamage;
-=======
 
-public:
-	UFUNCTION()
-	void OnSeePlayer(APawn* Pawn);
->>>>>>> origin/branch0621
-
+	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	bool bIsAttacking;
 
 private:
 	UPROPERTY()
