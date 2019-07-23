@@ -6,6 +6,8 @@
 #include "Character/ZCharacterAnimInstance.h"
 #include "ZZombieAnimInstance.generated.h"
 
+DECLARE_DELEGATE(FOnAttackCheck);
+
 /**
  * 
  */
@@ -31,6 +33,8 @@ public:
 	/* Getter */
 	bool IsAttacking() const;
 	
+public:
+	FOnAttackCheck OnAttackCheck;
 
 private:
 	bool bIsAttacking;

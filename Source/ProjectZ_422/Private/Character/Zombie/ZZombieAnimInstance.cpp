@@ -24,7 +24,7 @@ UZZombieAnimInstance::UZZombieAnimInstance()
 
 void UZZombieAnimInstance::AnimNotify_ZombieAttackCheck()
 {
-
+	OnAttackCheck.Execute();
 }
 
 void UZZombieAnimInstance::AnimNotify_ZombieAttackEndCheck()

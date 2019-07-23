@@ -4,7 +4,7 @@
 #include "ZZombie.h"
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
-#include "ZCharacterAnimInstance.h"
+#include "ZZombieAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -34,11 +34,6 @@ AZZombie::AZZombie()
 		GetMesh()->SetAnimInstanceClass(ANIM_ZOMBIE.Class);
 	}
 
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("TraceSphere"));
-	Sphere->SetRelativeLocation(GetActorLocation());
-	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	Sphere->SetupAttachment(GetCapsuleComponent());
-
 	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
 	Sense->SetPeripheralVisionAngle(60.f);
 	Sense->SightRadius = 2000;
@@ -46,10 +41,16 @@ AZZombie::AZZombie()
 	Sense->LOSHearingThreshold = 1200;
 
 	bUseControllerRotationYaw = false;
-	GetCharacterMovement()->bUseControllerDesiredRotation = false;
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	//GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	//GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 
+	RightHandSocket = TEXT("attack_r");
+	LeftHandSocket = TEXT("attack_l");
+
+	//AttackCollision = CreateDefaultSubobject<USphereComponent>(TEXT("AttackCollision"));
+	//AttackCollision->SetSphereRadius(50.f);
+	//AttackCollision->SetupAttachment(GetMesh(), RightHandSocket);
 
 	AttackDamage = 10.f;
 	bIsAttacking = false;
@@ -65,12 +66,14 @@ void AZZombie::BeginPlay()
 		Sense->OnSeePawn.AddDynamic(this, &AZZombie::OnSeePlayer);
 	}
 
-
+	auto ZombieAnim = GetZombieAnimInstance();
+	check(nullptr != ZombieAnim);
+	ZombieAnim->OnAttackCheck.BindUObject(this, &AZZombie::AttackCheck);
 }
 
 void AZZombie::OnSeePlayer(APawn * Pawn)
 {
-	ZLOG_S(Warning);
+	//ZLOG_S(Warning);
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 
 	auto Player = Cast<AZCharacter>(Pawn);
@@ -82,7 +85,7 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 			ZombieController->SetTargetPawn(Player);
 		}
 	}
-
+	
 }
 
 void AZZombie::Attack()
@@ -98,8 +101,42 @@ void AZZombie::AttackEnd()
 	OnAttackEnd.Execute();
 }
 
-UZCharacterAnimInstance * const AZZombie::GetZombieAnimInstance() const
+UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
 {
-	return Cast<UZCharacterAnimInstance>(GetAnimInstance());
+	return Cast<UZZombieAnimInstance>(GetAnimInstance());
+}
+
+void AZZombie::AttackCheck()
+{
+	ZLOG_S(Error);
+	TArray<FHitResult> Hits;
+	FCollisionQueryParams CollisionParams(TEXT("EnemyAttack"), false, this);
+	CollisionParams.bReturnPhysicalMaterial = false;
+	CollisionParams.bTraceComplex = false;
+
+	bool bResult = GetWorld()->SweepMultiByChannel(Hits, GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * 200.f,
+		FQuat::Identity, PROJECTILE_TRACE, FCollisionShape::MakeSphere(50.f), CollisionParams);
+
+	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
+	if (!bResult)
+	{
+		return;
+	}
+
+	for (const auto& Hit : Hits)
+	{
+		
+		auto Character = Cast<AZCharacter>(Hit.Actor);
+		if (nullptr == Character)
+		{
+			continue;
+		}
+		ZLOG(Error, TEXT("Name : %s"), *Character->GetName());
+		Character->TakeDamage(AttackDamage, FDamageEvent(), Controller, this);
+
+	}
+
+
 }
 

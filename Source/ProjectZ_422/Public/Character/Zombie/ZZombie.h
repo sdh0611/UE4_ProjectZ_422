@@ -31,10 +31,20 @@ public:
 	void AttackEnd();
 
 public:
-	class UZCharacterAnimInstance* const GetZombieAnimInstance() const;
+	class UZZombieAnimInstance* const GetZombieAnimInstance() const;
+
+private:
+	void AttackCheck();
 
 public:
 	FOnAttackEnd OnAttackEnd;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	FName RightHandSocket;
+
+	UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	FName LeftHandSocket;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
@@ -44,12 +54,10 @@ private:
 	bool bIsAttacking;
 
 private:
-	UPROPERTY()
-	class USphereComponent* Sphere;
-
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, Category = Zombie)
 	class UPawnSensingComponent* Sense;
 
-	//UPROPERTY()
-	//class UZCharacterAnimInstance* ZombieAnimInstance;
+	UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	class USphereComponent* AttackCollision;
+
 };

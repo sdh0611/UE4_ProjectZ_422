@@ -58,7 +58,6 @@ AZCharacter::AZCharacter()
 		GetMesh()->SetAnimInstanceClass(ANIM_CHARACTER.Class);
 	}
 
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
 
 	// Create main camera spring arm.
 	MainCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("MainCameraSpringArm"));
@@ -68,6 +67,7 @@ AZCharacter::AZCharacter()
 	MainCameraSpringArm->bInheritPitch = true;
 	MainCameraSpringArm->bInheritYaw = true;
 	MainCameraSpringArm->bInheritRoll = true;
+	//MainCameraSpringArm->bDoCollisionTest = false;
 	MainCameraSpringArm->SetupAttachment(GetCapsuleComponent());
 	// Create main camera & attach to main camera spring arm.
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));

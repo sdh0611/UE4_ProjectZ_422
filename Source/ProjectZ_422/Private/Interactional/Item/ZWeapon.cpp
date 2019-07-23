@@ -156,7 +156,7 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 	TraceParams.bReturnPhysicalMaterial = false;
 
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByChannel(Hit, StartLoc, EndLoc, ECollisionChannel::ECC_GameTraceChannel4, TraceParams);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartLoc, EndLoc, WEAPON_TRACE, TraceParams);
 	
 	if (bDrawDebugLine)
 	{
