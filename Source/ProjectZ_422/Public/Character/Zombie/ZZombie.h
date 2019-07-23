@@ -57,7 +57,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Zombie)
 	class UPawnSensingComponent* Sense;
 
-	UPROPERTY(EditDefaultsOnly, Category = Zombie)
-	class USphereComponent* AttackCollision;
+	//UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	//class USphereComponent* AttackCollision;
 
 };

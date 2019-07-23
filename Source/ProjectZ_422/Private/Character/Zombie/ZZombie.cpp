@@ -49,7 +49,9 @@ AZZombie::AZZombie()
 	LeftHandSocket = TEXT("attack_l");
 
 	//AttackCollision = CreateDefaultSubobject<USphereComponent>(TEXT("AttackCollision"));
-	//AttackCollision->SetSphereRadius(50.f);
+	//AttackCollision->SetSphereRadius(25.f);
+	//AttackCollision->SetRelativeLocation(FVector(-10.f, 0.f, 0.f));
+	//AttackCollision->SetCollisionProfileName(TEXT("EnemyAttack"));
 	//AttackCollision->SetupAttachment(GetMesh(), RightHandSocket);
 
 	AttackDamage = 10.f;
@@ -108,15 +110,14 @@ UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
 
 void AZZombie::AttackCheck()
 {
-	ZLOG_S(Error);
 	TArray<FHitResult> Hits;
-	FCollisionQueryParams CollisionParams(TEXT("EnemyAttack"), false, this);
+	FCollisionQueryParams CollisionParams(TEXT("EnemyAttackParam"), false, this);
 	CollisionParams.bReturnPhysicalMaterial = false;
 	CollisionParams.bTraceComplex = false;
 
-	bool bResult = GetWorld()->SweepMultiByChannel(Hits, GetActorLocation(),
+	bool bResult = GetWorld()->SweepMultiByProfile(Hits, GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * 200.f,
-		FQuat::Identity, PROJECTILE_TRACE, FCollisionShape::MakeSphere(50.f), CollisionParams);
+		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(50.f), CollisionParams);
 
 	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
 	if (!bResult)
@@ -126,13 +127,12 @@ void AZZombie::AttackCheck()
 
 	for (const auto& Hit : Hits)
 	{
-		
+		ZLOG(Error, TEXT("Name : %s"), *Hit.Actor->GetName());
 		auto Character = Cast<AZCharacter>(Hit.Actor);
 		if (nullptr == Character)
 		{
 			continue;
 		}
-		ZLOG(Error, TEXT("Name : %s"), *Character->GetName());
 		Character->TakeDamage(AttackDamage, FDamageEvent(), Controller, this);
 
 	}
