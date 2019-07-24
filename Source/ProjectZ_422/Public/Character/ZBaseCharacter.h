@@ -38,8 +38,10 @@ public:
 	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
 	virtual void SetCurrentSpeed(float NewSpeed);
 
+	virtual void SetActive(bool bActive);
 
 public:
+	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 
 	bool IsSprinting() const;
@@ -53,8 +55,12 @@ public:
 
 protected:
 	void CheckCharacterRotation(float DeltaTime);
+	virtual void OnDead();
 
 protected:
+	UPROPERTY(VisibleAnywhere, Category = State)
+	bool bIsActive;
+
 	UPROPERTY(VisibleAnywhere, Category = State)
 	bool bIsSprinting;
 
@@ -65,6 +71,8 @@ protected:
 	float SprintSpeed;
 
 	FRotator Rotate;
+
+	FTimerHandle InactiveTimer;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = ZCharacter)

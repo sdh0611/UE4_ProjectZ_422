@@ -25,10 +25,10 @@ AZWeapon::AZWeapon()
 	RootComponent = WeaponMesh;
 
 	static ConstructorHelpers::FClassFinder<AZProjectile>
-		PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZProjectile'"));
-	if (PROJECTILE.Succeeded())
+		CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZProjectile'"));
+	if (CLASS_PROJECTILE.Succeeded())
 	{
-		ProjectileClass = PROJECTILE.Class;
+		ProjectileClass = CLASS_PROJECTILE.Class;
 	}
 
 	// -1 : Player에게 습득되지 않은 상태

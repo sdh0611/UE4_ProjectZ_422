@@ -18,10 +18,10 @@ AZGrenade::AZGrenade()
 	}
 
 	static ConstructorHelpers::FClassFinder<AZProjectile>
-		PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZGrenadeProjectile'"));
-	if (PROJECTILE.Succeeded())
+		CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZGrenadeProjectile'"));
+	if (CLASS_PROJECTILE.Succeeded())
 	{
-		ProjectileClass = PROJECTILE.Class;
+		ProjectileClass = CLASS_PROJECTILE.Class;
 	}
 
 	ExplosionRadius = 100.f;

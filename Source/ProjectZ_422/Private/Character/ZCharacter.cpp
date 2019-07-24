@@ -28,6 +28,7 @@
 const FName AZCharacter::MainWeaponSocketName = FName(TEXT("weapon_r"));
 const FName AZCharacter::SecondaryWeaponSocketName = FName(TEXT("weapon_secondary"));
 const FName AZCharacter::ThirdWeaponSocketName = FName(TEXT("weapon_third"));
+const FName AZCharacter::KnifeSocketName = FName(TEXT("weapon_knife"));
 const FName AZCharacter::GrenadeWeaponSocketName = FName(TEXT("weapon_grenade"));
 
 // Sets default values
@@ -169,6 +170,7 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	// For debug
 	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
 	PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);
+	PlayerInputComponent->BindAction(TEXT("Ragdoll"), IE_Pressed, this, &AZCharacter::Ragdoll);
 
 
 
@@ -274,6 +276,17 @@ void AZCharacter::SetCurrentSpeed(float NewSpeed)
 
 }
 
+void AZCharacter::SetActive(bool bActive)
+{
+	if (bActive)
+	{
+		GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+		GetMesh()->SetSimulatePhysics(false);
+	}
+
+	Super::SetActive(bActive);
+}
+
 bool AZCharacter::IsEquipWeapon()
 {
 	return (CurrentWeapon != nullptr);
@@ -353,6 +366,14 @@ void AZCharacter::CheckCharacterRotation(float DeltaTime)
 		AddActorLocalRotation(Rot);
 	}
 	
+
+}
+
+void AZCharacter::OnDead()
+{
+	Super::OnDead();
+
+	PlayerController->SetCinematicMode(true, false, false, true, true);
 
 }
 
@@ -876,7 +897,6 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 			}
 			case 3:
 			{
-				// 기존 Weapon은 Grenade socket으로 옮김.
 				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
 				break;
 			}
@@ -960,4 +980,13 @@ void AZCharacter::AddMoney()
 void AZCharacter::DamageSelf()
 {
 	StatusComponent->AdjustCurrentHP(-10.f);
+}
+
+void AZCharacter::Ragdoll()
+{
+	//PlayerController->SetCinematicMode(true, false, false, true, true);
+	//GetCharacterMovement()->NavAgentProps.bCanJump = false;
+
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->SetSimulatePhysics(true);
 }

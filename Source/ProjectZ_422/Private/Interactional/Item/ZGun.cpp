@@ -20,10 +20,10 @@ AZGun::AZGun()
 	}
 
 	static ConstructorHelpers::FClassFinder<AZProjectile>
-		PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZBulletProjectile'"));
-	if (PROJECTILE.Succeeded())
+		CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZBulletProjectile'"));
+	if (CLASS_PROJECTILE.Succeeded())
 	{
-		ProjectileClass = PROJECTILE.Class;
+		ProjectileClass = CLASS_PROJECTILE.Class;
 	}
 
 	bIsReloading = false;

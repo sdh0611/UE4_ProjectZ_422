@@ -38,7 +38,7 @@ public:
 	void SetIsSwitchingWeapon(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
 	virtual void SetCurrentSpeed(float NewSpeed) override;
-
+	virtual void SetActive(bool bActive) override;
 
 public:
 	bool IsEquipWeapon();
@@ -52,6 +52,7 @@ public:
 
 private:
 	void CheckCharacterRotation(float DeltaTime);
+	virtual void OnDead() override;
 
 private:
 	/*
@@ -90,12 +91,14 @@ private:
 	*/
 	void AddMoney();
 	void DamageSelf();
+	void Ragdoll();
 
 
 public:
 	static const FName MainWeaponSocketName;
 	static const FName SecondaryWeaponSocketName;
 	static const FName ThirdWeaponSocketName;
+	static const FName KnifeSocketName;
 	static const FName GrenadeWeaponSocketName;
 
 private:	

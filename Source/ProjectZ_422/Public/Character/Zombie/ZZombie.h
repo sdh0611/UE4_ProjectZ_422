@@ -31,6 +31,9 @@ public:
 	void AttackEnd();
 
 public:
+	virtual void SetActive(bool bActive) override;
+
+public:
 	class UZZombieAnimInstance* const GetZombieAnimInstance() const;
 
 private:

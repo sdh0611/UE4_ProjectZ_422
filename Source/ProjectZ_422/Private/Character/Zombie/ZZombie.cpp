@@ -103,6 +103,17 @@ void AZZombie::AttackEnd()
 	OnAttackEnd.Execute();
 }
 
+void AZZombie::SetActive(bool bActive)
+{
+	if (bActive)
+	{
+		GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+		GetMesh()->SetSimulatePhysics(false);
+	}
+
+	Super::SetActive(bActive);
+}
+
 UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
 {
 	return Cast<UZZombieAnimInstance>(GetAnimInstance());

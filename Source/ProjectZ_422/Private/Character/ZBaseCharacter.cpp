@@ -8,7 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
-
+#include "TimerManager.h"
 
 // Sets default values
 AZBaseCharacter::AZBaseCharacter()
@@ -21,6 +21,7 @@ AZBaseCharacter::AZBaseCharacter()
 	// Create character status component
 	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
 
+	bIsActive = true;
 	bIsSprinting = false;
 	WalkSpeed = 500.f;
 	SprintSpeed = 800.f;
@@ -74,6 +75,7 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	if (StatusComponent->IsDead())
 	{
 		ZLOG(Warning, TEXT("Dead!!"));
+		OnDead();
 	}
 
 	return FinalDamage;
@@ -107,6 +109,24 @@ void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
+void AZBaseCharacter::SetActive(bool bActive)
+{
+	if (bActive)
+	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetMesh()->SetVisibility(true);
+	}
+	else
+	{
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetVisibility(false);
+	}
+
+	bIsActive = bActive;
+}
+
 bool AZBaseCharacter::IsDead() const
 {
 	return StatusComponent->IsDead();
@@ -134,5 +154,22 @@ UAnimInstance * AZBaseCharacter::GetAnimInstance() const
 
 void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 {
+}
+
+void AZBaseCharacter::OnDead()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->SetSimulatePhysics(true);
+	
+	FTimerDelegate InactiveDelegate;
+	InactiveDelegate.BindLambda([this]() {
+		ZLOG(Error, TEXT("Inactive."));
+		SetActive(false);
+	});
+
+	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, InactiveDelegate, 5.f, false);
+
 }
 

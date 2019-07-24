@@ -4,6 +4,7 @@
 #include "ZInventoryWidget.h"
 #include "ZInventoryItemWidget.h"
 #include "ZItem.h"
+#include "ZWeapon.h"
 #include "Components/ScrollBox.h"
 #include "ConstructorHelpers.h"
 
@@ -46,4 +47,8 @@ void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 	}
 
 
+}
+
+void UZInventoryWidget::AddItemToWeaponInventory(AZWeapon * const NewWeapon)
+{
 }

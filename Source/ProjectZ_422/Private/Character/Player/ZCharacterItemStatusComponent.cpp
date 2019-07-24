@@ -126,10 +126,15 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 			if (PlayerController)
 			{
 				// Inventory에 Update
-				auto InventoryWidget = PlayerController->GetZHUD()->GetUserHUD()->GetInventoryWidget();
-				if (InventoryWidget)
+				// Weapon은 Inventory에 업데이트 안해도 되므로 예외처리.
+				if (NewItem->GetItemType() != EItemType::Weapon)
 				{
-					InventoryWidget->AddItemToInventory(NewItem);
+					auto InventoryWidget = PlayerController->GetZHUD()->GetUserHUD()->GetInventoryWidget();
+					if (InventoryWidget)
+					{
+						InventoryWidget->AddItemToInventory(NewItem);
+					}
+
 				}
 
 				// ShopSellWidget Update
@@ -249,7 +254,7 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					WeaponInventory[Main2] = NewWeapon;
 					NewWeapon->SetWeaponInventoryIndex(Main2);
 					// Secondary Weapon 소켓에 Weapon 부착
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::SecondaryWeaponSocketName);
+					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::ThirdWeaponSocketName);
 				}
 
 

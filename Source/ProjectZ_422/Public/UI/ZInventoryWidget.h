@@ -23,12 +23,21 @@ public:
 public:
 	void AddItemToInventory(class AZItem* const NewItem);
 
+	void AddItemToWeaponInventory(class AZWeapon* const NewWeapon);
+
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Inventory)
 	TSubclassOf<class UZInventoryItemWidget> InventoryItemWidgetClass;
 
+	UPROPERTY(VisibleAnywhere, Category = Inventory)
+	TSubclassOf<class UZWeaponInventoryItemWidget> WeaponInventoryItemWidgetClass;
+
 private:
 	UPROPERTY()
 	class UScrollBox* ItemHolder;
+
+	UPROPERTY()
+	class UScrollBox* WeaponHolder;
 
 };
