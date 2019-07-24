@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 
+
 // Sets default values
 AZEnemySpawner::AZEnemySpawner()
 {
@@ -16,6 +17,9 @@ AZEnemySpawner::AZEnemySpawner()
 	SpawnMaximum = 10;
 	CurrentAliveEnemies = 0;
 	EnemyPoolSize = 10;
+	
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	RootComponent = SceneComponent;
 
 }
 
@@ -35,8 +39,9 @@ void AZEnemySpawner::BeginPlay()
 	{
 		/* 각각의 Enemy는 Spawn후 비활성화상태로 */
 		auto Enemy = GetWorld()->SpawnActor<AZZombie>(AZZombie::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
-		if (nullptr == Enemy)
+		if (nullptr != Enemy)
 		{
+			Enemy->SetActive(false);
 			EnemyPool.Add(Enemy);
 		}
 
@@ -51,7 +56,8 @@ void AZEnemySpawner::BeginPlay()
 void AZEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	
 }
 
 void AZEnemySpawner::SpawnEnemy()
@@ -59,7 +65,7 @@ void AZEnemySpawner::SpawnEnemy()
 	/* SpawnMaximum에 맞춰서 활성화 */
 	for (const auto& Enemy : EnemyPool)
 	{
-		if (!Enemy->IsDead())
+		if (!Enemy->IsActive())
 		{
 			/* 활성화 코드 */
 			Enemy->SetActorLocation(SpawnLocation);
@@ -70,7 +76,7 @@ void AZEnemySpawner::SpawnEnemy()
 					Enemy객체를 다시 활성화 시키는 코드 기재할 것 
 			*/
 			Enemy->SetActive(true);
-
+			break;
 		}
 
 	}

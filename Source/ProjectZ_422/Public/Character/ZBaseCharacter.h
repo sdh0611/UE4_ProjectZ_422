@@ -44,6 +44,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 
+	bool IsActive() const;
+
 	bool IsSprinting() const;
 
 	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */

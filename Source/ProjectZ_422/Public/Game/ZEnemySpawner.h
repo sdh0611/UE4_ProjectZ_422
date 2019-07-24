@@ -51,5 +51,8 @@ private:
 private:
 	TArray<class AZZombie*> EnemyPool;
 
+private:
+	UPROPERTY(VisibleAnywhere)
+	class USceneComponent* SceneComponent;
 
 };

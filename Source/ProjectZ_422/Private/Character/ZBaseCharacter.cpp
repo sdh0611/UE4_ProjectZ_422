@@ -114,7 +114,7 @@ void AZBaseCharacter::SetActive(bool bActive)
 	if (bActive)
 	{
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		GetMesh()->SetVisibility(true);
 	}
 	else
@@ -130,6 +130,11 @@ void AZBaseCharacter::SetActive(bool bActive)
 bool AZBaseCharacter::IsDead() const
 {
 	return StatusComponent->IsDead();
+}
+
+bool AZBaseCharacter::IsActive() const
+{
+	return bIsActive;
 }
 
 bool AZBaseCharacter::IsSprinting() const
