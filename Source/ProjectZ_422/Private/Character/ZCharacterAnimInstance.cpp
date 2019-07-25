@@ -81,3 +81,24 @@ bool UZCharacterAnimInstance::IsSprinting() const
 {
 	return bIsSprinting;
 }
+
+bool UZCharacterAnimInstance::IsMontagePlaying(const FString& MontageName) const
+{
+	auto Montage = FindMontageByName(MontageName);
+	if (nullptr == Montage)
+	{
+		return false;
+	}
+
+	return Montage_IsPlaying(Montage);
+}
+
+UAnimMontage * const UZCharacterAnimInstance::FindMontageByName(const FString & MontageName) const
+{
+	if (!MontageTable.Contains(MontageName))
+	{
+		return nullptr;
+	}
+
+	return MontageTable[MontageName];
+}

@@ -30,6 +30,8 @@ public:
 
 public:
 	bool IsSprinting() const;
+	bool IsMontagePlaying(const FString& MontageName) const;
+	class UAnimMontage* const FindMontageByName(const FString& MontageName) const;
 
 public:
 	FOnGrenadeThrow OnGrenadeThrow;

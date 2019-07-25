@@ -95,6 +95,11 @@ void AZZombie::Attack()
 	//ZLOG_S(Warning);
 	auto ZombieAnim = GetZombieAnimInstance();
 	check(nullptr != ZombieAnim);
+	if (ZombieAnim->IsMontagePlaying(TEXT("Attack")))
+	{
+		return;
+	}
+
 	ZombieAnim->PlayMontage(TEXT("Attack"));
 }
 
@@ -109,6 +114,8 @@ void AZZombie::SetActive(bool bActive)
 	{
 		GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 		GetMesh()->SetSimulatePhysics(false);
+		//GetMesh()->SetRelativeRotation(GetCapsuleComponent()->GetRelativeTransform().Rotator());
+		//GetMesh()->SetRelativeRotation(FQuat::Identity);
 	}
 
 	Super::SetActive(bActive);
