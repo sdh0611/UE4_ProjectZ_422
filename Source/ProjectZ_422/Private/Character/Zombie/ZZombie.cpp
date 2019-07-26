@@ -41,18 +41,10 @@ AZZombie::AZZombie()
 	Sense->LOSHearingThreshold = 1200;
 
 	bUseControllerRotationYaw = false;
-	//GetCharacterMovement()->bUseControllerDesiredRotation = false;
-	//GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 
 	RightHandSocket = TEXT("attack_r");
 	LeftHandSocket = TEXT("attack_l");
-
-	//AttackCollision = CreateDefaultSubobject<USphereComponent>(TEXT("AttackCollision"));
-	//AttackCollision->SetSphereRadius(25.f);
-	//AttackCollision->SetRelativeLocation(FVector(-10.f, 0.f, 0.f));
-	//AttackCollision->SetCollisionProfileName(TEXT("EnemyAttack"));
-	//AttackCollision->SetupAttachment(GetMesh(), RightHandSocket);
 
 	AttackDamage = 10.f;
 	bIsAttacking = false;
@@ -112,10 +104,10 @@ void AZZombie::SetActive(bool bActive)
 {
 	if (bActive)
 	{
-		GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
-		GetMesh()->SetSimulatePhysics(false);
-		//GetMesh()->SetRelativeRotation(GetCapsuleComponent()->GetRelativeTransform().Rotator());
-		//GetMesh()->SetRelativeRotation(FQuat::Identity);
+		ZLOG_S(Error);
+		//GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+		//GetMesh()->SetSimulatePhysics(false);
+		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	}
 
 	Super::SetActive(bActive);

@@ -31,6 +31,7 @@ void AZEnemySpawner::BeginPlay()
 	/* Enemy Pool 채워놓기. */
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Owner = this;
 
 	SpawnLocation = GetActorLocation();
 	SpawnRotation = GetActorRotation();
@@ -75,7 +76,15 @@ void AZEnemySpawner::SpawnEnemy()
 				NOTE(7.24):
 					Enemy객체를 다시 활성화 시키는 코드 기재할 것 
 			*/
-			Enemy->SetActive(true);
+			if (Enemy->IsDead())
+			{
+				Enemy->Revive();
+			}
+			else
+			{
+				Enemy->SetActive(true);
+			}
+
 			break;
 		}
 

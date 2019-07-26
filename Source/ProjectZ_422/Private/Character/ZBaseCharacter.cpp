@@ -94,6 +94,15 @@ FHitResult AZBaseCharacter::GetTraceHit(const FVector & TraceStart, const FVecto
 	return Hit;
 }
 
+void AZBaseCharacter::Revive()
+{
+	StatusComponent->SetCurrentHP(StatusComponent->GetMaxHP());
+	FVector Location = GetActorLocation();
+	Location.Z -= 88.f;
+	GetMesh()->SetWorldLocation(Location);
+	SetActive(true);
+}
+
 void AZBaseCharacter::SetIsSprinting(bool NewState)
 {
 	bIsSprinting = NewState;
@@ -113,15 +122,17 @@ void AZBaseCharacter::SetActive(bool bActive)
 {
 	if (bActive)
 	{
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		GetMesh()->SetVisibility(true);
+		//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		SetActorHiddenInGame(false);
+		SetActorEnableCollision(true);
 	}
 	else
 	{
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetMesh()->SetVisibility(false);
+		//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
 	}
 
 	bIsActive = bActive;
@@ -170,7 +181,8 @@ void AZBaseCharacter::OnDead()
 	
 	FTimerDelegate InactiveDelegate;
 	InactiveDelegate.BindLambda([this]() {
-		ZLOG(Error, TEXT("Inactive."));
+		GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+		GetMesh()->SetSimulatePhysics(false);
 		SetActive(false);
 	});
 

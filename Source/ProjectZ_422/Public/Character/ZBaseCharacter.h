@@ -31,6 +31,8 @@ public:
 
 public:
 	FHitResult GetTraceHit(const FVector& TraceStart, const FVector& TraceEnd);
+	virtual void Revive();
+
 
 public:
 	void SetIsSprinting(bool NewState);
