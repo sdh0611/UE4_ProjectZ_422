@@ -69,22 +69,30 @@ void AZBulletProjectile::TraceBullet()
 	if (Hit.bBlockingHit)
 	{
 		auto Character = Cast<AZBaseCharacter>(Hit.GetActor());
-		if (Character)
+		if (nullptr == Character)
 		{
-			FPointDamageEvent DamageEvent;
-			DamageEvent.HitInfo = Hit;
-			DamageEvent.ShotDirection = CurLocation - PreLocation;
-			DamageEvent.Damage = Damage;
-
-			UPhysicalMaterial* PhysicalMaterial = Hit.PhysMaterial.Get();
-			if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
-			{
-				ZLOG(Error, TEXT("Headshot."));
-				DamageEvent.Damage *= 4.f;
-			}
-
-			Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
+			return;
 		}
+
+		if (Character->IsDead())
+		{
+			return;
+		}			
+
+		FPointDamageEvent DamageEvent;
+		DamageEvent.HitInfo = Hit;
+		DamageEvent.ShotDirection = CurLocation - PreLocation;
+		DamageEvent.Damage = Damage;
+
+		UPhysicalMaterial* PhysicalMaterial = Hit.PhysMaterial.Get();
+		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+		{
+			ZLOG(Error, TEXT("Headshot."));
+			DamageEvent.Damage *= 4.f;
+		}
+
+		Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
+
 		Destroy();
 	}
 }

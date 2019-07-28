@@ -38,17 +38,21 @@ AZZombieAIController::AZZombieAIController()
 void AZZombieAIController::OnPossess(APawn * InPawn)
 {
 	Super::OnPossess(InPawn);
-	if (UseBlackboard(ZombieBB, Blackboard))
+	//if (UseBlackboard(ZombieBB, Blackboard))
+	//{
+	//	Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
+	//	if (!RunBehaviorTree(ZombieBT))
+	//	{
+	//		ZLOG(Error, TEXT("Couldn't run BT."));
+	//		return;
+	//	}
+	//}
+	if (!UseBlackboard(ZombieBB, Blackboard))
 	{
-		Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
-		if (!RunBehaviorTree(ZombieBT))
-		{
-			ZLOG(Error, TEXT("Couldn't run BT."));
-			return;
-		}
+		return;
 	}
 
-
+	RunAI();
 
 }
 
@@ -58,6 +62,34 @@ void AZZombieAIController::OnUnPossess()
 
 
 
+}
+
+bool AZZombieAIController::RunAI()
+{
+	//if (!UseBlackboard(ZombieBB, Blackboard))
+	//{
+	//	return false;
+	//}
+
+	Blackboard->SetValueAsVector(HomePosKey, GetPawn()->GetActorLocation());
+	if (!RunBehaviorTree(ZombieBT))
+	{
+		ZLOG(Error, TEXT("Couldn't run BT."));
+		return false;
+	}
+		
+	return true;
+}
+
+void AZZombieAIController::StopAI(const FString & Reason)
+{
+	GetBrainComponent()->StopLogic(Reason);
+
+	/* 
+		NOTE(7.27):
+			임시로 하드코딩함. 
+	*/
+	GetBlackboardComponent()->ClearValue(TargetActorKey);
 }
 
 void AZZombieAIController::SetTargetPawn(APawn* Target)

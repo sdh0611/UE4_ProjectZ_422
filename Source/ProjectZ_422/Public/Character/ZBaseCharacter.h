@@ -46,6 +46,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 
+	UFUNCTION(BlueprintPure)
 	bool IsActive() const;
 
 	bool IsSprinting() const;
@@ -55,7 +56,7 @@ public:
 
 	class UZCharacterStatusComponent* const GetStatusComponent() const;
 
-	class UAnimInstance* GetAnimInstance() const;
+	class UZCharacterAnimInstance* GetAnimInstance() const;
 
 protected:
 	void CheckCharacterRotation(float DeltaTime);
@@ -85,6 +86,6 @@ protected:
 private:
 	/* AnimInstance는 캐릭터마다 다르므로 파생 클래스의 BeginPlay에서 초기화 해줄 것. */
 	UPROPERTY(VisibleAnywhere, Category = Character)
-	class UAnimInstance* AnimInstance;
+	class UZCharacterAnimInstance* AnimInstance;
 
 };

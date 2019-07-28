@@ -8,6 +8,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ConstructorHelpers.h"
@@ -67,6 +68,11 @@ void AZZombie::BeginPlay()
 
 void AZZombie::OnSeePlayer(APawn * Pawn)
 {
+	if (IsDead())
+	{
+		return;
+	}
+
 	//ZLOG_S(Warning);
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 
@@ -84,6 +90,11 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 
 void AZZombie::Attack()
 {
+	if (IsDead())
+	{
+		return;
+	}
+
 	//ZLOG_S(Warning);
 	auto ZombieAnim = GetZombieAnimInstance();
 	check(nullptr != ZombieAnim);
@@ -100,17 +111,32 @@ void AZZombie::AttackEnd()
 	OnAttackEnd.Execute();
 }
 
+void AZZombie::Revive()
+{
+	Super::Revive();
+
+	auto ZombieAI = Cast<AZZombieAIController>(GetController());
+	if (nullptr == ZombieAI)
+	{
+		return;
+	}
+	ZombieAI->RunAI();
+
+}
+
 void AZZombie::SetActive(bool bActive)
 {
+	Super::SetActive(bActive);
+
 	if (bActive)
 	{
 		ZLOG_S(Error);
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
 		//GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 		//GetMesh()->SetSimulatePhysics(false);
 		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	}
 
-	Super::SetActive(bActive);
 }
 
 UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
@@ -120,6 +146,11 @@ UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
 
 void AZZombie::AttackCheck()
 {
+	if (IsDead())
+	{
+		return;
+	}
+
 	TArray<FHitResult> Hits;
 	FCollisionQueryParams CollisionParams(TEXT("EnemyAttackParam"), false, this);
 	CollisionParams.bReturnPhysicalMaterial = false;
@@ -147,6 +178,31 @@ void AZZombie::AttackCheck()
 
 	}
 
+
+}
+
+void AZZombie::OnDead()
+{
+	Super::OnDead();
+
+	auto ZombieAI = Cast<AZZombieAIController>(GetController());
+	if(nullptr == ZombieAI)
+	{
+		return;
+	}
+	ZombieAI->StopAI(TEXT("Dead"));
+
+	auto ZombieAnim = GetZombieAnimInstance();
+	if (nullptr == ZombieAnim)
+	{
+		return;
+	}
+
+	if (ZombieAnim->GetCurrentPlayMontage())
+	{
+		ZombieAnim->StopAllMontages(ZombieAnim->GetCurrentPlayMontage()->BlendOut.GetBlendTime());
+	}
+	ZombieAnim->PlayMontage(TEXT("Die"));
 
 }
 

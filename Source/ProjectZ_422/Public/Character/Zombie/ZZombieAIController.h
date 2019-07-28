@@ -22,6 +22,10 @@ public:
 	virtual void OnUnPossess() override;
 	
 public:
+	bool RunAI();
+	void StopAI(const FString& Reason);
+
+public:
 	void SetTargetPawn(class APawn* Target);
 
 public:

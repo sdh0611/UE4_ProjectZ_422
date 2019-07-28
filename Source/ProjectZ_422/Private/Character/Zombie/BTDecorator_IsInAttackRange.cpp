@@ -29,6 +29,11 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 		return false;
 	}
 
+	if (TargetPawn->IsDead())
+	{
+		return false;
+	}
+
 	bResult = (TargetPawn->GetDistanceTo(OwnerPawn) <= 150.f);
 
 	return bResult;

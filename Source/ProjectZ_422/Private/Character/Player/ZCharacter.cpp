@@ -261,6 +261,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		PlayerController->GetZHUD()->GetUserHUD()->GetCurrentWeaponInfoWidget()->ClearWidget();
 	}
+	
 }
 
 void AZCharacter::SetCurrentSpeed(float NewSpeed)
@@ -373,7 +374,7 @@ void AZCharacter::OnDead()
 {
 	Super::OnDead();
 
-	PlayerController->SetCinematicMode(true, false, false, true, true);
+	//PlayerController->SetCinematicMode(true, false, false, true, true);
 
 }
 

@@ -16,7 +16,8 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 	bIsFalling = false;
 	bIsCrouching = false;
 	bIsSprinting = false;
-	   
+	bIsDead = false;
+
 	CurrentPlayMontage = nullptr;
 }
 
@@ -43,17 +44,6 @@ void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		{
 			bIsFalling = Character->GetCharacterMovement()->IsFalling();
 			bIsCrouching = Character->GetCharacterMovement()->IsCrouching();
-			//if (nullptr == Character->GetCurrentWeapon())
-			//{
-			//	if (CurrentPlayMontage)
-			//	{
-			//		if (!Montage_IsPlaying(CurrentPlayMontage))
-			//		{
-			//			SetIsEquipWeapon(false);
-			//		}
-			//	}
-			//}
-
 		}
 
 	}
@@ -75,6 +65,11 @@ void UZCharacterAnimInstance::PlayMontage(const FString & MontageName)
 void UZCharacterAnimInstance::SetIsSprinting(bool NewState)
 {
 	bIsSprinting = NewState;
+}
+
+void UZCharacterAnimInstance::SetIsDead(bool NewState)
+{
+	bIsDead = NewState;
 }
 
 bool UZCharacterAnimInstance::IsSprinting() const
@@ -101,4 +96,9 @@ UAnimMontage * const UZCharacterAnimInstance::FindMontageByName(const FString & 
 	}
 
 	return MontageTable[MontageName];
+}
+
+UAnimMontage * const UZCharacterAnimInstance::GetCurrentPlayMontage() const
+{
+	return CurrentPlayMontage;
 }

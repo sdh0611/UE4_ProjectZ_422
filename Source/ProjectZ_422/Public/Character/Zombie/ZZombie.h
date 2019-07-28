@@ -29,6 +29,7 @@ public:
 public:
 	void Attack();
 	void AttackEnd();
+	virtual void Revive() override;
 
 public:
 	virtual void SetActive(bool bActive) override;
@@ -38,6 +39,7 @@ public:
 
 private:
 	void AttackCheck();
+	virtual void OnDead() override;
 
 public:
 	FOnAttackEnd OnAttackEnd;

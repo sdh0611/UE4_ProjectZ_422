@@ -41,7 +41,7 @@ void AZBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto ZAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+	auto ZAnimInstance = Cast<UZCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	check(nullptr != ZAnimInstance);
 	AnimInstance = ZAnimInstance;
 }
@@ -83,23 +83,28 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 
 FHitResult AZBaseCharacter::GetTraceHit(const FVector & TraceStart, const FVector & TraceEnd)
 {
-	FCollisionQueryParams TraceParams;
-	TraceParams.bTraceComplex = false;
-	TraceParams.bReturnPhysicalMaterial = false;
-	TraceParams.AddIgnoredActor(this);
-
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
+
+	if (!IsDead())
+	{
+		FCollisionQueryParams TraceParams;
+		TraceParams.bTraceComplex = false;
+		TraceParams.bReturnPhysicalMaterial = false;
+		TraceParams.AddIgnoredActor(this);
+
+		GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
+	}
 
 	return Hit;
 }
 
 void AZBaseCharacter::Revive()
 {
+	//GetAnimInstance()->SetIsDead(false);
 	StatusComponent->SetCurrentHP(StatusComponent->GetMaxHP());
-	FVector Location = GetActorLocation();
-	Location.Z -= 88.f;
-	GetMesh()->SetWorldLocation(Location);
+	//FVector Location = GetActorLocation();
+	//Location.Z -= 88.f;
+	//GetMesh()->SetWorldLocation(Location);
 	SetActive(true);
 }
 
@@ -120,20 +125,25 @@ void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
 
 void AZBaseCharacter::SetActive(bool bActive)
 {
-	if (bActive)
-	{
-		//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		SetActorHiddenInGame(false);
-		SetActorEnableCollision(true);
-	}
-	else
-	{
-		//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SetActorHiddenInGame(true);
-		SetActorEnableCollision(false);
-	}
+	SetActorHiddenInGame(!bActive);
+	SetActorEnableCollision(bActive);
+	SetActorTickEnabled(bActive);
+
+	//if (bActive)
+	//{
+	//	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//	SetActorHiddenInGame(false);
+	//	SetActorEnableCollision(true);
+	//	SetActorTickEnabled(false);
+	//}
+	//else
+	//{
+	//	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//	SetActorHiddenInGame(true);
+	//	SetActorEnableCollision(false);
+	//}
 
 	bIsActive = bActive;
 }
@@ -163,7 +173,7 @@ UZCharacterStatusComponent * const AZBaseCharacter::GetStatusComponent() const
 	return StatusComponent;
 }
 
-UAnimInstance * AZBaseCharacter::GetAnimInstance() const
+UZCharacterAnimInstance * AZBaseCharacter::GetAnimInstance() const
 {
 	return AnimInstance;
 }
@@ -174,16 +184,19 @@ void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 
 void AZBaseCharacter::OnDead()
 {
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
-	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->SetSimulatePhysics(true);
-	
+	GetAnimInstance()->SetIsDead(true);
+
+	SetActorEnableCollision(false);
+	//SetActorTickEnabled(false);
+	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//
+	//GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	//GetMesh()->SetSimulatePhysics(true);
+	//
 	FTimerDelegate InactiveDelegate;
 	InactiveDelegate.BindLambda([this]() {
-		GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
-		GetMesh()->SetSimulatePhysics(false);
 		SetActive(false);
+		GetAnimInstance()->SetIsDead(false);
 	});
 
 	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, InactiveDelegate, 5.f, false);
