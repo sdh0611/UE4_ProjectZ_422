@@ -62,6 +62,26 @@ void UZCharacterAnimInstance::PlayMontage(const FString & MontageName)
 	Montage_Play(MontageTable[MontageName]);
 }
 
+void UZCharacterAnimInstance::StopCurrentMontage()
+{
+	if (!Montage_IsPlaying(CurrentPlayMontage))
+	{
+		return;
+	}
+
+	Montage_Stop(CurrentPlayMontage->BlendOut.GetBlendTime(), CurrentPlayMontage);
+}
+
+void UZCharacterAnimInstance::ResumeCurrentMontage()
+{
+	if (Montage_IsPlaying(CurrentPlayMontage))
+	{
+		return;
+	}
+
+	Montage_Resume(CurrentPlayMontage);
+}
+
 void UZCharacterAnimInstance::SetIsSprinting(bool NewState)
 {
 	bIsSprinting = NewState;

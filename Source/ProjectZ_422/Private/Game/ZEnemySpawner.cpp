@@ -30,7 +30,7 @@ void AZEnemySpawner::BeginPlay()
 	
 	/* Enemy Pool 채워놓기. */
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	SpawnParams.Owner = this;
 
 	SpawnLocation = GetActorLocation();

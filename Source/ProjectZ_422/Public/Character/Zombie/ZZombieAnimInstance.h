@@ -26,6 +26,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_ZombieAttackEndCheck();
 
+	UFUNCTION()
+	void AnimNotify_ZombieDieCheck();
+
 public:
 	/* Setter */
 	void SetIsAttacking(bool NewState);

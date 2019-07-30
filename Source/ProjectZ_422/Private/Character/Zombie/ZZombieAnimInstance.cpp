@@ -43,6 +43,13 @@ void UZZombieAnimInstance::AnimNotify_ZombieAttackEndCheck()
 	//SetIsAttacking(false);
 }
 
+void UZZombieAnimInstance::AnimNotify_ZombieDieCheck()
+{
+	ZLOG_S(Warning);
+	Montage_Stop(CurrentPlayMontage->BlendOut.GetBlendTime(), CurrentPlayMontage);
+
+}
+
 void UZZombieAnimInstance::SetIsAttacking(bool NewState)
 {
 	bIsAttacking = NewState;

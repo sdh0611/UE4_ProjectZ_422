@@ -24,6 +24,8 @@ public:
 
 public:
 	void PlayMontage(const FString& MontageName);
+	void StopCurrentMontage();
+	void ResumeCurrentMontage();
 
 public:
 	void SetIsSprinting(bool NewState);

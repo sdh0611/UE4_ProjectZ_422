@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectZ_422.h"
 #include "GameFramework/GameModeBase.h"
 #include "ZGameMode.generated.h"
 
@@ -19,6 +19,10 @@ public:
 
 public:
 	virtual void BeginPlay() override;
+
+
+public:
+	virtual void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
 
 
 };

@@ -2,12 +2,14 @@
 
 
 #include "ZPlayerController.h"
+#include "ZPlayerState.h"
 #include "ZHUD.h"
 #include "ZPlayerCameraManager.h"
 
 AZPlayerController::AZPlayerController()
 {
 	PlayerCameraManagerClass = AZPlayerCameraManager::StaticClass();
+
 }
 
 AZHUD * const AZPlayerController::GetZHUD() const
