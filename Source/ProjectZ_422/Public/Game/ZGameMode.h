@@ -6,6 +6,14 @@
 #include "GameFramework/GameModeBase.h"
 #include "ZGameMode.generated.h"
 
+UENUM(BlueprintType)
+enum class EGameModeState : uint8
+{
+	ReadyToStart,
+	InProgress,
+	End
+}
+
 /**
  * 
  */
@@ -18,11 +26,25 @@ public:
 	AZGameMode();
 
 public:
-	virtual void BeginPlay() override;
+	virtual void StartPlay() override;
 
 
 public:
 	virtual void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
+
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = GameMode)
+	EGameModeState GameModeState;
+
+	/* Wave사이에 준비시간. -> 초(Second) 단위 */
+	UPROPERTY(EditAnywhere, Category = GameMode)
+	float HalfTime;
+
+	/* Wave 진행시간. -> 초(Second) 단위 */
+	UPROPERTY(EditAnywhere, Category = GameMode)
+	float WaveTime;
+
 
 
 };

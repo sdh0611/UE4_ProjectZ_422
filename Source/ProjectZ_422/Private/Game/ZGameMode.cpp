@@ -15,15 +15,15 @@ AZGameMode::AZGameMode()
 	HUDClass = AZHUD::StaticClass();
 	GameStateClass = AZGameState::StaticClass();
 	PlayerStateClass = AZPlayerState::StaticClass();
+
+	GameModeState = EGameModeState::ReadyToStart;
+	HalfTime = 120.f;
+	WaveTime = 300.f;
 }
 
-void AZGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-}
 
 void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APawn * VictimPawn)
 {
-
+	HasMatchStarted
 
 }

@@ -5,6 +5,7 @@
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
 #include "ZZombieAnimInstance.h"
+#include "ZGameMode.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -49,7 +50,7 @@ AZZombie::AZZombie()
 
 	AttackDamage = 10.f;
 	bIsAttacking = false;
-
+	
 }
 
 void AZZombie::BeginPlay()
@@ -64,6 +65,23 @@ void AZZombie::BeginPlay()
 	auto ZombieAnim = GetZombieAnimInstance();
 	check(nullptr != ZombieAnim);
 	ZombieAnim->OnAttackCheck.BindUObject(this, &AZZombie::AttackCheck);
+}
+
+float AZZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	if (IsDead())
+	{
+		auto GameMode = Cast<AZGameMode>(GetWorld()->GetAuthGameMode());
+		if (nullptr == GameMode)
+		{
+			return;
+		}
+		GameMode->AdjustKillScore(EventInstigator, GetController(), this);
+	}
+
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	return FinalDamage;
 }
 
 void AZZombie::OnSeePlayer(APawn * Pawn)
@@ -203,6 +221,9 @@ void AZZombie::OnDead()
 		ZombieAnim->StopAllMontages(ZombieAnim->GetCurrentPlayMontage()->BlendOut.GetBlendTime());
 	}
 	ZombieAnim->PlayMontage(TEXT("Die"));
+
+
+	
 
 }
 

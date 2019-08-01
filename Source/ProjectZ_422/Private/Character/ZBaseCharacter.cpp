@@ -72,7 +72,7 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	}
 
 	StatusComponent->AdjustCurrentHP(-FinalDamage);
-	if (StatusComponent->IsDead())
+	if (IsDead())
 	{
 		ZLOG(Warning, TEXT("Dead!!"));
 		OnDead();

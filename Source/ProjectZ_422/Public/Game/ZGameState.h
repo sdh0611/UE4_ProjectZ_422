@@ -13,15 +13,17 @@ UCLASS()
 class PROJECTZ_422_API AZGameState : public AGameStateBase
 {
 	GENERATED_BODY()
-	
-public:
 
+public:
+	AZGameState();
 
 
 private:
-	float TotalWave;
+	UPROPERTY(EditAnywhere, Category = GameState)
+	int32 TotalWave;
 
-	float CurrentWave;
+	UPROPERTY(VisibleAnywhere, Category = GameState)
+	int32 CurrentWave;
 
 
 };

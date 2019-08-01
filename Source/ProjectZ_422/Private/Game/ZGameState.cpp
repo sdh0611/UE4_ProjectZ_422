@@ -3,3 +3,9 @@
 
 #include "ZGameState.h"
 
+AZGameState::AZGameState()
+{
+	TotalWave = 10;
+	CurrentWave = 0;
+
+}
