@@ -69,17 +69,18 @@ void AZZombie::BeginPlay()
 
 float AZZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
 	if (IsDead())
 	{
+		ZLOG_S(Warning);
 		auto GameMode = Cast<AZGameMode>(GetWorld()->GetAuthGameMode());
-		if (nullptr == GameMode)
+		if (nullptr != GameMode)
 		{
-			return;
+			GameMode->AdjustKillScore(EventInstigator, GetController(), this);
 		}
-		GameMode->AdjustKillScore(EventInstigator, GetController(), this);
 	}
 
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	return FinalDamage;
 }

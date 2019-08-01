@@ -8,6 +8,8 @@
 #include "ZCurrentWeaponInfoWidget.h"
 #include "ZCharacter.h"
 #include "ZCharacterStatusComponent.h"
+#include "ZCharacterItemStatusComponent.h"
+#include "Components/TextBlock.h"
 
 void UZUserHUD::NativeConstruct()
 {
@@ -29,10 +31,21 @@ void UZUserHUD::NativeConstruct()
 	check(nullptr != NewCurrnetWeaponInfoWidget);
 	CurrentWeaponInfoWidget = NewCurrnetWeaponInfoWidget;
 
+	auto NewCurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
+	check(nullptr != NewCurrentMoneyInfoText);
+	CurrentMoneyInfoText = NewCurrentMoneyInfoText;
+
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
 	check(nullptr != Player);
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
-	
+	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
+
+
+}
+
+void UZUserHUD::UpdateCurrentMoneyInfo(int32 NewMoney)
+{
+	CurrentMoneyInfoText->SetText(FText::FromString(FString::FromInt(NewMoney)));
 }
 
 void UZUserHUD::DrawInventoryWidget()

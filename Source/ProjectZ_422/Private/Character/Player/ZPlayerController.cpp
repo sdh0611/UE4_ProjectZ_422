@@ -5,6 +5,9 @@
 #include "ZPlayerState.h"
 #include "ZHUD.h"
 #include "ZPlayerCameraManager.h"
+#include "ZCharacter.h"
+#include "ZCharacterItemStatusComponent.h"
+
 
 AZPlayerController::AZPlayerController()
 {
@@ -15,4 +18,15 @@ AZPlayerController::AZPlayerController()
 AZHUD * const AZPlayerController::GetZHUD() const
 {
 	return Cast<AZHUD>(GetHUD());
+}
+
+UZCharacterItemStatusComponent * const AZPlayerController::GetCharacterItemStatusComponent() const
+{
+	auto Player = Cast<AZCharacter>(GetPawn());
+	if (Player)
+	{
+		return Player->GetItemStatusComponent();
+	}
+
+	return nullptr;
 }

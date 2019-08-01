@@ -5,8 +5,10 @@
 #include "ZGameState.h"
 #include "ZPlayerState.h"
 #include "ZCharacter.h"
+#include "ZCharacterItemStatusComponent.h"
 #include "ZPlayerController.h"
 #include "ZHUD.h"
+#include "ZPlayerState.h"
 
 AZGameMode::AZGameMode()
 {
@@ -22,8 +24,29 @@ AZGameMode::AZGameMode()
 }
 
 
+void AZGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+
+}
+
 void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APawn * VictimPawn)
 {
-	HasMatchStarted
+	auto KillerState = Killer->GetPlayerState<AZPlayerState>();
+	if (KillerState)
+	{
+		/* 킬 수 증가 */
+		KillerState->AddKill();
+	}
+
+	/* Killer 소지금 증가 */
+	auto KillerPawn = Cast<AZCharacter>(Killer->GetPawn());
+	if (nullptr == KillerPawn)
+	{
+		return;
+	}
+	KillerPawn->GetItemStatusComponent()->AdjustMoney(100);
+
 
 }

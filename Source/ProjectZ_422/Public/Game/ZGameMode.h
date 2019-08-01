@@ -12,7 +12,7 @@ enum class EGameModeState : uint8
 	ReadyToStart,
 	InProgress,
 	End
-}
+};
 
 /**
  * 
@@ -26,11 +26,11 @@ public:
 	AZGameMode();
 
 public:
-	virtual void StartPlay() override;
-
+	//virtual void StartPlay() override;
+	virtual void BeginPlay() override;
 
 public:
-	virtual void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
+	void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
 
 
 protected:

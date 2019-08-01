@@ -19,6 +19,12 @@ public:
 	
 public:
 	/*
+		Currnet Money Info 업데이트 관련
+	*/
+	void UpdateCurrentMoneyInfo(int32 NewMoney);
+
+public:
+	/*
 		화면에 Widget을 띄우기 위한 메소드들
 	*/
 	void DrawInventoryWidget();
@@ -60,5 +66,8 @@ private:
 
 	UPROPERTY()
 	class UZCurrentWeaponInfoWidget* CurrentWeaponInfoWidget;
+
+	UPROPERTY()
+	class UTextBlock* CurrentMoneyInfoText;
 
 };

@@ -19,5 +19,6 @@ public:
 
 public:
 	class AZHUD* const GetZHUD() const;
-	
+	class UZCharacterItemStatusComponent* const GetCharacterItemStatusComponent() const;
+
 };
