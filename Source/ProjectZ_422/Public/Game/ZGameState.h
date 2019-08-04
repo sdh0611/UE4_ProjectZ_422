@@ -17,6 +17,17 @@ class PROJECTZ_422_API AZGameState : public AGameStateBase
 public:
 	AZGameState();
 
+public:
+	virtual void Tick(float DeltaTime) override;
+
+public:
+	void IncreaseCurrentWave();
+	
+
+public:
+	int32 GetTotalWave() const;
+	int32 GetCurrentWave() const;
+	float GetElaspedTime() const;
 
 private:
 	UPROPERTY(EditAnywhere, Category = GameState)
@@ -25,5 +36,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = GameState)
 	int32 CurrentWave;
 
+	UPROPERTY(VisibleAnywhere, Category = GameState)
+	float ElapsedTime;
 
 };
