@@ -50,8 +50,8 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	auto Pawn = TryGetPawnOwner();
-	if (::IsValid(Pawn))
+	auto Pawn = Cast<AZCharacter>(TryGetPawnOwner());
+	if (Pawn && Pawn->IsValidLowLevel())
 	{
 		/*
 			AimOffset에 사용하기 위한 Yaw, Pitch 계산
@@ -60,6 +60,21 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FRotator CurrentRot = FMath::RInterpTo(FRotator(AimPitch, AimYaw, 0.f), DeltaRot, DeltaSeconds, 15.f);
 		AimYaw = FMath::ClampAngle(CurrentRot.Yaw, -90.f, 90.f);
 		AimPitch = FMath::ClampAngle(CurrentRot.Pitch, -90.f, 90.f);
+
+		/* 
+			무기 장착여부 체크
+		*/
+		auto Weapon = Pawn->GetCurrentWeapon();
+		if (nullptr == Weapon)
+		{
+			SetIsEquipGun(false);
+		}
+		else
+		{
+			BindFireMontage(Weapon);
+		}
+		
+		
 
 	}
 }
@@ -87,49 +102,60 @@ void UZPlayerAnimInstance::PlayThrowGrenadeMontage()
 
 void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 {
-	switch (NewWeapon->GetWeaponType())
+	if (NewWeapon->OnWeaponFired.IsBoundToObject(this))
 	{
-	case EWeaponType::Pistol:
-	{
-		/*
-			권총류
-			->임시로 라이플 애니메이션으로 바인딩
-		*/
-		//NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayFireRifleMontage);
-		break;
-	}
-	case EWeaponType::Knife:
-	{
-		/*
-			근접무기
-			->임시로 라이플 애니메이션으로 바인딩
-		*/
-		NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireRifleMontage);
-		break;
-	}
-	case EWeaponType::Grenade:
-	{
-		/*
-			투척물
-		*/
-		NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayThrowGrenadeMontage);
-		break;
-	}
-	case EWeaponType::Invalid:
-	{
-		ZLOG(Error, TEXT("Invalid type."));
 		return;
 	}
-	default:
+
+
+	switch (NewWeapon->GetWeaponType())
 	{
-		/*
-			라이플류
-		*/
-		NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireRifleMontage);
-		break;
-	}
+		case EWeaponType::Pistol:
+		{
+			/*
+				권총류
+				->임시로 라이플 애니메이션으로 바인딩
+			*/
+			//NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayFireRifleMontage);
+			SetIsEquipGun(true);
+			break;
+		}
+		case EWeaponType::Knife:
+		{
+			/*
+				근접무기
+				->임시로 라이플 애니메이션으로 바인딩
+			*/
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireRifleMontage);
+			SetIsEquipGun(false);
+			break;
+		}
+		case EWeaponType::Grenade:
+		{
+			/*
+				투척물
+			*/
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayThrowGrenadeMontage);
+			SetIsEquipGun(false);
+			break;
+		}
+		case EWeaponType::Invalid:
+		{
+			ZLOG(Error, TEXT("Invalid type."));
+			return;
+		}
+		default:
+		{
+			/*
+				라이플류
+			*/
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireRifleMontage);
+			SetIsEquipGun(true);
+			break;
+		}
 
 	}
+
 }
 
 void UZPlayerAnimInstance::PlayFireMontage(class AZWeapon* NewWeapon)
