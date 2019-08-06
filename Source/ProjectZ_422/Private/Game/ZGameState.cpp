@@ -39,9 +39,13 @@ void AZGameState::SetTotalWave(int32 NewTotalWave)
 	TotalWave = NewTotalWave;
 }
 
-void AZGameState::SetRemainTime(float NewRemainTime)
+void AZGameState::UpdateRemainTime(float NewRemainTime)
 {
 	RemainTime = NewRemainTime;
+	if (OnTimeUpdate.IsBound())
+	{
+		OnTimeUpdate.Broadcast(RemainTime);
+	}
 }
 
 int32 AZGameState::GetTotalWave() const

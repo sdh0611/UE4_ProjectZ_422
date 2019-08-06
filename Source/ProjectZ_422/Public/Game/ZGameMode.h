@@ -6,7 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "ZGameMode.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimeUpdate, float);
 
 UENUM(BlueprintType)
 enum class EGameModeState : uint8
@@ -23,7 +22,8 @@ enum class EGamePhase: uint8
 	HalfTime,
 	WaveTime,
 	Boss,
-	End
+	Win,
+	Lose
 };
 
 /**
@@ -46,17 +46,15 @@ public:
 	void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
 
 public:
+	void UpdateGameTime(float DeltaTime);
 	void HandleGamePhase(EGamePhase NewCurrentGameState);
 
 protected:
-	//void CheckTime();
+	/* Getter */
 	bool IsGameClear();
 	bool IsWaveEnd();
 	float GetCurrentRemainTime() const;
 	EGamePhase GetCurrentGamePhase() const;
-
-public:
-	FOnTimeUpdate OnTimeUpdate;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = GameMode)

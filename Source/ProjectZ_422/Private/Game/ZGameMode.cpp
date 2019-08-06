@@ -36,25 +36,25 @@ void AZGameMode::BeginPlay()
 	CurrentGamePhase = EGamePhase::HalfTime;
 	CurrentRemainTime = HalfTime;
 	auto ZGameState = Cast<AZGameState>(GameState);
-	if (ZGameState)
-	{
-		OnTimeUpdate.AddUObject(ZGameState, &AZGameState::SetRemainTime);
-	}
+
 }
 
 void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	UpdateGameTime(DeltaTime);
 
-	CurrentRemainTime -= DeltaTime;
 
-	OnTimeUpdate.Broadcast(CurrentRemainTime);
+	//CurrentRemainTime -= DeltaTime;
+
+	//OnTimeUpdate.Broadcast(CurrentRemainTime);
 
 	/* Wave 클리어여부 체크 */
-	if (DeltaTime <= 0.f)
-	{
-		HandleGamePhase(EGamePhase::HalfTime);
-	}
+	//if (CurrentRemainTime <= 0.f)
+	//{
+	//	HandleGamePhase(EGamePhase::HalfTime);
+	//}
 
 }
 
@@ -65,6 +65,13 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 	{
 		/* 킬 수 증가 */
 		KillerState->AddKill();
+	}
+
+	/* 좀비 개체수 조정 */
+	auto ZGameState = Cast<AZGameState>(GameState);
+	if(ZGameState)
+	{
+		ZGameState->AdjustCurrentNumZombies(-1);
 	}
 
 	/* Killer 소지금 증가 */
@@ -81,6 +88,55 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 EGamePhase AZGameMode::GetCurrentGamePhase() const
 {
 	return CurrentGamePhase;
+}
+
+void AZGameMode::UpdateGameTime(float DeltaTime)
+{
+	CurrentRemainTime -= DeltaTime;
+
+	//OnTimeUpdate.Broadcast(CurrentRemainTime);
+
+	if (CurrentRemainTime <= 0.f)
+	{
+		switch (CurrentGamePhase)
+		{
+			case EGamePhase::HalfTime:
+			{
+				/* WaveTime Phase로 전환 */
+				HandleGamePhase(EGamePhase::WaveTime);
+				break;
+			}
+			case EGamePhase::WaveTime:
+			{
+				/* Wave 체크 후 Wave 10 미만이면 HalfTime으로 전환, Wave 10이면 Boss로 전환 */
+				if (CurrentWave <= TotalWave)
+				{
+					HandleGamePhase(EGamePhase::HalfTime);
+				}
+				else
+				{
+					HandleGamePhase(EGamePhase::Boss);
+				}
+				break;
+			}
+			case EGamePhase::Boss:
+			{
+				/* Clear여부 체크 */
+				
+
+				break;
+			}
+
+		}
+	}
+
+	/* GameState에 시간 업데이트 */
+	auto ZGameState = Cast<AZGameState>(GameState);
+	if (ZGameState)
+	{
+		ZGameState->UpdateRemainTime(CurrentRemainTime);
+	}
+
 }
 
 void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)

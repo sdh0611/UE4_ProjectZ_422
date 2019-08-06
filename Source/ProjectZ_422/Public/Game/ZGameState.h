@@ -6,6 +6,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "ZGameState.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimeUpdate, float);
 
 
 /**
@@ -30,12 +31,12 @@ public:
 		±âº»Àº µ¡¼À
 	*/
 	void AdjustCurrentNumZombies(int32 NewValue);
+	void UpdateRemainTime(float NewRemainTime);
 
 
 public:
 	/* Setter */
 	void SetTotalWave(int32 NewTotalWave);
-	void SetRemainTime(float NewRemainTime);
 
 	/* Getter */
 	int32 GetTotalWave() const;
@@ -43,6 +44,10 @@ public:
 	int32 GetCurrentNumZombies() const;
 	float GetRemainTime() const;
 	float GetElaspedTime() const;
+
+public:
+	FOnTimeUpdate OnTimeUpdate;
+
 
 private:
 	UPROPERTY(EditAnywhere, Category = GameState)

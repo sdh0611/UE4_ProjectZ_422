@@ -2,7 +2,7 @@
 
 
 #include "ZUserHUD.h"
-#include "ZGameMode.h"
+#include "ZGameState.h"
 #include "ZInventoryWidget.h"
 #include "ZShopWidget.h"
 #include "ZHPBarWidget.h"
@@ -58,10 +58,11 @@ void UZUserHUD::NativeConstruct()
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
 	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
 
-	auto GameMode = Cast<AZGameMode>(GetWorld()->GetAuthGameMode());
-	if (GameMode)
+	/* 이부분 UI 제거될 때 Delegate binding 어떻게 제거할지 고민해봐야함. */
+	auto GameState = Cast<AZGameState>(GetWorld()->GetGameState());
+	if (GameState)
 	{
-		GameMode->OnTimeUpdate.AddUObject(this, &UZUserHUD::UpdateRemainTime);
+		GameState->OnTimeUpdate.AddUObject(this, &UZUserHUD::UpdateRemainTime);
 	}
 
 }

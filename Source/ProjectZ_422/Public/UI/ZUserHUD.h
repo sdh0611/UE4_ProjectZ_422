@@ -16,7 +16,7 @@ class PROJECTZ_422_API UZUserHUD : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
-	
+
 public:
 	/* Currnet Money Info 업데이트 관련 */
 	void UpdateCurrentMoneyInfo(int32 NewMoney);
