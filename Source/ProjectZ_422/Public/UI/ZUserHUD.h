@@ -18,10 +18,14 @@ public:
 	virtual void NativeConstruct() override;
 	
 public:
-	/*
-		Currnet Money Info 업데이트 관련
-	*/
+	/* Currnet Money Info 업데이트 관련 */
 	void UpdateCurrentMoneyInfo(int32 NewMoney);
+
+	/* 해당 메소드는 GameMode에서 델리게이트로 업데이트 시킬 것. */
+	void UpdateRemainTime(float NewTime);
+	
+	void UpdateCurrentWave(int32 NewCurrentWave);
+	void UpdateNumZombies(int32 NewValue);
 
 public:
 	/*
@@ -69,5 +73,17 @@ private:
 
 	UPROPERTY()
 	class UTextBlock* CurrentMoneyInfoText;
+
+	UPROPERTY()
+	class UTextBlock* RemainTimeText;
+
+	UPROPERTY()
+	class UTextBlock* TotalWaveText;
+
+	UPROPERTY()
+	class UTextBlock* CurrentWaveText;
+
+	UPROPERTY()
+	class UTextBlock* CurrentNumZombiesText;
 
 };

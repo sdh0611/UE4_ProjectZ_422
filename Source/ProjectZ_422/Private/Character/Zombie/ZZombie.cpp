@@ -222,8 +222,6 @@ void AZZombie::OnDead()
 		ZombieAnim->StopAllMontages(ZombieAnim->GetCurrentPlayMontage()->BlendOut.GetBlendTime());
 	}
 	ZombieAnim->PlayMontage(TEXT("Die"));
-
-
 	
 
 }

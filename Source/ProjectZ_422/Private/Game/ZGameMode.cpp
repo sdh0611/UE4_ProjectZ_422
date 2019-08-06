@@ -12,13 +12,15 @@
 
 AZGameMode::AZGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	DefaultPawnClass = AZCharacter::StaticClass();
 	PlayerControllerClass = AZPlayerController::StaticClass();
 	HUDClass = AZHUD::StaticClass();
 	GameStateClass = AZGameState::StaticClass();
 	PlayerStateClass = AZPlayerState::StaticClass();
 
-	CurrentGameState = ECurrentGameState::Ready;
+	CurrentGamePhase = EGamePhase::Ready;
 	GameModeState = EGameModeState::ReadyToStart;
 	HalfTime = 120.f;
 	WaveTime = 300.f;
@@ -31,19 +33,27 @@ void AZGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	/* 첫 시작시 준비시간 부여 */
-	CurrentGameState = ECurrentGameState::HalfTime;
+	CurrentGamePhase = EGamePhase::HalfTime;
 	CurrentRemainTime = HalfTime;
+	auto ZGameState = Cast<AZGameState>(GameState);
+	if (ZGameState)
+	{
+		OnTimeUpdate.AddUObject(ZGameState, &AZGameState::SetRemainTime);
+	}
 }
 
 void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/* Wave 클리어여부 체크 */
 	CurrentRemainTime -= DeltaTime;
+
+	OnTimeUpdate.Broadcast(CurrentRemainTime);
+
+	/* Wave 클리어여부 체크 */
 	if (DeltaTime <= 0.f)
 	{
-		HandleCurrentGameState(ECurrentGameState::HalfTime);
+		HandleGamePhase(EGamePhase::HalfTime);
 	}
 
 }
@@ -68,16 +78,16 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 
 }
 
-ECurrentGameState AZGameMode::GetCurrentGameState() const
+EGamePhase AZGameMode::GetCurrentGamePhase() const
 {
-	return CurrentGameState;
+	return CurrentGamePhase;
 }
 
-void AZGameMode::HandleCurrentGameState(ECurrentGameState NewCurrentGameState)
+void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
 {
 	switch (NewCurrentGameState)
 	{
-		case ECurrentGameState::HalfTime:
+		case EGamePhase::HalfTime:
 		{
 			/* 
 				남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 
@@ -85,7 +95,7 @@ void AZGameMode::HandleCurrentGameState(ECurrentGameState NewCurrentGameState)
 			CurrentRemainTime = HalfTime;
 			break;
 		}
-		case ECurrentGameState::WaveTime:
+		case EGamePhase::WaveTime:
 		{
 			/* 
 				남은 시간을 WaveTime만큼으로 초기화하고, 상점 닫음
@@ -109,7 +119,7 @@ void AZGameMode::HandleCurrentGameState(ECurrentGameState NewCurrentGameState)
 
 	}
 
-	CurrentGameState = NewCurrentGameState;
+	CurrentGamePhase= NewCurrentGameState;
 
 
 }
@@ -121,10 +131,15 @@ bool AZGameMode::IsGameClear()
 
 bool AZGameMode::IsWaveEnd()
 {
-	if (ECurrentGameState::WaveTime != GetCurrentGameState())
+	if (EGamePhase::WaveTime != GetCurrentGamePhase())
 	{
 		return false;
 	}
 
 	return (CurrentRemainTime <= 0.f);
+}
+
+float AZGameMode::GetCurrentRemainTime() const
+{
+	return CurrentRemainTime;
 }

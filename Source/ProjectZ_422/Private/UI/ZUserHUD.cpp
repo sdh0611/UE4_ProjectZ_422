@@ -2,6 +2,7 @@
 
 
 #include "ZUserHUD.h"
+#include "ZGameMode.h"
 #include "ZInventoryWidget.h"
 #include "ZShopWidget.h"
 #include "ZHPBarWidget.h"
@@ -35,17 +36,57 @@ void UZUserHUD::NativeConstruct()
 	check(nullptr != NewCurrentMoneyInfoText);
 	CurrentMoneyInfoText = NewCurrentMoneyInfoText;
 
+	auto NewRemainTimeText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_RemainTimeValue")));
+	check(nullptr != NewRemainTimeText);
+	RemainTimeText = NewRemainTimeText;
+
+	auto NewTotalWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_TotalWaveValue")));
+	check(nullptr != NewTotalWaveText);
+	TotalWaveText = NewTotalWaveText;
+
+	auto NewCurrentWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrentWaveValue")));
+	check(nullptr != NewCurrentWaveText);
+	CurrentWaveText = NewCurrentWaveText;
+
+	auto NewCurrentNumZombiesText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_NumZombiesValue")));
+	check(nullptr != NewCurrentNumZombiesText);
+	CurrentNumZombiesText = NewCurrentNumZombiesText;
+	
+
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
 	check(nullptr != Player);
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
 	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
 
+	auto GameMode = Cast<AZGameMode>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		GameMode->OnTimeUpdate.AddUObject(this, &UZUserHUD::UpdateRemainTime);
+	}
 
 }
 
 void UZUserHUD::UpdateCurrentMoneyInfo(int32 NewMoney)
 {
 	CurrentMoneyInfoText->SetText(FText::FromString(FString::FromInt(NewMoney)));
+}
+
+void UZUserHUD::UpdateRemainTime(float NewTime)
+{
+	FString Time = FString::Printf(TEXT("%.1f"), NewTime);
+	RemainTimeText->SetText(FText::FromString(Time));
+}
+
+void UZUserHUD::UpdateCurrentWave(int32 NewCurrentWave)
+{
+	FString CurrentWave = FString::FromInt(NewCurrentWave);
+	CurrentWaveText->SetText(FText::FromString(CurrentWave));
+}
+
+void UZUserHUD::UpdateNumZombies(int32 NewValue)
+{
+	FString CurrentNumZombies = FString::FromInt(NewValue);
+	CurrentNumZombiesText->SetText(FText::FromString(CurrentNumZombies));
 }
 
 void UZUserHUD::DrawInventoryWidget()

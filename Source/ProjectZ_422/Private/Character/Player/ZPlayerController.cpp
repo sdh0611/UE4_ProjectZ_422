@@ -22,10 +22,10 @@ AZHUD * const AZPlayerController::GetZHUD() const
 
 UZCharacterItemStatusComponent * const AZPlayerController::GetCharacterItemStatusComponent() const
 {
-	auto Player = Cast<AZCharacter>(GetPawn());
-	if (Player)
+	auto Chracter = Cast<AZCharacter>(GetPawn());
+	if (Chracter)
 	{
-		return Player->GetItemStatusComponent();
+		return Chracter->GetItemStatusComponent();
 	}
 
 	return nullptr;
