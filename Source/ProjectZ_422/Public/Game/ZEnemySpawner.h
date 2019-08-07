@@ -23,11 +23,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	void SetActive(bool bActive);
+
 private:
 	void SpawnEnemy();
 
 
-private:
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner)
+	bool bIsActive;
+
 	UPROPERTY(EditAnywhere, Transient, Category = Spawner)
 	FVector SpawnLocation;
 
@@ -45,6 +51,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
 	int32 EnemyPoolSize;
+
+	UPROPERTY(EditAnywhere, Category = Spawner)
+	TSubclassOf<class AZZombie> SpawnEnemyClass;
 
 	FTimerHandle SpawnTimer;
 

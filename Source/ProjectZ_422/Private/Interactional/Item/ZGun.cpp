@@ -19,12 +19,12 @@ AZGun::AZGun()
 		WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
 	}
 
-	static ConstructorHelpers::FClassFinder<AZProjectile>
-		CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZBulletProjectile'"));
-	if (CLASS_PROJECTILE.Succeeded())
-	{
-		ProjectileClass = CLASS_PROJECTILE.Class;
-	}
+	//static ConstructorHelpers::FClassFinder<AZProjectile>
+	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZBulletProjectile'"));
+	//if (CLASS_PROJECTILE.Succeeded())
+	//{
+	//	ProjectileClass = CLASS_PROJECTILE.Class;
+	//}
 
 	bIsReloading = false;
 	bWantsToFire = false;
@@ -172,7 +172,7 @@ void AZGun::Fire()
 		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
 	}
 
-	DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 1000.f, FColor::Red, false, 0.5f);
+	DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;

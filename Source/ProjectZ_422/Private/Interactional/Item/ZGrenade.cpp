@@ -17,12 +17,12 @@ AZGrenade::AZGrenade()
 		WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
 	}
 
-	static ConstructorHelpers::FClassFinder<AZProjectile>
-		CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZGrenadeProjectile'"));
-	if (CLASS_PROJECTILE.Succeeded())
-	{
-		ProjectileClass = CLASS_PROJECTILE.Class;
-	}
+	//static ConstructorHelpers::FClassFinder<AZProjectile>
+	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZGrenadeProjectile'"));
+	//if (CLASS_PROJECTILE.Succeeded())
+	//{
+	//	ProjectileClass = CLASS_PROJECTILE.Class;
+	//}
 
 	ExplosionRadius = 100.f;
 	WeaponCategory = EWeaponCategory::Grenade;
@@ -82,7 +82,7 @@ void AZGrenade::ThrowGrenade()
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = ItemOwner;
 
-	AZGrenadeProjectile* Projectile = GetWorld()->SpawnActor<AZGrenadeProjectile>(ProjectileClass, HandLocation, LaunchDirection.Rotation(), SpawnParams);
+	AZGrenadeProjectile* Projectile = GetWorld()->SpawnActor<AZGrenadeProjectile>(GrenadeProjectileClass, HandLocation, LaunchDirection.Rotation(), SpawnParams);
 	if (Projectile)
 	{
 		Projectile->SetDamage(Damage);

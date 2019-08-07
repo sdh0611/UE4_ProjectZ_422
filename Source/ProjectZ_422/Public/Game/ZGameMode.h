@@ -83,4 +83,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = GameMode)
 	float CurrentRemainTime;
 
+	UPROPERTY()
+	TArray<class AZEnemySpawner*> EnemySpawners;
+
 };

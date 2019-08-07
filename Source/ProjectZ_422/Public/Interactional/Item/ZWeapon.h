@@ -177,10 +177,6 @@ public:
 	FOnWeaponFired OnWeaponFired;
 
 protected:
-	// 사격시 생성되는 총알의 클래스.
-	UPROPERTY(EditAnywhere, Category = Weapon)
-	TSubclassOf<class AZProjectile> ProjectileClass;
-
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	class USkeletalMeshComponent* WeaponMesh;
 

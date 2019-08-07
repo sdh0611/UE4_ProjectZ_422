@@ -24,12 +24,12 @@ AZWeapon::AZWeapon()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	RootComponent = WeaponMesh;
 
-	static ConstructorHelpers::FClassFinder<AZProjectile>
-		CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZProjectile'"));
-	if (CLASS_PROJECTILE.Succeeded())
-	{
-		ProjectileClass = CLASS_PROJECTILE.Class;
-	}
+	//static ConstructorHelpers::FClassFinder<AZProjectile>
+	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZProjectile'"));
+	//if (CLASS_PROJECTILE.Succeeded())
+	//{
+	//	ProjectileClass = CLASS_PROJECTILE.Class;
+	//}
 
 	// -1 : Player에게 습득되지 않은 상태
 	WeaponInventoryIndex = -1;

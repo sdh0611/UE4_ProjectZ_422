@@ -34,7 +34,11 @@ public:
 public:
 	bool IsThrown() const;
 
-private:
+protected:
+	// 사격시 생성되는 수류탄의 클래스.
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	TSubclassOf<class AZGrenadeProjectile> GrenadeProjectileClass;
+
 	UPROPERTY(VisibleAnywhere, Category = Grenade)
 	bool bIsThrown;
 

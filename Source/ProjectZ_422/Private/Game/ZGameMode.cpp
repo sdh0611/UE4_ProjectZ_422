@@ -5,10 +5,13 @@
 #include "ZGameState.h"
 #include "ZPlayerState.h"
 #include "ZCharacter.h"
+#include "ZEnemySpawner.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "ZPlayerController.h"
 #include "ZHUD.h"
 #include "ZPlayerState.h"
+#include "EngineUtils.h"
+
 
 AZGameMode::AZGameMode()
 {
@@ -22,7 +25,7 @@ AZGameMode::AZGameMode()
 
 	CurrentGamePhase = EGamePhase::Ready;
 	GameModeState = EGameModeState::ReadyToStart;
-	HalfTime = 120.f;
+	HalfTime = 10.f;
 	WaveTime = 300.f;
 	CurrentRemainTime = 0.f;
 }
@@ -35,7 +38,13 @@ void AZGameMode::BeginPlay()
 	/* 첫 시작시 준비시간 부여 */
 	CurrentGamePhase = EGamePhase::HalfTime;
 	CurrentRemainTime = HalfTime;
-	auto ZGameState = Cast<AZGameState>(GameState);
+	auto MyGameState = GetGameState<AZGameState>();
+
+	/* Level내의 Spawner 저장 */
+	for (TActorIterator<AZEnemySpawner> Iterator(GetWorld()); Iterator; ++Iterator)
+	{
+		EnemySpawners.Add(*Iterator);
+	}
 
 }
 
@@ -145,9 +154,13 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
 	{
 		case EGamePhase::HalfTime:
 		{
-			/* 
-				남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 
-			*/
+			/* Spawner 비활성화 */
+			for (const auto& Spawner : EnemySpawners)
+			{
+				Spawner->SetActive(false);
+			}
+
+			/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
 			CurrentRemainTime = HalfTime;
 			break;
 		}
@@ -161,11 +174,18 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
 			auto ZGameState = Cast<AZGameState>(GameState);
 			if (nullptr != ZGameState)
 			{
-				/*
-					Wave정보 업데이트
-				*/
+				/*	Wave정보 업데이트 */
 				ZGameState->IncreaseCurrentWave();
+				for (const auto& Spawner : EnemySpawners)
+				{
+					Spawner->SetActive(false);
+				}
+			}
 
+			/* Spawner 활성화 */
+			for (const auto& Spawner : EnemySpawners)
+			{
+				Spawner->SetActive(true);
 			}
 
 			break;

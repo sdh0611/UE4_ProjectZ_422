@@ -13,6 +13,8 @@ AZEnemySpawner::AZEnemySpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	/* 비활성화 상태로 생성 */
+	bIsActive = false;
 	SpawnDelay = 3.f;
 	SpawnMaximum = 10;
 	CurrentAliveEnemies = 0;
@@ -39,7 +41,9 @@ void AZEnemySpawner::BeginPlay()
 	for (int i = 0; i < EnemyPoolSize; ++i)
 	{
 		/* 각각의 Enemy는 Spawn후 비활성화상태로 */
-		auto Enemy = GetWorld()->SpawnActor<AZZombie>(AZZombie::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+		
+		//auto Enemy = GetWorld()->SpawnActor<AZZombie>(AZZombie::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+		auto Enemy = GetWorld()->SpawnActor<AZZombie>(SpawnEnemyClass, GetActorTransform(), SpawnParams);
 		if (nullptr != Enemy)
 		{
 			Enemy->SetActive(false);
@@ -48,8 +52,6 @@ void AZEnemySpawner::BeginPlay()
 
 	}
 
-	/* Spawn Timer 등록 */
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimer, this, &AZEnemySpawner::SpawnEnemy, SpawnDelay, true, SpawnDelay);
 
 }
 
@@ -59,6 +61,19 @@ void AZEnemySpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	
+}
+
+void AZEnemySpawner::SetActive(bool bActive)
+{
+	if (bActive)
+	{
+		/* Spawn Timer 등록 */
+		GetWorld()->GetTimerManager().SetTimer(SpawnTimer, this, &AZEnemySpawner::SpawnEnemy, SpawnDelay, true, SpawnDelay);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SpawnTimer);
+	}
 }
 
 void AZEnemySpawner::SpawnEnemy()

@@ -45,7 +45,10 @@ public:
 protected:
 	bool CheckNeedToReload();
 
-private:
+protected:
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	TSubclassOf<class AZBulletProjectile> BulletClass;
+
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	bool bIsReloading;
 

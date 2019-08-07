@@ -7,6 +7,8 @@
 #include "ZGameState.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimeUpdate, float);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentWaveUpdate, int32);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnNumZombiesUpdate, int32);
 
 
 /**
@@ -47,7 +49,8 @@ public:
 
 public:
 	FOnTimeUpdate OnTimeUpdate;
-
+	FOnCurrentWaveUpdate OnCurrentWaveUpdate;
+	FOnNumZombiesUpdate OnNumZombiesUpdate;
 
 private:
 	UPROPERTY(EditAnywhere, Category = GameState)

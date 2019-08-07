@@ -22,6 +22,7 @@ void AZGameState::Tick(float DeltaTime)
 void AZGameState::IncreaseCurrentWave()
 {
 	++CurrentWave;
+	OnCurrentWaveUpdate.Broadcast(CurrentWave);
 }
 
 void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
@@ -31,7 +32,7 @@ void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
 	{
 		CurrentNumZombies = 0;
 	}
-
+	OnNumZombiesUpdate.Broadcast(CurrentNumZombies);
 }
 
 void AZGameState::SetTotalWave(int32 NewTotalWave)

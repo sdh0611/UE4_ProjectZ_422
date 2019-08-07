@@ -13,17 +13,23 @@ UCLASS()
 class PROJECTZ_422_API UZUserHUD : public UUserWidget
 {
 	GENERATED_BODY()
-	
+		
 public:
+	UZUserHUD(const FObjectInitializer & ObjectInitializer);
+
+
+protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry & MyGeometry, float InDeltaTime) override;
+	virtual void NativeDestruct() override;
+	
 
 public:
 	/* Currnet Money Info 업데이트 관련 */
 	void UpdateCurrentMoneyInfo(int32 NewMoney);
 
-	/* 해당 메소드는 GameMode에서 델리게이트로 업데이트 시킬 것. */
+	/* 해당 메소드들은 GameState에서 델리게이트로 업데이트 시킬 것. */
 	void UpdateRemainTime(float NewTime);
-	
 	void UpdateCurrentWave(int32 NewCurrentWave);
 	void UpdateNumZombies(int32 NewValue);
 
@@ -52,23 +58,23 @@ public:
 	class UZShopWidget* const GetShopWidget() const;
 	class UZCurrentWeaponInfoWidget* const GetCurrentWeaponInfoWidget() const;
 
-private:
+protected:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
 	bool bIsInventoryOnScreen;
 
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
 	bool bIsShopOnScreen;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZInventoryWidget* InventoryWidget;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZShopWidget* ShopWidget;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZHPBarWidget* HPBarWidget;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZCurrentWeaponInfoWidget* CurrentWeaponInfoWidget;
 
 	UPROPERTY()

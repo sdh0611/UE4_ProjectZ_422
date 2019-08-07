@@ -12,59 +12,109 @@
 #include "ZCharacterItemStatusComponent.h"
 #include "Components/TextBlock.h"
 
+UZUserHUD::UZUserHUD(const FObjectInitializer & ObjectInitializer)
+	:UUserWidget(ObjectInitializer)
+{
+}
+
 void UZUserHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	/* Inventory */
 	auto NewInventoryWidget = Cast<UZInventoryWidget>(GetWidgetFromName(TEXT("UI_Inventory")));
 	check(nullptr != NewInventoryWidget);
 	InventoryWidget = NewInventoryWidget;
 
+	/* Shop widget */
 	auto NewShopWidget = Cast<UZShopWidget>(GetWidgetFromName(TEXT("UI_Shop")));
 	check(nullptr != NewShopWidget);
 	ShopWidget = NewShopWidget;
 
+	/* HPBar widget */
 	auto NewHPBarWidget = Cast<UZHPBarWidget>(GetWidgetFromName(TEXT("UI_HPBar")));
 	check(nullptr != NewHPBarWidget);
 	HPBarWidget = NewHPBarWidget;
 
+	/* Weapon info widget */
 	auto NewCurrnetWeaponInfoWidget = Cast<UZCurrentWeaponInfoWidget>(GetWidgetFromName(TEXT("UI_CurrentWeaponInfo")));
 	check(nullptr != NewCurrnetWeaponInfoWidget);
 	CurrentWeaponInfoWidget = NewCurrnetWeaponInfoWidget;
 
+	/* Money text */
 	auto NewCurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
 	check(nullptr != NewCurrentMoneyInfoText);
 	CurrentMoneyInfoText = NewCurrentMoneyInfoText;
 
+	/* Time text */
 	auto NewRemainTimeText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_RemainTimeValue")));
 	check(nullptr != NewRemainTimeText);
 	RemainTimeText = NewRemainTimeText;
 
+	/* Total wave text */
 	auto NewTotalWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_TotalWaveValue")));
 	check(nullptr != NewTotalWaveText);
 	TotalWaveText = NewTotalWaveText;
 
+	/* Current wave text */
 	auto NewCurrentWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrentWaveValue")));
 	check(nullptr != NewCurrentWaveText);
 	CurrentWaveText = NewCurrentWaveText;
 
+	/* NumZombies text */
 	auto NewCurrentNumZombiesText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_NumZombiesValue")));
 	check(nullptr != NewCurrentNumZombiesText);
 	CurrentNumZombiesText = NewCurrentNumZombiesText;
 	
 
+	/* HPBar에 StatusComponent 바인딩 */
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
 	check(nullptr != Player);
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
 	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
 
-	/* 이부분 UI 제거될 때 Delegate binding 어떻게 제거할지 고민해봐야함. */
-	auto GameState = Cast<AZGameState>(GetWorld()->GetGameState());
-	if (GameState)
+
+	/* 
+		이부분 UI 제거될 때 Delegate binding 어떻게 제거할지 고민해봐야함. 
+		->NativeDestruct() 호출될 때 제거함.
+	*/
+	auto MyGameState = GetWorld()->GetGameState<AZGameState>();
+	if (MyGameState)
 	{
-		GameState->OnTimeUpdate.AddUObject(this, &UZUserHUD::UpdateRemainTime);
+		MyGameState->OnTimeUpdate.AddUObject(this, &UZUserHUD::UpdateRemainTime);
+		MyGameState->OnCurrentWaveUpdate.AddUObject(this, &UZUserHUD::UpdateCurrentWave);
+		MyGameState->OnNumZombiesUpdate.AddUObject(this, &UZUserHUD::UpdateNumZombies);
+
+		UpdateRemainTime(MyGameState->GetRemainTime());
+		UpdateCurrentWave(MyGameState->GetCurrentWave());
+		UpdateNumZombies(MyGameState->GetCurrentNumZombies());
+		TotalWaveText->SetText(FText::FromString(FString::FromInt(MyGameState->GetTotalWave())));
 	}
 
+}
+
+void UZUserHUD::NativeTick(const FGeometry & MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	//auto MyGameState = GetWorld()->GetGameState<AZGameState>();
+	//if (MyGameState)
+	//{
+	//	UpdateRemainTime(MyGameState->GetRemainTime());
+	//	
+	//}
+
+}
+
+void UZUserHUD::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	auto GameState = GetWorld()->GetGameState<AZGameState>();
+	if (GameState)
+	{
+		GameState->OnTimeUpdate.RemoveAll(this);
+	}
 }
 
 void UZUserHUD::UpdateCurrentMoneyInfo(int32 NewMoney)
