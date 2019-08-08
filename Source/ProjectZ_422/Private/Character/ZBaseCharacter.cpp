@@ -17,7 +17,7 @@ AZBaseCharacter::AZBaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
-
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 	// Create character status component
 	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
 
@@ -33,7 +33,7 @@ AZBaseCharacter::AZBaseCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	bUseControllerRotationYaw = true;
-
+	GetMesh()->GetAnimInstance();
 }
 
 // Called when the game starts or when spawned

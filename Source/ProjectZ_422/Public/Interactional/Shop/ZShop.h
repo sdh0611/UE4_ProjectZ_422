@@ -25,18 +25,29 @@ public:
 	void Buy(struct FZShopItemData* BuyItemData, int32 Quantity = 1);
 	void Sell(class AZItem* SellItem, int32 Quantity = 1);
 	void OnExitShop();
+
+	/* HalfTime에 상점 활성화 */
+	void OpenShop();
+	/* WaveTime 혹은 BossTime에 상점 비활성화 */
+	void CloseShop();
+
 	struct FZShopItemData* const FindShopItemData(const FString& ShopItemName) const;
 
 public:
+	/* Setter */
 	void SetEnterPlayer(class AZCharacter* NewPlayer);
 
-public:
+	/* Getter */
 	class AZCharacter* const GetEnterPlayer() const;
 
 private:
 	void ConstructShopWidget();
 
-private:
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shop)
+	bool bIsShopOpen;
+
+protected:
 	/* Weapon */
 	UPROPERTY(EditAnywhere, Category = Shop)
 	TSubclassOf<class AZItem> GunClass;
@@ -63,7 +74,7 @@ private:
 	class UDataTable* ShopItemDataTable;
 
 
-private:
+protected:
 	UPROPERTY(VisibleAnywhere, Category = Shop)
 	class UStaticMeshComponent* Mesh;
 

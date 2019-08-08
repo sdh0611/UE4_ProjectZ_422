@@ -37,29 +37,6 @@ AZCharacter::AZCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//// Init chracter mesh.
-	//static ConstructorHelpers::FObjectFinder<USkeletalMesh>
-	//	SK_CHARACTER(TEXT("SkeletalMesh'/Game/Animation/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin.SK_Mannequin'"));
-	//if (SK_CHARACTER.Succeeded())
-	//{
-	//	GetMesh()->SetSkeletalMesh(SK_CHARACTER.Object);
-	//	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -88.f), FRotator(0, -90.f, 0));
-	//}
-	//else
-	//{
-	//	ZLOG(Error, TEXT("Cannot find Character Mesh."));
-	//}
-
-	//// Init character anim instance
-	//static ConstructorHelpers::FClassFinder<UZCharacterAnimInstance>
-	//	ANIM_CHARACTER(TEXT("AnimBlueprint'/Game/Animation/Blueprint/ZCharacter_AnimBlueprint.ZCharacter_AnimBlueprint_C'"));
-	//if (ANIM_CHARACTER.Succeeded())
-	//{
-	//	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	//	GetMesh()->SetAnimInstanceClass(ANIM_CHARACTER.Class);
-	//}
-
-
 	// Create main camera spring arm.
 	MainCameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("MainCameraSpringArm"));
 	MainCameraSpringArm->TargetArmLength = 200.f;

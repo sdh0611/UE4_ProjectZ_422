@@ -2,6 +2,10 @@
 
 
 #include "ZGameState.h"
+#include "ZPlayerController.h"
+#include "ZHUD.h"
+#include "ZUserHUD.h"
+#include "Engine/World.h"
 
 AZGameState::AZGameState()
 {
@@ -16,13 +20,21 @@ void AZGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ElapsedTime += DeltaTime;
 }
 
 void AZGameState::IncreaseCurrentWave()
 {
 	++CurrentWave;
-	OnCurrentWaveUpdate.Broadcast(CurrentWave);
+
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC)
+		{
+			PC->GetZHUD()->GetUserHUD()->UpdateCurrentWave(CurrentWave);
+		}
+	}
+
 }
 
 void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
@@ -32,7 +44,17 @@ void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
 	{
 		CurrentNumZombies = 0;
 	}
-	OnNumZombiesUpdate.Broadcast(CurrentNumZombies);
+
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC)
+		{
+			PC->GetZHUD()->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+		}
+
+	}
+
 }
 
 void AZGameState::SetTotalWave(int32 NewTotalWave)
@@ -43,10 +65,16 @@ void AZGameState::SetTotalWave(int32 NewTotalWave)
 void AZGameState::UpdateRemainTime(float NewRemainTime)
 {
 	RemainTime = NewRemainTime;
-	if (OnTimeUpdate.IsBound())
+
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
 	{
-		OnTimeUpdate.Broadcast(RemainTime);
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC)
+		{
+			PC->GetZHUD()->GetUserHUD()->UpdateRemainTime(RemainTime);
+		}
 	}
+
 }
 
 int32 AZGameState::GetTotalWave() const

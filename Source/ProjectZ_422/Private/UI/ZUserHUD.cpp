@@ -81,10 +81,6 @@ void UZUserHUD::NativeConstruct()
 	auto MyGameState = GetWorld()->GetGameState<AZGameState>();
 	if (MyGameState)
 	{
-		MyGameState->OnTimeUpdate.AddUObject(this, &UZUserHUD::UpdateRemainTime);
-		MyGameState->OnCurrentWaveUpdate.AddUObject(this, &UZUserHUD::UpdateCurrentWave);
-		MyGameState->OnNumZombiesUpdate.AddUObject(this, &UZUserHUD::UpdateNumZombies);
-
 		UpdateRemainTime(MyGameState->GetRemainTime());
 		UpdateCurrentWave(MyGameState->GetCurrentWave());
 		UpdateNumZombies(MyGameState->GetCurrentNumZombies());
@@ -97,24 +93,12 @@ void UZUserHUD::NativeTick(const FGeometry & MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	//auto MyGameState = GetWorld()->GetGameState<AZGameState>();
-	//if (MyGameState)
-	//{
-	//	UpdateRemainTime(MyGameState->GetRemainTime());
-	//	
-	//}
-
 }
 
 void UZUserHUD::NativeDestruct()
 {
 	Super::NativeDestruct();
 
-	auto GameState = GetWorld()->GetGameState<AZGameState>();
-	if (GameState)
-	{
-		GameState->OnTimeUpdate.RemoveAll(this);
-	}
 }
 
 void UZUserHUD::UpdateCurrentMoneyInfo(int32 NewMoney)

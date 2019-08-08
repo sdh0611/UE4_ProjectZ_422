@@ -5,10 +5,12 @@
 #include "ZGameState.h"
 #include "ZPlayerState.h"
 #include "ZCharacter.h"
+#include "ZShop.h"
 #include "ZEnemySpawner.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "ZPlayerController.h"
 #include "ZHUD.h"
+#include "ZUserHUD.h"
 #include "ZPlayerState.h"
 #include "EngineUtils.h"
 
@@ -46,6 +48,8 @@ void AZGameMode::BeginPlay()
 		EnemySpawners.Add(*Iterator);
 	}
 
+	/* 처음은 HalfTime으로 시작 */
+	HandleGamePhase(EGamePhase::HalfTime);
 }
 
 void AZGameMode::Tick(float DeltaTime)
@@ -162,6 +166,10 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
 
 			/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
 			CurrentRemainTime = HalfTime;
+			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			{
+				Shop->OpenShop();
+			}
 			break;
 		}
 		case EGamePhase::WaveTime:
@@ -180,12 +188,19 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
 				{
 					Spawner->SetActive(false);
 				}
+
 			}
 
 			/* Spawner 활성화 */
 			for (const auto& Spawner : EnemySpawners)
 			{
 				Spawner->SetActive(true);
+			}
+
+			/* 상점 닫음 */
+			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			{
+				Shop->CloseShop();
 			}
 
 			break;

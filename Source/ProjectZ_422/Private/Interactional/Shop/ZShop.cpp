@@ -22,6 +22,8 @@ AZShop::AZShop()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	bIsShopOpen = false;
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
 
@@ -50,6 +52,11 @@ void AZShop::BeginPlay()
 
 void AZShop::OnInteraction(AZCharacter * NewCharacter)
 {
+	if (!bIsShopOpen)
+	{
+		return;
+	}
+
 	if (NewCharacter)
 	{
 		if (EnterPlayer == NewCharacter)
@@ -243,6 +250,16 @@ void AZShop::OnExitShop()
 	}
 
 	SetEnterPlayer(nullptr);
+}
+
+void AZShop::OpenShop()
+{
+	bIsShopOpen = true;
+}
+
+void AZShop::CloseShop()
+{
+	bIsShopOpen = false;
 }
 
 FZShopItemData * const AZShop::FindShopItemData(const FString & ShopItemName) const
