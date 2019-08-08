@@ -37,20 +37,29 @@ private:
 	void ConstructShopWidget();
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = Shop)
-	TSubclassOf<class AZItem> WeaponClass;
+	/* Weapon */
+	UPROPERTY(EditAnywhere, Category = Shop)
+	TSubclassOf<class AZItem> GunClass;
 
-	UPROPERTY(VisibleAnywhere, Category = Shop)
+	UPROPERTY(EditAnywhere, Category = Shop)
+	TSubclassOf<class AZItem> KnifeClass;
+
+	UPROPERTY(EditAnywhere, Category = Shop)
+	TSubclassOf<class AZItem> GrenadeClass;
+
+	/* Recovery */
+	UPROPERTY(EditAnywhere, Category = Shop)
 	TSubclassOf<class AZItem> RecoveryClass;
 
-	UPROPERTY(VisibleAnywhere, Category = Shop)
+	/* Doping */
+	UPROPERTY(EditAnywhere, Category = Shop)
 	TSubclassOf<class AZItem> DopingClass;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Shop)
 	class AZCharacter* EnterPlayer;
 
-	UPROPERTY(VisibleAnywhere, Category = Shop)
+	UPROPERTY()
 	class UDataTable* ShopItemDataTable;
 
 
