@@ -8,6 +8,15 @@
 
 DECLARE_DELEGATE(FOnAttackEnd);
 
+UENUM(BlueprintType)
+enum class EZombieState : uint8
+{
+	Idle = 1,
+	Attack,
+	Chase,
+	Dead
+};
+
 /**
  * 
  */
@@ -37,7 +46,10 @@ public:
 	virtual void SetActive(bool bActive) override;
 
 public:
+	void SetZombieState(EZombieState NewState);
+
 	class UZZombieAnimInstance* const GetZombieAnimInstance() const;
+	EZombieState GetZombieState() const;
 
 private:
 	void AttackCheck();
@@ -53,14 +65,17 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Zombie)
 	FName LeftHandSocket;
 
-private:
+protected:
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	float AttackDamage;
 
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	bool bIsAttacking;
 
-private:
+	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	EZombieState ZombieState;
+
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = Zombie)
 	class UPawnSensingComponent* Sense;
 

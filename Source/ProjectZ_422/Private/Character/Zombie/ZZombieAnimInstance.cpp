@@ -2,24 +2,24 @@
 
 
 #include "ZZombieAnimInstance.h"
-#include "ZZombie.h"
 #include "ConstructorHelpers.h"
 
 
 UZZombieAnimInstance::UZZombieAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>
-		MONTAGE_ATTACK(TEXT("AnimMontage'/Game/Animation/Zombie/Anim/Zombie_Attack1_Montage.Zombie_Attack1_Montage'"));
-	if (MONTAGE_ATTACK.Succeeded())
+	bIsAttacking = false;
+}
+
+void UZZombieAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
+	auto Pawn = Cast<AZZombie>(TryGetPawnOwner());
+	if (Pawn && Pawn->IsValidLowLevel())
 	{
-		MontageTable.Add(TEXT("Attack"), MONTAGE_ATTACK.Object);
-	}
-	else
-	{
-		ZLOG(Error, TEXT("Cannot find montage Attack."));
+		CurrentState = Pawn->GetZombieState();
 	}
 
-	bIsAttacking = false;
 }
 
 void UZZombieAnimInstance::AnimNotify_ZombieAttackCheck()

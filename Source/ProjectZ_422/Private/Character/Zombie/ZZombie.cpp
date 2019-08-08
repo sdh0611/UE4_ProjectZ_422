@@ -36,6 +36,7 @@ AZZombie::AZZombie()
 	AttackDamage = 10.f;
 	bIsAttacking = false;
 	
+	ZombieState = EZombieState::Idle;
 }
 
 void AZZombie::BeginPlay()
@@ -76,7 +77,6 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 	{
 		return;
 	}
-
 	//ZLOG_S(Warning);
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 
@@ -87,6 +87,7 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 		{
 			/* Target ¼³Á¤ */
 			ZombieController->SetTargetPawn(Player);
+			ZombieState = EZombieState::Chase;
 		}
 	}
 	
@@ -143,9 +144,19 @@ void AZZombie::SetActive(bool bActive)
 
 }
 
+void AZZombie::SetZombieState(EZombieState NewState)
+{
+	ZombieState = NewState;
+}
+
 UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
 {
 	return Cast<UZZombieAnimInstance>(GetAnimInstance());
+}
+
+EZombieState AZZombie::GetZombieState() const
+{
+	return ZombieState;
 }
 
 void AZZombie::AttackCheck()
@@ -207,7 +218,7 @@ void AZZombie::OnDead()
 		ZombieAnim->StopAllMontages(ZombieAnim->GetCurrentPlayMontage()->BlendOut.GetBlendTime());
 	}
 	ZombieAnim->PlayMontage(TEXT("Die"));
-	
+	SetZombieState(EZombieState::Dead);
 
 }
 

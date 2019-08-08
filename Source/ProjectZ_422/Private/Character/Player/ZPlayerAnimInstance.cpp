@@ -11,34 +11,6 @@
 
 UZPlayerAnimInstance::UZPlayerAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>
-		MONTAGE_FIRE_RIFLE_HIP(TEXT("AnimMontage'/Game/Animation/AnimStarterPack/Animations/Montage/Fire_Rifle_Hip_Montage.Fire_Rifle_Hip_Montage'"));
-	if (MONTAGE_FIRE_RIFLE_HIP.Succeeded())
-	{
-		MontageTable.Add(TEXT("FireRifleHip"), MONTAGE_FIRE_RIFLE_HIP.Object);
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>
-		MONTAGE_FIRE_RIFLE_AIM(TEXT("AnimMontage'/Game/Animation/AnimStarterPack/Animations/Montage/Fire_Rifle_Ironsights_Montage.Fire_Rifle_Ironsights_Montage'"));
-	if (MONTAGE_FIRE_RIFLE_AIM.Succeeded())
-	{
-		MontageTable.Add(TEXT("FireRifleAim"), MONTAGE_FIRE_RIFLE_AIM.Object);
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>
-		MONTAGE_RELOAD_RIFLE(TEXT("AnimMontage'/Game/Animation/AnimStarterPack/Animations/Montage/Reload_Rifle_Hip_Montage.Reload_Rifle_Hip_Montage'"));
-	if (MONTAGE_RELOAD_RIFLE.Succeeded())
-	{
-		MontageTable.Add(TEXT("ReloadRifle"), MONTAGE_RELOAD_RIFLE.Object);
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>
-		MONTAGE_EQUIP_RIFLE(TEXT("AnimMontage'/Game/Animation/AnimStarterPack/Animations/Montage/Equip_Rifle_Standing_Montage.Equip_Rifle_Standing_Montage'"));
-	if (MONTAGE_EQUIP_RIFLE.Succeeded())
-	{
-		MontageTable.Add(TEXT("EquipRifle"), MONTAGE_EQUIP_RIFLE.Object);
-	}
-
 	AimYaw = 0.f;
 	AimPitch = 0.f;
 	bIsEquipGun = false;

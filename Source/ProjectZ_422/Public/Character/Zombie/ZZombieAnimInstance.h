@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "Character/ZCharacterAnimInstance.h"
+#include "ZZombie.h"
 #include "ZZombieAnimInstance.generated.h"
 
 DECLARE_DELEGATE(FOnAttackCheck);
@@ -18,6 +19,9 @@ class PROJECTZ_422_API UZZombieAnimInstance : public UZCharacterAnimInstance
 	
 public:
 	UZZombieAnimInstance();
+
+public:
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
 	UFUNCTION()
@@ -39,7 +43,10 @@ public:
 public:
 	FOnAttackCheck OnAttackCheck;
 
-private:
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsAttacking;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EZombieState CurrentState;
 };
