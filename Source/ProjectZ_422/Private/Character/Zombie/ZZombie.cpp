@@ -20,21 +20,21 @@ AZZombie::AZZombie()
 	AIControllerClass = AZZombieAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh>
-		SK_ZOMBIE(TEXT("SkeletalMesh'/Game/Animation/Zombie/derrick.derrick'"));
-	if (SK_ZOMBIE.Succeeded())
-	{
-		GetMesh()->SetSkeletalMesh(SK_ZOMBIE.Object);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -88.f), FRotator(0, -90.f, 0));
-	}
+	//static ConstructorHelpers::FObjectFinder<USkeletalMesh>
+	//	SK_ZOMBIE(TEXT("SkeletalMesh'/Game/Animation/Zombie/derrick.derrick'"));
+	//if (SK_ZOMBIE.Succeeded())
+	//{
+	//	GetMesh()->SetSkeletalMesh(SK_ZOMBIE.Object);
+	//	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -88.f), FRotator(0, -90.f, 0));
+	//}
 
-	static ConstructorHelpers::FClassFinder<UZCharacterAnimInstance>
-		ANIM_ZOMBIE(TEXT("AnimBlueprint'/Game/Animation/Blueprint/ZZombie_AnimBlueprint.ZZombie_AnimBlueprint_C'"));
-	if (ANIM_ZOMBIE.Succeeded())
-	{
-		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		GetMesh()->SetAnimInstanceClass(ANIM_ZOMBIE.Class);
-	}
+	//static ConstructorHelpers::FClassFinder<UZCharacterAnimInstance>
+	//	ANIM_ZOMBIE(TEXT("AnimBlueprint'/Game/Animation/Blueprint/ZZombie_AnimBlueprint.ZZombie_AnimBlueprint_C'"));
+	//if (ANIM_ZOMBIE.Succeeded())
+	//{
+	//	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	//	GetMesh()->SetAnimInstanceClass(ANIM_ZOMBIE.Class);
+	//}
 
 	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
 	Sense->SetPeripheralVisionAngle(60.f);

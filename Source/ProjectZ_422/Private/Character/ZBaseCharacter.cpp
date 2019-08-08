@@ -175,6 +175,11 @@ UZCharacterStatusComponent * const AZBaseCharacter::GetStatusComponent() const
 
 UZCharacterAnimInstance * AZBaseCharacter::GetAnimInstance() const
 {
+	if (!AnimInstance->IsValidLowLevel())
+	{
+		return nullptr;
+	}
+
 	return AnimInstance;
 }
 
