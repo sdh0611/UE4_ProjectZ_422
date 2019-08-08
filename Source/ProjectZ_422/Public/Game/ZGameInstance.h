@@ -56,22 +56,22 @@ private:
 	void InitSkeletalMeshTable();
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* StaticMeshDataTable;
 
-	UPROPERTY(VisibleAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* SkeletalMeshDataTable;
 
-	UPROPERTY(VisibleAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* WeaponDataTable;
 
-	UPROPERTY(VisibleAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* RecoveryDataTable;
 
-	UPROPERTY(VisibleAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* DopingDataTable;
 
-	UPROPERTY(VisibleAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* ShopItemDataTable;
 
 private:

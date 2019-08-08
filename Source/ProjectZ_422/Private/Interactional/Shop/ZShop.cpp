@@ -32,9 +32,9 @@ AZShop::AZShop()
 		Mesh->SetStaticMesh(SM_SHOP.Object);
 	}
 
-	WeaponClass = AZWeapon::StaticClass();
-	RecoveryClass = AZRecovery::StaticClass();
-	DopingClass = AZDoping::StaticClass();
+	//WeaponClass = AZWeapon::StaticClass();
+	//RecoveryClass = AZRecovery::StaticClass();
+	//DopingClass = AZDoping::StaticClass();
 
 }
 
@@ -115,7 +115,7 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 			{
 				case EWeaponCategory::Gun:
 				{
-					SpawnItemClass = AZGun::StaticClass();
+					SpawnItemClass = GunClass;
 					break;
 				}
 				case EWeaponCategory::Knife:
@@ -126,7 +126,7 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 				case EWeaponCategory::Grenade:
 				{
 					ZLOG(Error, TEXT("Buy Grenade."));
-					SpawnItemClass = AZGrenade::StaticClass();
+					SpawnItemClass = GrenadeClass;
 					break;
 				}
 				default:

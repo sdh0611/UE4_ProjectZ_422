@@ -51,7 +51,7 @@ void AZGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (ProjectileClass)
+	if (BulletClass)
 	{
 		if (IsWantsToFire())
 		{
@@ -178,7 +178,7 @@ void AZGun::Fire()
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = ItemOwner;
 
-	AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(ProjectileClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
+	AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
 	if (Projectile)
 	{
 		Projectile->SetDamage(Damage);
