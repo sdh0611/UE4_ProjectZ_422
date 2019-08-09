@@ -17,7 +17,7 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 {
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 	
-	auto OwnerPawn = OwnerComp.GetAIOwner()->GetPawn();
+	auto OwnerPawn = Cast<AZZombie>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == OwnerPawn)
 	{
 		return false;
@@ -35,6 +35,10 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 	}
 
 	bResult = (TargetPawn->GetDistanceTo(OwnerPawn) <= 150.f);
+	if (!bResult)
+	{
+		OwnerPawn->SetZombieState(EZombieState::Chase);
+	}
 
 	return bResult;
 }

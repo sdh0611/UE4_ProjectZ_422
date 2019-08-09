@@ -32,14 +32,12 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 	FVector Look = Target->GetActorLocation() - Zombie->GetActorLocation();
 	Look.Z = 0.f;
 	FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
-	//Zombie->SetActorRotation(FMath::RInterpTo(Zombie->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 2.f));
 	Zombie->SetActorRotation(ToTarget);
 
 	/* Attack */
 	bIsAttacking = true;
 	Zombie->Attack();
 
-	//Zombie->OnAttackEnd.BindUObject(this, &UBTTaskNode_Attack::AttackEnd);
 	Zombie->OnAttackEnd.BindLambda([this]() { bIsAttacking = false; });
 
 	return EBTNodeResult::InProgress;

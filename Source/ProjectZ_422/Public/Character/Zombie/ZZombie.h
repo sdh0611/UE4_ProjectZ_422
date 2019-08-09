@@ -49,6 +49,7 @@ public:
 	void SetZombieState(EZombieState NewState);
 
 	class UZZombieAnimInstance* const GetZombieAnimInstance() const;
+	class UBehaviorTree* const GetZombieBT() const;
 	EZombieState GetZombieState() const;
 
 private:
@@ -58,14 +59,13 @@ private:
 public:
 	FOnAttackEnd OnAttackEnd;
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = Zombie)
 	FName RightHandSocket;
 
 	UPROPERTY(EditDefaultsOnly, Category = Zombie)
 	FName LeftHandSocket;
 
-protected:
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	float AttackDamage;
 
@@ -74,6 +74,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	EZombieState ZombieState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UBehaviorTree* ZombieBT;
+
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Zombie)

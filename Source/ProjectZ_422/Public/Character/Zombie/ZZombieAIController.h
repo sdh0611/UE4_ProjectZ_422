@@ -39,11 +39,11 @@ public:
 	static const FName TargetActorKey;
 	
 
-private:
-	UPROPERTY()
-	class UBehaviorTree* ZombieBT;
+protected:
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//class UBehaviorTree* ZombieBT;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UBlackboardData* ZombieBB;
 
 };

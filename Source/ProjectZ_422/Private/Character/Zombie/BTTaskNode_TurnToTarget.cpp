@@ -28,13 +28,6 @@ EBTNodeResult::Type UBTTaskNode_TurnToTarget::ExecuteTask(UBehaviorTreeComponent
 	}
 	TargetPawn = Target;
 
-	//FVector Look = Target->GetActorLocation() - Owner->GetActorLocation();
-	//Look.Z = 0.f;
-	//FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
-	////Owner->SetActorRotation(FMath::RInterpTo(Owner->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 2.f));
-	//Owner->GetController()->SetControlRotation(ToTarget);
-
-
 	return EBTNodeResult::InProgress;
 }
 

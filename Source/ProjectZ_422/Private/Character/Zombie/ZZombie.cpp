@@ -77,6 +77,12 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 	{
 		return;
 	}
+
+	if (GetZombieState() != EZombieState::Idle)
+	{
+		return;
+	}
+
 	//ZLOG_S(Warning);
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 
@@ -100,15 +106,16 @@ void AZZombie::Attack()
 		return;
 	}
 
+	SetZombieState(EZombieState::Attack);
+
 	//ZLOG_S(Warning);
-	auto ZombieAnim = GetZombieAnimInstance();
-	check(nullptr != ZombieAnim);
-	if (ZombieAnim->IsMontagePlaying(TEXT("Attack")))
-	{
-		return;
-	}
-	
-	ZombieAnim->PlayMontage(TEXT("Attack"));
+	//auto ZombieAnim = GetZombieAnimInstance();
+	//check(nullptr != ZombieAnim);
+	//if (ZombieAnim->IsMontagePlaying(TEXT("Attack")))
+	//{
+	//	return;
+	//}	
+	//ZombieAnim->PlayMontage(TEXT("Attack"));
 }
 
 void AZZombie::AttackEnd()
@@ -127,6 +134,7 @@ void AZZombie::Revive()
 	}
 	ZombieAI->RunAI();
 
+	SetZombieState(EZombieState::Idle);
 }
 
 void AZZombie::SetActive(bool bActive)
@@ -152,6 +160,11 @@ void AZZombie::SetZombieState(EZombieState NewState)
 UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
 {
 	return Cast<UZZombieAnimInstance>(GetAnimInstance());
+}
+
+UBehaviorTree * const AZZombie::GetZombieBT() const
+{
+	return ZombieBT;
 }
 
 EZombieState AZZombie::GetZombieState() const
