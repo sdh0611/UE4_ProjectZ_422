@@ -88,6 +88,7 @@ void AZGrenade::ThrowGrenade()
 		Projectile->SetDamage(Damage);
 		Projectile->SetFireDelay(FireDelay);
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+		Projectile->SetDamageCauser(ItemOwner->GetController());
 	}
 	
 	SetIsThrown(false);

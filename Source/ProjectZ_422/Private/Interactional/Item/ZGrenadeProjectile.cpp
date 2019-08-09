@@ -17,12 +17,12 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 {
 	Movement->ProjectileGravityScale = 0.f;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		SM_PROJECTILE(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade/SM_G67.SM_G67'"));
-	if (SM_PROJECTILE.Succeeded())
-	{
-		ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
-	}
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh>
+	//	SM_PROJECTILE(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade/SM_G67.SM_G67'"));
+	//if (SM_PROJECTILE.Succeeded())
+	//{
+	//	ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
+	//}
 	ProjectileMesh->SetCollisionProfileName(TEXT("Projectile"));
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	ProjectileMesh->SetSimulatePhysics(true);
@@ -49,7 +49,8 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 	}
 
 	Movement->InitialSpeed = 800.f;
-
+	
+	DamageCauser = nullptr;
 }
 
 void AZGrenadeProjectile::FireInDirection(const FVector & Direction)
@@ -72,12 +73,19 @@ void AZGrenadeProjectile::SetFireDelay(float NewFireDelay)
 	
 }
 
+void AZGrenadeProjectile::SetDamageCauser(AController* DamageInstigator)
+{
+	DamageCauser = DamageInstigator;
+}
+
 void AZGrenadeProjectile::Explosion()
 {
 	ZLOG_S(Warning);
 	TArray<AActor*> IgnoreActors;
-	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 600.f, DamageType, IgnoreActors ,this, nullptr);
+	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), 600.f, DamageType, IgnoreActors ,this, DamageCauser);
+
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 600.f, 32, FColor::Red, false, 1.5f);
+
 	RadialForce->FireImpulse();
 	Particle->ActivateSystem(true);
 	SetLifeSpan(3.f);

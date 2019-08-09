@@ -22,6 +22,7 @@ public:
 
 public:
 	void SetFireDelay(float NewFireDelay);
+	void SetDamageCauser(class AController* DamageInstigator);
 
 private:
 	void Explosion();
@@ -36,6 +37,9 @@ private:
 private:
 	UPROPERTY(VisibleAnywhere, Category = Grenade)
 	class UParticleSystemComponent* Particle;
+
+	UPROPERTY()
+	class AController* DamageCauser;
 
 	//UPROPERTY(VisibleAnywhere, Category = Grenade)
 	//class UParticleSystem* PSGrenade;

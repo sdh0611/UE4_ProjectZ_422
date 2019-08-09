@@ -5,7 +5,6 @@
 #include "Engine/StaticMesh.h"
 #include "ConstructorHelpers.h"
 
-
 UZGameInstance::UZGameInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable>
@@ -13,7 +12,7 @@ UZGameInstance::UZGameInstance()
 	if (DT_SM.Succeeded())
 	{
 		StaticMeshDataTable = DT_SM.Object;
-		InitStaticMeshTable();
+		//InitStaticMeshTable();
 	}
 
 	static ConstructorHelpers::FObjectFinder<UDataTable>
@@ -21,7 +20,7 @@ UZGameInstance::UZGameInstance()
 	if (DT_SK.Succeeded())
 	{
 		SkeletalMeshDataTable = DT_SK.Object;
-		InitSkeletalMeshTable();
+		//InitSkeletalMeshTable();
 	}
 
 	static ConstructorHelpers::FObjectFinder<UDataTable>
@@ -57,7 +56,9 @@ UZGameInstance::UZGameInstance()
 void UZGameInstance::Init()
 {
 	Super::Init();
-
+	
+	RequestAyncLoadStaticMesh();
+	RequestAyncLoadSkeletalMesh();
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
@@ -160,34 +161,59 @@ const FZShopItemData * const UZGameInstance::GetShopItemDataByName(const FString
 	return nullptr;
 }
 
-void UZGameInstance::InitStaticMeshTable()
+void UZGameInstance::RequestAyncLoadStaticMesh()
 {
-	// Init static mesh table
+	TArray<FSoftObjectPath> ObjectPaths;
+
 	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
-		ConstructorHelpers::FObjectFinder<UStaticMesh> SM(*Data->StaticMeshPath);
-		if (SM.Succeeded())
+		ObjectPaths.Add(Data->StaticMeshPath);
+	}
+	AssetLoader.RequestAsyncLoad(ObjectPaths, FStreamableDelegate::CreateUObject(this, &UZGameInstance::LoadStaticMeshTable));
+
+}
+
+void UZGameInstance::RequestAyncLoadSkeletalMesh()
+{
+	TArray<FSoftObjectPath> ObjectPaths;
+
+	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
+		ObjectPaths.Add(Data->SkeletalMeshPath);
+	}
+	AssetLoader.RequestAsyncLoad(ObjectPaths, FStreamableDelegate::CreateUObject(this, &UZGameInstance::LoadSkeletalMeshTable));
+
+}
+
+void UZGameInstance::LoadStaticMeshTable()
+{
+	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
+		TSoftObjectPtr<UStaticMesh> StaticMesh(Data->StaticMeshPath);
+		if (StaticMesh.IsValid())
 		{
-			StaticMeshTable.Add(Data->Name, SM.Object);
+			StaticMeshTable.Add(Data->Name, StaticMesh.Get());
 		}
 	}
 
 }
 
-void UZGameInstance::InitSkeletalMeshTable()
+void UZGameInstance::LoadSkeletalMeshTable()
 {
-	// Init skeletal mesh table
 	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
-		ConstructorHelpers::FObjectFinder<USkeletalMesh> SK(*Data->SkeletalMeshPath);
-		if (SK.Succeeded())
+		TSoftObjectPtr<USkeletalMesh> SkeletalMesh(Data->SkeletalMeshPath);
+		if (SkeletalMesh.IsValid())
 		{
-			SkeletalMeshTable.Add(Data->Name, SK.Object);
+			SkeletalMeshTable.Add(Data->Name, SkeletalMesh.Get());
 		}
 	}
-
 }

@@ -80,7 +80,7 @@ protected:
 
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	UPROPERTY(VisibleAnywhere, Category = Zombie)
 	class UPawnSensingComponent* Sense;
 
 	//UPROPERTY(EditDefaultsOnly, Category = Zombie)

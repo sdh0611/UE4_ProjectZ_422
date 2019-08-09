@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "Engine/GameInstance.h"
+#include "Engine/StreamableManager.h"
 #include "ZGameInstance.generated.h"
 
 /**
@@ -52,10 +53,18 @@ public:
 	const FZShopItemData* const GetShopItemDataByName(const FString& ShopItemName);
 
 private:
-	void InitStaticMeshTable();
-	void InitSkeletalMeshTable();
+	/* 비동기 애셋 로딩 요청 */
+	void RequestAyncLoadStaticMesh();
+	void RequestAyncLoadSkeletalMesh();
 
-private:
+	/* 비동기 애셋 로딩 */
+	void LoadStaticMeshTable();
+	void LoadSkeletalMeshTable();
+
+public:
+	FStreamableManager AssetLoader;
+
+protected:
 	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* StaticMeshDataTable;
 

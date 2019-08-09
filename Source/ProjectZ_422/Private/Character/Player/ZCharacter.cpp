@@ -861,12 +861,32 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 		{
 			case 0:
 			{
+				/*
+					장전중인 경우 장전 취소
+				*/
+				auto Gun = Cast<AZGun>(CurrentWeapon);
+				check(Gun != nullptr);
+				if (Gun->IsReloading())
+				{
+					Gun->SetIsReloading(false);
+				}
+
 				// 기존 Weapon은 Secondary socket으로 옮김.
 				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
 				break;
 			}
 			case 1:
 			{
+				/*
+					장전중인 경우 장전 취소
+				*/
+				auto Gun = Cast<AZGun>(CurrentWeapon);
+				check(Gun != nullptr);
+				if (Gun->IsReloading())
+				{
+					Gun->SetIsReloading(false);
+				}
+
 				// 기존 Weapon은 Third socket으로 옮김.
 				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
 				break;
@@ -897,15 +917,6 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	{
 		case EWeaponCategory::Gun:
 		{
-			/*
-				장전중인 경우 return
-			*/
-			auto Gun = Cast<AZGun>(CurrentWeapon);
-			check(Gun != nullptr);
-			if (Gun->IsReloading())
-			{
-				return;
-			}
 			// Gun이므로 true 셋팅
 			CharacterAnim->SetIsEquipGun(true);
 
