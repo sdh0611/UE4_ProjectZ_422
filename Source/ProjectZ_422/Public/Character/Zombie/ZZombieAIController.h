@@ -24,6 +24,7 @@ public:
 public:
 	bool RunAI();
 	void StopAI(const FString& Reason);
+	void StopAI();
 
 public:
 	void SetTargetPawn(class APawn* Target);

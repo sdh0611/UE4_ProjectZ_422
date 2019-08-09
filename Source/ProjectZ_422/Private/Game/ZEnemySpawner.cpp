@@ -5,6 +5,7 @@
 #include "ZZombie.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "ZGameMode.h"
 
 
 // Sets default values
@@ -99,6 +100,13 @@ void AZEnemySpawner::SpawnEnemy()
 			{
 				Enemy->SetActive(true);
 			}
+
+			auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+			if (MyGameMode)
+			{
+
+			}
+
 
 			break;
 		}

@@ -61,6 +61,7 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 void AZZombieAIController::OnUnPossess()
 {
 	//StopAI(TEXT("UnPossess"));
+	StopAI();
 
 	Super::OnUnPossess();
 }
@@ -76,8 +77,8 @@ bool AZZombieAIController::RunAI()
 	{
 		return false;
 	}
-
-	Blackboard->SetValueAsVector(HomePosKey, Zombie->GetActorLocation());
+	
+	GetBlackboardComponent()->SetValueAsVector(HomePosKey, Zombie->GetActorLocation());
 	if (!RunBehaviorTree(Zombie->GetZombieBT()))
 	{
 		ZLOG(Error, TEXT("Couldn't run BT."));
@@ -98,6 +99,16 @@ void AZZombieAIController::StopAI(const FString & Reason)
 			임시로 하드코딩함. 
 	*/
 	GetBlackboardComponent()->ClearValue(TargetActorKey);
+}
+
+void AZZombieAIController::StopAI()
+{
+	auto BTComponent = Cast<UBehaviorTreeComponent>(GetBrainComponent());
+	if (BTComponent)
+	{
+		BTComponent->StopTree();
+	}
+
 }
 
 void AZZombieAIController::SetTargetPawn(APawn* Target)
