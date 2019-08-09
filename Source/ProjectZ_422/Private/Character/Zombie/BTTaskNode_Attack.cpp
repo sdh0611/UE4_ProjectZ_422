@@ -29,10 +29,10 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
-	FVector Look = Target->GetActorLocation() - Zombie->GetActorLocation();
-	Look.Z = 0.f;
-	FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
-	Zombie->SetActorRotation(ToTarget);
+	//FVector Look = Target->GetActorLocation() - Zombie->GetActorLocation();
+	//Look.Z = 0.f;
+	//FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
+	//Zombie->SetActorRotation(ToTarget);
 
 	/* Attack */
 	bIsAttacking = true;
