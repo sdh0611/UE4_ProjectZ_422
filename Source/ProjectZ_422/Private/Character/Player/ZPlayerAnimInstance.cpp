@@ -55,11 +55,11 @@ void UZPlayerAnimInstance::PlayFireRifleMontage()
 {
 	if (IsAiming())
 	{
-		PlayMontage(TEXT("FireRifleAim"));
+		PlayCharacterMontage(TEXT("FireRifleAim"));
 	}
 	else
 	{
-		PlayMontage(TEXT("FireRifleHip"));
+		PlayCharacterMontage(TEXT("FireRifleHip"));
 	}
 }
 
@@ -69,7 +69,7 @@ void UZPlayerAnimInstance::PlayThrowGrenadeMontage()
 		해당 애니메이션은 Anim Blueprint에서 추가해줬음.
 	*/
 	ZLOG_S(Error);
-	PlayMontage(TEXT("ThrowGrenade"));
+	PlayCharacterMontage(TEXT("ThrowGrenade"));
 }
 
 void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
@@ -155,6 +155,21 @@ void UZPlayerAnimInstance::PlayFireMontage(class AZWeapon* NewWeapon)
 		}
 	}
 
+}
+
+void UZPlayerAnimInstance::PlayHitMontage()
+{
+	auto HitMontage = FindMontageByName(TEXT("Hit"));
+	if (nullptr == HitMontage)
+	{
+		ZLOG(Error, TEXT("Hit montage not exist in montage table."));
+		return;
+	}
+
+	int32 Index = FMath::RandRange(1, 4);
+	FString SectionName = FString::Printf(TEXT("Hit_%d"), Index);
+	Montage_JumpToSection(*SectionName, HitMontage);
+	Montage_Play(HitMontage);
 }
 
 void UZPlayerAnimInstance::SetIsEquipGun(bool NewState)

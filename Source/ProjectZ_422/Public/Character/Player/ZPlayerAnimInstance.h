@@ -28,6 +28,7 @@ public:
 	void PlayThrowGrenadeMontage();
 	void BindFireMontage(class AZWeapon* NewWeapon);
 	void PlayFireMontage(class AZWeapon* NewWeapon);
+	void PlayHitMontage();
 
 public:
 	void SetIsEquipGun(bool NewState);

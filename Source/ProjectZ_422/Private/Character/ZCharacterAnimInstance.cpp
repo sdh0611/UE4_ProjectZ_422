@@ -49,14 +49,14 @@ void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
-void UZCharacterAnimInstance::PlayMontage(const FString & MontageName)
+void UZCharacterAnimInstance::PlayCharacterMontage(const FString & MontageName)
 {
 	if (!MontageTable.Contains(MontageName))
 	{
 		ZLOG(Error, TEXT("No montage %s"), *MontageName);
 		return;
 	}
-	ZLOG(Error, TEXT("Play Montage : %s"), *MontageName);
+	//ZLOG(Error, TEXT("Play Montage : %s"), *MontageName);
 	CurrentPlayMontage = MontageTable[MontageName];
 	
 	Montage_Play(MontageTable[MontageName]);

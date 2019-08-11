@@ -168,7 +168,7 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 
 void AZWeapon::Fire()
 {
-	ZLOG(Warning, TEXT("Weapon Fire!!"));
+	//ZLOG(Warning, TEXT("Weapon Fire!!"));
 
 	OnWeaponFired.Broadcast();
 	OnItemInfoChanged.Broadcast();

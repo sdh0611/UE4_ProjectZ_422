@@ -153,25 +153,18 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-//float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
-//{
-//	ZLOG_S(Warning);
-//	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-//	
-//	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
-//	{
-//		FPointDamageEvent PointDamage = static_cast<const FPointDamageEvent&>(DamageEvent);
-//		ZLOG(Warning, TEXT("Hit at %s"), *PointDamage.HitInfo.BoneName.ToString());
-//	}
-//
-//	StatusComponent->AdjustCurrentHP(-FinalDamage);
-//	if (StatusComponent->IsDead())
-//	{
-//		ZLOG(Warning, TEXT("Dead!!"));
-//	}
-//
-//	return FinalDamage;
-//}
+float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	auto Anim = GetCharacterAnimInstance();
+	if (Anim && Anim->IsValidLowLevel())
+	{
+		Anim->PlayHitMontage();
+	}
+
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	return FinalDamage;
+}
 
 FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
 {
@@ -793,7 +786,7 @@ void AZCharacter::Reload()
 		Weapon->SetIsReloading(true);
 		auto CharacterAnim = GetCharacterAnimInstance();
 		check(nullptr != CharacterAnim);
-		CharacterAnim->PlayMontage(TEXT("ReloadRifle"));
+		CharacterAnim->PlayCharacterMontage(TEXT("ReloadRifle"));
 
 	}
 
@@ -942,7 +935,7 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	// 새 Weapon은 Main socket으로 옮김.
 	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, MainWeaponSocketName);
 	SetIsSwitchingWeapon(true);
-	CharacterAnim->PlayMontage(TEXT("EquipRifle"));
+	CharacterAnim->PlayCharacterMontage(TEXT("EquipRifle"));
 
 }
 

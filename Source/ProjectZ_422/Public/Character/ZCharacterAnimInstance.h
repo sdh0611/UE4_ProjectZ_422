@@ -23,7 +23,7 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	void PlayMontage(const FString& MontageName);
+	void PlayCharacterMontage(const FString& MontageName);
 	void StopCurrentMontage();
 	void ResumeCurrentMontage();
 

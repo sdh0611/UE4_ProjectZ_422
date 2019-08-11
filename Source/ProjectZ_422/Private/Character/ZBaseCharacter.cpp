@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "TimerManager.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 // Sets default values
 AZBaseCharacter::AZBaseCharacter()
@@ -67,8 +68,13 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 
 	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
 	{
-		FPointDamageEvent PointDamage = static_cast<const FPointDamageEvent&>(DamageEvent);
-		ZLOG(Warning, TEXT("Hit at %s"), *PointDamage.HitInfo.BoneName.ToString());
+		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
+		UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
+		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+		{
+			ZLOG(Error, TEXT("Headshot."));
+			FinalDamage *= 5.f;
+		}
 	}
 
 	StatusComponent->AdjustCurrentHP(-FinalDamage);
