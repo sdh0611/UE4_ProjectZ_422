@@ -10,6 +10,9 @@
 #include "GameFramework/Controller.h"
 #include "TimerManager.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AZBaseCharacter::AZBaseCharacter()
@@ -34,7 +37,8 @@ AZBaseCharacter::AZBaseCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	bUseControllerRotationYaw = true;
-	GetMesh()->GetAnimInstance();
+
+	CurrentPlaySound = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +78,29 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 		{
 			ZLOG(Error, TEXT("Headshot."));
 			FinalDamage *= 5.f;
+		}
+
+		if (HitEffect)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, 
+				PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
+		}
+
+		if (HitSound)
+		{
+			if (nullptr == CurrentPlaySound)
+			{
+				CurrentPlaySound = UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
+					PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
+			}
+			else
+			{
+				if (!CurrentPlaySound->IsPlaying())
+				{
+					CurrentPlaySound = UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
+						PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
+				}
+			}
 		}
 	}
 

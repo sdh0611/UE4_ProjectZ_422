@@ -71,6 +71,8 @@ void UZUserHUD::NativeConstruct()
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
 	check(nullptr != Player);
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
+
+	/* Money Info 업데이트 */
 	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
 
 

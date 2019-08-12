@@ -15,9 +15,8 @@ UZCharacterStatusComponent::UZCharacterStatusComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
-	CurrentHP = 100.f;
+	CurrentHP = 0.f;
 	MaxHP = 100.f;
-	TargetHP = CurrentHP;
 
 	CurrentDopingGage = 0.f;
 	MaxDopingGage = 100.f;
@@ -42,6 +41,10 @@ void UZCharacterStatusComponent::BeginPlay()
 		OwnerCharacter = Character;
 	}
 
+	CurrentHP = MaxHP;
+	TargetHP = CurrentHP;
+
+	OnStatusChanged.Broadcast();
 }
 
 

@@ -60,27 +60,27 @@ public:
 	FOnAttackEnd OnAttackEnd;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Zombie)
 	FName RightHandSocket;
 
-	UPROPERTY(EditDefaultsOnly, Category = Zombie)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Zombie)
 	FName LeftHandSocket;
 
-	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	float AttackDamage;
 
-	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	bool bIsAttacking;
 
-	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	EZombieState ZombieState;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintReadOnly)
 	class UBehaviorTree* ZombieBT;
 
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Zombie)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	class UPawnSensingComponent* Sense;
 
 	//UPROPERTY(EditDefaultsOnly, Category = Zombie)

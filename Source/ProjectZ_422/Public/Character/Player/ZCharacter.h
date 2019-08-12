@@ -101,20 +101,20 @@ public:
 	static const FName KnifeSocketName;
 	static const FName GrenadeWeaponSocketName;
 
-private:	
-	UPROPERTY(VisibleAnywhere, Category = State)
+protected:	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsAiming;
 
-	UPROPERTY(VisibleAnywhere, Category = State)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsSwitchingWeapon;
 
-	UPROPERTY(EditAnywhere, Category = Stat)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float WalkSpeedCrouched;
 
-	UPROPERTY(EditAnywhere, Category = Stat)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float AimingWalkSpeed;
 
-	UPROPERTY(EditAnywhere, Category = Stat)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float AimingWalkSpeedCrouched;
 
 	UPROPERTY()
@@ -131,14 +131,14 @@ private:
 
 	FRotator Rotate;
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
 	class USpringArmComponent* MainCameraSpringArm;
 
-	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
 	class UCameraComponent* MainCamera;
 
-	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
 	class UZCharacterItemStatusComponent* ItemStatusComponent;
 
 	//UPROPERTY(VisibleAnywhere, Category = ZCharacter)

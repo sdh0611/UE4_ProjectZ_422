@@ -63,29 +63,38 @@ protected:
 	virtual void OnDead();
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = State)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsActive;
 
-	UPROPERTY(VisibleAnywhere, Category = State)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsSprinting;
 
-	UPROPERTY(EditAnywhere, Category = Stat)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float WalkSpeed;
 
-	UPROPERTY(EditAnywhere, Category = Stat)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float SprintSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
+	class UParticleSystem* HitEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
+	class USoundBase* HitSound;
+
+	UPROPERTY()
+	class UAudioComponent* CurrentPlaySound;
 
 	FRotator Rotate;
 
 	FTimerHandle InactiveTimer;
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = ZCharacter)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
 	class UZCharacterStatusComponent* StatusComponent;
 
-private:
+protected:
 	/* AnimInstance는 캐릭터마다 다르므로 파생 클래스의 BeginPlay에서 초기화 해줄 것. */
-	UPROPERTY(VisibleAnywhere, Category = Character)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character)
 	class UZCharacterAnimInstance* AnimInstance;
 
 };
