@@ -64,7 +64,7 @@ void AZBulletProjectile::TraceBullet()
 	CollisionParams.AddIgnoredActor(Instigator);
 
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, ECollisionChannel::ECC_GameTraceChannel3, CollisionParams);
+	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, PROJECTILE_TRACE, CollisionParams);
 	if (Hit.bBlockingHit)
 	{
 		auto Character = Cast<AZBaseCharacter>(Hit.GetActor());
