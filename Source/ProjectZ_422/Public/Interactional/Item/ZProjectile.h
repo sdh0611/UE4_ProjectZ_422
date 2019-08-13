@@ -35,8 +35,8 @@ protected:
 	TSubclassOf<class UDamageType> DamageType;
 
 protected:
-	//UPROPERTY(VisibleAnywhere, Category = Projectile)
-	//class USphereComponent* Sphere;
+	UPROPERTY(VisibleAnywhere, Category = Projectile)
+	class USceneComponent* SceneComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	class UStaticMeshComponent* ProjectileMesh;

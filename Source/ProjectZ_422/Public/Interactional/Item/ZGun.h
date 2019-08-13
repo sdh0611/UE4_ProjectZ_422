@@ -47,6 +47,12 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
+	class UParticleSystem* FireEffect;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	FName EffectAttachSocketName;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
 	TSubclassOf<class AZBulletProjectile> BulletClass;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)

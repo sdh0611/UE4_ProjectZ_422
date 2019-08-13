@@ -3,11 +3,12 @@
 
 #include "ZProjectile.h"
 #include "ZCharacter.h"
-#include "Components/SphereComponent.h"
+#include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "ConstructorHelpers.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AZProjectile::AZProjectile()
@@ -15,20 +16,18 @@ AZProjectile::AZProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	//Sphere->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-	//Sphere->InitSphereRadius(4.f);
-	//Sphere->OnComponentHit.AddDynamic(this, &AZProjectile::OnHit);
-	//RootComponent = Sphere;
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	RootComponent = SceneComponent;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-	//ProjectileMesh->SetupAttachment(Sphere);
-	RootComponent = ProjectileMesh;
-
+	ProjectileMesh->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	ProjectileMesh->SetupAttachment(RootComponent);
+	
 
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Movement"));
 	Movement->MaxSpeed = 3000.f;
 	Movement->bRotationFollowsVelocity = true;
+
 
 	Damage = 10.f;
 	LifeSpan = 3.f;

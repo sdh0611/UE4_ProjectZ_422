@@ -9,6 +9,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AZGun::AZGun()
 {
@@ -172,7 +173,7 @@ void AZGun::Fire()
 		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
 	}
 
-	DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
+	//DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -186,6 +187,16 @@ void AZGun::Fire()
 		if (CurrentAmmo > 0)
 		{
 			--CurrentAmmo;
+			if (FireEffect)
+			{
+				UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
+			}
+			
+			if (FireSound)
+			{
+				UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
+			}
+
 		}
 		else
 		{

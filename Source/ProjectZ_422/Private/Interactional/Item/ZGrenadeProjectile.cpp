@@ -27,26 +27,13 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	ProjectileMesh->SetSimulatePhysics(true);
 	
+
 	RadialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
-	RadialForce->SetupAttachment(RootComponent);
-	RadialForce->AddCollisionChannelToAffect(ECollisionChannel::ECC_GameTraceChannel5);
+	RadialForce->SetupAttachment(ProjectileMesh);
+	RadialForce->AddCollisionChannelToAffect(ZCHARACTER);
 	RadialForce->Radius = 600.f;
 	RadialForce->ForceStrength = 50000.f;
 	RadialForce->ImpulseStrength = 50000.f;
-	
-	Particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
-	Particle->bAutoActivate = false;
-	Particle->bAutoDestroy = false;
-	Particle->SetupAttachment(RootComponent);
-
-	/* Get grenade paticle */
-	static ConstructorHelpers::FObjectFinder<UParticleSystem>
-		PS_Grenade(TEXT("ParticleSystem'/Game/Effects/P_Explosion_Large.P_Explosion_Large'"));
-	if (PS_Grenade.Succeeded())
-	{
-		//PSGrenade = PS_Grenade.Object;
-		Particle->SetTemplate(PS_Grenade.Object);
-	}
 
 	Movement->InitialSpeed = 800.f;
 	
@@ -56,7 +43,8 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 void AZGrenadeProjectile::FireInDirection(const FVector & Direction)
 {
 	Movement->Velocity = Direction * Movement->InitialSpeed;
-	
+	//ZLOG(Error, TEXT("Dir : %.3f, %.3f, %.3f"), Direction.X, Direction.Y, Direction.Z);
+
 	GetWorld()->GetTimerManager().SetTimer(ExplosionTimer, this, &AZGrenadeProjectile::Explosion, FireDelay, false);
 }
 
@@ -87,7 +75,16 @@ void AZGrenadeProjectile::Explosion()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 600.f, 32, FColor::Red, false, 1.5f);
 
 	RadialForce->FireImpulse();
-	Particle->ActivateSystem(true);
+	if (ExplosionParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetActorTransform());
+	}
+
+	if (ExplosionSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), GetActorRotation());
+	}
+
 	SetLifeSpan(3.f);
 	//Destroy();
 }

@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "ConstructorHelpers.h"
 
 AZBulletProjectile::AZBulletProjectile()
@@ -19,7 +20,11 @@ AZBulletProjectile::AZBulletProjectile()
 	}
 
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ProjectileMesh->SetupAttachment(RootComponent);
 	//Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	ProjectileTrailParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ProjectileParticle"));
+	ProjectileTrailParticle->SetupAttachment(RootComponent);
 
 	Movement->InitialSpeed = 3000.f;
 	Movement->ProjectileGravityScale = 0.f;

@@ -30,7 +30,10 @@ public:
 private:
 	void TraceBullet();
 
-private:
+protected:
 	FVector PreLocation;
-	   
+
+	UPROPERTY(VisibleAnywhere, Category = Projectile)
+	class UParticleSystemComponent* ProjectileTrailParticle;
+
 };

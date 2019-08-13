@@ -6,6 +6,7 @@
 #include "ZCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AZGrenade::AZGrenade()
 {
@@ -60,15 +61,22 @@ void AZGrenade::Fire()
 
 	SetIsThrown(true);
 
+	if (FireSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
+	}
+
 	Super::Fire();
 }
 
 void AZGrenade::ThrowGrenade()
 {
 	FVector HandLocation = ItemOwner->GetMesh()->GetSocketLocation(AZCharacter::MainWeaponSocketName);
+	//FRotator DirRotation = FRotationMatrix::MakeFromX(HandLocation).Rotator();
+	//FVector LaunchDirection = DirRotation.Vector();
 	FVector LaunchDirection = FVector::ZeroVector;
 
-	FHitResult Hit = WeaponTrace(10000.f);
+	FHitResult Hit = WeaponTrace(100000.f, true);
 	if (Hit.bBlockingHit)
 	{
 		LaunchDirection = Hit.ImpactPoint - HandLocation;

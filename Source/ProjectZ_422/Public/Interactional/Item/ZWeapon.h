@@ -201,5 +201,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	EWeaponType WeaponType;
 
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	class USoundBase* FireSound;
 
 };

@@ -34,9 +34,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = Grenade)
 	float FireDelay;
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = Grenade)
-	class UParticleSystemComponent* Particle;
+protected:
+	UPROPERTY(EditAnywhere, Category = Grenade)
+	class UParticleSystem* ExplosionParticle;
+
+	UPROPERTY(EditAnywhere, Category = Grenade)
+	class USoundBase* ExplosionSound;
 
 	UPROPERTY()
 	class AController* DamageCauser;
