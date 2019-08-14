@@ -33,8 +33,10 @@ EBTNodeResult::Type UBTTaskNode_TurnToTarget::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 	TargetPawn = Target;
-
-	Zombie->OnAttackEnd.BindLambda([this]() { bIsAttacking = false; });
+	
+	TargetPos = Target->GetActorLocation();
+	//bIsAttacking = true;
+	//Zombie->OnAttackEnd.BindLambda([this]() { ZLOG(Error, TEXT("AttackEnd.")); bIsAttacking = false; });
 
 	return EBTNodeResult::InProgress;
 }
@@ -43,17 +45,26 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent & OwnerComp, uint
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSecond);
 
-	if (!bIsAttacking)
-	{
-		FVector Look = TargetPawn->GetActorLocation() - OwnerPawn->GetActorLocation();
-		Look.Z = 0.f;
-		FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
-		OwnerPawn->SetActorRotation(FMath::RInterpTo(OwnerPawn->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 10.f));
+	//FVector Look = TargetPawn->GetActorLocation() - OwnerPawn->GetActorLocation();
+	//Look.Z = 0.f;
+	//FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
+	//OwnerPawn->SetActorRotation(FMath::RInterpTo(OwnerPawn->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 10.f));
 
-		if (OwnerPawn->GetActorRotation().Yaw >= ToTarget.Yaw - 10.f
-			&&OwnerPawn->GetActorRotation().Yaw <= ToTarget.Yaw + 10.f)
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}
+	//if (OwnerPawn->GetActorRotation().Yaw >= ToTarget.Yaw - 10.f
+	//	&&OwnerPawn->GetActorRotation().Yaw <= ToTarget.Yaw + 10.f)
+	//{
+	//	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//}
+
+	FVector Look = TargetPos - OwnerPawn->GetActorLocation();
+	Look.Z = 0.f;
+	FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
+	OwnerPawn->SetActorRotation(FMath::RInterpTo(OwnerPawn->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 10.f));
+
+	if (OwnerPawn->GetActorRotation().Yaw >= ToTarget.Yaw - 10.f
+		&&OwnerPawn->GetActorRotation().Yaw <= ToTarget.Yaw + 10.f)
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+
 }

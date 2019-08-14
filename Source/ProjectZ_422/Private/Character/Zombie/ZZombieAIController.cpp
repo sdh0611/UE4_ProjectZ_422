@@ -50,6 +50,7 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 	{
 		if (!UseBlackboard(Zombie->GetZombieBT()->BlackboardAsset, Blackboard))
 		{
+			ZLOG(Error, TEXT("Failed to init blackboard."));
 			return;
 		}
 	}

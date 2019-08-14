@@ -110,7 +110,7 @@ void AZZombie::Attack()
 	}
 
 	SetZombieState(EZombieState::Attack);
-
+	
 	//ZLOG_S(Warning);
 	//auto ZombieAnim = GetZombieAnimInstance();
 	//check(nullptr != ZombieAnim);

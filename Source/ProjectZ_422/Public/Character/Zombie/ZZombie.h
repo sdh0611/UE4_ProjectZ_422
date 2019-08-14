@@ -11,10 +11,10 @@ DECLARE_DELEGATE(FOnAttackEnd);
 UENUM(BlueprintType)
 enum class EZombieState : uint8
 {
-	Idle = 1,
-	Attack,
-	Chase,
-	Dead
+	Idle = 0 UMETA(DisplayName = "Idle"),
+	Attack UMETA(DisplayName = "Attack"),
+	Chase UMETA(DisplayName = "Chase"),
+	Dead UMETA(DisplayName = "Dead")
 };
 
 /**
@@ -60,6 +60,9 @@ private:
 public:
 	FOnAttackEnd OnAttackEnd;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
+	bool bIsAttacking;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Zombie)
 	FName RightHandSocket;
@@ -70,8 +73,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	float AttackDamage;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
-	bool bIsAttacking;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	EZombieState ZombieState;

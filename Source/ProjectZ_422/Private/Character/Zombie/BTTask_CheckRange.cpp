@@ -23,26 +23,26 @@ EBTNodeResult::Type UBTTask_CheckRange::ExecuteTask(UBehaviorTreeComponent & Own
 		float Distance = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
 		switch (Condition)
 		{
-		case ETaskCondition::Less:
-		{
-			if (Distance < Range)
+			case ETaskCondition::Less:
 			{
-				Zombie->SetZombieState(TargetState);
-				//OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)TargetState);
-			}
+				if (Distance <= Range)
+				{
+					Zombie->SetZombieState(TargetState);
+					//OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)TargetState);
+				}
 
-			break;
-		}
-		case ETaskCondition::Greater:
-		{
-			if (Distance > Range)
+				break;
+			}
+			case ETaskCondition::Greater:
 			{
-				Zombie->SetZombieState(TargetState);
-				//OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)TargetState);
-			}
+				if (Distance > Range)
+				{
+					Zombie->SetZombieState(TargetState);
+					//OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)TargetState);
+				}
 
-			break;
-		}
+				break;
+			}
 
 		}
 

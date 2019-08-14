@@ -29,10 +29,11 @@ public:
 
 protected:
 	UPROPERTY()
-	class APawn* OwnerPawn;
+	class AZZombie* OwnerPawn;
 
 	UPROPERTY()
 	class APawn* TargetPawn;
 	
+	FVector TargetPos;
 
 };
