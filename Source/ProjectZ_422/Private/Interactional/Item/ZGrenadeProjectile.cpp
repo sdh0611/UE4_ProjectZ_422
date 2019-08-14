@@ -24,9 +24,7 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 	//	ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
 	//}
 	ProjectileMesh->SetCollisionProfileName(TEXT("Projectile"));
-	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	ProjectileMesh->SetSimulatePhysics(true);
-	
+	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 
 	RadialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
 	RadialForce->SetupAttachment(ProjectileMesh);
@@ -85,6 +83,6 @@ void AZGrenadeProjectile::Explosion()
 		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), GetActorRotation());
 	}
 
-	SetLifeSpan(3.f);
-	//Destroy();
+	//SetLifeSpan(3.f);
+	Destroy();
 }

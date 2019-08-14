@@ -36,7 +36,7 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
-	class USceneComponent* SceneComponent;
+	class USphereComponent* SphereComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	class UStaticMeshComponent* ProjectileMesh;

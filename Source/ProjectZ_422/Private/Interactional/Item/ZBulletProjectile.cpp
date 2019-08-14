@@ -12,6 +12,8 @@
 
 AZBulletProjectile::AZBulletProjectile()
 {
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>
 		SM_PROJECTILE(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/Ammunition/SM_Shell_556x45.SM_Shell_556x45'"));
 	if (SM_PROJECTILE.Succeeded())
