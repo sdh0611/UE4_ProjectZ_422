@@ -13,20 +13,28 @@ UBTTaskNode_TurnToTarget::UBTTaskNode_TurnToTarget()
 
 EBTNodeResult::Type UBTTaskNode_TurnToTarget::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
-	auto Owner = Cast<AZZombie>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == Owner)
+	auto OwnerAI = Cast<AZZombieAIController>(OwnerComp.GetAIOwner());
+	if (nullptr == OwnerAI)
 	{
 		return EBTNodeResult::Failed;
 	}
-	OwnerPawn = Owner;
+
+	auto Zombie = Cast<AZZombie>(OwnerAI->GetPawn());
+	if (nullptr == Zombie)
+	{
+		return EBTNodeResult::Failed;
+	}
+	OwnerPawn = Zombie;
 
 	/* Turn to target. */
-	auto Target = Cast<AZBaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AZZombieAIController::TargetActorKey));
+	auto Target = Cast<AZBaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(OwnerAI->GetTargetActorKey()));
 	if (nullptr == Target)
 	{
 		return EBTNodeResult::Failed;
 	}
 	TargetPawn = Target;
+
+	Zombie->OnAttackEnd.BindLambda([this]() { bIsAttacking = false; });
 
 	return EBTNodeResult::InProgress;
 }
@@ -35,14 +43,17 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent & OwnerComp, uint
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSecond);
 
-	FVector Look = TargetPawn->GetActorLocation() - OwnerPawn->GetActorLocation();
-	Look.Z = 0.f;
-	FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
-	OwnerPawn->SetActorRotation(FMath::RInterpTo(OwnerPawn->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 10.f));
-
-	if (OwnerPawn->GetActorRotation().Yaw >= ToTarget.Yaw - 10.f
-		&&OwnerPawn->GetActorRotation().Yaw <= ToTarget.Yaw + 10.f)
+	if (!bIsAttacking)
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		FVector Look = TargetPawn->GetActorLocation() - OwnerPawn->GetActorLocation();
+		Look.Z = 0.f;
+		FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
+		OwnerPawn->SetActorRotation(FMath::RInterpTo(OwnerPawn->GetActorRotation(), ToTarget, GetWorld()->GetDeltaSeconds(), 10.f));
+
+		if (OwnerPawn->GetActorRotation().Yaw >= ToTarget.Yaw - 10.f
+			&&OwnerPawn->GetActorRotation().Yaw <= ToTarget.Yaw + 10.f)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
 	}
 }

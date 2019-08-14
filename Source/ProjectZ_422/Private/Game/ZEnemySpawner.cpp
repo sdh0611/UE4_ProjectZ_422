@@ -6,7 +6,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "ZGameMode.h"
-
+#include "ZGameState.h"
 
 // Sets default values
 AZEnemySpawner::AZEnemySpawner()
@@ -101,10 +101,10 @@ void AZEnemySpawner::SpawnEnemy()
 				Enemy->SetActive(true);
 			}
 
-			auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
-			if (MyGameMode)
+			auto MyGameState = GetWorld()->GetGameState<AZGameState>();
+			if (MyGameState)
 			{
-
+				MyGameState->AdjustCurrentNumZombies(1);
 			}
 
 

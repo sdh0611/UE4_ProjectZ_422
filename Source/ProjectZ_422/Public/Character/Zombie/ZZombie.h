@@ -52,6 +52,7 @@ public:
 	class UBehaviorTree* const GetZombieBT() const;
 	EZombieState GetZombieState() const;
 
+
 private:
 	void AttackCheck();
 	virtual void OnDead() override;

@@ -16,14 +16,20 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	auto Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto Zombie = Cast<AZZombie>(OwnerComp.GetAIOwner()->GetPawn());
+	auto OwnerAI = Cast<AZZombieAIController>(OwnerComp.GetAIOwner());
+	if (nullptr == OwnerAI)
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	auto Zombie = Cast<AZZombie>(OwnerAI->GetPawn());
 	if (nullptr == Zombie)
 	{
 		return EBTNodeResult::Failed;
 	}
 
 	/* Turn to target. */
-	auto Target = Cast<AZBaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AZZombieAIController::TargetActorKey));
+	auto Target = Cast<AZBaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(OwnerAI->GetTargetActorKey()));
 	if (nullptr == Target)
 	{
 		return EBTNodeResult::Failed;
@@ -39,6 +45,7 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 	Zombie->Attack();
 
 	Zombie->OnAttackEnd.BindLambda([this]() { bIsAttacking = false; });
+
 
 	return EBTNodeResult::InProgress;
 }

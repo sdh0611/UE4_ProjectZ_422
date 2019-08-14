@@ -17,27 +17,31 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 {
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 	
-	auto OwnerPawn = Cast<AZZombie>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == OwnerPawn)
+	auto OwnerAI = Cast<AZZombieAIController>(OwnerComp.GetAIOwner());
+	if (OwnerAI)
 	{
-		return false;
-	}
+		auto OwnerPawn = Cast<AZZombie>(OwnerComp.GetAIOwner()->GetPawn());
+		if (nullptr == OwnerPawn)
+		{
+			return false;
+		}
 
-	auto TargetPawn = Cast<AZCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AZZombieAIController::TargetActorKey));
-	if (nullptr == TargetPawn)
-	{
-		return false;
-	}
+		auto TargetPawn = Cast<AZCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(OwnerAI->GetTargetActorKey()));
+		if (nullptr == TargetPawn)
+		{
+			return false;
+		}
 
-	if (TargetPawn->IsDead())
-	{
-		return false;
-	}
+		if (TargetPawn->IsDead())
+		{
+			return false;
+		}
 
-	bResult = (TargetPawn->GetDistanceTo(OwnerPawn) <= 150.f);
-	if (!bResult)
-	{
-		OwnerPawn->SetZombieState(EZombieState::Chase);
+		bResult = (TargetPawn->GetDistanceTo(OwnerPawn) <= 150.f);
+		if (!bResult)
+		{
+			OwnerPawn->SetZombieState(EZombieState::Chase);
+		}
 	}
 
 	return bResult;

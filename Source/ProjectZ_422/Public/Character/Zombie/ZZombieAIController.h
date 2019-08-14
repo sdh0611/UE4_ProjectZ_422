@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "AIController.h"
+#include "ZZombie.h"
 #include "ZZombieAIController.generated.h"
 
 /**
@@ -28,23 +29,30 @@ public:
 
 public:
 	void SetTargetPawn(class APawn* Target);
+	void SetZombieCurrentState(EZombieState NewState);
 
-public:
-	/* 추적 실패할 시 돌아올 좌표값 키네임 */
-	static const FName HomePosKey;
-
-	/* 추적 대상의 실시간 좌표값 키네임 */
-	static const FName TargetPosKey;
-
-	/* 실시간 추적 대상 키네임 */
-	static const FName TargetActorKey;
-	
+	const FName& GetHomePosKey() const;
+	const FName& GetTargetPosKey() const;
+	const FName& GetTargetActorKey() const;
+	const FName& GetCurrentStateKey() const;
 
 protected:
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	//class UBehaviorTree* ZombieBT;
-
+	/* 추적 실패할 시 돌아올 좌표값 키네임 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	class UBlackboardData* ZombieBB;
+	FName HomePosKey;
+
+	/* 추적 대상의 실시간 좌표값 키네임 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName TargetPosKey;
+
+	/* 실시간 추적 대상 키네임 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName TargetActorKey;
+
+	/* Zombie State값 키네임 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName CurrentStateKey;
+
+	
 
 };

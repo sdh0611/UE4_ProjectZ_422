@@ -2,7 +2,6 @@
 
 
 #include "ZZombieAIController.h"
-#include "ZZombie.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "NavigationSystem.h"
@@ -10,10 +9,6 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "ConstructorHelpers.h"
-
-const FName AZZombieAIController::HomePosKey(TEXT("HomePos"));
-const FName AZZombieAIController::TargetPosKey(TEXT("TargetPos"));
-const FName AZZombieAIController::TargetActorKey(TEXT("TargetPawn"));
 
 AZZombieAIController::AZZombieAIController()
 {
@@ -31,9 +26,10 @@ AZZombieAIController::AZZombieAIController()
 	//	ZombieBB = BB_ZOMBIE.Object;
 	//}
 
-	//HomePosKey = TEXT("HomePos");
-	//TargetPosKey = TEXT("TargetPos");
-	//TargetActorKey = TEXT("TargetActor");
+	HomePosKey = TEXT("HomePos");
+	TargetPosKey = TEXT("TargetPos");
+	TargetActorKey = TEXT("TargetPawn");
+	CurrentStateKey = TEXT("CurrentState");
 }
 
 void AZZombieAIController::OnPossess(APawn * InPawn)
@@ -49,9 +45,13 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 	//	}
 	//}
 
-	if (!UseBlackboard(ZombieBB, Blackboard))
+	auto Zombie = Cast<AZZombie>(GetPawn());
+	if (Zombie)
 	{
-		return;
+		if (!UseBlackboard(Zombie->GetZombieBT()->BlackboardAsset, Blackboard))
+		{
+			return;
+		}
 	}
 
 	RunAI();
@@ -84,7 +84,9 @@ bool AZZombieAIController::RunAI()
 		ZLOG(Error, TEXT("Couldn't run BT."));
 		return false;
 	}
-		
+	
+	GetBlackboardComponent()->SetValueAsEnum(CurrentStateKey, (uint8)EZombieState::Idle);
+
 	return true;
 }
 
@@ -116,7 +118,40 @@ void AZZombieAIController::SetTargetPawn(APawn* Target)
 	if (Blackboard)
 	{
 		Blackboard->SetValueAsObject(TargetActorKey, Target);
-		Blackboard->SetValueAsVector(TargetPosKey, Target->GetActorLocation());
+		//Blackboard->SetValueAsVector(TargetPosKey, Target->GetActorLocation());
 	}
 
+}
+
+void AZZombieAIController::SetZombieCurrentState(EZombieState NewState)
+{
+	if (Blackboard)
+	{
+		Blackboard->SetValueAsEnum(CurrentStateKey, (uint8)NewState);
+	}
+
+}
+
+const FName & AZZombieAIController::GetHomePosKey() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return HomePosKey;
+}
+
+const FName & AZZombieAIController::GetTargetPosKey() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return TargetPosKey;
+}
+
+const FName & AZZombieAIController::GetTargetActorKey() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return TargetActorKey;
+}
+
+const FName & AZZombieAIController::GetCurrentStateKey() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return CurrentStateKey;
 }

@@ -33,6 +33,9 @@ AZZombie::AZZombie()
 	RightHandSocket = TEXT("attack_r");
 	LeftHandSocket = TEXT("attack_l");
 
+	WalkSpeed = 200.f;
+	SprintSpeed = 500.f;
+
 	AttackDamage = 10.f;
 	bIsAttacking = false;
 	
@@ -93,7 +96,7 @@ void AZZombie::OnSeePlayer(APawn * Pawn)
 		{
 			/* Target ¼³Á¤ */
 			ZombieController->SetTargetPawn(Player);
-			ZombieState = EZombieState::Chase;
+			SetZombieState(EZombieState::Chase);
 		}
 	}
 	
@@ -155,6 +158,12 @@ void AZZombie::SetActive(bool bActive)
 void AZZombie::SetZombieState(EZombieState NewState)
 {
 	ZombieState = NewState;
+
+	auto ZombieAI = GetController<AZZombieAIController>();
+	if (ZombieAI)
+	{
+		ZombieAI->SetZombieCurrentState(NewState);
+	}
 }
 
 UZZombieAnimInstance * const AZZombie::GetZombieAnimInstance() const
