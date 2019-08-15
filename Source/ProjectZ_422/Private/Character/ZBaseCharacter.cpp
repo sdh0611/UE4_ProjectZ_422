@@ -27,6 +27,8 @@ AZBaseCharacter::AZBaseCharacter()
 
 	bIsActive = true;
 	bIsSprinting = false;
+	bIsPooling = false;
+
 	WalkSpeed = 500.f;
 	SprintSpeed = 800.f;
 
@@ -39,6 +41,8 @@ AZBaseCharacter::AZBaseCharacter()
 	bUseControllerRotationYaw = true;
 
 	CurrentPlaySound = nullptr;
+
+	Tags.Add(TEXT("Character"));
 }
 
 // Called when the game starts or when spawned
@@ -233,8 +237,15 @@ void AZBaseCharacter::OnDead()
 	//
 	FTimerDelegate InactiveDelegate;
 	InactiveDelegate.BindLambda([this]() {
-		SetActive(false);
-		GetAnimInstance()->SetIsDead(false);
+		if (bIsPooling)
+		{
+			SetActive(false);
+			GetAnimInstance()->SetIsDead(false);
+		}
+		else
+		{
+			Destroy();
+		}
 	});
 
 	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, InactiveDelegate, 5.f, false);

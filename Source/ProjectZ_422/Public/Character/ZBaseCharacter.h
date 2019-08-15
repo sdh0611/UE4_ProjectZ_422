@@ -62,13 +62,17 @@ protected:
 	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead();
 
-protected:
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsActive;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsSprinting;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
+	bool bIsPooling;
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float WalkSpeed;
 

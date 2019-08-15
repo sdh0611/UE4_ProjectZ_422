@@ -79,6 +79,8 @@ AZCharacter::AZCharacter()
 	bUseControllerRotationYaw = true;
 
 	CurrentWeapon = nullptr;
+
+	Tags.Add(TEXT("Player"));
 }
 
 // Called when the game starts or when spawned
@@ -155,11 +157,11 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	auto Anim = GetCharacterAnimInstance();
-	if (Anim && Anim->IsValidLowLevel())
-	{
-		Anim->PlayHitMontage();
-	}
+	//auto Anim = GetCharacterAnimInstance();
+	//if (Anim && Anim->IsValidLowLevel())
+	//{
+	//	Anim->PlayHitMontage();
+	//}
 
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 

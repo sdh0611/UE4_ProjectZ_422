@@ -9,6 +9,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInterface.h"
 
 AZBulletProjectile::AZBulletProjectile()
 {
@@ -74,23 +76,36 @@ void AZBulletProjectile::TraceBullet()
 	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, PROJECTILE_TRACE, CollisionParams);
 	if (Hit.bBlockingHit)
 	{
-		auto Character = Cast<AZBaseCharacter>(Hit.GetActor());
-		if (nullptr == Character)
+		if (Hit.GetActor()->ActorHasTag(TEXT("Character")))
 		{
-			return;
+			auto Character = Cast<AZBaseCharacter>(Hit.GetActor());
+			if (nullptr == Character)
+			{
+				return;
+			}
+			ZLOG(Warning, TEXT("Trace Character"));
+			if (Character->IsDead() || !Character->IsActive())
+			{
+				return;
+			}
+
+			FPointDamageEvent DamageEvent;
+			DamageEvent.HitInfo = Hit;
+			/* 날아온 방향 */
+			DamageEvent.ShotDirection = CurLocation - PreLocation;
+			DamageEvent.Damage = Damage;
+
+			Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
 		}
-		ZLOG(Warning, TEXT("Trace Character"));
-		if (Character->IsDead())
+		else
 		{
-			return;
-		}			
-
-		FPointDamageEvent DamageEvent;
-		DamageEvent.HitInfo = Hit;
-		DamageEvent.ShotDirection = CurLocation - PreLocation;
-		DamageEvent.Damage = Damage;
-
-		Character->TakeDamage(DamageEvent.Damage, DamageEvent, Instigator->GetController(), this);
+			/* Decal spawn이 안됨.(8.15) */
+			auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(30.f, 30.f, 30.f), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+			if (DecalComponent)
+			{
+				ZLOG(Error, TEXT("Decal"));
+			}
+		}
 
 		Destroy();
 	}

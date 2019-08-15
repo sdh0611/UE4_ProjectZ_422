@@ -37,9 +37,10 @@ AZZombie::AZZombie()
 	SprintSpeed = 500.f;
 
 	AttackDamage = 10.f;
-	bIsAttacking = false;
 	
 	ZombieState = EZombieState::Idle;
+
+	Tags.Add(TEXT("Enemy"));
 }
 
 void AZZombie::BeginPlay()
@@ -157,6 +158,33 @@ void AZZombie::SetActive(bool bActive)
 
 void AZZombie::SetZombieState(EZombieState NewState)
 {
+	switch (NewState)
+	{
+		case EZombieState::Idle:
+		{
+			GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+			break;
+		}
+		case EZombieState::Chase:
+		{
+			GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+			break;
+		}
+		case EZombieState::Attack:
+		{
+			break;
+		}
+		case EZombieState::Dead:
+		{
+			break;
+		}
+		default:
+		{
+			break;
+		}
+
+	}
+
 	ZombieState = NewState;
 
 	auto ZombieAI = GetController<AZZombieAIController>();
@@ -227,20 +255,22 @@ void AZZombie::OnDead()
 	{
 		return;
 	}
-	ZombieAI->StopAI(TEXT("Dead"));
+	ZombieAI->StopAI();
 
-	auto ZombieAnim = GetZombieAnimInstance();
-	if (nullptr == ZombieAnim)
-	{
-		return;
-	}
+	//auto ZombieAnim = GetZombieAnimInstance();
+	//if (nullptr == ZombieAnim)
+	//{
+	//	return;
+	//}
 
-	if (ZombieAnim->GetCurrentPlayMontage())
-	{
-		ZombieAnim->StopAllMontages(ZombieAnim->GetCurrentPlayMontage()->BlendOut.GetBlendTime());
-	}
-	ZombieAnim->PlayCharacterMontage(TEXT("Die"));
+	//if (ZombieAnim->GetCurrentPlayMontage())
+	//{
+	//	ZombieAnim->StopAllMontages(ZombieAnim->GetCurrentPlayMontage()->BlendOut.GetBlendTime());
+	//}
+	////ZombieAnim->PlayCharacterMontage(TEXT("Die"));
+
 	SetZombieState(EZombieState::Dead);
+
 
 }
 

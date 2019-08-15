@@ -60,9 +60,6 @@ private:
 public:
 	FOnAttackEnd OnAttackEnd;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
-	bool bIsAttacking;
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Zombie)
 	FName RightHandSocket;

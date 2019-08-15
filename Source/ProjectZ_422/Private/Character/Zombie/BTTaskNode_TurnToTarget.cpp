@@ -45,6 +45,7 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent & OwnerComp, uint
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSecond);
 
+	
 	//FVector Look = TargetPawn->GetActorLocation() - OwnerPawn->GetActorLocation();
 	//Look.Z = 0.f;
 	//FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
