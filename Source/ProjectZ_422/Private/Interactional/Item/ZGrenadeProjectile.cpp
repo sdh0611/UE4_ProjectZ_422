@@ -27,7 +27,7 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 
 	RadialForce = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce"));
-	RadialForce->SetupAttachment(ProjectileMesh);
+	RadialForce->SetupAttachment(RootComponent);
 	RadialForce->AddCollisionChannelToAffect(ZCHARACTER);
 	RadialForce->Radius = 600.f;
 	RadialForce->ForceStrength = 50000.f;

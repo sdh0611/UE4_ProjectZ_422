@@ -19,8 +19,7 @@ AZZombie::AZZombie()
 {
 	AIControllerClass = AZZombieAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
-
+	
 	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
 	Sense->SetPeripheralVisionAngle(60.f);
 	Sense->SightRadius = 2000;
@@ -29,6 +28,7 @@ AZZombie::AZZombie()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+	
 
 	RightHandSocket = TEXT("attack_r");
 	LeftHandSocket = TEXT("attack_l");

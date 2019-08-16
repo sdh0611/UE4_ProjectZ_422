@@ -21,6 +21,7 @@ AZBaseCharacter::AZBaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 	// Create character status component
 	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
