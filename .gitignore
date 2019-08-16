@@ -7,16 +7,10 @@
 /.vs
 
 
-/Build
-
-
-/Plugins
+/Debug
 
 
 /Binaries
 
 
 *.sln
-
-
-*_BuiltData.uasset
