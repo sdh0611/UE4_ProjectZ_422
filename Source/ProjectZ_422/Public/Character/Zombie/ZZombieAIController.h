@@ -4,7 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "AIController.h"
-#include "ZZombie.h"
+#include "ZBaseZombie.h"
 #include "ZZombieAIController.generated.h"
 
 /**

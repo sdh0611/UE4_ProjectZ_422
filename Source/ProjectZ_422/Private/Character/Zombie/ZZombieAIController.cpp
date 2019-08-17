@@ -35,6 +35,7 @@ AZZombieAIController::AZZombieAIController()
 void AZZombieAIController::OnPossess(APawn * InPawn)
 {
 	Super::OnPossess(InPawn);
+	ZLOG_S(Warning);
 	//if (UseBlackboard(ZombieBB, Blackboard))
 	//{
 	//	Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
@@ -45,7 +46,7 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 	//	}
 	//}
 
-	auto Zombie = Cast<AZZombie>(GetPawn());
+	auto Zombie = Cast<AZBaseZombie>(GetPawn());
 	if (Zombie)
 	{
 		if (!UseBlackboard(Zombie->GetZombieBT()->BlackboardAsset, Blackboard))
@@ -73,7 +74,7 @@ bool AZZombieAIController::RunAI()
 	//{
 	//	return false;
 	//}
-	auto Zombie = Cast<AZZombie>(GetPawn());
+	auto Zombie = Cast<AZBaseZombie>(GetPawn());
 	if (nullptr == Zombie)
 	{
 		return false;

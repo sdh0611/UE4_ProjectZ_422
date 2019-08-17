@@ -40,7 +40,7 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 		bResult = (TargetPawn->GetDistanceTo(OwnerPawn) <= 150.f);
 		if (!bResult)
 		{
-			OwnerPawn->SetZombieState(EZombieState::Chase);
+			OwnerPawn->ChangeZombieState(EZombieState::Chase);
 		}
 	}
 

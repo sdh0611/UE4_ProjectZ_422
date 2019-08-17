@@ -4,24 +4,14 @@
 
 #include "ProjectZ_422.h"
 #include "ZBaseCharacter.h"
+#include "ZBaseZombie.h"
 #include "ZZombie.generated.h"
-
-DECLARE_DELEGATE(FOnAttackEnd);
-
-UENUM(BlueprintType)
-enum class EZombieState : uint8
-{
-	Idle = 0 UMETA(DisplayName = "Idle"),
-	Attack UMETA(DisplayName = "Attack"),
-	Chase UMETA(DisplayName = "Chase"),
-	Dead UMETA(DisplayName = "Dead")
-};
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZZombie : public AZBaseCharacter
+class PROJECTZ_422_API AZZombie : public AZBaseZombie
 {
 	GENERATED_BODY()
 	
@@ -34,55 +24,17 @@ public:
 		class AController* EventInstigator, class AActor* DamageCauser) override;
 
 public:
-	UFUNCTION()
-	void OnSeePlayer(APawn* Pawn);
-
-public:
-	void Attack();
-	void AttackEnd();
 	virtual void Revive() override;
 
 public:
 	virtual void SetActive(bool bActive) override;
 
 public:
-	void SetZombieState(EZombieState NewState);
-
-	class UZZombieAnimInstance* const GetZombieAnimInstance() const;
-	class UBehaviorTree* const GetZombieBT() const;
-	EZombieState GetZombieState() const;
-
+	virtual void ChangeZombieState(EZombieState NewState) override;
 
 private:
-	void AttackCheck();
+	virtual void AttackCheck() override;
 	virtual void OnDead() override;
-
-public:
-	FOnAttackEnd OnAttackEnd;
-
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Zombie)
-	FName RightHandSocket;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Zombie)
-	FName LeftHandSocket;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
-	float AttackDamage;
-
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
-	EZombieState ZombieState;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintReadOnly)
-	class UBehaviorTree* ZombieBT;
-
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
-	class UPawnSensingComponent* Sense;
-
-	//UPROPERTY(EditDefaultsOnly, Category = Zombie)
-	//class USphereComponent* AttackCollision;
+	virtual void OnSensingPlayer(APawn* Pawn) override;
 
 };

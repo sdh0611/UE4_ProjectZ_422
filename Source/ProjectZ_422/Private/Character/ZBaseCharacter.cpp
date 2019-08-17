@@ -32,9 +32,7 @@ AZBaseCharacter::AZBaseCharacter()
 
 	WalkSpeed = 500.f;
 	SprintSpeed = 800.f;
-
-	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
@@ -50,6 +48,8 @@ AZBaseCharacter::AZBaseCharacter()
 void AZBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
 	auto ZAnimInstance = Cast<UZCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	check(nullptr != ZAnimInstance);

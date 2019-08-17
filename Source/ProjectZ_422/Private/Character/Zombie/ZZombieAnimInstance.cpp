@@ -14,7 +14,7 @@ void UZZombieAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	auto Pawn = Cast<AZZombie>(TryGetPawnOwner());
+	auto Pawn = Cast<AZBaseZombie>(TryGetPawnOwner());
 	if (Pawn && Pawn->IsValidLowLevel())
 	{
 		CurrentState = Pawn->GetZombieState();
@@ -32,7 +32,7 @@ void UZZombieAnimInstance::AnimNotify_ZombieAttackEndCheck()
 	auto Pawn = TryGetPawnOwner();
 	if (::IsValid(Pawn))
 	{
-		auto Zombie = Cast<AZZombie>(Pawn);
+		auto Zombie = Cast<AZBaseZombie>(Pawn);
 		if (nullptr == Zombie)
 		{
 			return;

@@ -4,7 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "Character/ZCharacterAnimInstance.h"
-#include "ZZombie.h"
+#include "ZBaseZombie.h"
 #include "ZZombieAnimInstance.generated.h"
 
 DECLARE_DELEGATE(FOnAttackCheck);

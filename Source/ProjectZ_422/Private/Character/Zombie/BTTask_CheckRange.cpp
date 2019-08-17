@@ -27,7 +27,7 @@ EBTNodeResult::Type UBTTask_CheckRange::ExecuteTask(UBehaviorTreeComponent & Own
 			{
 				if (Distance <= Range)
 				{
-					Zombie->SetZombieState(TargetState);
+					Zombie->ChangeZombieState(TargetState);
 					//OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)TargetState);
 				}
 
@@ -37,7 +37,7 @@ EBTNodeResult::Type UBTTask_CheckRange::ExecuteTask(UBehaviorTreeComponent & Own
 			{
 				if (Distance > Range)
 				{
-					Zombie->SetZombieState(TargetState);
+					Zombie->ChangeZombieState(TargetState);
 					//OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)TargetState);
 				}
 
