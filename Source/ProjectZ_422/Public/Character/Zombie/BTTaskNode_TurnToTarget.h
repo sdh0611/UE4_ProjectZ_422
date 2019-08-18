@@ -29,10 +29,10 @@ public:
 
 protected:
 	UPROPERTY()
-	class AZZombie* OwnerPawn;
+	class AZBaseZombie* OwnerPawn;
 
-	UPROPERTY()
-	class APawn* TargetPawn;
+	//UPROPERTY()
+	//class APawn* TargetPawn;
 	
 	FVector TargetPos;
 

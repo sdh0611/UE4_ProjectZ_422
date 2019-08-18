@@ -2,7 +2,7 @@
 
 
 #include "BTTaskNode_Attack.h"
-#include "ZZombie.h"
+#include "ZBaseZombie.h"
 #include "ZZombieAIController.h"
 #include "ZZombieAnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -16,29 +16,11 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	auto Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto OwnerAI = Cast<AZZombieAIController>(OwnerComp.GetAIOwner());
-	if (nullptr == OwnerAI)
-	{
-		return EBTNodeResult::Failed;
-	}
-
-	auto Zombie = Cast<AZZombie>(OwnerAI->GetPawn());
+	auto Zombie = Cast<AZBaseZombie>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Zombie)
 	{
 		return EBTNodeResult::Failed;
 	}
-
-	/* Turn to target. */
-	auto Target = Cast<AZBaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(OwnerAI->GetTargetActorKey()));
-	if (nullptr == Target)
-	{
-		return EBTNodeResult::Failed;
-	}
-
-	//FVector Look = Target->GetActorLocation() - Zombie->GetActorLocation();
-	//Look.Z = 0.f;
-	//FRotator ToTarget = FRotationMatrix::MakeFromX(Look).Rotator();
-	//Zombie->SetActorRotation(ToTarget);
 
 	/* Attack */
 	bIsAttacking = true;

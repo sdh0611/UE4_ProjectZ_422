@@ -7,12 +7,12 @@
 #include "ZZombie.h"
 #include "BTTask_CheckRange.generated.h"
 
-UENUM(BlueprintType)
-enum class ETaskCondition : uint8
-{
-	Less = 0 UMETA(Display = "<"),
-	Greater = 1 UMETA(Display = ">")
-};
+//UENUM(BlueprintType)
+//enum class ETaskCondition : uint8
+//{
+//	Less = 0 UMETA(Display = "<"),
+//	Greater = 1 UMETA(Display = ">")
+//};
 
 /**
  * 
@@ -22,18 +22,18 @@ class PROJECTZ_422_API UBTTask_CheckRange : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 	
-
-public:
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory) override;
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Range;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ETaskCondition Condition = ETaskCondition::Less;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EZombieState TargetState;
+//
+//public:
+//	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory) override;
+//
+//protected:
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	float Range;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	ETaskCondition Condition = ETaskCondition::Less;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	EZombieState TargetState;
 
 };

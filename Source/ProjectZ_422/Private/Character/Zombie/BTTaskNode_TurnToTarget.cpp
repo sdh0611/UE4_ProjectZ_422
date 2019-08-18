@@ -2,7 +2,7 @@
 
 
 #include "BTTaskNode_TurnToTarget.h"
-#include "ZZombie.h"
+#include "ZBaseZombie.h"
 #include "ZZombieAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTaskNode_TurnToTarget::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
-	auto Zombie = Cast<AZZombie>(OwnerAI->GetPawn());
+	auto Zombie = Cast<AZBaseZombie>(OwnerAI->GetPawn());
 	if (nullptr == Zombie)
 	{
 		return EBTNodeResult::Failed;
@@ -32,11 +32,9 @@ EBTNodeResult::Type UBTTaskNode_TurnToTarget::ExecuteTask(UBehaviorTreeComponent
 	{
 		return EBTNodeResult::Failed;
 	}
-	TargetPawn = Target;
+	//TargetPawn = Target;
 	
 	TargetPos = Target->GetActorLocation();
-	//bIsAttacking = true;
-	//Zombie->OnAttackEnd.BindLambda([this]() { ZLOG(Error, TEXT("AttackEnd.")); bIsAttacking = false; });
 
 	return EBTNodeResult::InProgress;
 }
