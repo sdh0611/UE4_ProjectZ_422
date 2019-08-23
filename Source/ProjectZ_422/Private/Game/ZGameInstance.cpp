@@ -57,8 +57,9 @@ void UZGameInstance::Init()
 {
 	Super::Init();
 
-	//RequestAyncLoadStaticMesh();
-	//RequestAyncLoadSkeletalMesh();
+	/* 안전성이 좋은 코드는 아니다. 수정하자 */
+	RequestAyncLoadStaticMesh();
+	RequestAyncLoadSkeletalMesh();
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
@@ -76,6 +77,36 @@ USkeletalMesh * const UZGameInstance::GetSkeletalMesh(const FString & Name)
 	if (SkeletalMeshTable.Contains(Name))
 	{
 		return SkeletalMeshTable[Name];
+	}
+
+	return nullptr;
+}
+
+const FZStaticMeshData * const UZGameInstance::GetStaticMeshData(const FString & MeshName)
+{
+	auto Names = StaticMeshDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
+		if (Data->Name == MeshName)
+		{
+			return Data;
+		}
+	}
+
+	return nullptr;
+}
+
+const FZSkeletalMeshData * const UZGameInstance::GetSkeletalMeshData(const FString & MeshName)
+{
+	auto Names = SkeletalMeshDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = WeaponDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
+		if (Data->Name == MeshName)
+		{
+			return Data;
+		}
 	}
 
 	return nullptr;

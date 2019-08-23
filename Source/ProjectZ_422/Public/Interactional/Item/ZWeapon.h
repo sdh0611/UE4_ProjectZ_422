@@ -176,6 +176,7 @@ protected:
 public:
 	FOnWeaponFired OnWeaponFired;
 
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	class USkeletalMeshComponent* WeaponMesh;
@@ -203,5 +204,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	class USoundBase* FireSound;
+
+	UPROPERTY()
+	TSoftObjectPtr<class USkeletalMesh> MeshPtr;
 
 };

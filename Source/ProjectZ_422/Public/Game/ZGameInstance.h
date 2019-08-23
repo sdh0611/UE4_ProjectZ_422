@@ -27,6 +27,8 @@ public:
 	*/
 	class UStaticMesh* const GetStaticMesh(const FString& Name);
 	class USkeletalMesh* const GetSkeletalMesh(const FString& Name);
+	const FZStaticMeshData* const GetStaticMeshData(const FString& MeshName);
+	const FZSkeletalMeshData* const GetSkeletalMeshData(const FString& MeshName);
 
 	/*
 		WeaponTable ฐüทร

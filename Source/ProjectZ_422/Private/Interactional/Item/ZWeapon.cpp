@@ -83,7 +83,7 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 
 	Damage = NewWeaponData->Damage;
 	FireDelay = NewWeaponData->FireDelay;
-	auto SKMesh = Cast<UZGameInstance>(GetGameInstance())->GetSkeletalMesh(ItemName);
+	auto SKMesh = GetGameInstance<UZGameInstance>()->GetSkeletalMesh(ItemName);
 	check(nullptr != SKMesh);
 	WeaponMesh->SetSkeletalMesh(SKMesh);
 
