@@ -18,17 +18,17 @@ AZPickup::AZPickup()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
 
-	// Code to test 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		SM_BODY(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4.SM_AR4'"));
-	if (SM_BODY.Succeeded())
-	{
-		Mesh->SetStaticMesh(SM_BODY.Object);
-	}
-	else
-	{
-		ZLOG(Error, TEXT("Fail to find pickup static mesh..."));
-	}
+	//// Code to test 
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh>
+	//	SM_BODY(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4.SM_AR4'"));
+	//if (SM_BODY.Succeeded())
+	//{
+	//	Mesh->SetStaticMesh(SM_BODY.Object);
+	//}
+	//else
+	//{
+	//	ZLOG(Error, TEXT("Fail to find pickup static mesh..."));
+	//}
 
 	SetActorEnableCollision(ECollisionEnabled::QueryOnly);
 
@@ -41,10 +41,6 @@ AZPickup::AZPickup()
 void AZPickup::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto GameInstance = Cast<UZGameInstance>(GetGameInstance());
-	check(nullptr != GameInstance);
-	
 
 }
 

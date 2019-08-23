@@ -27,6 +27,7 @@ public:
 	*/
 	class UStaticMesh* const GetStaticMesh(const FString& Name);
 	class USkeletalMesh* const GetSkeletalMesh(const FString& Name);
+
 	const FZStaticMeshData* const GetStaticMeshData(const FString& MeshName);
 	const FZSkeletalMeshData* const GetSkeletalMeshData(const FString& MeshName);
 
@@ -55,13 +56,9 @@ public:
 	const FZShopItemData* const GetShopItemDataByName(const FString& ShopItemName);
 
 private:
-	/* 비동기 애셋 로딩 요청 */
-	void RequestAyncLoadStaticMesh();
-	void RequestAyncLoadSkeletalMesh();
-
-	/* 비동기 애셋 로딩 */
-	void LoadStaticMeshTable();
-	void LoadSkeletalMeshTable();
+	/* 애셋 로딩 요청 */
+	void LoadStaticMesh();
+	void LoadSkeletalMesh();
 
 public:
 	FStreamableManager AssetLoader;

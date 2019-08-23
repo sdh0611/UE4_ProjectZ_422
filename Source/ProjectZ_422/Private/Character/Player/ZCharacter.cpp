@@ -88,7 +88,13 @@ void AZCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PlayerController = Cast<AZPlayerController>(GetController());	
+}
+
+void AZCharacter::PossessedBy(AController * NewController)
+{
+	Super::PossessedBy(NewController);
+
+	PlayerController = Cast<AZPlayerController>(NewController);	
 }
 
 // Called every frame

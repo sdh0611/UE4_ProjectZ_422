@@ -21,6 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	virtual void PossessedBy(AController* NewController) override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

@@ -57,9 +57,8 @@ void UZGameInstance::Init()
 {
 	Super::Init();
 
-	/* 안전성이 좋은 코드는 아니다. 수정하자 */
-	RequestAyncLoadStaticMesh();
-	RequestAyncLoadSkeletalMesh();
+	LoadStaticMesh();
+	LoadSkeletalMesh();
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
@@ -192,7 +191,7 @@ const FZShopItemData * const UZGameInstance::GetShopItemDataByName(const FString
 	return nullptr;
 }
 
-void UZGameInstance::RequestAyncLoadStaticMesh()
+void UZGameInstance::LoadStaticMesh()
 {
 	if (nullptr == StaticMeshDataTable)
 	{
@@ -200,45 +199,14 @@ void UZGameInstance::RequestAyncLoadStaticMesh()
 		return;
 	}
 
-	TArray<FSoftObjectPath> ObjectPaths;
-
 	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
-		ObjectPaths.Add(Data->StaticMeshPath);
-	}
-	AssetLoader.RequestAsyncLoad(ObjectPaths, FStreamableDelegate::CreateUObject(this, &UZGameInstance::LoadStaticMeshTable));
 
-}
+		FSoftObjectPath ObjectPath(Data->StaticMeshPath);
+		AssetLoader.RequestSyncLoad(ObjectPath);
 
-void UZGameInstance::RequestAyncLoadSkeletalMesh()
-{
-	if (nullptr == SkeletalMeshDataTable)
-	{
-		ZLOG(Error, TEXT("SkeletalMeshDataTable not exist.."));
-		return;
-	}
-
-
-	TArray<FSoftObjectPath> ObjectPaths;
-
-	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
-	for (const auto& Name : Names)
-	{
-		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
-		ObjectPaths.Add(Data->SkeletalMeshPath);
-	}
-	AssetLoader.RequestAsyncLoad(ObjectPaths, FStreamableDelegate::CreateUObject(this, &UZGameInstance::LoadSkeletalMeshTable));
-
-}
-
-void UZGameInstance::LoadStaticMeshTable()
-{
-	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
-	for (const auto& Name : Names)
-	{
-		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
 		TSoftObjectPtr<UStaticMesh> StaticMesh(Data->StaticMeshPath);
 		if (StaticMesh.IsValid())
 		{
@@ -248,16 +216,27 @@ void UZGameInstance::LoadStaticMeshTable()
 
 }
 
-void UZGameInstance::LoadSkeletalMeshTable()
+void UZGameInstance::LoadSkeletalMesh()
 {
+	if (nullptr == SkeletalMeshDataTable)
+	{
+		ZLOG(Error, TEXT("SkeletalMeshDataTable not exist.."));
+		return;
+	}
+	
 	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
+
+		FSoftObjectPath ObjectPath(Data->SkeletalMeshPath);
+		AssetLoader.RequestSyncLoad(ObjectPath);
+
 		TSoftObjectPtr<USkeletalMesh> SkeletalMesh(Data->SkeletalMeshPath);
 		if (SkeletalMesh.IsValid())
 		{
 			SkeletalMeshTable.Add(Data->Name, SkeletalMesh.Get());
 		}
 	}
+
 }

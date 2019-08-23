@@ -3,11 +3,11 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "GameFramework/Actor.h"
+#include "Engine/TargetPoint.h"
 #include "ZEnemySpawner.generated.h"
 
 UCLASS()
-class PROJECTZ_422_API AZEnemySpawner : public AActor
+class PROJECTZ_422_API AZEnemySpawner : public ATargetPoint
 {
 	GENERATED_BODY()
 	
@@ -61,7 +61,7 @@ private:
 	TArray<class AZZombie*> EnemyPool;
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	class USceneComponent* SceneComponent;
+	//UPROPERTY(VisibleAnywhere)
+	//class USceneComponent* SceneComponent;
 
 };

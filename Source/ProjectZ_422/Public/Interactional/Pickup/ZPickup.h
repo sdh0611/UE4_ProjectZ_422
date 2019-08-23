@@ -32,7 +32,7 @@ public:
 	class AZItem* const GetItem() const;
 	bool IsActive() const;
 
-public:
+protected:
 	/*
 		Item을 생성하기 위한 클래스 정보를 담는 변수.
 		나중에 Pickup이 처음 생성되는 경우, BeginePlay() 메소드에서 

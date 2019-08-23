@@ -21,8 +21,8 @@ AZEnemySpawner::AZEnemySpawner()
 	CurrentAliveEnemies = 0;
 	EnemyPoolSize = 10;
 	
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
-	RootComponent = SceneComponent;
+	//SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	//RootComponent = SceneComponent;
 
 }
 
