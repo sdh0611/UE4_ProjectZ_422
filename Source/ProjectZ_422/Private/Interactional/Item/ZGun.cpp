@@ -13,12 +13,12 @@
 
 AZGun::AZGun()
 {
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh>
-		SK_WEAPON(TEXT("SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SK_AR4.SK_AR4'"));
-	if (SK_WEAPON.Succeeded())
-	{
-		WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
-	}
+	//static ConstructorHelpers::FObjectFinder<USkeletalMesh>
+	//	SK_WEAPON(TEXT("SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SK_AR4.SK_AR4'"));
+	//if (SK_WEAPON.Succeeded())
+	//{
+	//	WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
+	//}
 
 	//static ConstructorHelpers::FClassFinder<AZProjectile>
 	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZBulletProjectile'"));

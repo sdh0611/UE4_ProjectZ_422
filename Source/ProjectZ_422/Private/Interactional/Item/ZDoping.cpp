@@ -7,7 +7,6 @@
 
 AZDoping::AZDoping()
 {
-
 	ItemType = EItemType::Doping;
 
 	// Code to test

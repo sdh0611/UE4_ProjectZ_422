@@ -2,10 +2,11 @@
 
 
 #include "ZTanker.h"
+#include "ZCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
-
+#include "GameFramework/Controller.h"
 
 AZTanker::AZTanker()
 {
@@ -63,6 +64,38 @@ void AZTanker::AttackCheck()
 {
 	Super::AttackCheck();
 
+	if (IsDead())
+	{
+		return;
+	}
+
+	TArray<FHitResult> Hits;
+	FCollisionQueryParams CollisionParams(TEXT("EnemyAttackParam"), false, this);
+	CollisionParams.bReturnPhysicalMaterial = false;
+	CollisionParams.bTraceComplex = false;
+
+	bool bResult = GetWorld()->SweepMultiByProfile(Hits, GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * 200.f,
+		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(50.f), CollisionParams);
+
+	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
+	if (!bResult)
+	{
+		return;
+	}
+
+	for (const auto& Hit : Hits)
+	{
+		ZLOG(Error, TEXT("Name : %s"), *Hit.Actor->GetName());
+		auto Character = Cast<AZCharacter>(Hit.Actor);
+		if (nullptr == Character)
+		{
+			continue;
+		}
+		Character->TakeDamage(AttackDamage, FDamageEvent(), Controller, this);
+
+	}
+
 }
 
 void AZTanker::OnDead()
@@ -93,6 +126,7 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 	FVector ImpulseDir = (OtherActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	ImpulseDir *= (ImpulseStrength * CurrentSpeedRatio);
 
+	Character->GetController()->StopMovement();
 	Character->GetCharacterMovement()->AddImpulse(ImpulseDir, true);
 
 	if (Character->ActorHasTag(TEXT("Player")))

@@ -7,58 +7,58 @@
 
 UZGameInstance::UZGameInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable>
-		DT_SM(TEXT("DataTable'/Game/GameData/StaticMeshData.StaticMeshData'"));
-	if (DT_SM.Succeeded())
-	{
-		StaticMeshDataTable = DT_SM.Object;
-		//InitStaticMeshTable();
-	}
+	//static ConstructorHelpers::FObjectFinder<UDataTable>
+	//	DT_SM(TEXT("DataTable'/Game/GameData/StaticMeshData.StaticMeshData'"));
+	//if (DT_SM.Succeeded())
+	//{
+	//	StaticMeshDataTable = DT_SM.Object;
+	//	//InitStaticMeshTable();
+	//}
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>
-		DT_SK(TEXT("DataTable'/Game/GameData/SkeletalMeshData.SkeletalMeshData'"));
-	if (DT_SK.Succeeded())
-	{
-		SkeletalMeshDataTable = DT_SK.Object;
-		//InitSkeletalMeshTable();
-	}
+	//static ConstructorHelpers::FObjectFinder<UDataTable>
+	//	DT_SK(TEXT("DataTable'/Game/GameData/SkeletalMeshData.SkeletalMeshData'"));
+	//if (DT_SK.Succeeded())
+	//{
+	//	SkeletalMeshDataTable = DT_SK.Object;
+	//	//InitSkeletalMeshTable();
+	//}
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>
-		DT_WEAPON(TEXT("DataTable'/Game/GameData/WeaponData.WeaponData'"));
-	if(DT_WEAPON.Succeeded())
-	{
-		WeaponDataTable = DT_WEAPON.Object;
-	}
+	//static ConstructorHelpers::FObjectFinder<UDataTable>
+	//	DT_WEAPON(TEXT("DataTable'/Game/GameData/WeaponData.WeaponData'"));
+	//if(DT_WEAPON.Succeeded())
+	//{
+	//	WeaponDataTable = DT_WEAPON.Object;
+	//}
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>
-		DT_RECOVERY(TEXT("DataTable'/Game/GameData/RecoveryData.RecoveryData'"));
-	if (DT_RECOVERY.Succeeded())
-	{
-		RecoveryDataTable = DT_RECOVERY.Object;
-	}
+	//static ConstructorHelpers::FObjectFinder<UDataTable>
+	//	DT_RECOVERY(TEXT("DataTable'/Game/GameData/RecoveryData.RecoveryData'"));
+	//if (DT_RECOVERY.Succeeded())
+	//{
+	//	RecoveryDataTable = DT_RECOVERY.Object;
+	//}
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>
-		DT_DOPING(TEXT("DataTable'/Game/GameData/DopingData.DopingData'"));
-	if (DT_DOPING.Succeeded())
-	{
-		DopingDataTable = DT_DOPING.Object;
-	}
+	//static ConstructorHelpers::FObjectFinder<UDataTable>
+	//	DT_DOPING(TEXT("DataTable'/Game/GameData/DopingData.DopingData'"));
+	//if (DT_DOPING.Succeeded())
+	//{
+	//	DopingDataTable = DT_DOPING.Object;
+	//}
 
-	static ConstructorHelpers::FObjectFinder<UDataTable>
-		DT_SHOP(TEXT("DataTable'/Game/GameData/ShopItemData.ShopItemData'"));
-	if (DT_SHOP.Succeeded())
-	{
-		ShopItemDataTable = DT_SHOP.Object;
-	}
+	//static ConstructorHelpers::FObjectFinder<UDataTable>
+	//	DT_SHOP(TEXT("DataTable'/Game/GameData/ShopItemData.ShopItemData'"));
+	//if (DT_SHOP.Succeeded())
+	//{
+	//	ShopItemDataTable = DT_SHOP.Object;
+	//}
 
 }
 
 void UZGameInstance::Init()
 {
 	Super::Init();
-	
-	RequestAyncLoadStaticMesh();
-	RequestAyncLoadSkeletalMesh();
+
+	//RequestAyncLoadStaticMesh();
+	//RequestAyncLoadSkeletalMesh();
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
@@ -163,6 +163,12 @@ const FZShopItemData * const UZGameInstance::GetShopItemDataByName(const FString
 
 void UZGameInstance::RequestAyncLoadStaticMesh()
 {
+	if (nullptr == StaticMeshDataTable)
+	{
+		ZLOG(Error, TEXT("StaticMeshDataTable not exist.."));
+		return;
+	}
+
 	TArray<FSoftObjectPath> ObjectPaths;
 
 	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
@@ -177,6 +183,13 @@ void UZGameInstance::RequestAyncLoadStaticMesh()
 
 void UZGameInstance::RequestAyncLoadSkeletalMesh()
 {
+	if (nullptr == SkeletalMeshDataTable)
+	{
+		ZLOG(Error, TEXT("SkeletalMeshDataTable not exist.."));
+		return;
+	}
+
+
 	TArray<FSoftObjectPath> ObjectPaths;
 
 	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();

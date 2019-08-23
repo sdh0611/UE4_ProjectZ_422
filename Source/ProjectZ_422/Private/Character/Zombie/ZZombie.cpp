@@ -89,6 +89,8 @@ void AZZombie::ChangeZombieState(EZombieState NewState)
 
 void AZZombie::AttackCheck()
 {
+	Super::AttackCheck();
+
 	if (IsDead())
 	{
 		return;
