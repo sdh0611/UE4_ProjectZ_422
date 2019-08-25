@@ -2,6 +2,7 @@
 
 
 #include "ZZombieAnimInstance.h"
+#include "ZTanker.h"
 #include "ConstructorHelpers.h"
 
 
@@ -49,6 +50,7 @@ void UZZombieAnimInstance::AnimNotify_ZombieDieCheck()
 	Montage_Stop(CurrentPlayMontage->BlendOut.GetBlendTime(), CurrentPlayMontage);
 
 }
+
 
 void UZZombieAnimInstance::SetIsAttacking(bool NewState)
 {

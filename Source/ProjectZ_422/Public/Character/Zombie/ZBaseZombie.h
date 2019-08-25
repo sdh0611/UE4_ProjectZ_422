@@ -48,10 +48,11 @@ public:
 public:
 	virtual void ChangeZombieState(EZombieState NewState);
 
+	int32 GetZombieValue() const;
 	class UZZombieAnimInstance* const GetZombieAnimInstance() const;
 	class UBehaviorTree* const GetZombieBT() const;
 	EZombieState GetZombieState() const;
-
+	
 
 protected:
 	virtual void AttackCheck();
@@ -62,8 +63,18 @@ public:
 	FOnAttackEnd OnAttackEnd;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
+	/* 해당 개체를 잡았을 경우 얻게되는 돈의 수치 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
+	int32 ZombieValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
 	float AttackDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
+	float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
+	float AttackRadius;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	EZombieState ZombieState;

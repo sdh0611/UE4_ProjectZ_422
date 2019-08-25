@@ -45,7 +45,6 @@ public:
 	bool IsEquipWeapon();
 	bool IsAiming();
 	bool IsSwitchingWeapon();
-	float GetCurrentSpeed() const;
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
 	class AZWeapon* const GetCurrentWeapon();

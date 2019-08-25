@@ -31,6 +31,7 @@ public:
 	void SetTargetPawn(class APawn* Target);
 	void SetZombieCurrentState(EZombieState NewState);
 
+	UObject* const GetTargetPawn() const;
 	const FName& GetHomePosKey() const;
 	const FName& GetTargetPosKey() const;
 	const FName& GetTargetActorKey() const;

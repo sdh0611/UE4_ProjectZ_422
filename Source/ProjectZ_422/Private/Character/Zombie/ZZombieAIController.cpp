@@ -134,6 +134,11 @@ void AZZombieAIController::SetZombieCurrentState(EZombieState NewState)
 
 }
 
+UObject * const AZZombieAIController::GetTargetPawn() const
+{
+	return Blackboard->GetValueAsObject(TargetActorKey);
+}
+
 const FName & AZZombieAIController::GetHomePosKey() const
 {
 	// TODO: 여기에 반환 구문을 삽입합니다.

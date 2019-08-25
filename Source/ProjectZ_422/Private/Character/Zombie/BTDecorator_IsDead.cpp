@@ -18,11 +18,14 @@ bool UBTDecorator_IsDead::CalculateRawConditionValue(UBehaviorTreeComponent & Ow
 		return false;
 	}
 
-	if (Target->IsDead())
-	{
-		ZLOG(Error, TEXT("Target Dead."));
-		return true;
-	}
+	//if (Target->IsDead())
+	//{
+	//	ZLOG(Error, TEXT("Target Dead."));
+	//}
+	//else
+	//{
+	//	ZLOG(Error, TEXT("Target Alive."));
+	//}
 
-	return bResult;
+	return Target->IsDead();
 }

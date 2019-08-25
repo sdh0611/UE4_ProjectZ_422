@@ -51,8 +51,11 @@ public:
 
 	bool IsSprinting() const;
 
-	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
-	virtual float GetCurrentSpeed() const;
+	float GetWalkSpeed() const;
+
+	float GetSprintSpeed() const;
+
+	float GetCurrentSpeed() const;
 
 	class UZCharacterStatusComponent* const GetStatusComponent() const;
 
@@ -64,15 +67,15 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
-	bool bIsActive;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsSprinting;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
 	bool bIsPooling;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
+	bool bIsActive;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float WalkSpeed;
 

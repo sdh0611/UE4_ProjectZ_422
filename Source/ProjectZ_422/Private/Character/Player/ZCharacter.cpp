@@ -283,22 +283,6 @@ bool AZCharacter::IsSwitchingWeapon()
 	return bIsSwitchingWeapon;
 }
 
-float AZCharacter::GetCurrentSpeed() const
-{
-	float CurrentSpeed = 0.f;
-
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
-	}
-	else
-	{
-		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
-	}
-
-	return CurrentSpeed;
-}
-
 AZInteractional * AZCharacter::GetInteractionalInView()
 {
 	FVector CamLoc;
@@ -407,11 +391,27 @@ void AZCharacter::ToggleCrouch()
 	{
 		// 앉은 상태인 경우
 		ACharacter::UnCrouch();
+		if (IsAiming())
+		{
+			SetCurrentSpeed(AimingWalkSpeedCrouched);
+		}
+		else
+		{
+			SetCurrentSpeed(WalkSpeedCrouched);
+		}
 	}
 	else
 	{
 		// 앉은 상태가 아닌 경우
 		ACharacter::Crouch();
+		if (IsAiming())
+		{
+			SetCurrentSpeed(AimingWalkSpeed);
+		}
+		else
+		{
+			SetCurrentSpeed(WalkSpeed);
+		}
 	}
 
 }

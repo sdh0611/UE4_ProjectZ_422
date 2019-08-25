@@ -201,9 +201,30 @@ bool AZBaseCharacter::IsSprinting() const
 	return bIsSprinting;
 }
 
+float AZBaseCharacter::GetWalkSpeed() const
+{
+	return WalkSpeed;
+}
+
+float AZBaseCharacter::GetSprintSpeed() const
+{
+	return SprintSpeed;
+}
+
 float AZBaseCharacter::GetCurrentSpeed() const
 {
-	return GetCharacterMovement()->MaxWalkSpeed;
+	float CurrentSpeed = 0.f;
+
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+	}
+	else
+	{
+		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	}
+
+	return CurrentSpeed;
 }
 
 UZCharacterStatusComponent * const AZBaseCharacter::GetStatusComponent() const

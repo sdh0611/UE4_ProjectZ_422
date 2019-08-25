@@ -5,6 +5,7 @@
 #include "ZGameState.h"
 #include "ZPlayerState.h"
 #include "ZCharacter.h"
+#include "ZBaseZombie.h"
 #include "ZShop.h"
 #include "ZEnemySpawner.h"
 #include "ZCharacterItemStatusComponent.h"
@@ -80,6 +81,12 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 		KillerState->AddKill();
 	}
 
+	auto Zombie = Cast<AZBaseZombie>(VictimPawn);
+	if (nullptr == Zombie)
+	{
+		return;
+	}
+
 	/* 좀비 개체수 조정 */
 	auto ZGameState = Cast<AZGameState>(GameState);
 	if(ZGameState)
@@ -93,7 +100,8 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 	{
 		return;
 	}
-	KillerPawn->GetItemStatusComponent()->AdjustMoney(100);
+
+	KillerPawn->GetItemStatusComponent()->AdjustMoney(Zombie->GetZombieValue());
 
 
 }

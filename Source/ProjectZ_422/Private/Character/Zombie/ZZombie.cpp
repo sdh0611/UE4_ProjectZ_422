@@ -38,7 +38,32 @@ void AZZombie::OnSensingPlayer(APawn * Pawn)
 {
 	Super::OnSensingPlayer(Pawn);
 
-	
+	//if (GetZombieState() != EZombieState::Idle)
+	//{
+	//	return;
+	//}
+
+	auto ZombieController = Cast<AZZombieAIController>(GetController());
+	if (nullptr == ZombieController)
+	{
+		return;
+	}
+
+	if (ZombieController->GetTargetPawn())
+	{
+		return;
+	}
+
+	auto Player = Cast<AZCharacter>(Pawn);
+	if (Player)
+	{
+		if (!Player->IsDead())
+		{
+			/* Target ¼³Á¤ */
+			ZombieController->SetTargetPawn(Player);
+			ChangeZombieState(EZombieState::Chase);
+		}
+	}
 }
 
 void AZZombie::Revive()
@@ -102,8 +127,8 @@ void AZZombie::AttackCheck()
 	CollisionParams.bTraceComplex = false;
 
 	bool bResult = GetWorld()->SweepMultiByProfile(Hits, GetActorLocation(),
-		GetActorLocation() + GetActorForwardVector() * 200.f,
-		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(50.f), CollisionParams);
+		GetActorLocation() + GetActorForwardVector() * AttackRange,
+		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
 
 	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
 	if (!bResult)

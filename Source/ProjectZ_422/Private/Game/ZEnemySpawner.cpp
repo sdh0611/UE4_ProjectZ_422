@@ -2,7 +2,7 @@
 
 
 #include "ZEnemySpawner.h"
-#include "ZZombie.h"
+#include "ZBaseZombie.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "ZGameMode.h"
@@ -44,7 +44,7 @@ void AZEnemySpawner::BeginPlay()
 		/* 각각의 Enemy는 Spawn후 비활성화상태로 */
 		
 		//auto Enemy = GetWorld()->SpawnActor<AZZombie>(AZZombie::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
-		auto Enemy = GetWorld()->SpawnActor<AZZombie>(SpawnEnemyClass, GetActorTransform(), SpawnParams);
+		auto Enemy = GetWorld()->SpawnActor<AZBaseZombie>(SpawnEnemyClass, GetActorTransform(), SpawnParams);
 		if (nullptr != Enemy)
 		{
 			Enemy->SetActive(false);

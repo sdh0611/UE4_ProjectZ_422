@@ -53,12 +53,12 @@ protected:
 	int32 EnemyPoolSize;
 
 	UPROPERTY(EditAnywhere, Category = Spawner)
-	TSubclassOf<class AZZombie> SpawnEnemyClass;
+	TSubclassOf<class AZBaseZombie> SpawnEnemyClass;
 
 	FTimerHandle SpawnTimer;
 
 private:
-	TArray<class AZZombie*> EnemyPool;
+	TArray<class AZBaseZombie*> EnemyPool;
 
 private:
 	//UPROPERTY(VisibleAnywhere)

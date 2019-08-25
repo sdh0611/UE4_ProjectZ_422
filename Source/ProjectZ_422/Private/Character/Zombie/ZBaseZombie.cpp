@@ -32,7 +32,10 @@ AZBaseZombie::AZBaseZombie()
 	WalkSpeed = 200.f;
 	SprintSpeed = 500.f;
 
+	ZombieValue = 100;
 	AttackDamage = 10.f;
+	AttackRange = 200.f;
+	AttackRadius = 50.f;
 
 	ZombieState = EZombieState::Idle;
 
@@ -131,6 +134,11 @@ void AZBaseZombie::ChangeZombieState(EZombieState NewState)
 	}
 }
 
+int32 AZBaseZombie::GetZombieValue() const
+{
+	return ZombieValue;
+}
+
 UZZombieAnimInstance * const AZBaseZombie::GetZombieAnimInstance() const
 {
 	return Cast<UZZombieAnimInstance>(GetAnimInstance());
@@ -153,6 +161,8 @@ void AZBaseZombie::AttackCheck()
 
 void AZBaseZombie::OnDead()
 {
+	Super::OnDead();
+
 	auto ZombieAI = Cast<AZZombieAIController>(GetController());
 	if (nullptr == ZombieAI)
 	{
@@ -183,21 +193,5 @@ void AZBaseZombie::OnSensingPlayer(APawn * Pawn)
 		return;
 	}
 
-	if (GetZombieState() != EZombieState::Idle)
-	{
-		return;
-	}
 
-	//ZLOG_S(Warning);
-	auto ZombieController = Cast<AZZombieAIController>(GetController());
-	auto Player = Cast<AZCharacter>(Pawn);
-	if (ZombieController && Player)
-	{
-		if (!Player->IsDead())
-		{
-			/* Target ¼³Á¤ */
-			ZombieController->SetTargetPawn(Player);
-			ChangeZombieState(EZombieState::Chase);
-		}
-	}
 }

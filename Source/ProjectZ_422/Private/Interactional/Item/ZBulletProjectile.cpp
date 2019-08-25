@@ -11,6 +11,7 @@
 #include "ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInterface.h"
+#include "Components/DecalComponent.h"
 
 AZBulletProjectile::AZBulletProjectile()
 {
@@ -83,7 +84,7 @@ void AZBulletProjectile::TraceBullet()
 			{
 				return;
 			}
-			ZLOG(Warning, TEXT("Trace Character"));
+
 			if (Character->IsDead() || !Character->IsActive())
 			{
 				return;
@@ -99,11 +100,10 @@ void AZBulletProjectile::TraceBullet()
 		}
 		else
 		{
-			/* Decal spawnÀÌ ¾ÈµÊ.(8.15) */
-			auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(30.f, 30.f, 30.f), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+			auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(5.f, 5.f, 5.f), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 			if (DecalComponent)
 			{
-				ZLOG(Error, TEXT("Decal"));
+				DecalComponent->SetFadeScreenSize(0.01f);
 			}
 		}
 

@@ -82,10 +82,10 @@ private:
 	/*
 		HP
 	*/
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
 	float CurrentHP;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
 	float MaxHP;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))

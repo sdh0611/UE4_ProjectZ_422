@@ -24,6 +24,13 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
+	/* Setter */
+	void SetIsAttacking(bool NewState);
+
+	/* Getter */
+	bool IsAttacking() const;
+
+protected:
 	UFUNCTION()
 	void AnimNotify_ZombieAttackCheck();
 
@@ -33,12 +40,6 @@ public:
 	UFUNCTION()
 	void AnimNotify_ZombieDieCheck();
 
-public:
-	/* Setter */
-	void SetIsAttacking(bool NewState);
-
-	/* Getter */
-	bool IsAttacking() const;
 	
 public:
 	FOnAttackCheck OnAttackCheck;
