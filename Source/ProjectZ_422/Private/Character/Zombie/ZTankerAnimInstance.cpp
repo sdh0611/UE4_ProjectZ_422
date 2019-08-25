@@ -13,7 +13,8 @@ void UZTankerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	auto Tanker = Cast<AZTanker>(TryGetPawnOwner());
 	if (Tanker)
 	{
-		bIsRushCooldown = Tanker->IsRushCooldown();
+		//bIsRushCooldown = Tanker->IsRushCooldown();
+		bIsRushing= Tanker->bIsRushing;
 	}
 }
 

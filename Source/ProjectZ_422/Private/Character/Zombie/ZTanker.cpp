@@ -188,6 +188,12 @@ void AZTanker::ToggleRush(bool bInRush)
 		ImpulseSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		SetCurrentSpeed(RushSpeed);
 		bIsRushCooldown = false;
+		//auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
+		//if (::IsValid(TankerAnim))
+		//{
+		//	TankerAnim->bIsRushCooldown = false;
+		//}
+
 		auto RushCooldownLambda = [this]()
 		{
 			bIsRushCooldown = true;

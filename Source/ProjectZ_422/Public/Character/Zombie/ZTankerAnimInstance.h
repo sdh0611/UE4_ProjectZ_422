@@ -29,7 +29,7 @@ public:
 	bool bIsScreaming;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bIsRushCooldown;
+	bool bIsRushing;
 
 
 };
