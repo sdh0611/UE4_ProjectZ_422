@@ -46,8 +46,11 @@ protected:
 	bool CheckNeedToReload();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class UParticleSystem* FireEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	class USoundBase* EmptySound;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName EffectAttachSocketName;

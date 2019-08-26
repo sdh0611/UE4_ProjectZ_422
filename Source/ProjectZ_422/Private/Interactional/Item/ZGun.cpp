@@ -145,11 +145,6 @@ int32 AZGun::GetMaxAmmo() const
 
 void AZGun::Fire()
 {
-	if (!IsWantsToFire())
-	{
-		SetWantsToFire(true);
-	}
-
 	if (IsReloading())
 	{
 		return;
@@ -157,7 +152,22 @@ void AZGun::Fire()
 
 	if (CheckNeedToReload())
 	{
+		if (EmptySound)
+		{
+			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), EmptySound, GetActorLocation(), GetActorRotation());
+		}
+
+		if (bWantsToFire)
+		{
+			SetWantsToFire(false);
+		}
+
 		return;
+	}
+
+	if (!IsWantsToFire())
+	{
+		SetWantsToFire(true);
 	}
 
 	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
