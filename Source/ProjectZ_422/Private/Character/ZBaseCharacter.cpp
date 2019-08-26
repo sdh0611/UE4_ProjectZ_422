@@ -17,7 +17,7 @@
 // Sets default values
 AZBaseCharacter::AZBaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
@@ -32,14 +32,13 @@ AZBaseCharacter::AZBaseCharacter()
 
 	WalkSpeed = 500.f;
 	SprintSpeed = 800.f;
-	
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	bUseControllerRotationYaw = true;
 
-	CurrentPlaySound = nullptr;
 
 	Tags.Add(TEXT("Character"));
 }
@@ -87,26 +86,16 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 
 		if (HitEffect)
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, 
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,
 				PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
 		}
 
-		if (HitSound)
-		{
-			if (nullptr == CurrentPlaySound)
-			{
-				CurrentPlaySound = UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
-					PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
-			}
-			else
-			{
-				if (!CurrentPlaySound->IsPlaying())
-				{
-					CurrentPlaySound = UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
-						PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
-				}
-			}
-		}
+	}
+	
+	if (HitSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
+			GetActorLocation(), GetActorRotation());
 	}
 
 	if (IsDead())
@@ -256,6 +245,11 @@ void AZBaseCharacter::OnDead()
 	//GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	//GetMesh()->SetSimulatePhysics(true);
 	//
+	if (DeadSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DeadSound, GetActorLocation(), GetActorRotation());
+	}
+
 	FTimerDelegate InactiveDelegate;
 	InactiveDelegate.BindLambda([this]() {
 		if (bIsPooling)

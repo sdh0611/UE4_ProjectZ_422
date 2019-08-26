@@ -12,7 +12,7 @@
 #include "GameFramework/Controller.h"
 #include "TimerManager.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
-
+#include "Kismet/GameplayStatics.h"
 
 
 AZTanker::AZTanker()
@@ -178,7 +178,8 @@ void AZTanker::OnSensingPlayer(APawn * Pawn)
 	
 }
 
-void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, 
+	UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	ZLOG_S(Error);
 	auto Character = Cast<AZBaseCharacter>(OtherActor);
@@ -199,6 +200,12 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 
 	if (Character->ActorHasTag(TEXT("Player")))
 	{
+		//FTransform SpawnTransform;
+		//SpawnTransform.SetLocation(SweepResult.ImpactPoint);
+		//SpawnTransform.SetRotation(SweepResult.ImpactNormal.Rotation().Quaternion());
+		//SpawnTransform.SetScale3D(FVector(3.f, 3.f, 3.f));
+
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RushExplosionParticle, SpawnTransform);
 		Character->TakeDamage(RushDamage * CurrentSpeedRatio, FDamageEvent(), GetController(), this);
 		ToggleRush(false);
 	}

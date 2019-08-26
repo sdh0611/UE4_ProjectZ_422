@@ -88,8 +88,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	class USoundBase* HitSound;
 
-	UPROPERTY()
-	class UAudioComponent* CurrentPlaySound;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
+	class USoundBase* DeadSound;
 
 	FRotator Rotate;
 

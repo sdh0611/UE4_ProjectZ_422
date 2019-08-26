@@ -64,6 +64,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float RushDelay;
 
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	//class UParticleSystem* RushExplosionParticle;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USphereComponent* ImpulseSphere;
