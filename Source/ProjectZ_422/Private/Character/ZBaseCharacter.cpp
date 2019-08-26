@@ -78,12 +78,12 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
 	{
 		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
-		UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
-		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
-		{
-			ZLOG(Error, TEXT("Headshot."));
-			FinalDamage *= 5.f;
-		}
+		//UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
+		//if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+		//{
+		//	ZLOG(Error, TEXT("Headshot."));
+		//	FinalDamage *= 5.f;
+		//}
 
 		if (HitEffect)
 		{
@@ -109,7 +109,6 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 		}
 	}
 
-	StatusComponent->AdjustCurrentHP(-FinalDamage);
 	if (IsDead())
 	{
 		ZLOG(Warning, TEXT("Dead!!"));

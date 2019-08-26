@@ -163,15 +163,9 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	//auto Anim = GetCharacterAnimInstance();
-	//if (Anim && Anim->IsValidLowLevel())
-	//{
-	//	Anim->PlayHitMontage();
-	//}
+	StatusComponent->AdjustCurrentHP(-DamageAmount);
 
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	return FinalDamage;
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)

@@ -5,11 +5,15 @@
 #include "ZTankerAnimInstance.h"
 #include "ZCharacter.h"
 #include "ZZombieAIController.h"
+#include "ZCharacterStatusComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Controller.h"
 #include "TimerManager.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
+
+
 
 AZTanker::AZTanker()
 {
@@ -72,6 +76,30 @@ void AZTanker::ChangeZombieState(EZombieState NewState)
 
 	}
 
+}
+
+float AZTanker::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
+		UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
+		/* 헤드샷에는 데미지 250%, 나머지는 80% 적용 */
+		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+		{
+			ZLOG(Error, TEXT("Headshot."));
+			DamageAmount *= 5.f;
+		}
+		else
+		{
+			DamageAmount *= 0.8f;
+		}
+
+	}
+
+	StatusComponent->AdjustCurrentHP(-DamageAmount);
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void AZTanker::AttackCheck()
@@ -159,7 +187,7 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 		return;
 	}
 
-	ZLOG_S(Error);
+	ZLOG(Warning, TEXT("%s"), *OtherComp->GetName());
 
 	float CurrentSpeedRatio = GetVelocity().Size() / GetCharacterMovement()->MaxWalkSpeed;
 

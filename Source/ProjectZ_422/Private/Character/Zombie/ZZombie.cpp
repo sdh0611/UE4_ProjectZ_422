@@ -6,6 +6,7 @@
 #include "ZCharacter.h"
 #include "ZZombieAnimInstance.h"
 #include "ZGameMode.h"
+#include "ZCharacterStatusComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
@@ -13,6 +14,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ConstructorHelpers.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 
 AZZombie::AZZombie()
@@ -28,10 +30,22 @@ void AZZombie::BeginPlay()
 
 float AZZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
+		UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
+		/* 헤드샷에는 데미지 250%, 나머지는 80% 적용 */
+		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+		{
+			ZLOG(Error, TEXT("Headshot."));
+			DamageAmount = StatusComponent->GetMaxHP();
+		}
+		
+	}
+	
+	StatusComponent->AdjustCurrentHP(-DamageAmount);
 
-
-	return FinalDamage;
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void AZZombie::OnSensingPlayer(APawn * Pawn)

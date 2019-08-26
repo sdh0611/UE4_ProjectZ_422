@@ -89,7 +89,7 @@ void AZBulletProjectile::TraceBullet()
 			{
 				return;
 			}
-
+			
 			FPointDamageEvent DamageEvent;
 			DamageEvent.HitInfo = Hit;
 			/* 날아온 방향 */
@@ -103,10 +103,12 @@ void AZBulletProjectile::TraceBullet()
 			auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(5.f, 5.f, 5.f), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 			if (DecalComponent)
 			{
-				DecalComponent->SetFadeScreenSize(0.01f);
+				DecalComponent->SetFadeScreenSize(0.005f);
 			}
 		}
-
 		Destroy();
+
 	}
+
+	ProjectileTrailParticle->SetVectorParameter(TEXT("EndPoint"), PreLocation);
 }
