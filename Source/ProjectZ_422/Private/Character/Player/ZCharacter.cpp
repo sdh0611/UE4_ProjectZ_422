@@ -163,9 +163,11 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	StatusComponent->AdjustCurrentHP(-DamageAmount);
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	//StatusComponent->AdjustCurrentHP(-FinalDamage);
+
+	return FinalDamage;
 }
 
 FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
@@ -331,7 +333,7 @@ void AZCharacter::CheckCharacterRotation(float DeltaTime)
 void AZCharacter::OnDead()
 {
 	Super::OnDead();
-
+	DisableInput(PlayerController);
 	//PlayerController->SetCinematicMode(true, false, false, true, true);
 
 }

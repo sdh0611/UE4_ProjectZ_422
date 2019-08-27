@@ -83,6 +83,9 @@ protected:
 	float SprintSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
+	float DisappearTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	class UParticleSystem* HitEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)

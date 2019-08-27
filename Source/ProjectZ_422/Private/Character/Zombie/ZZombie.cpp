@@ -34,7 +34,7 @@ float AZZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent,
 	{
 		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
 		UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
-		/* 헤드샷에는 데미지 250%, 나머지는 80% 적용 */
+		/* Headshot은 즉사 */
 		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
 		{
 			ZLOG(Error, TEXT("Headshot."));
@@ -43,7 +43,7 @@ float AZZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent,
 		
 	}
 	
-	StatusComponent->AdjustCurrentHP(-DamageAmount);
+	//StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
@@ -52,10 +52,10 @@ void AZZombie::OnSensingPlayer(APawn * Pawn)
 {
 	Super::OnSensingPlayer(Pawn);
 
-	//if (GetZombieState() != EZombieState::Idle)
-	//{
-	//	return;
-	//}
+	if (GetZombieState() != EZombieState::Idle)
+	{
+		return;
+	}
 
 	auto ZombieController = Cast<AZZombieAIController>(GetController());
 	if (nullptr == ZombieController)
@@ -63,10 +63,10 @@ void AZZombie::OnSensingPlayer(APawn * Pawn)
 		return;
 	}
 
-	if (ZombieController->GetTargetPawn())
-	{
-		return;
-	}
+	//if (ZombieController->GetTargetPawn())
+	//{
+	//	return;
+	//}
 
 	auto Player = Cast<AZCharacter>(Pawn);
 	if (Player)

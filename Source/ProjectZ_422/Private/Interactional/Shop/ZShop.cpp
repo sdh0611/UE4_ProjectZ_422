@@ -14,7 +14,8 @@
 #include "ZGrenade.h"
 #include "ZRecovery.h"
 #include "ZDoping.h"
-#include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
 
 
@@ -24,15 +25,18 @@ AZShop::AZShop()
 
 	bIsShopOpen = false;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = Mesh;
+	BodyCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BodyCollision"));
+	RootComponent = BodyCollision;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>
-		SM_SHOP(TEXT("StaticMesh'/Engine/EditorMeshes/ColorCalibrator/SM_ColorCalibrator.SM_ColorCalibrator'"));
-	if(SM_SHOP.Succeeded())
-	{
-		Mesh->SetStaticMesh(SM_SHOP.Object);
-	}
+	BodyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BodyMesh"));
+	BodyMesh->SetupAttachment(RootComponent);
+
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh>
+	//	SM_SHOP(TEXT("StaticMesh'/Engine/EditorMeshes/ColorCalibrator/SM_ColorCalibrator.SM_ColorCalibrator'"));
+	//if(SM_SHOP.Succeeded())
+	//{
+	//	Mesh->SetStaticMesh(SM_SHOP.Object);
+	//}
 
 	//WeaponClass = AZWeapon::StaticClass();
 	//RecoveryClass = AZRecovery::StaticClass();

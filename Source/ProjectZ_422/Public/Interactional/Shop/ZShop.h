@@ -76,7 +76,10 @@ private:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Shop)
-	class UStaticMeshComponent* Mesh;
+	class UBoxComponent* BodyCollision;
+
+	UPROPERTY(VisibleAnywhere, Category = Shop)
+	class USkeletalMeshComponent* BodyMesh;
 
 
 };

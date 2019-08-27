@@ -58,6 +58,7 @@ void AZBaseZombie::BeginPlay()
 
 float AZBaseZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	if (IsDead())
 	{
 		ZLOG_S(Warning);
@@ -68,7 +69,7 @@ float AZBaseZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEv
 		}
 	}
 
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	return FinalDamage;
 }
 
 void AZBaseZombie::OnSeePlayer(APawn * Pawn)

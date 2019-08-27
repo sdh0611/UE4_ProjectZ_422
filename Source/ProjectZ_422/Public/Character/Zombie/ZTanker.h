@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ProjectZ_422.h"
 #include "Character/Zombie/ZBaseZombie.h"
 #include "ZTanker.generated.h"
 

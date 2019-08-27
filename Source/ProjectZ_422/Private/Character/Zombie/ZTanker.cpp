@@ -97,7 +97,7 @@ float AZTanker::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent,
 
 	}
 
-	StatusComponent->AdjustCurrentHP(-DamageAmount);
+	//StatusComponent->AdjustCurrentHP(-DamageAmount);
 
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }

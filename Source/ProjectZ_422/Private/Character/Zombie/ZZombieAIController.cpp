@@ -49,6 +49,13 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 	auto Zombie = Cast<AZBaseZombie>(GetPawn());
 	if (Zombie)
 	{
+		auto BehaviorTree = Zombie->GetZombieBT();
+		if (nullptr == BehaviorTree)
+		{
+			ZLOG(Error, TEXT("BehaviorTree not exist.."));
+			return;
+		}
+
 		if (!UseBlackboard(Zombie->GetZombieBT()->BlackboardAsset, Blackboard))
 		{
 			ZLOG(Error, TEXT("Failed to init blackboard."));

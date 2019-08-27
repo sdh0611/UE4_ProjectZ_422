@@ -32,6 +32,7 @@ AZBaseCharacter::AZBaseCharacter()
 
 	WalkSpeed = 500.f;
 	SprintSpeed = 800.f;
+	DisappearTime = 5.f;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
@@ -72,6 +73,7 @@ void AZBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
 	ZLOG_S(Warning);
+
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
@@ -97,6 +99,8 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
 			GetActorLocation(), GetActorRotation());
 	}
+
+	StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	if (IsDead())
 	{
@@ -132,6 +136,8 @@ void AZBaseCharacter::Revive()
 	//Location.Z -= 88.f;
 	//GetMesh()->SetWorldLocation(Location);
 	SetActive(true);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	GetCharacterMovement()->SetComponentTickEnabled(true);
 }
 
 void AZBaseCharacter::SetIsSprinting(bool NewState)
@@ -239,6 +245,9 @@ void AZBaseCharacter::OnDead()
 	GetAnimInstance()->SetIsDead(true);
 
 	SetActorEnableCollision(false);
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->SetComponentTickEnabled(false);
 	//SetActorTickEnabled(false);
 	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	//
@@ -263,7 +272,7 @@ void AZBaseCharacter::OnDead()
 		}
 	});
 
-	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, InactiveDelegate, 5.f, false);
+	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, InactiveDelegate, DisappearTime, false);
 
 }
 

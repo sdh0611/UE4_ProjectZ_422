@@ -48,6 +48,7 @@ void AZEnemySpawner::BeginPlay()
 		if (nullptr != Enemy)
 		{
 			Enemy->SetActive(false);
+			Enemy->bIsPooling = true;
 			EnemyPool.Add(Enemy);
 		}
 
