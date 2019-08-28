@@ -54,6 +54,9 @@ private:
 public:
 	FOnGrenadeThrow OnGrenadeThrow;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsDead;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	float AimYaw;

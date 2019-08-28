@@ -50,6 +50,12 @@ public:
 	const FZDopingData* const GetDopingDataByName(const FString& DopingName);
 
 	/*
+		DopingTable 관련
+	*/
+	const FZDopingData* const GetDopingDataByRowIndex(int32 RowIndex);
+	const FZDopingData* const GetDopingDataByName(const FString& DopingName);
+
+	/*
 		ShopTable 관련
 	*/
 	class UDataTable* const GetShopItemDataTable() const;

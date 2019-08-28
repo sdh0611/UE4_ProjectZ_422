@@ -19,6 +19,7 @@ enum class EItemType : uint8
 	Weapon,
 	Recovery,
 	Doping,
+	//Supply,
 	Invalid
 };
 
@@ -148,10 +149,10 @@ public:
 	TSubclassOf<class AZPickup> PickupClass;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
 	bool bCanDestroy;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
 	bool bIsActive;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
@@ -172,7 +173,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	class AZCharacter* ItemOwner;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
 	EItemType ItemType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)

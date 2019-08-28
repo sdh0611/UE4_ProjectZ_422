@@ -57,7 +57,9 @@ public:
 protected:
 	virtual void AttackCheck();
 	virtual void OnDead() override;
+	virtual void OnRemoved() override;
 	virtual void OnSensingPlayer(APawn* Pawn);
+
 
 public:
 	FOnAttackEnd OnAttackEnd;

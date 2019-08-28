@@ -17,7 +17,7 @@
 
 AZTanker::AZTanker()
 {
-	bIsRushing = false;
+	//bIsRushing = false;
 	bIsScreaming = false;
 	bIsRushCooldown = true;
 	ImpulseStrength = 10000.f;
@@ -102,6 +102,21 @@ float AZTanker::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent,
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
+void AZTanker::SetActive(bool bActive)
+{
+	Super::SetActive(bActive);
+
+	if (bActive)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(RushTimer);
+		bIsRushCooldown = true;
+	}
+	//else
+	//{
+		//bIsRushing = false;
+	//}
+}
+
 void AZTanker::AttackCheck()
 {
 	Super::AttackCheck();
@@ -172,7 +187,7 @@ void AZTanker::OnSensingPlayer(APawn * Pawn)
 			/* Target ¼³Á¤ */
 			ZombieController->SetTargetPawn(Player);
 			ChangeZombieState(EZombieState::Chase);
-			bIsScreaming = true;
+			//bIsScreaming = true;
 		}
 	}
 	
@@ -207,6 +222,12 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 
 		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RushExplosionParticle, SpawnTransform);
 		Character->TakeDamage(RushDamage * CurrentSpeedRatio, FDamageEvent(), GetController(), this);
+		auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
+		if (::IsValid(TankerAnim))
+		{
+			TankerAnim->bIsRushing = false;
+		}
+
 		ToggleRush(false);
 	}
 }
@@ -223,11 +244,11 @@ void AZTanker::ToggleRush(bool bInRush)
 		ImpulseSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		SetCurrentSpeed(RushSpeed);
 		bIsRushCooldown = false;
-		//auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
-		//if (::IsValid(TankerAnim))
-		//{
-		//	TankerAnim->bIsRushCooldown = false;
-		//}
+		auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
+		if (::IsValid(TankerAnim))
+		{
+			TankerAnim->bIsRushing = true;
+		}
 
 		auto RushCooldownLambda = [this]()
 		{
@@ -243,7 +264,7 @@ void AZTanker::ToggleRush(bool bInRush)
 
 	}
 
-	bIsRushing = bInRush;
+	//bIsRushing = bInRush;
 
 }
 

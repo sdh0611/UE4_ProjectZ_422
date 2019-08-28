@@ -22,6 +22,7 @@ public:
 	virtual void ChangeZombieState(EZombieState NewState) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 		class AController* EventInstigator, class AActor* DamageCauser) override;
+	virtual void SetActive(bool bActive) override;
 
 public:
 	void ToggleRush(bool bInRush);
@@ -40,8 +41,8 @@ public:
 	bool IsRushCooldown() const;
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bIsRushing;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//bool bIsRushing;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsScreaming;

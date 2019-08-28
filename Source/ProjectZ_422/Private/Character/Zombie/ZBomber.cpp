@@ -4,9 +4,11 @@
 #include "ZBomber.h"
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
+#include "ZCharacterStatusComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -47,11 +49,31 @@ void AZBomber::Tick(float DeltaTime)
 
 }
 
+float AZBomber::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
+		UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
+		/* Headshot篮 溜荤 */
+		if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
+		{
+			ZLOG(Error, TEXT("Headshot."));
+			DamageAmount = StatusComponent->GetMaxHP();
+		}
+	}
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 void AZBomber::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, 
 	UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	bIsTriggered = true;
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	if (OtherActor->ActorHasTag(TEXT("Player")))
+	{
+		bIsTriggered = true;
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	}
 }
 
 void AZBomber::OnSphereOverlapEnd(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex)
@@ -77,7 +99,7 @@ void AZBomber::Explosion()
 	if (ExplosionParticle)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetActorLocation(), GetActorRotation(), 
-			FVector(3.f, 3.f, 3.f));
+			FVector(4.f, 4.f, 4.f));
 	}
 
 	/* 气惯 饶 贸府规过 */
@@ -147,4 +169,12 @@ void AZBomber::OnSensingPlayer(APawn * Pawn)
 		}
 	}
 
+}
+
+void AZBomber::OnDead()
+{
+	bIsTriggered = false;
+	ElapsedTime = 0.f;
+
+	Super::OnDead();	
 }

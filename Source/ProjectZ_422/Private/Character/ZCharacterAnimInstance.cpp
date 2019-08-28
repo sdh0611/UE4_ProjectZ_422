@@ -16,7 +16,7 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 	bIsFalling = false;
 	bIsCrouching = false;
 	bIsSprinting = false;
-	bIsDead = false;
+	//bIsDead = false;
 
 	CurrentPlayMontage = nullptr;
 }
@@ -87,10 +87,10 @@ void UZCharacterAnimInstance::SetIsSprinting(bool NewState)
 	bIsSprinting = NewState;
 }
 
-void UZCharacterAnimInstance::SetIsDead(bool NewState)
-{
-	bIsDead = NewState;
-}
+//void UZCharacterAnimInstance::SetIsDead(bool NewState)
+//{
+//	bIsDead = NewState;
+//}
 
 bool UZCharacterAnimInstance::IsSprinting() const
 {

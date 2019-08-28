@@ -62,10 +62,10 @@ public:
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
-		FString Name;
+	FString Name;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
-		FString SkeletalMeshPath;
+	FString SkeletalMeshPath;
 
 };
 

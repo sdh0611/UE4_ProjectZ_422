@@ -20,6 +20,8 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+		class AController* EventInstigator, class AActor* DamageCauser) override;
 
 protected:
 	/* SphereComponent의 OnComponentBeginOverlap 바인딩용 메소드 */
@@ -37,8 +39,10 @@ protected:
 
 	virtual void OnSensingPlayer(APawn* Pawn) override;
 
+	virtual void OnDead() override;
+
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsTriggered;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

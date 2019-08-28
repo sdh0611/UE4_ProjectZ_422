@@ -65,6 +65,10 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 
 	RunAI();
 
+	if (Blackboard)
+	{
+		Blackboard->SetValueAsVector(TargetPosKey, FVector(0.f, 0.f, 0.f));
+	}
 }
 
 void AZZombieAIController::OnUnPossess()

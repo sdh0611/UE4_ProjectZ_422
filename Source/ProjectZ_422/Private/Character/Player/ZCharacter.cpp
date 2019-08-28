@@ -75,7 +75,7 @@ AZCharacter::AZCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
-
+	
 	bUseControllerRotationYaw = true;
 
 	CurrentWeapon = nullptr;
@@ -168,6 +168,16 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 	//StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	return FinalDamage;
+}
+
+void AZCharacter::Revive()
+{
+	Super::Revive();
+
+	if (PlayerController)
+	{
+		EnableInput(PlayerController);
+	}
 }
 
 FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
@@ -333,9 +343,33 @@ void AZCharacter::CheckCharacterRotation(float DeltaTime)
 void AZCharacter::OnDead()
 {
 	Super::OnDead();
-	DisableInput(PlayerController);
+
+	auto MyAnim = GetCharacterAnimInstance();
+	if (::IsValid(MyAnim))
+	{
+		MyAnim->bIsDead = true;
+	}
+
+	if (PlayerController)
+	{
+		DisableInput(PlayerController);
+	}
 	//PlayerController->SetCinematicMode(true, false, false, true, true);
 
+}
+
+void AZCharacter::OnRemoved()
+{
+	Super::OnRemoved();
+
+	if (bIsPooling)
+	{
+		auto MyAnim = GetCharacterAnimInstance();
+		if (::IsValid(MyAnim))
+		{
+			MyAnim->bIsDead = false;
+		}
+	}
 }
 
 void AZCharacter::MoveForward(float NewAxisValue)

@@ -242,7 +242,7 @@ void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 
 void AZBaseCharacter::OnDead()
 {
-	GetAnimInstance()->SetIsDead(true);
+	//GetAnimInstance()->SetIsDead(true);
 
 	SetActorEnableCollision(false);
 	GetCharacterMovement()->StopMovementImmediately();
@@ -259,20 +259,33 @@ void AZBaseCharacter::OnDead()
 		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DeadSound, GetActorLocation(), GetActorRotation());
 	}
 
-	FTimerDelegate InactiveDelegate;
-	InactiveDelegate.BindLambda([this]() {
-		if (bIsPooling)
-		{
-			SetActive(false);
-			GetAnimInstance()->SetIsDead(false);
-		}
-		else
-		{
-			Destroy();
-		}
-	});
+	//FTimerDelegate InactiveDelegate;
+	//InactiveDelegate.BindLambda([this]() {
+	//	if (bIsPooling)
+	//	{
+	//		SetActive(false);
+	//		GetAnimInstance()->SetIsDead(false);
+	//	}
+	//	else
+	//	{
+	//		Destroy();
+	//	}
+	//});
 
-	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, InactiveDelegate, DisappearTime, false);
+	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, this, &AZBaseCharacter::OnRemoved, DisappearTime, false);
 
+}
+
+void AZBaseCharacter::OnRemoved()
+{
+	if (bIsPooling)
+	{
+		//GetAnimInstance()->SetIsDead(false);
+		SetActive(false);
+	}
+	else
+	{
+		Destroy();
+	}
 }
 

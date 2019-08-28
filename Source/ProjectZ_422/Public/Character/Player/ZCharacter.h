@@ -31,6 +31,8 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, 
 		class AController* EventInstigator, class AActor* DamageCauser) override;
 
+	virtual void Revive() override;
+
 public:
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
 
@@ -53,6 +55,8 @@ public:
 private:
 	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead() override;
+	virtual void OnRemoved() override;
+	
 
 private:
 	/*

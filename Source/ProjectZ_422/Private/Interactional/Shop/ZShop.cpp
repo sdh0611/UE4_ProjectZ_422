@@ -161,6 +161,11 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 			SpawnItemClass = DopingClass;
 			break;
 		}
+		case EItemType::Supply:
+		{
+
+			break;
+		}
 		default:
 		{
 			ZLOG(Error, TEXT("Invalid ItemType"));

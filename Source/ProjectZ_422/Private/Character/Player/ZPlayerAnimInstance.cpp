@@ -15,6 +15,7 @@ UZPlayerAnimInstance::UZPlayerAnimInstance()
 	AimPitch = 0.f;
 	bIsEquipGun = false;
 	bIsAiming = false;
+	bIsDead = false;
 
 }
 

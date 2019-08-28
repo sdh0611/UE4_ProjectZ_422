@@ -10,12 +10,16 @@ void UZTankerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	
-	auto Tanker = Cast<AZTanker>(TryGetPawnOwner());
-	if (Tanker)
-	{
-		//bIsRushCooldown = Tanker->IsRushCooldown();
-		bIsRushing= Tanker->bIsRushing;
-	}
+	//auto Tanker = Cast<AZTanker>(TryGetPawnOwner());
+	//if (Tanker)
+	//{
+	//	//bIsRushCooldown = Tanker->IsRushCooldown();
+	//	bIsRushing = Tanker->IsRushCooldown();
+	//	//if (bIsRushing)
+	//	//{
+	//	//	ZLOG_S(Error);
+	//	//}
+	//}
 }
 
 void UZTankerAnimInstance::AnimNotify_ScreamStart()
@@ -30,7 +34,7 @@ void UZTankerAnimInstance::AnimNotify_ScreamStart()
 	//Zombie->SetCurrentSpeed(0.f);
 	Zombie->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
-	Zombie->bIsScreaming = true;
+	//Zombie->bIsScreaming = true;
 }
 
 void UZTankerAnimInstance::AnimNotify_ScreamEnd()
@@ -42,7 +46,7 @@ void UZTankerAnimInstance::AnimNotify_ScreamEnd()
 		return;
 	}
 
-	Zombie->bIsScreaming = false;
+	//Zombie->bIsScreaming = false;
 	Zombie->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	//Zombie->ChangeZombieState(EZombieState::Chase);
 	//Zombie->ToggleRush(true);

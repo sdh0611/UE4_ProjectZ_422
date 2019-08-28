@@ -29,7 +29,7 @@ public:
 
 public:
 	void SetIsSprinting(bool NewState);
-	void SetIsDead(bool NewState);
+	//void SetIsDead(bool NewState);
 
 public:
 	bool IsSprinting() const;
@@ -56,8 +56,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsSprinting;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
-	bool bIsDead;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	//bool bIsDead;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	class UAnimMontage* CurrentPlayMontage;

@@ -111,13 +111,21 @@ void AZBaseZombie::SetActive(bool bActive)
 {
 	Super::SetActive(bActive);
 
+	ZLOG_S(Error);
+	
+	Sense->SetSensingUpdatesEnabled(bActive);
+
 	if (bActive)
 	{
-		ZLOG_S(Error);
-		GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
+		//GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZCharacter"));
 		//GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 		//GetMesh()->SetSimulatePhysics(false);
-		GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+		//GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	}
+	else
+	{
+
+
 	}
 }
 
@@ -185,8 +193,24 @@ void AZBaseZombie::OnDead()
 
 }
 
+void AZBaseZombie::OnRemoved()
+{
+	Super::OnRemoved();
+
+	if (bIsPooling)
+	{
+		ChangeZombieState(EZombieState::Idle);
+	}
+
+}
+
 void AZBaseZombie::OnSensingPlayer(APawn * Pawn)
 {
+	if (!IsActive())
+	{
+		return;
+	}
+
 	if (IsDead())
 	{
 		return;

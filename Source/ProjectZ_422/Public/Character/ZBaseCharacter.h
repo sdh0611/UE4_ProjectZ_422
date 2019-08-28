@@ -64,6 +64,11 @@ public:
 protected:
 	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead();
+	/* 
+		게임 상에서 사라질 때 호출할 메소드. 
+		상속받은 클래스에서 동작을 정의해줘야함.
+	*/
+	virtual void OnRemoved();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
