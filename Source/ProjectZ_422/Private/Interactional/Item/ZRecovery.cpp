@@ -32,5 +32,5 @@ void AZRecovery::OnUsed()
 {
 	ItemOwner->GetStatusComponent()->AdjustCurrentHP(RecoveryAmount);
 
-	Super::OnUsed();
+	AdjustQuantity(-1);
 }

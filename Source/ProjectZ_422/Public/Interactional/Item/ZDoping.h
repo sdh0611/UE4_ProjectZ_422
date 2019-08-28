@@ -4,13 +4,14 @@
 
 #include "ProjectZ_422.h"
 #include "ZItem.h"
+#include "ZUsableItemInterface.h"
 #include "ZDoping.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZDoping : public AZItem
+class PROJECTZ_422_API AZDoping : public AZItem, public IZUsableItemInterface
 {
 	GENERATED_BODY()
 
@@ -19,6 +20,8 @@ public:
 
 public:
 	virtual void InitItemData(const struct FZItemData* NewItemData) override;
+
+	UFUNCTION(BlueprintCallable)
 	virtual void OnUsed() override;
 
 private:

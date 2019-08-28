@@ -101,7 +101,7 @@ void AZGrenade::ThrowGrenade()
 	
 	SetIsThrown(false);
 
-	Super::OnUsed();
+	AdjustQuantity(-1);
 }
 
 void AZGrenade::SetIsThrown(bool NewState)

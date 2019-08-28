@@ -83,8 +83,8 @@ public:
 	/*
 		Item의 동작에 대한 메소드.
 	*/
-	UFUNCTION(BlueprintCallable, Category = Item)
-	virtual void OnUsed();
+	//UFUNCTION(BlueprintCallable, Category = Item)
+	//virtual void OnUsed();
 
 	/*
 		Item이 Player에 의해 Drop될 때 호출될 메소드.

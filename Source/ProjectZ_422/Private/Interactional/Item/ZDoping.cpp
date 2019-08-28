@@ -28,5 +28,5 @@ void AZDoping::OnUsed()
 {
 	ItemOwner->GetStatusComponent()->AdjustCurrentDopingGage(DopingAmount);
 
-	Super::OnUsed();
+	AdjustQuantity(-1);
 }

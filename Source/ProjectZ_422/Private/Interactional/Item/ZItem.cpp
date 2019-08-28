@@ -43,13 +43,13 @@ void AZItem::Tick(float DeltaTime)
 
 }
 
-void AZItem::OnUsed()
-{
-	ZLOG(Warning, TEXT("Use Item!"));
-
-	AdjustQuantity(-1);
-
-}
+//void AZItem::OnUsed()
+//{
+//	ZLOG(Warning, TEXT("Use Item!"));
+//
+//	AdjustQuantity(-1);
+//
+//}
 
 void AZItem::OnDropped()
 {
