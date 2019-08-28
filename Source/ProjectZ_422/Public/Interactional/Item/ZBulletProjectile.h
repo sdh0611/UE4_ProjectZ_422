@@ -31,6 +31,7 @@ private:
 	void TraceBullet();
 
 protected:
+	UPROPERTY(VisibleAnywhere)
 	FVector PreLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

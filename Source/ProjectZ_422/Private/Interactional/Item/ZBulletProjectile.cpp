@@ -109,6 +109,9 @@ void AZBulletProjectile::TraceBullet()
 		Destroy();
 
 	}
-
-	ProjectileTrailParticle->SetVectorParameter(TEXT("EndPoint"), PreLocation);
+	else
+	{
+		PreLocation = GetActorLocation();
+	}
+	//ProjectileTrailParticle->SetVectorParameter(TEXT("EndPoint"), PreLocation);
 }
