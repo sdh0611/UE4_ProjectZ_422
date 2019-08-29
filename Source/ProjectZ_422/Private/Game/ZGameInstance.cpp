@@ -7,49 +7,6 @@
 
 UZGameInstance::UZGameInstance()
 {
-	//static ConstructorHelpers::FObjectFinder<UDataTable>
-	//	DT_SM(TEXT("DataTable'/Game/GameData/StaticMeshData.StaticMeshData'"));
-	//if (DT_SM.Succeeded())
-	//{
-	//	StaticMeshDataTable = DT_SM.Object;
-	//	//InitStaticMeshTable();
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UDataTable>
-	//	DT_SK(TEXT("DataTable'/Game/GameData/SkeletalMeshData.SkeletalMeshData'"));
-	//if (DT_SK.Succeeded())
-	//{
-	//	SkeletalMeshDataTable = DT_SK.Object;
-	//	//InitSkeletalMeshTable();
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UDataTable>
-	//	DT_WEAPON(TEXT("DataTable'/Game/GameData/WeaponData.WeaponData'"));
-	//if(DT_WEAPON.Succeeded())
-	//{
-	//	WeaponDataTable = DT_WEAPON.Object;
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UDataTable>
-	//	DT_RECOVERY(TEXT("DataTable'/Game/GameData/RecoveryData.RecoveryData'"));
-	//if (DT_RECOVERY.Succeeded())
-	//{
-	//	RecoveryDataTable = DT_RECOVERY.Object;
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UDataTable>
-	//	DT_DOPING(TEXT("DataTable'/Game/GameData/DopingData.DopingData'"));
-	//if (DT_DOPING.Succeeded())
-	//{
-	//	DopingDataTable = DT_DOPING.Object;
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UDataTable>
-	//	DT_SHOP(TEXT("DataTable'/Game/GameData/ShopItemData.ShopItemData'"));
-	//if (DT_SHOP.Succeeded())
-	//{
-	//	ShopItemDataTable = DT_SHOP.Object;
-	//}
 
 }
 
@@ -101,7 +58,7 @@ const FZSkeletalMeshData * const UZGameInstance::GetSkeletalMeshData(const FStri
 	auto Names = SkeletalMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
-		auto Data = WeaponDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
+		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
 		if (Data->Name == MeshName)
 		{
 			return Data;
@@ -123,6 +80,46 @@ const FZWeaponData * const UZGameInstance::GetWeaponDataByName(const FString & W
 	{
 		auto Data = WeaponDataTable->FindRow<FZWeaponData>(Name, TEXT(""));
 		if (Data->ItemName == WeaponName)
+		{
+			return Data;
+		}
+	}
+
+	return nullptr;
+}
+
+const FZGunData * const UZGameInstance::GetGunDataByRowIndex(int32 RowIndex)
+{
+	return GunDataTable->FindRow<FZGunData>(*FString::FromInt(RowIndex), TEXT(""));
+}
+
+const FZGunData * const UZGameInstance::GetGunDataByName(const FString & GunName)
+{
+	auto Names = GunDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = GunDataTable->FindRow<FZGunData>(Name, TEXT(""));
+		if (Data->ItemName == GunName)
+		{
+			return Data;
+		}
+	}
+
+	return nullptr;
+}
+
+const FZGrenadeData * const UZGameInstance::GetGrenadeDataByRowIndex(int32 RowIndex)
+{
+	return GrenadeDataTable->FindRow<FZGrenadeData>(*FString::FromInt(RowIndex), TEXT(""));
+}
+
+const FZGrenadeData * const UZGameInstance::GetGrenadeDataByName(const FString & GrenadeName)
+{
+	auto Names = GrenadeDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = GrenadeDataTable->FindRow<FZGrenadeData>(Name, TEXT(""));
+		if (Data->ItemName == GrenadeName)
 		{
 			return Data;
 		}

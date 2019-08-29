@@ -26,6 +26,7 @@ AZGrenade::AZGrenade()
 	//}
 
 	ExplosionRadius = 100.f;
+	ExplosionDelay = 3.f;
 	WeaponCategory = EWeaponCategory::Grenade;
 
 	// For test
@@ -43,8 +44,10 @@ void AZGrenade::InitItemData(const FZItemData * const NewItemData)
 {
 	Super::InitItemData(NewItemData);
 
-	auto WeaponData = static_cast<const FZWeaponData*>(NewItemData);
-	//ExplosionRadius = WeaponData->ExplosionRadius;
+	auto NewGrenadeData = static_cast<const FZGrenadeData*>(NewItemData);
+	ExplosionRadius = NewGrenadeData->ExplosionRadius;
+	ExplosionDelay = NewGrenadeData->ExplosionDelay;
+
 }
 
 void AZGrenade::Fire()
@@ -94,7 +97,7 @@ void AZGrenade::ThrowGrenade()
 	if (Projectile)
 	{
 		Projectile->SetDamage(Damage);
-		//Projectile->SetFireDelay(FireDelay);
+		Projectile->SetFireDelay(ExplosionDelay);
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
 		Projectile->SetDamageCauser(ItemOwner->GetController());
 	}

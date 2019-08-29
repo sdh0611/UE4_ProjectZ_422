@@ -45,4 +45,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Grenade)
 	float ExplosionRadius;
 
+	UPROPERTY(EditAnywhere, Category = Grenade)
+	float ExplosionDelay;
+
 };

@@ -120,12 +120,15 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 		{
 			
 			//SpawnItemClass = WeaponClass;
-			ItemData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
-			auto WeaponData = static_cast<const FZWeaponData*>(ItemData);
+			//ItemData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
+			//auto WeaponData = static_cast<const FZWeaponData*>(ItemData);
+			auto WeaponData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
 			switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
 			{
 				case EWeaponCategory::Gun:
 				{
+					ZLOG(Error, TEXT("Buy Gun."));
+					ItemData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
 					SpawnItemClass = GunClass;
 					break;
 				}
@@ -137,6 +140,7 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 				case EWeaponCategory::Grenade:
 				{
 					ZLOG(Error, TEXT("Buy Grenade."));
+					ItemData = ZGameInstance->GetGrenadeDataByName(BuyItemData->ItemName);
 					SpawnItemClass = GrenadeClass;
 					break;
 				}

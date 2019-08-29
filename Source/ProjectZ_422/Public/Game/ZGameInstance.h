@@ -37,6 +37,12 @@ public:
 	const FZWeaponData* const GetWeaponDataByRowIndex(int32 RowIndex);
 	const FZWeaponData* const GetWeaponDataByName(const FString& WeaponName);
 
+	const FZGunData* const GetGunDataByRowIndex(int32 RowIndex);
+	const FZGunData* const GetGunDataByName(const FString& GunName);
+
+	const FZGrenadeData* const GetGrenadeDataByRowIndex(int32 RowIndex);
+	const FZGrenadeData* const GetGrenadeDataByName(const FString& GrenadeName);
+
 	/*
 		RecoveryTable ฐüทร
 	*/
@@ -70,25 +76,31 @@ public:
 	FStreamableManager AssetLoader;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = MeshDataTable)
 	class UDataTable* StaticMeshDataTable;
 
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = MeshDataTable)
 	class UDataTable* SkeletalMeshDataTable;
 
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = WeaponDataTable)
 	class UDataTable* WeaponDataTable;
 
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = WeaponDataTable)
+	class UDataTable* GunDataTable;
+
+	UPROPERTY(EditAnywhere, Category = WeaponDataTable)
+	class UDataTable* GrenadeDataTable;
+
+	UPROPERTY(EditAnywhere, Category = RecoveryDataTable)
 	class UDataTable* RecoveryDataTable;
 
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = DopingDataTable)
 	class UDataTable* DopingDataTable;
 
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = AmmoDataTable)
 	class UDataTable* AmmoDataTable;
 
-	UPROPERTY(EditAnywhere, Category = DataTable)
+	UPROPERTY(EditAnywhere, Category = ShopDataTable)
 	class UDataTable* ShopItemDataTable;
 
 private:

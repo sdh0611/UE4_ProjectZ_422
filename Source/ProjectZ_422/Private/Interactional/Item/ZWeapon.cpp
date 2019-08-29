@@ -81,12 +81,10 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 	auto NewWeaponData = static_cast<const FZWeaponData*>(NewItemData);
 
 	Damage = NewWeaponData->Damage;
-	//FireDelay = NewWeaponData->FireDelay;
 	auto SKMesh = GetGameInstance<UZGameInstance>()->GetSkeletalMesh(ItemName);
 	check(nullptr != SKMesh);
 	WeaponMesh->SetSkeletalMesh(SKMesh);
 
-	//MaxAmmo = NewWeaponData->MaxAmmo;
 	WeaponType = GetWeaponTypeFromString(NewWeaponData->WeaponType);
 
 }

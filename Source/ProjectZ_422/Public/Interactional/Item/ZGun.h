@@ -75,4 +75,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float FireDelay;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	FString UseAmmoName;
 };
