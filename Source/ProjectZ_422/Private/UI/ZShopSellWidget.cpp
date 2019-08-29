@@ -26,6 +26,9 @@ void UZShopSellWidget::NativeConstruct()
 	check(nullptr != NewDopingHolder);
 	DopingHolder = NewDopingHolder;
 
+	auto NewAmmoHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("AmmoItemHolder")));
+	check(nullptr != NewAmmoHolder);
+	AmmoHolder = NewAmmoHolder;
 
 }
 
@@ -54,6 +57,11 @@ UZShopSellItemWidget* UZShopSellWidget::AddItem(AZItem* NewItem)
 		case EItemType::Doping:
 		{
 			DopingHolder->AddChild(SellItemWidget);
+			break;
+		}
+		case EItemType::Ammo:
+		{
+			AmmoHolder->AddChild(SellItemWidget);
 			break;
 		}
 		default:

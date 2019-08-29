@@ -41,6 +41,7 @@ public:
 	bool IsWantsToFire() const;
 	int32 GetCurrentAmmo() const;
 	int32 GetMaxAmmo() const;
+	const FString& GetUseAmmoName() const;
 
 protected:
 	bool CheckNeedToReload();
