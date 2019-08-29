@@ -522,16 +522,6 @@ int32 UZCharacterItemStatusComponent::GetCurrentMoney() const
 	return CurrentMoney;
 }
 
-AZItem * UZCharacterItemStatusComponent::GetItemByIndex(int32 ItemIndex) const
-{
-	if (!FMath::IsWithinInclusive<int32>(ItemIndex, 0, MaxSizeOfItemList))
-	{
-		return nullptr;
-	}
-
-	return ItemList[ItemIndex];
-}
-
 bool UZCharacterItemStatusComponent::IsItemListFull() const
 {
 	return CurrentSizeOfItemList == MaxSizeOfItemList;
@@ -555,6 +545,16 @@ int32 UZCharacterItemStatusComponent::AllocateInventoryIndex()
 
 	// ItemList°¡ ²ËÂù °æ¿ì.
 	return -1;
+}
+
+AZItem * UZCharacterItemStatusComponent::GetItemByIndex(int32 ItemIndex) const
+{
+	if (!FMath::IsWithinInclusive<int32>(ItemIndex, 0, MaxSizeOfItemList))
+	{
+		return nullptr;
+	}
+
+	return ItemList[ItemIndex];
 }
 
 AZItem * UZCharacterItemStatusComponent::GetItemByName(const FString & ItemName)

@@ -78,9 +78,14 @@ public:
 	int32 GetMaxWeight() const;
 	int32 GetCurrentWeight() const;
 	int32 GetCurrentMoney() const;
-	class AZItem* GetItemByIndex(int32 ItemIndex) const;
 	bool IsItemListFull() const;
 	const TArray<class AZItem*>& GetItemList() const;
+	class AZItem* GetItemByIndex(int32 ItemIndex) const;
+	/*
+		ItemList내 같은 이름을 가졌고, 현재 개수가 최대 개수에 도달하지 않은 Item을 검색.
+		@return : ItemList내 AZItem Pointer. 없다면 nullptr 반환.
+	*/
+	class AZItem* GetItemByName(const FString& ItemName);
 
 private:
 	/*
@@ -88,11 +93,6 @@ private:
 		@return : InventoryIndex. 빈 공간이 없다면 -1 반환.
 	*/
 	int32 AllocateInventoryIndex();
-	/*
-		ItemList내 같은 이름을 가졌고, 현재 개수가 최대 개수에 도달하지 않은 Item을 검색.
-		@return : ItemList내 AZItem Pointer. 없다면 nullptr 반환.
-	*/
-	class AZItem* GetItemByName(const FString& ItemName);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = ItemStatus)

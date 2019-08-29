@@ -821,6 +821,11 @@ void AZCharacter::Reload()
 			AimRelease();
 		}
 
+		if (nullptr == ItemStatusComponent->GetItemByName(Weapon->GetUseAmmoName()))
+		{
+			return;
+		}
+
 		Weapon->SetIsReloading(true);
 		auto CharacterAnim = GetCharacterAnimInstance();
 		check(nullptr != CharacterAnim);

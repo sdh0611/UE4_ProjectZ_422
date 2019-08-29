@@ -66,6 +66,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Shop)
 	TSubclassOf<class AZItem> DopingClass;
 
+	/* Doping */
+	UPROPERTY(EditAnywhere, Category = Shop)
+	TSubclassOf<class AZItem> AmmoClass;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = Shop)
 	class AZCharacter* EnterPlayer;

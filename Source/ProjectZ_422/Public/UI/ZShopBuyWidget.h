@@ -40,5 +40,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyWidget)
 	class UScrollBox* DopingHolder;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyWidget)
+	class UScrollBox* AmmoHolder;
 
 };

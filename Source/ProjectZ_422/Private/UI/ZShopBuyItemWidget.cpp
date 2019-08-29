@@ -38,9 +38,26 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 	}
 
 	ShopItemData = NewShopItemData;
+	//ZLOG(Error, TEXT("Item : %s"), *(ShopItemData->ItemName));
 
-	ItemName->SetText(FText::FromString(ShopItemData->ItemName));
-	ItemPrice->SetText(FText::FromString(FString::FromInt(ShopItemData->ItemPrice).Append("$")));
+	if (nullptr == ItemName)
+	{
+		ZLOG(Error, TEXT("ItemNameText invalid."));
+	}
+	else
+	{
+		ItemName->SetText(FText::FromString(ShopItemData->ItemName));
+	}
+
+	if (nullptr == ItemPrice)
+	{
+		ZLOG(Error, TEXT("ItemPriceText invalid."));
+	}
+	else 
+	{
+		ItemPrice->SetText(FText::FromString(FString::FromInt(ShopItemData->ItemPrice).Append("$")));
+	}
+
 }
 
 void UZShopBuyItemWidget::OnBuyButtonClick()

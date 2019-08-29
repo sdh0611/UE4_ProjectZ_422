@@ -26,6 +26,9 @@ void UZShopBuyWidget::NativeConstruct()
 	check(nullptr != NewDopingHolder);
 	DopingHolder = NewDopingHolder;
 
+	auto NewAmmoHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("AmmoHolder")));
+	check(nullptr != NewAmmoHolder);
+	AmmoHolder = NewAmmoHolder;
 
 }
 
@@ -54,6 +57,11 @@ UZShopBuyItemWidget* UZShopBuyWidget::AddItem(FZShopItemData* NewItemData)
 		case EItemType::Doping:
 		{
 			DopingHolder->AddChild(BuyItemWidget);
+			break;
+		}
+		case EItemType::Ammo:
+		{
+			AmmoHolder->AddChild(BuyItemWidget);
 			break;
 		}
 		default:

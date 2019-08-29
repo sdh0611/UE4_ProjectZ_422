@@ -3,6 +3,7 @@
 
 #include "ZGun.h"
 #include "ZCharacter.h"
+#include "ZCharacterItemStatusComponent.h"
 #include "ZPlayerController.h"
 #include "ZBulletProjectile.h"
 #include "Engine/World.h"
@@ -95,10 +96,22 @@ void AZGun::Reload()
 	}
 	ZLOG_S(Warning);
 
-	//int32 ReloadAmmo = MaxAmmo;
-	
+	auto Ammo = ItemOwner->GetItemStatusComponent()->GetItemByName(UseAmmoName);
+	if (nullptr == Ammo)
+	{
+		ZLOG(Error, TEXT("Ammo not exist."));
+		return;
+	}
 
-	CurrentAmmo = MaxAmmo;
+	int32 ReloadAmmo = MaxAmmo - CurrentAmmo;
+	if (Ammo->GetCurrentQuantityOfItem() < ReloadAmmo)
+	{
+		ReloadAmmo = Ammo->GetCurrentQuantityOfItem();
+	}
+
+	Ammo->AdjustQuantity(-ReloadAmmo);
+
+	CurrentAmmo += ReloadAmmo;
 	OnItemInfoChanged.Broadcast();
 }
 
@@ -146,6 +159,11 @@ int32 AZGun::GetCurrentAmmo() const
 int32 AZGun::GetMaxAmmo() const
 {
 	return MaxAmmo;
+}
+
+const FString & AZGun::GetUseAmmoName() const
+{
+	return UseAmmoName;
 }
 
 void AZGun::Fire()
