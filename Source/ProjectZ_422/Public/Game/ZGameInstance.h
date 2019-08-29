@@ -50,10 +50,10 @@ public:
 	const FZDopingData* const GetDopingDataByName(const FString& DopingName);
 
 	/*
-		DopingTable 관련
+		AmmoTable 관련
 	*/
-	//const FZDopingData* const GetDopingDataByRowIndex(int32 RowIndex);
-	//const FZDopingData* const GetDopingDataByName(const FString& DopingName);
+	const FZItemData* const GetAmmoDataByRowIndex(int32 RowIndex);
+	const FZItemData* const GetAmmoDataByName(const FString& AmmoName);
 
 	/*
 		ShopTable 관련
@@ -84,6 +84,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* DopingDataTable;
+
+	UPROPERTY(EditAnywhere, Category = DataTable)
+	class UDataTable* AmmoDataTable;
 
 	UPROPERTY(EditAnywhere, Category = DataTable)
 	class UDataTable* ShopItemDataTable;

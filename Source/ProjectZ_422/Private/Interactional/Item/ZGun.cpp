@@ -30,8 +30,8 @@ AZGun::AZGun()
 	bIsReloading = false;
 	bWantsToFire = false;
 
-	CurrentAmmo = 0;
 	MaxAmmo = 30;
+	CurrentAmmo = MaxAmmo;
 
 	FireTimer = 0.f;
 	// Code for test
@@ -92,6 +92,9 @@ void AZGun::Reload()
 		return;
 	}
 	ZLOG_S(Warning);
+
+	//int32 ReloadAmmo = MaxAmmo;
+	
 
 	CurrentAmmo = MaxAmmo;
 	OnItemInfoChanged.Broadcast();

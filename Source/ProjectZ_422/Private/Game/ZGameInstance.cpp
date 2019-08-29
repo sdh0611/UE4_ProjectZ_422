@@ -171,6 +171,26 @@ const FZDopingData * const UZGameInstance::GetDopingDataByName(const FString & D
 	return nullptr;
 }
 
+const FZItemData * const UZGameInstance::GetAmmoDataByRowIndex(int32 RowIndex)
+{
+	return AmmoDataTable->FindRow<FZItemData>(*FString::FromInt(RowIndex), TEXT(""));
+}
+
+const FZItemData * const UZGameInstance::GetAmmoDataByName(const FString & AmmoName)
+{
+	auto Names = AmmoDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = AmmoDataTable->FindRow<FZItemData>(Name, TEXT(""));
+		if (Data->ItemName == AmmoName)
+		{
+			return Data;
+		}
+	}
+
+	return nullptr;
+}
+
 UDataTable * const UZGameInstance::GetShopItemDataTable() const
 {
 	return ShopItemDataTable;
