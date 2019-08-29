@@ -47,6 +47,9 @@ protected:
 	bool bIsActive;
 
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
+	class UBoxComponent* CollisionBox;
+
+	UPROPERTY(VisibleAnywhere, Category = Pickup)
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, Category = Pickup)

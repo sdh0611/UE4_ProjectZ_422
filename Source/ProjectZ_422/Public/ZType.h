@@ -81,7 +81,7 @@ struct FZItemData : public FTableRowBase
 
 public:
 	FZItemData()
-		: ItemName(TEXT("")), ItemWeight(0)
+		: ItemName(TEXT("")), ItemWeight(0), MaxQuantity(30)
 	{
 	}
 
@@ -90,6 +90,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	int32 ItemWeight;	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	int32 MaxQuantity;
 };
 
 
@@ -196,3 +199,57 @@ public:
 	FString ItemImagePath;
 
 };
+
+/* ItemType Á¤ÀÇ */
+UENUM(Blueprintable)
+enum class EItemType : uint8
+{
+	Default,
+	Weapon,
+	Ammo,
+	Recovery,
+	Doping,
+	Invalid
+};
+
+static FString GetItemTypeEnumAsString(EItemType ItemType)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EItemType"), true);
+	if (nullptr == EnumPtr)
+	{
+		return FString(TEXT("Invalid"));
+	}
+
+	FString Concated = EnumPtr->GetNameStringByValue((int64)ItemType);
+	Concated.RemoveFromStart(TEXT("EItemType::"));
+
+	return Concated;
+}
+
+static EItemType GetItemTypeFromString(const FString& ItemTypeName)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EItemType"), true);
+	if (nullptr == EnumPtr)
+	{
+		return EItemType::Invalid;
+	}
+
+	if (ItemTypeName == TEXT("Weapon"))
+	{
+		return EItemType::Weapon;
+	}
+	else if (ItemTypeName == TEXT("Recovery"))
+	{
+		return EItemType::Recovery;
+	}
+	else if (ItemTypeName == TEXT("Doping"))
+	{
+		return EItemType::Doping;
+	}
+	else if (ItemTypeName == TEXT("Ammo"))
+	{
+		return EItemType::Ammo;
+	}
+
+	return EItemType::Invalid;
+}

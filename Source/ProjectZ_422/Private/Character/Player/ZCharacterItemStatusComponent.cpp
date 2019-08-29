@@ -171,6 +171,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 		{
 			// 해당 Item의 최대 보유 개수를 초과했을 때
 			// AddItem() 재귀호출
+			NewItem->SetCurrentQuantityOfItem(Remain);
 			AddItem(NewItem);
 		}
 		else

@@ -3,3 +3,7 @@
 
 #include "ZAmmo.h"
 
+AZAmmo::AZAmmo()
+{
+	ItemType = EItemType::Ammo;
+}

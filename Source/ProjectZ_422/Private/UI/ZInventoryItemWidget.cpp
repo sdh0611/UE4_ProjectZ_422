@@ -3,6 +3,7 @@
 
 #include "ZInventoryItemWidget.h"
 #include "ZItem.h"
+#include "ZUsableItemInterface.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -64,6 +65,31 @@ void UZInventoryItemWidget::BindItem(AZItem * NewItem)
 AZItem * const UZInventoryItemWidget::GetBindingItem() const
 {
 	return Item;
+}
+
+FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeometry, const FPointerEvent & InMouseEvent)
+{
+	auto Result = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+
+	if (!InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton))
+	{
+		return Result;
+	}
+
+	ZLOG_S(Warning);
+
+	if (nullptr == Item)
+	{
+		return Result;
+	}
+
+	auto UsableItem = Cast<IZUsableItemInterface>(Item);
+	if (UsableItem)
+	{
+		UsableItem->OnUsed();
+	}
+
+	return Result;
 }
 
 

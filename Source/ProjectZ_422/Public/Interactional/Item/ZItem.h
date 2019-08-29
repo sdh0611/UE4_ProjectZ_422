@@ -17,9 +17,9 @@ enum class EItemType : uint8
 {
 	Default,
 	Weapon,
+	Ammo,
 	Recovery,
 	Doping,
-	//Supply,
 	Invalid
 };
 
@@ -56,6 +56,10 @@ static EItemType GetItemTypeFromString(const FString& ItemTypeName)
 	else if (ItemTypeName == TEXT("Doping"))
 	{
 		return EItemType::Doping;
+	}
+	else if (ItemTypeName == TEXT("Ammo"))
+	{
+		return EItemType::Ammo;
 	}
 
 	return EItemType::Invalid;

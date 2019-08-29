@@ -14,7 +14,8 @@ class PROJECTZ_422_API AZAmmo : public AZItem
 {
 	GENERATED_BODY()
 	
-
+public:
+	AZAmmo();
 	
 
 };

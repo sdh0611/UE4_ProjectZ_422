@@ -7,6 +7,7 @@
 #include "ZWeapon.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "ZGameInstance.h"
+#include "Components/BoxComponent.h"
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -15,8 +16,12 @@ AZPickup::AZPickup()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	RootComponent = CollisionBox;
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = Mesh;
+	//RootComponent = Mesh;
+	Mesh->SetupAttachment(RootComponent);
 
 	//// Code to test 
 	//static ConstructorHelpers::FObjectFinder<UStaticMesh>
@@ -30,7 +35,7 @@ AZPickup::AZPickup()
 	//	ZLOG(Error, TEXT("Fail to find pickup static mesh..."));
 	//}
 
-	SetActorEnableCollision(ECollisionEnabled::QueryOnly);
+	//SetActorEnableCollision(ECollisionEnabled::QueryOnly);
 
 	Item = nullptr;
 	bIsActive = true;
@@ -86,7 +91,7 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 void AZPickup::WhenSpawnedByItem()
 {
 	SetActive(true);
-	Mesh->AddTorqueInRadians(GetActorForwardVector() * 400000.f);
+	CollisionBox->AddTorqueInRadians(GetActorForwardVector() * 400000.f);
 }
 
 void AZPickup::SetActive(bool NewState)
@@ -96,18 +101,18 @@ void AZPickup::SetActive(bool NewState)
 		/*
 			Pickup 활성화
 		*/
-		SetActorEnableCollision(ECollisionEnabled::QueryOnly);
+		SetActorEnableCollision(true);
 		SetActorHiddenInGame(false);
-		Mesh->SetSimulatePhysics(true);
+		//Mesh->SetSimulatePhysics(true);
 	}
 	else
 	{
 		/*
 			Pickup 비활성화
 		*/
-		SetActorEnableCollision(ECollisionEnabled::NoCollision);
+		SetActorEnableCollision(false);
 		SetActorHiddenInGame(true);
-		Mesh->SetSimulatePhysics(false);
+		//Mesh->SetSimulatePhysics(false);
 	}
 
 	bIsActive = NewState;

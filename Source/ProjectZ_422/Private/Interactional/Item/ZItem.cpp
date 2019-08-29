@@ -7,6 +7,7 @@
 #include "ZPickup.h"
 #include "ZGameInstance.h"
 #include "Engine/World.h"
+#include "ConstructorHelpers.h"
 
 
 // Sets default values
@@ -26,7 +27,14 @@ AZItem::AZItem()
 	ItemType = EItemType::Default;
 	Pickup = nullptr;
 
-	PickupClass = AZPickup::StaticClass();
+	static ConstructorHelpers::FClassFinder<AZPickup>
+		CLASS_PICKUP(TEXT("Blueprint'/Game/Blueprint/Interactional/Pickup/BP_ZPickup.BP_ZPickup_C'"));
+	if (CLASS_PICKUP.Succeeded())
+	{
+		PickupClass = CLASS_PICKUP.Class;	
+	}
+
+	Tags.Add(TEXT("Item"));
 }
 
 // Called when the game starts or when spawned
@@ -140,6 +148,7 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 
 	ItemName = NewItemData->ItemName;
 	ItemWeight = NewItemData->ItemWeight;
+	MaxQuantityOfItem = NewItemData->MaxQuantity;
 }
 
 

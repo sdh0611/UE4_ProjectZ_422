@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ProjectZ_422.h"
+#include "Input/Reply.h"
 #include "Blueprint/UserWidget.h"
 #include "ZInventoryItemWidget.generated.h"
 
@@ -27,13 +28,8 @@ public:
 public:
 	class AZItem* const GetBindingItem() const;
 
-private:
-	// DropButton 바인딩 메소드. 
-	/*
-		NOTE(5.18) : 폐기예정 -> Blueprint로 구현을 옮김.
-	*/
-	UFUNCTION()
-	void OnDropButtonClicked();
+protected:
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 	// Widget을 파괴할 때 호출할 메소드. 델리게이트로 호출할 예정
 	UFUNCTION(BlueprintCallable, Category = ItemWidget)
@@ -41,6 +37,9 @@ private:
 	
 	// Item정보를 갱신하기 위한 메소드.
 	void UpdateWidget();
+
+	UFUNCTION()
+	void OnDropButtonClicked();
 
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = ItemWidget)
