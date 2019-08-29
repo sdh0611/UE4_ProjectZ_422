@@ -73,4 +73,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float FireTimer;
 
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float FireDelay;
 };

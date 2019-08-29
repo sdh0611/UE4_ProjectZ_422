@@ -81,7 +81,7 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 	auto NewWeaponData = static_cast<const FZWeaponData*>(NewItemData);
 
 	//FireDelay = NewWeaponData->FireDelay;
-	MaxAmmo = NewWeaponData->MaxAmmo;
+	//MaxAmmo = NewWeaponData->MaxAmmo;
 }
 
 void AZGun::Reload()

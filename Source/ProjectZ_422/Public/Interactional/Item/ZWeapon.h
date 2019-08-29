@@ -193,9 +193,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float Damage;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
-	float FireDelay;
-
 	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	EWeaponCategory WeaponCategory;
 

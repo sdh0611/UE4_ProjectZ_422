@@ -36,7 +36,6 @@ AZWeapon::AZWeapon()
 	bIsEquipped = false;
 
 	Damage = 1.f;
-	FireDelay = 0.f;
 
 	WeaponCategory = EWeaponCategory::Invalid;
 	WeaponType = EWeaponType::Invalid;
@@ -82,7 +81,7 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 	auto NewWeaponData = static_cast<const FZWeaponData*>(NewItemData);
 
 	Damage = NewWeaponData->Damage;
-	FireDelay = NewWeaponData->FireDelay;
+	//FireDelay = NewWeaponData->FireDelay;
 	auto SKMesh = GetGameInstance<UZGameInstance>()->GetSkeletalMesh(ItemName);
 	check(nullptr != SKMesh);
 	WeaponMesh->SetSkeletalMesh(SKMesh);

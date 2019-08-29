@@ -104,22 +104,12 @@ struct FZWeaponData : public FZItemData
 
 public:
 	FZWeaponData()
-		: FZItemData(), Damage(0.f), FireDelay(1.f), MaxAmmo(30), ExplosionRadius(0.f), 
-		WeaponCategory(TEXT("Invalid")), WeaponType(TEXT("Default"))
+		: FZItemData(), Damage(0.f), WeaponCategory(TEXT("Invalid")), WeaponType(TEXT("Default"))
 	{
 	}
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float Damage;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	float FireDelay;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	int32 MaxAmmo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	float ExplosionRadius;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString WeaponCategory;
@@ -128,6 +118,56 @@ public:
 	FString WeaponType;
 
 };
+
+/* 
+	NOTE(8.29) :
+		WeaponData를 WeaponCategory에 맞게 세분화시킴.
+*/
+USTRUCT(BlueprintType)
+struct FZGunData : public FZWeaponData
+{
+
+	GENERATED_BODY()
+
+public:
+	FZGunData()
+		: FZWeaponData(), FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT(""))
+	{
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float FireDelay;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	int32 MaxAmmo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString UseAmmoName;
+	
+};
+
+
+USTRUCT(BlueprintType)
+struct FZGrenadeData : public FZWeaponData
+{
+
+	GENERATED_BODY()
+
+public:
+	FZGrenadeData()
+		: FZWeaponData(), ExplosionDelay(1.f), ExplosionRadius(0.f)
+	{
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float ExplosionDelay;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float ExplosionRadius;
+
+};
+
+
 
 USTRUCT(BlueprintType)
 struct FZRecoveryData : public FZItemData
