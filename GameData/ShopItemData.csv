@@ -1,7 +1,9 @@
-Name,ItemName,ItemPrice,ItemExplanation,ItemType,ItemImagePath
-1,M4A1,200,This is M4A1.,Weapon,
-2,AK-47,150,THis is AK-47.,Weapon,
-3,Bandage,2,RecoveryHealth 10points.,Recovery,
-4,FirstkitAid,20,Recovery health 70points.,Recovery,
-5,Doping,2,Doping 30points,Doping,
-6,Grenade,30,This is Grenade,Weapon,
+Name,ItemName,ItemPrice,ItemExplanation,ItemType,bIsDealOnlyOne,ItemImagePath
+1,M4A1,200,This is M4A1.,Weapon,1,
+2,AK-47,150,THis is AK-47.,Weapon,1,
+3,Bandage,2,RecoveryHealth 10points.,Recovery,0,
+4,FirstkitAid,20,Recovery health 70points.,Recovery,0,
+5,Doping,2,Doping 30points,Doping,0,
+6,Grenade,30,This is Grenade,Weapon,0,
+7,5.56mm,4,M4A1 ammo.,Ammo,0,
+8,7.62mm,4,AK-47 ammo.,Ammo,0,

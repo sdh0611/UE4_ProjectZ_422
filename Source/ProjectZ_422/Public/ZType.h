@@ -236,6 +236,9 @@ public:
 	FString ItemType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	bool bIsDealOnlyOne;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString ItemImagePath;
 
 };

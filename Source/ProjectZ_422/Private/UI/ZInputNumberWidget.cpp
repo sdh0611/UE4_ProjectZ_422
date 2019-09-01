@@ -119,7 +119,13 @@ void UZInputNumberWidget::OnOKButtonClicked()
 		}
 	}
 
+
 	/* 토글 */
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(InputText->GetCachedWidget());
+	GetOwningPlayer()->SetInputMode(InputMode);
+
+	InputText->SetText(FText::GetEmpty());
 	SetVisibility(ESlateVisibility::Hidden);
 	WidgetBinded = nullptr;
 }
@@ -127,10 +133,12 @@ void UZInputNumberWidget::OnOKButtonClicked()
 void UZInputNumberWidget::OnCancelButtonClicked()
 {
 	ZLOG_S(Warning);
+	
+	/* 토글 */
+	FInputModeGameOnly InputMode;
+	GetOwningPlayer()->SetInputMode(InputMode);
 
 	InputText->SetText(FText::GetEmpty());
-
-	/* 토글 */
 	SetVisibility(ESlateVisibility::Hidden);
 	WidgetBinded = nullptr;
 }

@@ -6,6 +6,7 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZInputNumberWidget.h"
+#include "ZGameInstance.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -73,20 +74,27 @@ void UZShopBuyItemWidget::OnBuyButtonClick()
 {
 	ZLOG_S(Warning);
 
-	auto PC = GetOwningPlayer<AZPlayerController>();
-	if (PC)
+	if (ShopItemData->bIsDealOnlyOne)
 	{
-		auto UserHUD = PC->GetZHUD()->GetUserHUD();
-		if (UserHUD)
+		OnReceiveNumberInput(1);
+	}
+	else
+	{
+		auto PC = GetOwningPlayer<AZPlayerController>();
+		if (PC)
 		{
-			auto InputWidget = UserHUD->GetInputNumberWidget();
-			if (InputWidget)
+			auto UserHUD = PC->GetZHUD()->GetUserHUD();
+			if (UserHUD)
 			{
-				InputWidget->SetVisibility(ESlateVisibility::Visible);
-				InputWidget->BindWidget(this);
+				auto InputWidget = UserHUD->GetInputNumberWidget();
+				if (InputWidget)
+				{
+					InputWidget->SetVisibility(ESlateVisibility::Visible);
+					InputWidget->BindWidget(this);
+				}
 			}
-		}
 
+		}
 	}
 
 }
