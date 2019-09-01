@@ -230,6 +230,8 @@ void AZShop::Sell(AZItem* SellItem, int32 Quantity)
 		return;
 	}
 
+	int32 TotalQuantity = Quantity;
+
 	auto ItemStatusComponent = EnterPlayer->GetItemStatusComponent();
 	if (nullptr == ItemStatusComponent)
 	{
@@ -249,28 +251,22 @@ void AZShop::Sell(AZItem* SellItem, int32 Quantity)
 		-> 판매 가격은 상점 구매 가격의 7할로 통일.
 	*/
 	int32 PurchaseMoney = ShopItemData->ItemPrice * 0.7f;
-	if (SellItem->GetCurrentQuantityOfItem() < Quantity)
+	if (SellItem->GetCurrentQuantityOfItem() < TotalQuantity)
 	{
 		/*
 			입력된 판매 수량이 아이템 잔여 수량보다 많은 경우
-			-> 잔여 수량만큼 돈 지급
+			-> 잔여 수량만큼 
 		*/
-		PurchaseMoney *= SellItem->GetCurrentQuantityOfItem();
+		TotalQuantity = SellItem->GetCurrentQuantityOfItem();
 	}
-	else
-	{
-		/*
-			입력된 판매수량이 아이템 잔여 수량보다 적거나 같은 경우
-			-> 입력된 판매수량 만큼 돈 지급.
-		*/
-		PurchaseMoney *= Quantity;
-	}
+
+	PurchaseMoney *= TotalQuantity;
 
 	ItemStatusComponent->AdjustMoney(PurchaseMoney);
 	/*
 		Item 수량 조정
 	*/
-	SellItem->AdjustQuantity(-Quantity);
+	SellItem->AdjustQuantity(-TotalQuantity);
 	
 }
 

@@ -39,6 +39,10 @@ void UZInventoryItemWidget::NativeConstruct()
 	
 }
 
+void UZInventoryItemWidget::OnReceiveNumberInput(int32 NewNumber)
+{
+}
+
 void UZInventoryItemWidget::BindItem(AZItem * NewItem)
 {
 	if (nullptr == NewItem)

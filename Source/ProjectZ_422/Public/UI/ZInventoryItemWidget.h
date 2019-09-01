@@ -5,13 +5,14 @@
 #include "ProjectZ_422.h"
 #include "Input/Reply.h"
 #include "Blueprint/UserWidget.h"
+#include "ZNumberWidgetInterface.h"
 #include "ZInventoryItemWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API UZInventoryItemWidget : public UUserWidget
+class PROJECTZ_422_API UZInventoryItemWidget : public UUserWidget, public IZNumberWidgetInterface
 {
 	GENERATED_BODY()
 	
@@ -20,6 +21,8 @@ public:
 
 public:
 	virtual void NativeConstruct() override;
+
+	virtual void OnReceiveNumberInput(int32 NewNumber) override;
 
 public:
 	// ItemWidget에 Item을 바인딩하기 위한 메소드.

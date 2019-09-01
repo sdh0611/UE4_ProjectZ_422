@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
+#include "ZNumberWidgetInterface.h"
 #include "ZShopSellItemWidget.generated.h"
 
 DECLARE_DELEGATE_TwoParams(FOnSellItem, class AZItem*, int32);
@@ -12,12 +13,13 @@ DECLARE_DELEGATE_TwoParams(FOnSellItem, class AZItem*, int32);
  * 
  */
 UCLASS()
-class PROJECTZ_422_API UZShopSellItemWidget : public UUserWidget
+class PROJECTZ_422_API UZShopSellItemWidget : public UUserWidget, public IZNumberWidgetInterface
 {
 	GENERATED_BODY()
 	
 public:
 	virtual void NativeConstruct() override;
+	virtual void OnReceiveNumberInput(int32 NewNumber) override;
 
 public:
 	void BindItem(class AZItem* NewItem);

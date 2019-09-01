@@ -3,6 +3,10 @@
 
 #include "ZShopSellItemWidget.h"
 #include "ZItem.h"
+#include "ZPlayerController.h"
+#include "ZHUD.h"
+#include "ZUserHUD.h"
+#include "ZInputNumberWidget.h"
 #include "ZGameInstance.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -34,6 +38,11 @@ void UZShopSellItemWidget::NativeConstruct()
 	check(nullptr != NewSellButton);
 	SellButton = NewSellButton;
 	SellButton->OnClicked.AddDynamic(this, &UZShopSellItemWidget::OnSellButtonClick);
+}
+
+void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
+{
+	OnSellItem.Execute(Item, NewNumber);
 }
 
 void UZShopSellItemWidget::BindItem(AZItem * NewItem)
@@ -104,9 +113,28 @@ void UZShopSellItemWidget::ClearWidget()
 void UZShopSellItemWidget::OnSellButtonClick()
 {
 	ZLOG_S(Warning);
-	/*
-		일단 임시로 1개씩 차감하도록 설정.
-		추후에 판매 개수를 입력받을 수 있게 추가할 예정
-	*/
-	OnSellItem.Execute(Item, 1);
+	
+	if (Item->GetMaxQuantityOfItem() <= 1)
+	{
+		OnReceiveNumberInput(1);
+	}
+	else
+	{
+		auto PC = GetOwningPlayer<AZPlayerController>();
+		if (PC)
+		{
+			auto UserHUD = PC->GetZHUD()->GetUserHUD();
+			if (UserHUD)
+			{
+				auto InputWidget = UserHUD->GetInputNumberWidget();
+				if (InputWidget)
+				{
+					InputWidget->SetVisibility(ESlateVisibility::Visible);
+					InputWidget->BindWidget(this);
+				}
+			}
+
+		}
+	}
+
 }
