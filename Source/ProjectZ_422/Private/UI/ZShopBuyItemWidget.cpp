@@ -2,6 +2,10 @@
 
 
 #include "ZShopBuyItemWidget.h"
+#include "ZPlayerController.h"
+#include "ZHUD.h"
+#include "ZUserHUD.h"
+#include "ZInputNumberWidget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -27,6 +31,11 @@ void UZShopBuyItemWidget::NativeConstruct()
 	BuyButton = NewBuyButton;
 	BuyButton->OnClicked.AddDynamic(this, &UZShopBuyItemWidget::OnBuyButtonClick);
 
+}
+
+void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
+{
+	OnBuyShopItem.Execute(ShopItemData, NewNumber);
 }
 
 void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
@@ -64,9 +73,20 @@ void UZShopBuyItemWidget::OnBuyButtonClick()
 {
 	ZLOG_S(Warning);
 
-	/*
-		일단 임시로 1개씩 차감하도록 설정.
-		추후에 판매 개수를 입력받을 수 있게 추가할 예정
-	*/
-	OnBuyShopItem.Execute(ShopItemData, 1);
+	auto PC = GetOwningPlayer<AZPlayerController>();
+	if (PC)
+	{
+		auto UserHUD = PC->GetZHUD()->GetUserHUD();
+		if (UserHUD)
+		{
+			auto InputWidget = UserHUD->GetInputNumberWidget();
+			if (InputWidget)
+			{
+				InputWidget->SetVisibility(ESlateVisibility::Visible);
+				InputWidget->BindWidget(this);
+			}
+		}
+
+	}
+
 }

@@ -97,12 +97,16 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 		돈계산
 		-> 돈이 부족한 경우엔 그대로 메소드 return
 	*/
-	if (ItemStatusComponent->GetCurrentMoney() < BuyItemData->ItemPrice)
+	int32 TotalQuantity = Quantity;
+	int32 TotalPayment = (BuyItemData->ItemPrice) * Quantity;
+	if (ItemStatusComponent->GetCurrentMoney() < TotalPayment)
 	{
 		ZLOG(Warning, TEXT("Money is not enough to buy item"));
-		return;
+		TotalQuantity = (ItemStatusComponent->GetCurrentMoney()) / (BuyItemData->ItemPrice);
+		TotalPayment = (BuyItemData->ItemPrice) * TotalQuantity;
 	}
-	ItemStatusComponent->AdjustMoney(-BuyItemData->ItemPrice);
+
+	ItemStatusComponent->AdjustMoney(-TotalPayment);
 
 	/*
 		Item생성 및 ItemList에 추가
@@ -175,6 +179,29 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 		}
 	}
 
+	int32 RemainQuantity = TotalQuantity;
+	while (RemainQuantity > ItemData->MaxQuantity)
+	{
+		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
+		if (nullptr == NewItem)
+		{
+			ZLOG(Error, TEXT("Failed to spawn item."));
+			return;
+		}
+
+		if (nullptr == ItemData)
+		{
+			ZLOG(Error, TEXT("Invalid item data."));
+			return;
+		}
+		ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
+
+		NewItem->InitItemData(ItemData);
+		NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);
+		ItemStatusComponent->AddItem(NewItem);
+		RemainQuantity -= ItemData->MaxQuantity;
+	}
+
 	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
 	if (nullptr == NewItem)
 	{
@@ -190,7 +217,7 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 	ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
 
 	NewItem->InitItemData(ItemData);
-	NewItem->SetCurrentQuantityOfItem(Quantity);
+	NewItem->SetCurrentQuantityOfItem(RemainQuantity);
 	ItemStatusComponent->AddItem(NewItem);
 
 }

@@ -57,6 +57,7 @@ public:
 	class UZInventoryWidget* const GetInventoryWidget() const;
 	class UZShopWidget* const GetShopWidget() const;
 	class UZCurrentWeaponInfoWidget* const GetCurrentWeaponInfoWidget() const;
+	class UZInputNumberWidget* const GetInputNumberWidget() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
@@ -76,6 +77,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZCurrentWeaponInfoWidget* CurrentWeaponInfoWidget;
+
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
+	class UZInputNumberWidget* InputNumberWidget;
 
 	UPROPERTY()
 	class UTextBlock* CurrentMoneyInfoText;

@@ -7,6 +7,7 @@
 #include "ZShopWidget.h"
 #include "ZHPBarWidget.h"
 #include "ZCurrentWeaponInfoWidget.h"
+#include "ZInputNumberWidget.h"
 #include "ZCharacter.h"
 #include "ZCharacterStatusComponent.h"
 #include "ZCharacterItemStatusComponent.h"
@@ -40,6 +41,12 @@ void UZUserHUD::NativeConstruct()
 	auto NewCurrnetWeaponInfoWidget = Cast<UZCurrentWeaponInfoWidget>(GetWidgetFromName(TEXT("UI_CurrentWeaponInfo")));
 	check(nullptr != NewCurrnetWeaponInfoWidget);
 	CurrentWeaponInfoWidget = NewCurrnetWeaponInfoWidget;
+
+	/* Input number widget */
+	auto NewInputNumberWidget = Cast<UZInputNumberWidget>(GetWidgetFromName(TEXT("UI_InputNumber")));
+	check(nullptr != NewInputNumberWidget);
+	InputNumberWidget = NewInputNumberWidget;
+
 
 	/* Money text */
 	auto NewCurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
@@ -213,4 +220,9 @@ UZShopWidget * const UZUserHUD::GetShopWidget() const
 UZCurrentWeaponInfoWidget * const UZUserHUD::GetCurrentWeaponInfoWidget() const
 {
 	return CurrentWeaponInfoWidget;
+}
+
+UZInputNumberWidget * const UZUserHUD::GetInputNumberWidget() const
+{
+	return InputNumberWidget;
 }
