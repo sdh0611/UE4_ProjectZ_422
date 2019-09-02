@@ -3,7 +3,11 @@
 
 #include "ZInventoryItemWidget.h"
 #include "ZItem.h"
+#include "ZPlayerController.h"
 #include "ZUsableItemInterface.h"
+#include "ZHUD.h"
+#include "ZUserHUD.h"
+#include "ZInputNumberWidget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -41,6 +45,7 @@ void UZInventoryItemWidget::NativeConstruct()
 
 void UZInventoryItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
+	Item->OnDropped(NewNumber);
 }
 
 void UZInventoryItemWidget::BindItem(AZItem * NewItem)
@@ -128,6 +133,29 @@ void UZInventoryItemWidget::UpdateWidget()
 // Æó±â¿¹Á¤(5.18)
 void UZInventoryItemWidget::OnDropButtonClicked()
 {
-	Item->OnDropped();
-	//ClearWidget();
+
+	if (Item->GetMaxQuantityOfItem() <= 1)
+	{
+		OnReceiveNumberInput(1);
+	}
+	else
+	{
+		auto PC = GetOwningPlayer<AZPlayerController>();
+		if (PC)
+		{
+			auto UserHUD = PC->GetZHUD()->GetUserHUD();
+			if (UserHUD)
+			{
+				auto InputWidget = UserHUD->GetInputNumberWidget();
+				if (InputWidget)
+				{
+					InputWidget->SetVisibility(ESlateVisibility::Visible);
+					InputWidget->BindWidget(this);
+				}
+			}
+
+		}
+	}
+
+
 }

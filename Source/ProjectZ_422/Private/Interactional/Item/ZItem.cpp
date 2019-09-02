@@ -78,6 +78,8 @@ void AZItem::OnDropped()
 	}
 
 
+	
+
 	if (Pickup)
 	{
 		/*
@@ -113,6 +115,103 @@ void AZItem::OnDropped()
 	OnItemRemoved.Broadcast();
 
 	SetActive(false);
+}
+
+void AZItem::OnDropped(int32 Quantity)
+{
+	if (Quantity < 1)
+	{
+		return;
+	}
+
+	/*
+		Pickup Spawn지점 설정
+	*/
+	FVector SpawnLocation;
+	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
+	if (Hit.bBlockingHit)
+	{
+		SpawnLocation = Hit.ImpactPoint;
+	}
+	else
+	{
+		SpawnLocation = Hit.TraceEnd;
+	}
+
+
+	if (GetCurrentQuantityOfItem() <= Quantity)
+	{
+		ZLOG(Error, TEXT("Drop all"));
+		if (Pickup)
+		{
+			/*
+				만약 Pickup에서 생성된 Item이라면
+			*/
+			// Pickup 활성화
+			ZLOG(Warning, TEXT("Spawn actor."));
+			Pickup->SetActive(true);
+			Pickup->SetActorLocation(SpawnLocation);
+			Pickup->WhenSpawnedByItem();
+		}
+		else
+		{
+			/*
+				만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
+			*/
+			// Pickup 생성
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+			check(nullptr != NewPickup);
+			NewPickup->SetItem(this);
+			NewPickup->WhenSpawnedByItem();
+
+		}
+
+		// ItemStatusComponent에서 해당 Item제거
+		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
+
+		OnItemRemoved.Broadcast();
+
+		SetActive(false);
+	}
+	else
+	{
+		ZLOG(Error, TEXT("Drop %d"), Quantity);
+		/* 초기화에 사용할 ItemData 검색. */
+		auto MyGameInstance = GetGameInstance<UZGameInstance>();
+		check(nullptr != MyGameInstance);
+		const FZItemData* ItemData = MyGameInstance->GetItemDataByName(GetItemName(), GetItemType());
+		if (nullptr == ItemData)
+		{
+			ZLOG(Error, TEXT("Failed to find item data.."));
+			return;
+		}
+
+		/* 새로운 Item spawn */
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(GetClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		if (nullptr == NewItem)
+		{
+			ZLOG(Error, TEXT("Failed to Spawn item.."));
+			return;
+		}
+		
+		NewItem->InitItemData(ItemData);
+		NewItem->SetCurrentQuantityOfItem(Quantity);
+		NewItem->SetActive(false);
+
+		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		check(nullptr != NewPickup);
+		NewPickup->SetItem(NewItem);
+		NewPickup->WhenSpawnedByItem();
+
+		AdjustQuantity(-Quantity);
+	}
+
+
 }
 
 void AZItem::OnRemoved()

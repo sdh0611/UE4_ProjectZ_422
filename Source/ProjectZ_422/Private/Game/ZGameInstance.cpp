@@ -68,6 +68,35 @@ const FZSkeletalMeshData * const UZGameInstance::GetSkeletalMeshData(const FStri
 	return nullptr;
 }
 
+const FZItemData * const UZGameInstance::GetItemDataByName(const FString & Name, EItemType ItemType)
+{
+	switch(ItemType)
+	{
+		case EItemType::Weapon:
+		{
+			return GetWeaponDataByName(Name);
+		}
+		case EItemType::Doping:
+		{
+			return GetDopingDataByName(Name);
+		}
+		case EItemType::Recovery:
+		{
+			return GetRecoveryDataByName(Name);
+		}
+		case EItemType::Ammo:
+		{
+			return GetAmmoDataByName(Name);
+		}
+		default:
+		{
+			break;
+		}
+	}
+
+	return nullptr;
+}
+
 const FZWeaponData * const UZGameInstance::GetWeaponDataByRowIndex(int32 RowIndex)
 {
 	return WeaponDataTable->FindRow<FZWeaponData>(*FString::FromInt(RowIndex), TEXT(""));

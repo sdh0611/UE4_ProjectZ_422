@@ -96,6 +96,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Item)
 	virtual void OnDropped();
 
+	virtual void OnDropped(int32 Quantity);
 	/*
 		Item이 제거될 경우 호출될 메소드.
 		주로 외부에서 호출하게 될 것. (ItemStatusComponent, Shop, etc...)
@@ -146,6 +147,7 @@ private:
 	void CheckItemExhausted();
 
 public:
+	/* 주로 UI와 상호작용 하기 위한 델리게이트들. */
 	FOnItemInfoChanged OnItemInfoChanged;
 	FOnItemRemoved OnItemRemoved;
 

@@ -5,6 +5,7 @@
 #include "ProjectZ_422.h"
 #include "Engine/GameInstance.h"
 #include "Engine/StreamableManager.h"
+#include "ZItem.h"
 #include "ZGameInstance.generated.h"
 
 /**
@@ -30,6 +31,11 @@ public:
 
 	const FZStaticMeshData* const GetStaticMeshData(const FString& MeshName);
 	const FZSkeletalMeshData* const GetSkeletalMeshData(const FString& MeshName);
+
+	/*
+		전체 ItemData 검색
+	*/
+	const FZItemData* const GetItemDataByName(const FString& Name, EItemType ItemType);
 
 	/*
 		WeaponTable 관련
