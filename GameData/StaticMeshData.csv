@@ -1,7 +1,7 @@
 ,Name,StaticMeshPath
-1,M4A1,StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4.SM_AR4'
-2,AK-47,StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SM_KA47.SM_KA47'
-3,Bandage,StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/KA74U/SM_KA74U_X.SM_KA74U_X'
-4,FirstkitAid,StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/SMG11/SM_SMG11_Nostock_X.SM_SMG11_Nostock_X'
-5,Doping,StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/Accessories/SM_Vertgrip.SM_Vertgrip'
-6,Grenade,StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade/SM_G67.SM_G67'
+1,M4A1,StaticMesh'/Game/Weapon/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4.SM_AR4'
+2,AK-47,StaticMesh'/Game/Weapon/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SM_KA47.SM_KA47'
+3,Bandage,StaticMesh'/Game/FirstAidKit/Models/SM_emergencyBangadeBig.SM_emergencyBangadeBig'
+4,FirstkitAid,StaticMesh'/Game/FirstAidKit/Models/SM_FirstAidPackMilitary.SM_FirstAidPackMilitary'
+5,Doping,StaticMesh'/Game/FirstAidKit/Models/SM_pillsJar.SM_pillsJar'
+6,Grenade,StaticMesh'/Game/Weapon/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade/SM_G67.SM_G67'

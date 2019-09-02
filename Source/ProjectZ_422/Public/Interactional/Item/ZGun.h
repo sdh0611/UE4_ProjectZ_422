@@ -14,6 +14,68 @@ enum class EFireMode : uint8
 	SingleShot
 };
 
+UENUM(BlueprintType)
+enum class EGunType : uint8
+{
+	Default = 0,
+	AR,
+	SR,
+	DMR,
+	SMG,
+	Shotgun,
+	Invalid
+};
+
+/*
+	GunType
+*/
+
+static FString GetGunTypeEnumAsString(EGunType GunType)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EGunType"), true);
+	if (nullptr == EnumPtr)
+	{
+		return FString(TEXT("Invalid"));
+	}
+
+	FString Concated = EnumPtr->GetNameStringByValue((int64)GunType);
+	Concated.RemoveFromStart(TEXT("EGunType::"));
+
+	return Concated;
+}
+
+static EGunType GetGunTypeFromString(const FString& GunTypeName)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EGunType"), true);
+	if (nullptr == EnumPtr)
+	{
+		return EGunType::Invalid;
+	}
+
+	if (GunTypeName == TEXT("SMG"))
+	{
+		return EGunType::SMG;
+	}
+	else if (GunTypeName == TEXT("AR"))
+	{
+		return EGunType::AR;
+	}
+	else if (GunTypeName == TEXT("Shotgun"))
+	{
+		return EGunType::Shotgun;
+	}
+	else if (GunTypeName == TEXT("DMR"))
+	{
+		return EGunType::DMR;
+	}
+	else if (GunTypeName == TEXT("SR"))
+	{
+		return EGunType::SR;
+	}
+
+	return EGunType::Invalid;
+}
+
 /**
  * 
  */
@@ -36,12 +98,14 @@ public:
 
 public:
 	void Reload();
+	void ChangeFireMode();
 
 public:
 	void SetIsReloading(bool NewState);
 	void SetCurrentAmmo(int32 NewAmmo);
 	void SetMaxAmmo(int32 NewAmmo);
 	void SetWantsToFire(bool NewState);
+	void SetFireMode(EFireMode NewMode);
 
 public:
 	bool IsCanReload() const;
@@ -50,6 +114,8 @@ public:
 	int32 GetCurrentAmmo() const;
 	int32 GetMaxAmmo() const;
 	const FString& GetUseAmmoName() const;
+	EGunType GetGunType() const;
+	EFireMode GetFireMode() const;
 
 protected:
 	bool CheckNeedToReload();
@@ -87,6 +153,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	FString UseAmmoName;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	EGunType GunType;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	EFireMode FireMode;

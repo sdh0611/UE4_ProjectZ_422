@@ -1,3 +1,3 @@
-Name,FireDelay,MaxAmmo,UseAmmoName,Damage,WeaponCategory,WeaponType,ItemName,ItemWeight,MaxQuantity
-1,0.07,30,5.56mm,10,Gun,AR,M4A1,0,1
-2,0.13,30,7.68mm,20,Gun,AR,AK-47,0,1
+Name,FireDelay,MaxAmmo,UseAmmoName,GunType,Damage,WeaponCategory,ItemName,ItemWeight,MaxQuantity
+1,0.07,30,5.56mm,AR,10,Gun,M4A1,0,1
+2,0.13,30,7.68mm,AR,20,Gun,AK-47,0,1

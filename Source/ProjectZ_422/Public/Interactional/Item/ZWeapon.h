@@ -12,29 +12,11 @@ UENUM(BlueprintType)
 enum class EWeaponCategory : uint8
 {
 	Gun,
-	Knife,
-	Grenade,
-	Invalid
-};
-
-/*
-	NOTE(9.02) : 
-		WeaponType은 GunType으로 옮겨야 할 듯. 
-*/
-UENUM(BlueprintType)
-enum class EWeaponType : uint8
-{
-	AR,
-	SR,
-	DMR,
-	SMG,
-	Shotgun,
 	Pistol,
 	Knife,
 	Grenade,
 	Invalid
 };
-
 
 /*
 	WeaponCategory
@@ -76,70 +58,7 @@ static EWeaponCategory GetWeaponCategoryFromString(const FString& WeaponCategory
 	}
 
 	return EWeaponCategory::Invalid;
-}
-
-
-/*
-	WeaponType
-*/
-
-static FString GetWeaponTypeEnumAsString(EWeaponType WeaponType)
-{
-	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponType"), true);
-	if (nullptr == EnumPtr)
-	{
-		return FString(TEXT("Invalid"));
-	}
-
-	FString Concated = EnumPtr->GetNameStringByValue((int64)WeaponType);
-	Concated.RemoveFromStart(TEXT("EWeaponType::"));
-
-	return Concated;
-}
-
-static EWeaponType GetWeaponTypeFromString(const FString& WeaponTypeName)
-{
-	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponType"), true);
-	if (nullptr == EnumPtr)
-	{
-		return EWeaponType::Invalid;
-	}
-
-	if (WeaponTypeName == TEXT("SMG"))
-	{
-		return EWeaponType::SMG;
-	}
-	else if (WeaponTypeName == TEXT("AR"))
-	{
-		return EWeaponType::AR;
-	}
-	else if (WeaponTypeName == TEXT("Shotgun"))
-	{
-		return EWeaponType::Shotgun;
-	}
-	else if (WeaponTypeName == TEXT("DMR"))
-	{
-		return EWeaponType::DMR;
-	}
-	else if (WeaponTypeName == TEXT("SR"))
-	{
-		return EWeaponType::SR;
-	}
-	else if (WeaponTypeName == TEXT("Pistol"))
-	{
-		return EWeaponType::Pistol;
-	}
-	else if (WeaponTypeName == TEXT("Grenade"))
-	{
-		return EWeaponType::Grenade;
-	}
-	else if (WeaponTypeName == TEXT("Knife"))
-	{
-		return EWeaponType::Knife;
-	}
-
-	return EWeaponType::Invalid;
-}
+};
 
 
 /**
@@ -166,13 +85,11 @@ public:
 	void SetWeaponInventoryIndex(int32 NewIndex);
 	void SetIsEquipped(bool NewState);
 	void SetWeaponCategory(EWeaponCategory NewWeaponCategory);
-	void SetWeaponType(EWeaponType NewWeaponType);
 
 public:
 	int32 GetWeaponInventoryIndex() const;
 	bool IsEquipped() const;
 	EWeaponCategory GetWeaponCategory() const;
-	EWeaponType GetWeaponType() const;
 
 protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
@@ -199,9 +116,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	EWeaponCategory WeaponCategory;
-
-	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
-	EWeaponType WeaponType;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	class USoundBase* FireSound;

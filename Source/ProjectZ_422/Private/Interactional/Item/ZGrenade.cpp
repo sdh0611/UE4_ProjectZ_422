@@ -10,21 +10,6 @@
 
 AZGrenade::AZGrenade()
 {
-	// Set skeletal mesh
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh>
-		SK_WEAPON(TEXT("SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/G67_Grenade/SK_G67.SK_G67'"));
-	if (SK_WEAPON.Succeeded())
-	{
-		WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
-	}
-
-	//static ConstructorHelpers::FClassFinder<AZProjectile>
-	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZGrenadeProjectile'"));
-	//if (CLASS_PROJECTILE.Succeeded())
-	//{
-	//	ProjectileClass = CLASS_PROJECTILE.Class;
-	//}
-
 	ExplosionRadius = 100.f;
 	ExplosionDelay = 3.f;
 	WeaponCategory = EWeaponCategory::Grenade;

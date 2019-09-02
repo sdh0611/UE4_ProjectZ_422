@@ -81,9 +81,9 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 	}
 
 
-	switch (NewWeapon->GetWeaponType())
+	switch (NewWeapon->GetWeaponCategory())
 	{
-		case EWeaponType::Pistol:
+		case EWeaponCategory::Pistol:
 		{
 			/*
 				±ÇÃÑ·ù
@@ -93,7 +93,7 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 			SetIsEquipGun(true);
 			break;
 		}
-		case EWeaponType::Knife:
+		case EWeaponCategory::Knife:
 		{
 			/*
 				±ÙÁ¢¹«±â
@@ -103,7 +103,7 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 			SetIsEquipGun(false);
 			break;
 		}
-		case EWeaponType::Grenade:
+		case EWeaponCategory::Grenade:
 		{
 			/*
 				ÅõÃ´¹°
@@ -112,7 +112,7 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 			SetIsEquipGun(false);
 			break;
 		}
-		case EWeaponType::Invalid:
+		case EWeaponCategory::Invalid:
 		{
 			ZLOG(Error, TEXT("Invalid type."));
 			return;

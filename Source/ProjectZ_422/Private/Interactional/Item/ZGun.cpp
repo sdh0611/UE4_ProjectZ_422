@@ -14,20 +14,6 @@
 
 AZGun::AZGun()
 {
-	//static ConstructorHelpers::FObjectFinder<USkeletalMesh>
-	//	SK_WEAPON(TEXT("SkeletalMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SK_AR4.SK_AR4'"));
-	//if (SK_WEAPON.Succeeded())
-	//{
-	//	WeaponMesh->SetSkeletalMesh(SK_WEAPON.Object);
-	//}
-
-	//static ConstructorHelpers::FClassFinder<AZProjectile>
-	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZBulletProjectile'"));
-	//if (CLASS_PROJECTILE.Succeeded())
-	//{
-	//	ProjectileClass = CLASS_PROJECTILE.Class;
-	//}
-
 	bIsReloading = false;
 	bWantsToFire = false;
 
@@ -86,7 +72,8 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 	FireDelay = NewGunData->FireDelay;
 	MaxAmmo = NewGunData->MaxAmmo;
 	UseAmmoName = NewGunData->UseAmmoName;
-	
+	GunType = GetGunTypeFromString(NewGunData->GunType);
+
 }
 
 void AZGun::Reload()
@@ -117,6 +104,14 @@ void AZGun::Reload()
 	OnItemInfoChanged.Broadcast();
 }
 
+void AZGun::ChangeFireMode()
+{
+	uint8 CurrentFireMode = static_cast<uint8>(FireMode);
+	
+	FireMode = static_cast<EFireMode>((++CurrentFireMode) % 2);
+
+}
+
 void AZGun::SetIsReloading(bool NewState)
 {
 	bIsReloading = NewState;
@@ -136,6 +131,11 @@ void AZGun::SetMaxAmmo(int32 NewAmmo)
 void AZGun::SetWantsToFire(bool NewState)
 {
 	bWantsToFire = NewState;
+}
+
+void AZGun::SetFireMode(EFireMode NewMode)
+{
+	FireMode = NewMode;
 }
 
 bool AZGun::IsCanReload() const
@@ -166,6 +166,16 @@ int32 AZGun::GetMaxAmmo() const
 const FString & AZGun::GetUseAmmoName() const
 {
 	return UseAmmoName;
+}
+
+EGunType AZGun::GetGunType() const
+{
+	return GunType;
+}
+
+EFireMode AZGun::GetFireMode() const
+{
+	return FireMode;
 }
 
 void AZGun::Fire()

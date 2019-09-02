@@ -104,7 +104,7 @@ struct FZWeaponData : public FZItemData
 
 public:
 	FZWeaponData()
-		: FZItemData(), Damage(0.f), WeaponCategory(TEXT("Invalid")), WeaponType(TEXT("Default"))
+		: FZItemData(), Damage(0.f), WeaponCategory(TEXT("Invalid"))
 	{
 	}
 
@@ -113,9 +113,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString WeaponCategory;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	FString WeaponType;
 
 };
 
@@ -131,7 +128,7 @@ struct FZGunData : public FZWeaponData
 
 public:
 	FZGunData()
-		: FZWeaponData(), FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT(""))
+		: FZWeaponData(), FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT("")), GunType(TEXT("Default"))
 	{
 	}
 
@@ -144,6 +141,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString UseAmmoName;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString GunType;
+
 };
 
 

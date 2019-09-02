@@ -24,13 +24,6 @@ AZWeapon::AZWeapon()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	RootComponent = WeaponMesh;
 
-	//static ConstructorHelpers::FClassFinder<AZProjectile>
-	//	CLASS_PROJECTILE(TEXT("Class'/Script/ProjectZ_422.ZProjectile'"));
-	//if (CLASS_PROJECTILE.Succeeded())
-	//{
-	//	ProjectileClass = CLASS_PROJECTILE.Class;
-	//}
-
 	// -1 : Player에게 습득되지 않은 상태
 	WeaponInventoryIndex = -1;
 	bIsEquipped = false;
@@ -38,7 +31,6 @@ AZWeapon::AZWeapon()
 	Damage = 1.f;
 
 	WeaponCategory = EWeaponCategory::Invalid;
-	WeaponType = EWeaponType::Invalid;
 
 	MaxQuantityOfItem = 1;
 }
@@ -85,8 +77,6 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 	check(nullptr != SKMesh);
 	WeaponMesh->SetSkeletalMesh(SKMesh);
 
-	WeaponType = GetWeaponTypeFromString(NewWeaponData->WeaponType);
-
 }
 
 void AZWeapon::SetWeaponInventoryIndex(int32 NewIndex)
@@ -111,11 +101,6 @@ void AZWeapon::SetWeaponCategory(EWeaponCategory NewWeaponCategory)
 	WeaponCategory = NewWeaponCategory;
 }
 
-void AZWeapon::SetWeaponType(EWeaponType NewWeaponType)
-{
-	WeaponType = NewWeaponType;
-}
-
 int32 AZWeapon::GetWeaponInventoryIndex() const
 {
 	return WeaponInventoryIndex;
@@ -131,10 +116,6 @@ EWeaponCategory AZWeapon::GetWeaponCategory() const
 	return WeaponCategory;
 }
 
-EWeaponType AZWeapon::GetWeaponType() const
-{
-	return WeaponType;
-}
 
 FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 {

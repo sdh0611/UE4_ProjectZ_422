@@ -76,9 +76,7 @@ void AZItem::OnDropped()
 	{
 		SpawnLocation = Hit.TraceEnd;
 	}
-
-
-	
+	   	
 
 	if (Pickup)
 	{

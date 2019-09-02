@@ -89,6 +89,7 @@ private:
 	void Slot1();
 	void Slot2();
 	void Slot4();
+	void ChangeFireMode();
 
 	/*
 		µð¹ö±ë¿ë
