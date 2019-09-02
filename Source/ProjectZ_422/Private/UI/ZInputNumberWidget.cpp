@@ -32,6 +32,8 @@ void UZInputNumberWidget::NativeConstruct()
 void UZInputNumberWidget::BindWidget(UUserWidget * NewWidget)
 {
 	WidgetBinded = NewWidget;
+	InputText->SetKeyboardFocus();
+
 }
 
 int32 UZInputNumberWidget::GetInputNumber() const
@@ -121,9 +123,9 @@ void UZInputNumberWidget::OnOKButtonClicked()
 
 
 	/* 토글 */
-	FInputModeUIOnly InputMode;
-	InputMode.SetWidgetToFocus(InputText->GetCachedWidget());
-	GetOwningPlayer()->SetInputMode(InputMode);
+	//FInputModeUIOnly InputMode;
+	//InputMode.SetWidgetToFocus(InputText->GetCachedWidget());
+	//GetOwningPlayer()->SetInputMode(InputMode);
 
 	InputText->SetText(FText::GetEmpty());
 	SetVisibility(ESlateVisibility::Hidden);
@@ -135,8 +137,8 @@ void UZInputNumberWidget::OnCancelButtonClicked()
 	ZLOG_S(Warning);
 	
 	/* 토글 */
-	FInputModeGameOnly InputMode;
-	GetOwningPlayer()->SetInputMode(InputMode);
+	//FInputModeGameOnly InputMode;
+	//GetOwningPlayer()->SetInputMode(InputMode);
 
 	InputText->SetText(FText::GetEmpty());
 	SetVisibility(ESlateVisibility::Hidden);

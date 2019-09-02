@@ -6,6 +6,14 @@
 #include "Interactional/Item/ZWeapon.h"
 #include "ZGun.generated.h"
 
+UENUM(BlueprintType)
+enum class EFireMode : uint8
+{
+	AutoFire = 0,
+	//InterruptedFire,
+	SingleShot
+};
+
 /**
  * 
  */
@@ -79,4 +87,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	FString UseAmmoName;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	EFireMode FireMode;
+
 };

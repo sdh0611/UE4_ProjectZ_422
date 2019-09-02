@@ -155,10 +155,12 @@ void UZUserHUD::DrawShopWidget()
 {
 	ShopWidget->SetVisibility(ESlateVisibility::Visible);
 
+	auto PlayerController = GetOwningPlayer();
+
 	FInputModeGameAndUI InputMode;
 	InputMode.SetWidgetToFocus(InventoryWidget->GetCachedWidget());
 
-	auto PlayerController = GetOwningPlayer();
+	ShopWidget->SetUserFocus(PlayerController);
 
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = true;

@@ -75,6 +75,7 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 		}
 		PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget()->BindShop(this);
 		PlayerController->GetZHUD()->GetUserHUD()->DrawShopWidget();
+		
 	}
 
 	SetEnterPlayer(NewCharacter);
@@ -86,6 +87,12 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 
 void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 {
+	if (Quantity < 1)
+	{
+		ZLOG(Error, TEXT("Invalid quantity value."));
+		return;
+	}
+
 	auto ItemStatusComponent = EnterPlayer->GetItemStatusComponent();
 	if (nullptr == ItemStatusComponent)
 	{

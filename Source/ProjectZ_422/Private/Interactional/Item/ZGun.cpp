@@ -38,6 +38,8 @@ AZGun::AZGun()
 	// Code for test
 	FireDelay = 0.15f;
 
+	FireMode = EFireMode::SingleShot;
+
 	WeaponCategory = EWeaponCategory::Gun;
 }
 
@@ -235,6 +237,11 @@ void AZGun::Fire()
 		{
 			ZLOG(Warning, TEXT("Reload!"));
 		}
+	}
+
+	if (EFireMode::SingleShot == FireMode)
+	{
+		FireEnd();
 	}
 
 	Super::Fire();

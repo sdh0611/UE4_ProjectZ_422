@@ -17,6 +17,10 @@ enum class EWeaponCategory : uint8
 	Invalid
 };
 
+/*
+	NOTE(9.02) : 
+		WeaponType은 GunType으로 옮겨야 할 듯. 
+*/
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {

@@ -80,4 +80,5 @@ void UZShopBuyWidget::ClearWidget()
 	WeaponHolder->ClearChildren();
 	RecoveryHolder->ClearChildren();
 	DopingHolder->ClearChildren();
+	AmmoHolder->ClearChildren();
 }
