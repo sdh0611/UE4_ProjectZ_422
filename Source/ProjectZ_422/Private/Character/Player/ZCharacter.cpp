@@ -25,12 +25,6 @@
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 
-const FName AZCharacter::MainWeaponSocketName = FName(TEXT("weapon_r"));
-const FName AZCharacter::SecondaryWeaponSocketName = FName(TEXT("weapon_secondary"));
-const FName AZCharacter::ThirdWeaponSocketName = FName(TEXT("weapon_third"));
-const FName AZCharacter::KnifeSocketName = FName(TEXT("weapon_knife"));
-const FName AZCharacter::GrenadeWeaponSocketName = FName(TEXT("weapon_grenade"));
-
 // Sets default values
 AZCharacter::AZCharacter()
 {
@@ -61,6 +55,13 @@ AZCharacter::AZCharacter()
 	// Set Character Properties
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 	GetCharacterMovement()->JumpZVelocity = 700.f;
+
+	MainWeaponSocketName = FName(TEXT("weapon_r"));
+	MainWeaponShotgunSocketName = FName(TEXT("weapon_r_shotgun"));
+	SecondaryWeaponSocketName = FName(TEXT("weapon_secondary"));
+	ThirdWeaponSocketName = FName(TEXT("weapon_third"));
+	KnifeSocketName = FName(TEXT("weapon_knife"));
+	GrenadeWeaponSocketName = FName(TEXT("weapon_grenade"));
 
 	bIsSprinting = false;
 	bIsAiming = false;
@@ -327,6 +328,42 @@ AZWeapon * const AZCharacter::GetCurrentWeapon()
 UZPlayerAnimInstance * const AZCharacter::GetCharacterAnimInstance()
 {
 	return Cast<UZPlayerAnimInstance>(GetAnimInstance());
+}
+
+const FName & AZCharacter::GetMainWeaponSocketName() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return MainWeaponSocketName;
+}
+
+const FName & AZCharacter::GetMainWeaponShotgunSocketName() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return MainWeaponShotgunSocketName;
+}
+
+const FName & AZCharacter::GetSecondaryWeaponSocketName() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return SecondaryWeaponSocketName;
+}
+
+const FName & AZCharacter::GetThirdWeaponSocketName() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return ThirdWeaponSocketName;
+}
+
+const FName & AZCharacter::GetKnifeSocketName() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return KnifeSocketName;
+}
+
+const FName & AZCharacter::GetGrenadeWeaponSocketName() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return GrenadeWeaponSocketName;
 }
 
 void AZCharacter::CheckCharacterRotation(float DeltaTime)

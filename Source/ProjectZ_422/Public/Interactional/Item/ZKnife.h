@@ -25,6 +25,9 @@ private:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AttackRadius;
 
 };

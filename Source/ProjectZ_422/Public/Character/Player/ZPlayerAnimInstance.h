@@ -37,7 +37,7 @@ public:
 	bool IsAiming() const;
 
 private:
-	void PlayFireRifleMontage();
+	void PlayFireGunMontage();
 	void PlayThrowGrenadeMontage();
 	void PlayAttackKnifeMontage();
 

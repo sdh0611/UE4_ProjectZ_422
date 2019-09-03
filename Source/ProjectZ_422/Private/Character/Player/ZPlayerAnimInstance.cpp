@@ -34,7 +34,7 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		AimYaw = FMath::ClampAngle(CurrentRot.Yaw, -90.f, 90.f);
 		AimPitch = FMath::ClampAngle(CurrentRot.Pitch, -90.f, 90.f);
 
-		/* 
+		/*
 			무기 장착여부 체크
 		*/
 		//auto Weapon = Pawn->GetCurrentWeapon();
@@ -46,21 +46,54 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//{
 		//	BindFireMontage(Weapon);
 		//}
-		
-		
+
+
 
 	}
 }
 
-void UZPlayerAnimInstance::PlayFireRifleMontage()
+void UZPlayerAnimInstance::PlayFireGunMontage()
 {
-	if (IsAiming())
+	auto Player = Cast<AZCharacter>(TryGetPawnOwner());
+	if (!::IsValid(Player))
 	{
-		PlayCharacterMontage(TEXT("FireRifleAim"));
+		ZLOG(Error, TEXT("Player invalid."));
+		return;
 	}
-	else
+
+	auto Gun = Cast<AZGun>(Player->GetCurrentWeapon());
+	if (!::IsValid(Gun))
 	{
-		PlayCharacterMontage(TEXT("FireRifleHip"));
+		ZLOG(Error, TEXT("Weapon invalid."));
+		return;
+	}
+
+	switch (Gun->GetGunType())
+	{
+		case EGunType::Shotgun:
+		{
+			if (IsAiming())
+			{
+				PlayCharacterMontage(TEXT("FireShotgunAim"));
+			}
+			else
+			{
+				PlayCharacterMontage(TEXT("FireShotgunHip"));
+			}
+			break;
+			break;
+		}
+		default:
+		{
+			if (IsAiming())
+			{
+				PlayCharacterMontage(TEXT("FireRifleAim"));
+			}
+			else
+			{
+				PlayCharacterMontage(TEXT("FireRifleHip"));
+			}
+		}
 	}
 }
 
@@ -84,38 +117,38 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 
 	switch (NewWeapon->GetWeaponCategory())
 	{
-		case EWeaponCategory::Knife:
-		{
-			/*
-				근접무기
-			*/
-			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayAttackKnifeMontage);
-			SetIsEquipGun(false);
-			break;
-		}
-		case EWeaponCategory::Grenade:
-		{
-			/*
-				투척물
-			*/
-			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayThrowGrenadeMontage);
-			SetIsEquipGun(false);
-			break;
-		}
-		case EWeaponCategory::Invalid:
-		{
-			ZLOG(Error, TEXT("Invalid type."));
-			return;
-		}
-		default:
-		{
-			/*
-				라이플류
-			*/
-			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireRifleMontage);
-			SetIsEquipGun(true);
-			break;
-		}
+	case EWeaponCategory::Knife:
+	{
+		/*
+			근접무기
+		*/
+		NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayAttackKnifeMontage);
+		SetIsEquipGun(false);
+		break;
+	}
+	case EWeaponCategory::Grenade:
+	{
+		/*
+			투척물
+		*/
+		NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayThrowGrenadeMontage);
+		SetIsEquipGun(false);
+		break;
+	}
+	case EWeaponCategory::Invalid:
+	{
+		ZLOG(Error, TEXT("Invalid type."));
+		return;
+	}
+	default:
+	{
+		/*
+			총기류
+		*/
+		NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireGunMontage);
+		SetIsEquipGun(true);
+		break;
+	}
 
 	}
 

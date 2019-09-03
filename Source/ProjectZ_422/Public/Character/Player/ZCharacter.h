@@ -52,6 +52,13 @@ public:
 	class AZWeapon* const GetCurrentWeapon();
 	class UZPlayerAnimInstance* const GetCharacterAnimInstance();
 
+	const FName& GetMainWeaponSocketName() const;
+	const FName& GetMainWeaponShotgunSocketName() const;
+	const FName& GetSecondaryWeaponSocketName() const;
+	const FName& GetThirdWeaponSocketName() const;
+	const FName& GetKnifeSocketName() const;
+	const FName& GetGrenadeWeaponSocketName() const;
+
 private:
 	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead() override;
@@ -99,14 +106,27 @@ private:
 	void Ragdoll();
 
 
-public:
-	static const FName MainWeaponSocketName;
-	static const FName SecondaryWeaponSocketName;
-	static const FName ThirdWeaponSocketName;
-	static const FName KnifeSocketName;
-	static const FName GrenadeWeaponSocketName;
+protected:
+	/* Sockets */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName MainWeaponSocketName;
 
-protected:	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName MainWeaponShotgunSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName SecondaryWeaponSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName ThirdWeaponSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName KnifeSocketName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName GrenadeWeaponSocketName;
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsAiming;
 

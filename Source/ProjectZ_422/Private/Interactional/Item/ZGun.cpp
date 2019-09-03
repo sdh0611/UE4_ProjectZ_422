@@ -18,8 +18,7 @@ AZGun::AZGun()
 	bWantsToFire = false;
 
 	MaxAmmo = 30;
-	CurrentAmmo = MaxAmmo;
-
+	CurrentAmmo = 0.f;
 	FireTimer = 0.f;
 	// Code for test
 	FireDelay = 0.15f;
@@ -33,8 +32,6 @@ void AZGun::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
-
 }
 
 void AZGun::Tick(float DeltaTime)
@@ -71,6 +68,7 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 
 	FireDelay = NewGunData->FireDelay;
 	MaxAmmo = NewGunData->MaxAmmo;
+	CurrentAmmo = MaxAmmo;
 	UseAmmoName = NewGunData->UseAmmoName;
 	GunType = GetGunTypeFromString(NewGunData->GunType);
 

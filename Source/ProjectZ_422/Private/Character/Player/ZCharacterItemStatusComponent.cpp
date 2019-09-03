@@ -10,6 +10,7 @@
 #include "ZShopWidget.h"
 #include "ZPickup.h"
 #include "ZWeapon.h"
+#include "ZGun.h"
 #include "ZRecovery.h"
 #include "ZDoping.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -242,8 +243,28 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 
 					// Weapon 厘馒咯何 汲沥
 					OwnerCharacter->SetCurrentWeapon(NewWeapon);
+
 					// Main weapon socket俊 何馒
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::MainWeaponSocketName);
+					auto Gun = Cast<AZGun>(NewWeapon);
+					check(nullptr != Gun);
+
+					FName SocketName;
+					switch (Gun->GetGunType())
+					{
+						case EGunType::Shotgun:
+						{
+							SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+							break;
+						}
+						default:
+						{
+							SocketName = OwnerCharacter->GetMainWeaponSocketName();
+							break;
+						}
+					}
+
+					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+						SocketName);
 				}
 				else
 				{
@@ -255,7 +276,8 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					WeaponInventory[Main2] = NewWeapon;
 					NewWeapon->SetWeaponInventoryIndex(Main2);
 					// Secondary Weapon 家南俊 Weapon 何馒
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::ThirdWeaponSocketName);
+					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+						OwnerCharacter->GetThirdWeaponSocketName());
 				}
 
 
@@ -277,13 +299,32 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					if (OwnerCharacter->IsEquipWeapon())
 					{
 						// Secondary Weapon 家南俊 Weapon 何馒
-						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::SecondaryWeaponSocketName);
+						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+							OwnerCharacter->GetSecondaryWeaponSocketName());
 					}
 					else
 					{
 						OwnerCharacter->SetCurrentWeapon(NewWeapon);
 						// Main Weapon 家南俊 Weapon 何馒
-						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::MainWeaponSocketName);
+						auto Gun = Cast<AZGun>(NewWeapon);
+						check(nullptr != Gun);
+
+						FName SocketName;
+						switch (Gun->GetGunType())
+						{
+							case EGunType::Shotgun:
+							{
+								SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+								break;
+							}
+							default:
+							{
+								SocketName = OwnerCharacter->GetMainWeaponSocketName();
+								break;
+							}
+						}
+						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+							SocketName);
 					}
 
 				}
@@ -294,7 +335,25 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					*/
 					OwnerCharacter->SetCurrentWeapon(NewWeapon);
 					// Main Weapon 家南俊 Weapon 何馒
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::MainWeaponSocketName);
+					auto Gun = Cast<AZGun>(NewWeapon);
+					check(nullptr != Gun);
+
+					FName SocketName;
+					switch (Gun->GetGunType())
+					{
+						case EGunType::Shotgun:
+						{
+							SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+							break;
+						}
+						default:
+						{
+							SocketName = OwnerCharacter->GetMainWeaponSocketName();
+							break;
+						}
+					}
+					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+						SocketName);
 				}
 
 			}
@@ -317,7 +376,8 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 				WeaponInventory[Grenade] = NewWeapon;
 				NewWeapon->SetWeaponInventoryIndex(Grenade);
 				// Grenade socket俊 mesh 何馒.
-				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, AZCharacter::GrenadeWeaponSocketName);
+				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+					OwnerCharacter->GetGrenadeWeaponSocketName());
 			}
 
 			break;

@@ -105,6 +105,7 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	if (IsDead())
 	{
 		ZLOG(Warning, TEXT("Dead!!"));
+		
 		OnDead();
 	}
 

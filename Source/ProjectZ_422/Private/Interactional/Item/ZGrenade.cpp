@@ -59,7 +59,7 @@ void AZGrenade::Fire()
 
 void AZGrenade::ThrowGrenade()
 {
-	FVector HandLocation = ItemOwner->GetMesh()->GetSocketLocation(AZCharacter::MainWeaponSocketName);
+	FVector HandLocation = ItemOwner->GetMesh()->GetSocketLocation(ItemOwner->GetMainWeaponSocketName());
 	//FRotator DirRotation = FRotationMatrix::MakeFromX(HandLocation).Rotator();
 	//FVector LaunchDirection = DirRotation.Vector();
 	FVector LaunchDirection = FVector::ZeroVector;
