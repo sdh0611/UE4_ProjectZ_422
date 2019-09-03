@@ -35,5 +35,7 @@ private:
 	UPROPERTY()
 	class UTextBlock* MaxAmmo;
 
+	UPROPERTY()
+	class UTextBlock* FireMode;
 
 };

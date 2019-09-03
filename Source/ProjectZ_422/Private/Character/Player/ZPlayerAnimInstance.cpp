@@ -83,16 +83,6 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 
 	switch (NewWeapon->GetWeaponCategory())
 	{
-		case EWeaponCategory::Pistol:
-		{
-			/*
-				권총류
-				->임시로 라이플 애니메이션으로 바인딩
-			*/
-			//NewWeapon->OnWeaponFired.AddUObject(this, &UZCharacterAnimInstance::PlayFireRifleMontage);
-			SetIsEquipGun(true);
-			break;
-		}
 		case EWeaponCategory::Knife:
 		{
 			/*

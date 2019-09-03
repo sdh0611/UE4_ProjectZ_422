@@ -97,6 +97,11 @@ protected:
 public:
 	FOnWeaponFired OnWeaponFired;
 
+	/*
+		현재 Player가 들고 있는 무기인지의 여부
+	*/
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bIsEquipped;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
@@ -104,12 +109,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	int32 WeaponInventoryIndex;
-
-	/*
-		현재 Player가 들고 있는 무기인지의 여부
-	*/
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	bool bIsEquipped;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float Damage;
@@ -119,8 +118,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	class USoundBase* FireSound;
-
-	UPROPERTY()
-	TSoftObjectPtr<class USkeletalMesh> MeshPtr;
 
 };

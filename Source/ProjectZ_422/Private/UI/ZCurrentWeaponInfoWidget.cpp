@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ZCurrentWeaponInfoWidget.h"
@@ -22,9 +22,14 @@ void UZCurrentWeaponInfoWidget::NativeConstruct()
 	check(nullptr != NewMaxAmmo);
 	MaxAmmo = NewMaxAmmo;
 
+	auto NewFireMode = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_FireMode")));
+	check(nullptr != NewFireMode);
+	FireMode = NewFireMode;
+
 	WeaponName->SetText(FText::GetEmpty());
 	CurrentAmmo->SetText(FText::GetEmpty());
 	MaxAmmo->SetText(FText::GetEmpty());
+	FireMode->SetText(FText::GetEmpty());
 }
 
 void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
@@ -47,6 +52,26 @@ void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
 
 			CurrentAmmo->SetText(FText::FromString(FString::FromInt(Gun->GetCurrentAmmo())));
 			MaxAmmo->SetText(FText::FromString(FString::FromInt(Gun->GetMaxAmmo())));
+			
+			switch (Gun->GetFireMode())
+			{
+				case EFireMode::AutoFire:
+				{
+					FireMode->SetText(FText::FromString(TEXT("연사")));
+					break;
+				}
+				case EFireMode::SingleShot:
+				{
+					FireMode->SetText(FText::FromString(TEXT("단발")));
+					break;
+				}
+				default:
+				{
+					ZLOG(Error, TEXT("Invalid fire mode value."));
+					break;
+				}
+			}
+
 			break;
 		}
 		case EWeaponCategory::Grenade:
@@ -54,12 +79,14 @@ void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
 			FText Text = FText::FromString(FString::FromInt(NewWeapon->GetCurrentQuantityOfItem()));
 			CurrentAmmo->SetText(Text);
 			MaxAmmo->SetText(Text);
+			FireMode->SetText(FText::GetEmpty());
 			break;
 		}
 		case EWeaponCategory::Knife:
 		{
 			CurrentAmmo->SetText(FText::GetEmpty());
 			MaxAmmo->SetText(FText::GetEmpty());
+			FireMode->SetText(FText::GetEmpty());
 			break;
 		}
 		default:
@@ -87,6 +114,25 @@ void UZCurrentWeaponInfoWidget::UpdateWidget()
 		{
 			auto Gun = Cast<AZGun>(Weapon);
 			CurrentAmmo->SetText(FText::FromString(FString::FromInt(Gun->GetCurrentAmmo())));
+			
+			switch (Gun->GetFireMode())
+			{
+				case EFireMode::AutoFire:
+				{
+					FireMode->SetText(FText::FromString(TEXT("연사")));
+					break;
+				}
+				case EFireMode::SingleShot:
+				{
+					FireMode->SetText(FText::FromString(TEXT("단발")));
+					break;
+				}
+				default:
+				{
+					ZLOG(Error, TEXT("Invalid fire mode value."));
+					break;
+				}
+			}
 			break;
 		}
 		case EWeaponCategory::Grenade:

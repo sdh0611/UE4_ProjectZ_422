@@ -108,8 +108,7 @@ void AZGun::ChangeFireMode()
 {
 	uint8 CurrentFireMode = static_cast<uint8>(FireMode);
 	
-	FireMode = static_cast<EFireMode>((++CurrentFireMode) % 2);
-
+	SetFireMode(static_cast<EFireMode>((++CurrentFireMode) % 2));
 }
 
 void AZGun::SetIsReloading(bool NewState)
@@ -136,6 +135,7 @@ void AZGun::SetWantsToFire(bool NewState)
 void AZGun::SetFireMode(EFireMode NewMode)
 {
 	FireMode = NewMode;
+	OnItemInfoChanged.Broadcast();
 }
 
 bool AZGun::IsCanReload() const
