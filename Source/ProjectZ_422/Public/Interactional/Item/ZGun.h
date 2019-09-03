@@ -116,6 +116,7 @@ public:
 	const FString& GetUseAmmoName() const;
 	EGunType GetGunType() const;
 	EFireMode GetFireMode() const;
+	virtual class UAnimMontage* const GetAnimMontage() const override;
 
 protected:
 	bool CheckNeedToReload();

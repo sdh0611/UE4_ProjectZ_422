@@ -223,7 +223,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 			RemoveAll의 코스트가 어느 정도인지 모르기때문에 가능하다면 바꾸는걸로
 		*/
 		/* AnimInstance 체크 */
-		CurrentWeapon->OnWeaponFired.RemoveAll(CharacterAnim);
+		//CurrentWeapon->OnWeaponFired.RemoveAll(CharacterAnim);
 	}
 
 	CurrentWeapon = NewWeapon;
@@ -238,7 +238,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		{
 			CharacterAnim->SetIsEquipGun(true);
 		}
-		CharacterAnim->BindFireMontage(NewWeapon);
+		//CharacterAnim->BindFireMontage(NewWeapon);
 
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		// CurrentWeaponInfo widget에 바인딩
@@ -935,51 +935,51 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 		*/
 		switch (CurrentWeapon->GetWeaponInventoryIndex())
 		{
-		case 0:
-		{
-			/*
-				장전중인 경우 장전 취소
-			*/
-			auto Gun = Cast<AZGun>(CurrentWeapon);
-			check(Gun != nullptr);
-			if (Gun->IsReloading())
+			case 0:
 			{
-				Gun->SetIsReloading(false);
-			}
+				/*
+					장전중인 경우 장전 취소
+				*/
+				auto Gun = Cast<AZGun>(CurrentWeapon);
+				check(Gun != nullptr);
+				if (Gun->IsReloading())
+				{
+					Gun->SetIsReloading(false);
+				}
 
-			// 기존 Weapon은 Secondary socket으로 옮김.
-			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
-			break;
-		}
-		case 1:
-		{
-			/*
-				장전중인 경우 장전 취소
-			*/
-			auto Gun = Cast<AZGun>(CurrentWeapon);
-			check(Gun != nullptr);
-			if (Gun->IsReloading())
+				// 기존 Weapon은 Secondary socket으로 옮김.
+				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
+				break;
+			}
+			case 1:
 			{
-				Gun->SetIsReloading(false);
-			}
+				/*
+					장전중인 경우 장전 취소
+				*/
+				auto Gun = Cast<AZGun>(CurrentWeapon);
+				check(Gun != nullptr);
+				if (Gun->IsReloading())
+				{
+					Gun->SetIsReloading(false);
+				}
 
-			// 기존 Weapon은 Third socket으로 옮김.
-			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
-			break;
-		}
-		case 2:
-		{
-			break;
-		}
-		case 3:
-		{
-			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
-			break;
-		}
-		default:
-		{
-			break;
-		}
+				// 기존 Weapon은 Third socket으로 옮김.
+				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
+				break;
+			}
+			case 2:
+			{
+				break;
+			}
+			case 3:
+			{
+				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
+				break;
+			}
+			default:
+			{
+				break;
+			}
 		}
 
 
@@ -989,34 +989,42 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	SetCurrentWeapon(ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex));
 	auto CharacterAnim = GetCharacterAnimInstance();
 	check(nullptr != CharacterAnim);
+	FName SocketName = GetMainWeaponSocketName();
 	switch (CurrentWeapon->GetWeaponCategory())
 	{
-	case EWeaponCategory::Gun:
-	{
-		// Gun이므로 true 셋팅
-		CharacterAnim->SetIsEquipGun(true);
+		case EWeaponCategory::Gun:
+		{
+			// Gun이므로 true 셋팅
+			CharacterAnim->SetIsEquipGun(true);
+			auto Gun = Cast<AZGun>(CurrentWeapon);
+			check(Gun != nullptr);
+			if (EGunType::Shotgun == Gun->GetGunType())
+			{
+				SocketName = GetMainWeaponShotgunSocketName();
+			}
 
-		break;
-	}
-	case EWeaponCategory::Grenade:
-	{
-		/*
-			수류탄을 깐 상황이면 return
-		*/
-		ZLOG_S(Warning);
-		// Gun이 아니므로 false 셋팅
-		CharacterAnim->SetIsEquipGun(false);
-		// OnGrenadeThrow에 바인딩.
-		auto Grenade = Cast<AZGrenade>(CurrentWeapon);
-		check(nullptr != Grenade);
-		ZLOG(Error, TEXT("Bind ThrowGrenade"));
-		CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
+			break;
+		}
+		case EWeaponCategory::Grenade:
+		{
+			/*
+				수류탄을 깐 상황이면 return
+			*/
+			ZLOG_S(Warning);
+			// Gun이 아니므로 false 셋팅
+			CharacterAnim->SetIsEquipGun(false);
+			// OnGrenadeThrow에 바인딩.
+			auto Grenade = Cast<AZGrenade>(CurrentWeapon);
+			check(nullptr != Grenade);
+			ZLOG(Error, TEXT("Bind ThrowGrenade"));
+			CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
 
-		break;
-	}
+			break;
+		}
 	}
 	// 새 Weapon은 Main socket으로 옮김.
-	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, MainWeaponSocketName);
+	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, 
+		SocketName);
 	SetIsSwitchingWeapon(true);
 	CharacterAnim->PlayCharacterMontage(TEXT("EquipRifle"));
 

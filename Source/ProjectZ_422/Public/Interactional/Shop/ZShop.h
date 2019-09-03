@@ -50,7 +50,10 @@ public:
 protected:
 	/* Weapon */
 	UPROPERTY(EditAnywhere, Category = Shop)
-	TSubclassOf<class AZItem> GunClass;
+	TSubclassOf<class AZItem> ARClass;
+
+	UPROPERTY(EditAnywhere, Category = Shop)
+	TSubclassOf<class AZItem> ShotgunClass;
 
 	UPROPERTY(EditAnywhere, Category = Shop)
 	TSubclassOf<class AZItem> KnifeClass;

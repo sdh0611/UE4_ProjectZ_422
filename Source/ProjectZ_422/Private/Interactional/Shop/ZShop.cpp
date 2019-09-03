@@ -134,9 +134,25 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 			{
 				case EWeaponCategory::Gun:
 				{
-					ZLOG(Error, TEXT("Buy Gun."));
-					ItemData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
-					SpawnItemClass = GunClass;
+					auto GunData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
+					check(GunData != nullptr);
+
+					switch(GetGunTypeFromString(GunData->GunType))
+					{
+						case EGunType::AR:
+						{
+							SpawnItemClass = ARClass;
+							break;
+						}
+						case EGunType::Shotgun:
+						{
+							SpawnItemClass = ShotgunClass;
+							break;
+						}
+					}
+
+					ItemData = GunData;
+
 					break;
 				}
 				case EWeaponCategory::Knife:

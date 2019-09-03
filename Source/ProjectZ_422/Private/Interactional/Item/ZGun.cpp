@@ -26,6 +26,10 @@ AZGun::AZGun()
 	FireMode = EFireMode::SingleShot;
 
 	WeaponCategory = EWeaponCategory::Gun;
+
+	EffectAttachSocketName = TEXT("muzzle");
+
+	MontageTable.Add(TEXT("FireAim"), nullptr);
 }
 
 void AZGun::BeginPlay()
@@ -176,81 +180,91 @@ EFireMode AZGun::GetFireMode() const
 	return FireMode;
 }
 
+UAnimMontage * const AZGun::GetAnimMontage() const
+{
+	if(ItemOwner->IsAiming())
+	{
+		return FindMontage(TEXT("FireAim"));
+	}
+
+	return Super::GetAnimMontage();
+}
+
 void AZGun::Fire()
 {
-	if (IsReloading())
-	{
-		return;
-	}
+	//if (IsReloading())
+	//{
+	//	return;
+	//}
 
-	if (CheckNeedToReload())
-	{
-		if (EmptySound)
-		{
-			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), EmptySound, GetActorLocation(), GetActorRotation());
-		}
+	//if (CheckNeedToReload())
+	//{
+	//	if (EmptySound)
+	//	{
+	//		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), EmptySound, GetActorLocation(), GetActorRotation());
+	//	}
 
-		if (bWantsToFire)
-		{
-			SetWantsToFire(false);
-		}
+	//	if (bWantsToFire)
+	//	{
+	//		SetWantsToFire(false);
+	//	}
 
-		return;
-	}
+	//	return;
+	//}
 
-	if (!IsWantsToFire())
-	{
-		SetWantsToFire(true);
-	}
+	//if (!IsWantsToFire())
+	//{
+	//	SetWantsToFire(true);
+	//}
 
-	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
-	FVector LaunchDirection = FVector::ZeroVector;
+	//FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+	//FVector LaunchDirection = FVector::ZeroVector;
 
-	FHitResult Hit = WeaponTrace(10000.f);
-	if (Hit.bBlockingHit)
-	{
-		LaunchDirection = Hit.ImpactPoint - MuzzleLocation;
-	}
-	else
-	{
-		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
-	}
+	//FHitResult Hit = WeaponTrace(100000.f);
+	//if (Hit.bBlockingHit)
+	//{
+	//	LaunchDirection = Hit.ImpactPoint - MuzzleLocation;
+	//}
+	//else
+	//{
+	//	LaunchDirection = Hit.TraceEnd - MuzzleLocation;
+	//}
 
-	//DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
+	////DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
 
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = ItemOwner;
+	//FActorSpawnParameters SpawnParams;
+	//SpawnParams.Owner = this;
+	//SpawnParams.Instigator = ItemOwner;
 
-	AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
-	if (Projectile)
-	{
-		Projectile->SetDamage(Damage);
-		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
-		if (CurrentAmmo > 0)
-		{
-			--CurrentAmmo;
-			if (FireEffect)
-			{
-				UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
-			}
-			
-			if (FireSound)
-			{
-				UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
-			}
+	//AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
+	//if (Projectile)
+	//{
+	//	Projectile->SetDamage(Damage);
+	//	Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+	//	if (CurrentAmmo > 0)
+	//	{
+	//		--CurrentAmmo;
+	//		if (FireEffect)
+	//		{
+	//			UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
+	//		}
+	//		
+	//		if (FireSound)
+	//		{
+	//			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
+	//		}
 
-		}
-		else
-		{
-			ZLOG(Warning, TEXT("Reload!"));
-		}
-	}
+	//	}
+	//	else
+	//	{
+	//		ZLOG(Warning, TEXT("Reload!"));
+	//	}
+	//}
 
-	if (EFireMode::SingleShot == FireMode)
-	{
-		FireEnd();
-	}
+	//if (EFireMode::SingleShot == FireMode)
+	//{
+	//	FireEnd();
+	//}
 
 	Super::Fire();
 }

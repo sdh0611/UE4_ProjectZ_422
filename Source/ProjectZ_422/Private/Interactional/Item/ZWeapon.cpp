@@ -6,6 +6,7 @@
 #include "ZProjectile.h"
 #include "ZPlayerController.h"
 #include "ZGameInstance.h"
+#include "ZPlayerAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
@@ -33,6 +34,8 @@ AZWeapon::AZWeapon()
 	WeaponCategory = EWeaponCategory::Invalid;
 
 	MaxQuantityOfItem = 1;
+
+	MontageTable.Add(TEXT("Fire"), nullptr);
 }
 
 void AZWeapon::BeginPlay()
@@ -116,6 +119,11 @@ EWeaponCategory AZWeapon::GetWeaponCategory() const
 	return WeaponCategory;
 }
 
+UAnimMontage * const AZWeapon::GetAnimMontage() const
+{
+	return FindMontage(TEXT("Fire"));
+}
+
 
 FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 {
@@ -144,9 +152,31 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 	return Hit;
 }
 
+UAnimMontage * const AZWeapon::FindMontage(const FString & MontageName) const
+{
+	if (MontageTable.Contains(MontageName))
+	{
+		return MontageTable[MontageName];
+	}
+
+	return nullptr;
+}
+
 void AZWeapon::Fire()
 {
 	//ZLOG(Warning, TEXT("Weapon Fire!!"));
+
+	auto PlayerAnim = ItemOwner->GetCharacterAnimInstance();
+	if (!::IsValid(PlayerAnim))
+	{
+		ZLOG(Error, TEXT("PlayerAnim not valid."));
+		return;
+	}
+
+	if (GetAnimMontage())
+	{
+		PlayerAnim->Montage_Play(GetAnimMontage());
+	}
 
 	OnWeaponFired.Broadcast();
 	OnItemInfoChanged.Broadcast();
