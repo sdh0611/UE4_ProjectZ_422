@@ -15,8 +15,15 @@ void AZKnife::Fire()
 {
 	TArray<FHitResult> Hits;
 
-
+	
 
 
 	Super::Fire();
+}
+
+void AZKnife::AttackCheck()
+{
+
+
+
 }

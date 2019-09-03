@@ -8,6 +8,7 @@
 #include "ZPlayerAnimInstance.generated.h"
 
 DECLARE_DELEGATE(FOnGrenadeThrow);
+DECLARE_DELEGATE(FOnKnifeAttack);
 
 /**
  * 
@@ -24,10 +25,7 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	void PlayFireRifleMontage();
-	void PlayThrowGrenadeMontage();
 	void BindFireMontage(class AZWeapon* NewWeapon);
-	void PlayFireMontage(class AZWeapon* NewWeapon);
 	void PlayHitMontage();
 
 public:
@@ -39,6 +37,10 @@ public:
 	bool IsAiming() const;
 
 private:
+	void PlayFireRifleMontage();
+	void PlayThrowGrenadeMontage();
+	void PlayAttackKnifeMontage();
+
 	UFUNCTION()
 	void AnimNotify_ReloadCheck();
 
@@ -54,8 +56,16 @@ private:
 public:
 	FOnGrenadeThrow OnGrenadeThrow;
 
+	FOnKnifeAttack OnKnifeAttack;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsEquipGun;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsAiming;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
@@ -64,10 +74,5 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	float AimPitch;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
-	bool bIsEquipGun;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
-	bool bIsAiming;
 
 };

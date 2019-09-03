@@ -37,15 +37,15 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		/* 
 			무기 장착여부 체크
 		*/
-		auto Weapon = Pawn->GetCurrentWeapon();
-		if (nullptr == Weapon)
-		{
-			SetIsEquipGun(false);
-		}
-		else
-		{
-			BindFireMontage(Weapon);
-		}
+		//auto Weapon = Pawn->GetCurrentWeapon();
+		//if (nullptr == Weapon)
+		//{
+		//	SetIsEquipGun(false);
+		//}
+		//else
+		//{
+		//	BindFireMontage(Weapon);
+		//}
 		
 		
 
@@ -66,11 +66,12 @@ void UZPlayerAnimInstance::PlayFireRifleMontage()
 
 void UZPlayerAnimInstance::PlayThrowGrenadeMontage()
 {
-	/*
-		해당 애니메이션은 Anim Blueprint에서 추가해줬음.
-	*/
-	ZLOG_S(Error);
 	PlayCharacterMontage(TEXT("ThrowGrenade"));
+}
+
+void UZPlayerAnimInstance::PlayAttackKnifeMontage()
+{
+	PlayCharacterMontage(TEXT("AttackKnife"));
 }
 
 void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
@@ -87,9 +88,8 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 		{
 			/*
 				근접무기
-				->임시로 라이플 애니메이션으로 바인딩
 			*/
-			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayFireRifleMontage);
+			NewWeapon->OnWeaponFired.AddUObject(this, &UZPlayerAnimInstance::PlayAttackKnifeMontage);
 			SetIsEquipGun(false);
 			break;
 		}
@@ -117,33 +117,6 @@ void UZPlayerAnimInstance::BindFireMontage(AZWeapon * NewWeapon)
 			break;
 		}
 
-	}
-
-}
-
-void UZPlayerAnimInstance::PlayFireMontage(class AZWeapon* NewWeapon)
-{
-	switch (NewWeapon->GetWeaponCategory())
-	{
-		case EWeaponCategory::Gun:
-		{
-			PlayFireRifleMontage();
-			break;
-		}
-		case EWeaponCategory::Knife:
-		{
-			
-			break;
-		}
-		case EWeaponCategory::Grenade:
-		{
-			PlayThrowGrenadeMontage();
-			break;
-		}
-		default:
-		{
-			break;
-		}
 	}
 
 }

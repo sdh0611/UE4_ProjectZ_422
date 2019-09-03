@@ -20,6 +20,8 @@ public:
 public:
 	virtual void Fire() override;
 
+private:
+	void AttackCheck();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

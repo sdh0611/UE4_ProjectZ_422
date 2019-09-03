@@ -207,6 +207,12 @@ void AZCharacter::SetIsSwitchingWeapon(bool NewState)
 void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 {
 	ZLOG_S(Warning);
+	auto CharacterAnim = GetCharacterAnimInstance();
+	if (!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid AnimInstance."));
+		return;
+	}
 
 	if (CurrentWeapon)
 	{
@@ -216,11 +222,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 			RemoveAll의 코스트가 어느 정도인지 모르기때문에 가능하다면 바꾸는걸로
 		*/
 		/* AnimInstance 체크 */
-		auto CharacterAnim = GetCharacterAnimInstance();
-		if (CharacterAnim)
-		{
-			CurrentWeapon->OnWeaponFired.RemoveAll(CharacterAnim);
-		}
+		CurrentWeapon->OnWeaponFired.RemoveAll(CharacterAnim);
 	}
 
 	CurrentWeapon = NewWeapon;
@@ -231,11 +233,11 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		/*
 			WeaponCategory가 Gun인 경우에만 AnimInstance에 값 설정.
 		*/
-		//if (EWeaponCategory::Gun == NewWeapon->GetWeaponCategory())
-		//{
-		//	CharacterAnim->SetIsEquipGun(true);
-		//}
-		//CharacterAnim->BindFireMontage(NewWeapon);
+		if (EWeaponCategory::Gun == NewWeapon->GetWeaponCategory())
+		{
+			CharacterAnim->SetIsEquipGun(true);
+		}
+		CharacterAnim->BindFireMontage(NewWeapon);
 
 		GetCharacterMovement()->bOrientRotationToMovement = false;
 		// CurrentWeaponInfo widget에 바인딩
@@ -243,7 +245,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 	}
 	else
 	{
-		//CharacterAnim->SetIsEquipGun(false);
+		CharacterAnim->SetIsEquipGun(false);
 		//bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		PlayerController->GetZHUD()->GetUserHUD()->GetCurrentWeaponInfoWidget()->ClearWidget();
