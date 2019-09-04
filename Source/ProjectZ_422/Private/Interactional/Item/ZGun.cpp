@@ -28,6 +28,7 @@ AZGun::AZGun()
 
 	MaxSpread = 0.2f;
 	SpreadIncrement = 0.2f;
+
 	SpreadDecrement = 0.005f;
 
 	FireMode = EFireMode::SingleShot;
