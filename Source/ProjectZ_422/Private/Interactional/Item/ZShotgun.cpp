@@ -15,6 +15,8 @@ AZShotgun::AZShotgun()
 
 	ShotRange = 4.f;
 
+	BulletLifeSpan = 0.1f;
+
 	for (int32 i = 0; i < ShotNumber; ++i)
 	{
 		DirList.Add(FVector::ZeroVector);
@@ -86,7 +88,8 @@ void AZShotgun::Fire()
 
 		Projectile->SetDamage(Damage / ShotNumber);
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
-
+		Projectile->SetBulletSpeed(BulletSpeed);
+		Projectile->SetBulletLifeSpan(BulletLifeSpan);
 	}
 
 	if (bSuccess)

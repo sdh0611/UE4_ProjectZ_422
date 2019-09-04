@@ -90,11 +90,10 @@ public:
 	int32 GetWeaponInventoryIndex() const;
 	bool IsEquipped() const;
 	EWeaponCategory GetWeaponCategory() const;
-	virtual class UAnimMontage* const GetAnimMontage() const;
+	virtual class UAnimMontage* const GetFireAnimMontage() const;
 
 protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
-	class UAnimMontage* const FindMontage(const FString& MontageName) const;
 
 public:
 	FOnWeaponFired OnWeaponFired;
@@ -121,7 +120,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	class USoundBase* FireSound;
 
-	UPROPERTY(EditAnywhere)
-	TMap<FString, class UAnimMontage*> MontageTable;
+
 
 };

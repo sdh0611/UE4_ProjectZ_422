@@ -64,6 +64,8 @@ void AZAR::Fire()
 	{
 		Projectile->SetDamage(Damage);
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+		Projectile->SetBulletSpeed(BulletSpeed);
+		Projectile->SetBulletLifeSpan(BulletLifeSpan);
 		if (CurrentAmmo > 0)
 		{
 			--CurrentAmmo;

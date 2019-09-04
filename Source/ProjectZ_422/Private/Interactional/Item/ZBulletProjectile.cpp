@@ -57,13 +57,27 @@ void AZBulletProjectile::FireInDirection(const FVector & Direction)
 	Movement->Velocity = Direction * Movement->InitialSpeed;
 }
 
-void AZBulletProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
+void AZBulletProjectile::SetBulletSpeed(float NewSpeed)
 {
-	if (OtherActor != this)
+	if (NewSpeed < 0)
 	{
-		ZLOG_S(Warning);
-		Destroy();
+		return;
 	}
+
+	Movement->MaxSpeed = NewSpeed;
+	Movement->InitialSpeed = NewSpeed;
+
+}
+
+void AZBulletProjectile::SetBulletLifeSpan(float NewLifeSpan)
+{
+	if (NewLifeSpan < 0)
+	{
+		return;
+	}
+
+	SetLifeSpan(NewLifeSpan);
+
 }
 
 void AZBulletProjectile::TraceBullet()

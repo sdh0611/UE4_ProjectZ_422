@@ -20,12 +20,11 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
-public:
 	virtual void FireInDirection(const FVector& Direction) override;
 
-	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
-		FVector NormalImpulse, const FHitResult& Hit) override;
+public:
+	void SetBulletSpeed(float NewSpeed);
+	void SetBulletLifeSpan(float NewLifeSpan);
 
 private:
 	void TraceBullet();

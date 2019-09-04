@@ -27,10 +27,6 @@ public:
 	void SetDamage(float NewDamage);
 	virtual void FireInDirection(const FVector& Direction);
 
-	UFUNCTION()
-	virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, 
-		FVector NormalImpulse, const FHitResult& Hit);
-
 protected:
 	TSubclassOf<class UDamageType> DamageType;
 

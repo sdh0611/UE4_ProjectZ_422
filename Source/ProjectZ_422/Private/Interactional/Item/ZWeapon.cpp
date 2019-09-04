@@ -119,7 +119,7 @@ EWeaponCategory AZWeapon::GetWeaponCategory() const
 	return WeaponCategory;
 }
 
-UAnimMontage * const AZWeapon::GetAnimMontage() const
+UAnimMontage * const AZWeapon::GetFireAnimMontage() const
 {
 	return FindMontage(TEXT("Fire"));
 }
@@ -152,16 +152,6 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 	return Hit;
 }
 
-UAnimMontage * const AZWeapon::FindMontage(const FString & MontageName) const
-{
-	if (MontageTable.Contains(MontageName))
-	{
-		return MontageTable[MontageName];
-	}
-
-	return nullptr;
-}
-
 void AZWeapon::Fire()
 {
 	//ZLOG(Warning, TEXT("Weapon Fire!!"));
@@ -173,9 +163,9 @@ void AZWeapon::Fire()
 		return;
 	}
 
-	if (GetAnimMontage())
+	if (GetFireAnimMontage())
 	{
-		PlayerAnim->Montage_Play(GetAnimMontage());
+		PlayerAnim->Montage_Play(GetFireAnimMontage());
 	}
 
 	OnWeaponFired.Broadcast();

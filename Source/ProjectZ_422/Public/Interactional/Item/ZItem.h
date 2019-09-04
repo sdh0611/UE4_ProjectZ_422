@@ -138,6 +138,8 @@ public:
 	bool IsItemQuantityMaximum() const;
 	EItemType GetItemType() const;
 	bool IsActive() const;
+	class UAnimMontage* const FindMontage(const FString& MontageName) const;
+
 
 private:
 	/*
@@ -184,5 +186,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
 	class AZPickup* Pickup;
+
+	UPROPERTY(EditAnywhere)
+	TMap<FString, class UAnimMontage*> MontageTable;
 
 };

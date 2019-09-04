@@ -852,6 +852,11 @@ void AZCharacter::Reload()
 			return;
 		}
 
+		if (nullptr == ItemStatusComponent->GetItemByName(Weapon->GetUseAmmoName()))
+		{
+			return;
+		}
+
 		if (IsSprinting())
 		{
 			SprintRelease();
@@ -862,15 +867,16 @@ void AZCharacter::Reload()
 			AimRelease();
 		}
 
-		if (nullptr == ItemStatusComponent->GetItemByName(Weapon->GetUseAmmoName()))
-		{
-			return;
-		}
-
 		Weapon->SetIsReloading(true);
 		auto CharacterAnim = GetCharacterAnimInstance();
 		check(nullptr != CharacterAnim);
-		CharacterAnim->PlayCharacterMontage(TEXT("ReloadRifle"));
+
+		auto Montage = Weapon->FindMontage(TEXT("Reload"));
+		if (Montage)
+		{
+			CharacterAnim->Montage_Play(Montage);
+		}
+		//CharacterAnim->PlayCharacterMontage(TEXT("ReloadRifle"));
 
 	}
 

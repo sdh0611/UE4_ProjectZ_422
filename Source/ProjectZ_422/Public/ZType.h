@@ -128,7 +128,8 @@ struct FZGunData : public FZWeaponData
 
 public:
 	FZGunData()
-		: FZWeaponData(), FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT("")), GunType(TEXT("Default"))
+		: FZWeaponData(), FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT("")), 
+		GunType(TEXT("Default")), BulletSpeed(10000.f)
 	{
 	}
 
@@ -143,6 +144,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString GunType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float BulletSpeed;
 
 };
 

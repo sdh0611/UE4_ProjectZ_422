@@ -62,13 +62,3 @@ void AZProjectile::FireInDirection(const FVector & Direction)
 {
 
 }
-
-void AZProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
-{
-	//if (OtherActor != this)
-	//{
-		ZLOG_S(Warning);
-	//	Destroy();
-	//}
-
-}

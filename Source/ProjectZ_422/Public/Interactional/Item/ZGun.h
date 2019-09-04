@@ -115,7 +115,7 @@ public:
 	const FString& GetUseAmmoName() const;
 	EGunType GetGunType() const;
 	EFireMode GetFireMode() const;
-	virtual class UAnimMontage* const GetAnimMontage() const override;
+	virtual class UAnimMontage* const GetFireAnimMontage() const override;
 
 protected:
 	bool CheckNeedToReload();
@@ -134,11 +134,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class USoundBase* EmptySound;
 
+	
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName EffectAttachSocketName;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	TSubclassOf<class AZBulletProjectile> BulletClass;
+
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	bool bIsFiring;
@@ -154,6 +156,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float FireDelay;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float BulletSpeed;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float BulletLifeSpan;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	FString UseAmmoName;

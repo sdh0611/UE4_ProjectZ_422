@@ -407,6 +407,18 @@ bool AZItem::IsActive() const
 	return bIsActive;
 }
 
+UAnimMontage * const AZItem::FindMontage(const FString & MontageName) const
+{
+	if (MontageTable.Contains(MontageName))
+	{
+		return MontageTable[MontageName];
+	}
+
+	return nullptr;
+}
+
+
+
 void AZItem::CheckItemExhausted()
 {
 	if (GetCurrentQuantityOfItem() < 1)

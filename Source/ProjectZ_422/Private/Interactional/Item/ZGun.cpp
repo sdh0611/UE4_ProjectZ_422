@@ -23,6 +23,8 @@ AZGun::AZGun()
 	FireTimer = 0.f;
 	// Code for test
 	FireDelay = 0.15f;
+	BulletSpeed = 10000.f;
+	BulletLifeSpan = 3.f;
 
 	FireMode = EFireMode::SingleShot;
 
@@ -31,6 +33,7 @@ AZGun::AZGun()
 	EffectAttachSocketName = TEXT("muzzle");
 
 	MontageTable.Add(TEXT("FireAim"), nullptr);
+	MontageTable.Add(TEXT("Reload"), nullptr);
 }
 
 void AZGun::BeginPlay()
@@ -43,28 +46,6 @@ void AZGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//if (BulletClass)
-	//{
-	//	if (IsWantsToFire())
-	//	{
-	//		FireTimer += DeltaTime;
-	//		if (FireTimer >= FireDelay)
-	//		{
-	//			Fire();
-	//			FireTimer = 0.f;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (FireTimer != 0.f)
-	//		{
-	//			FireTimer = 0.f;
-	//		}
-	//	}
-	//}
-
-
-	/* 연사모드가 있는 총기류를 제외한 나머지 총기들의 기본 shot 동작 */
 	if (BulletClass)
 	{
 		if (bIsFiring)
@@ -75,7 +56,7 @@ void AZGun::Tick(float DeltaTime)
 				bIsFiring = false;
 				FireTimer = 0.f;
 		
-				if (EFireMode::AutoFire == GetFireMode())
+				if (EFireMode::SingleShot != GetFireMode())
 				{
 					if (IsWantsToFire())
 					{
@@ -103,6 +84,7 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 	MaxAmmo = NewGunData->MaxAmmo;
 	CurrentAmmo = MaxAmmo;
 	UseAmmoName = NewGunData->UseAmmoName;
+	BulletSpeed = NewGunData->BulletSpeed;
 	GunType = GetGunTypeFromString(NewGunData->GunType);
 
 }
@@ -206,96 +188,19 @@ EFireMode AZGun::GetFireMode() const
 	return FireMode;
 }
 
-UAnimMontage * const AZGun::GetAnimMontage() const
+UAnimMontage * const AZGun::GetFireAnimMontage() const
 {
 	if(ItemOwner->IsAiming())
 	{
 		return FindMontage(TEXT("FireAim"));
 	}
 
-	return Super::GetAnimMontage();
+	return Super::GetFireAnimMontage();
 }
 
 void AZGun::Fire()
 {
-	//if (IsReloading())
-	//{
-	//	return;
-	//}
-
-	//if (CheckNeedToReload())
-	//{
-	//	if (EmptySound)
-	//	{
-	//		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), EmptySound, GetActorLocation(), GetActorRotation());
-	//	}
-
-	//	if (bWantsToFire)
-	//	{
-	//		SetWantsToFire(false);
-	//	}
-
-	//	return;
-	//}
-
-	//if (!IsWantsToFire())
-	//{
-	//	SetWantsToFire(true);
-	//}
-
-	//FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
-	//FVector LaunchDirection = FVector::ZeroVector;
-
-	//FHitResult Hit = WeaponTrace(100000.f);
-	//if (Hit.bBlockingHit)
-	//{
-	//	LaunchDirection = Hit.ImpactPoint - MuzzleLocation;
-	//}
-	//else
-	//{
-	//	LaunchDirection = Hit.TraceEnd - MuzzleLocation;
-	//}
-
-	////DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
-
-	//FActorSpawnParameters SpawnParams;
-	//SpawnParams.Owner = this;
-	//SpawnParams.Instigator = ItemOwner;
-
-	//AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
-	//if (Projectile)
-	//{
-	//	Projectile->SetDamage(Damage);
-	//	Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
-	//	if (CurrentAmmo > 0)
-	//	{
-	//		--CurrentAmmo;
-	//		if (FireEffect)
-	//		{
-	//			UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
-	//		}
-	//		
-	//		if (FireSound)
-	//		{
-	//			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
-	//		}
-
-	//	}
-	//	else
-	//	{
-	//		ZLOG(Warning, TEXT("Reload!"));
-	//	}
-	//}
-
-
 	bIsFiring = true;
-
-	//if (EFireMode::SingleShot == FireMode)
-	//{
-	//	FireEnd();
-	//}
-
-
 
 	Super::Fire();
 }
