@@ -720,6 +720,11 @@ void AZCharacter::Attack()
 		return;
 	}
 
+	if (IsSprinting())
+	{
+		SprintRelease();
+	}
+
 	//CurrentWeapon->SetWantsToFire(true);
 	CurrentWeapon->Fire();
 	//GetCharacterAnimInstance()->PlayFireMontage(CurrentWeapon);

@@ -163,6 +163,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float BulletLifeSpan;
 
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float MaxSpread;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float CurrentSpread;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float SpreadIncrement;
+
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float SpreadDecrement;
+
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	FString UseAmmoName;
 

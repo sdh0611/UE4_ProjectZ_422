@@ -55,6 +55,8 @@ void AZAR::Fire()
 		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
 	}
 
+
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = ItemOwner;
