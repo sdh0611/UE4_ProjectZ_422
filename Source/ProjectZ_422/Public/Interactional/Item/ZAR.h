@@ -15,7 +15,13 @@ class PROJECTZ_422_API AZAR : public AZGun
 	GENERATED_BODY()
 
 public:
+	AZAR();
+
+public:
 	virtual void Fire() override;
+
+
+protected:
 
 	
 };

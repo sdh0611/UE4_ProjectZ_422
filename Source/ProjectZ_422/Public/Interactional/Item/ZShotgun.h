@@ -15,7 +15,21 @@ class PROJECTZ_422_API AZShotgun : public AZGun
 	GENERATED_BODY()
 	
 public:
+	AZShotgun();
+
+public:
 	virtual void Fire() override;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 ShotNumber;
+
+	/* »êÅº ¹üÀ§ */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ShotRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FVector> DirList;
+	
 
 };

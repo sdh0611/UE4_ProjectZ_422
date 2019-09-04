@@ -8,6 +8,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
+AZAR::AZAR()
+{
+
+}
+
 void AZAR::Fire()
 {
 	if (IsReloading())
@@ -37,7 +42,6 @@ void AZAR::Fire()
 
 	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
 	FVector LaunchDirection = FVector::ZeroVector;
-
 	FHitResult Hit = WeaponTrace(100000.f);
 	if (Hit.bBlockingHit)
 	{
@@ -47,8 +51,6 @@ void AZAR::Fire()
 	{
 		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
 	}
-
-	//DrawDebugLine(GetWorld(), MuzzleLocation, LaunchDirection * 100000.f, FColor::Red, false, 0.5f);
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
