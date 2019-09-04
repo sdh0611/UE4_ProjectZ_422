@@ -83,6 +83,7 @@ public:
 	class AZItem* GetItemByIndex(int32 ItemIndex) const;
 	/*
 		ItemList내 같은 이름을 가졌고, 현재 개수가 최대 개수에 도달하지 않은 Item을 검색.
+		전부 최대 개수를 보유하고 있으면 그냥 첫번째 아이템 반환.
 		@return : ItemList내 AZItem Pointer. 없다면 nullptr 반환.
 	*/
 	class AZItem* GetItemByName(const FString& ItemName);

@@ -27,7 +27,7 @@ void AZAR::Fire()
 			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), EmptySound, GetActorLocation(), GetActorRotation());
 		}
 
-		if (bWantsToFire)
+		if (IsWantsToFire())
 		{
 			SetWantsToFire(false);
 		}
@@ -37,7 +37,10 @@ void AZAR::Fire()
 
 	if (!IsWantsToFire())
 	{
-		SetWantsToFire(true);
+		if (EFireMode::AutoFire == GetFireMode())
+		{
+			SetWantsToFire(true);
+		}
 	}
 
 	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
@@ -81,10 +84,17 @@ void AZAR::Fire()
 		}
 	}
 
-	if (EFireMode::SingleShot == FireMode)
-	{
-		FireEnd();
-	}
+	//if (EFireMode::SingleShot == FireMode)
+	//{
+	//	FireEnd();
+	//}
 
 	Super::Fire();
+}
+
+void AZAR::ChangeFireMode()
+{
+	uint8 CurrentFireMode = static_cast<uint8>(FireMode);
+
+	SetFireMode(static_cast<EFireMode>((++CurrentFireMode) % 2));
 }

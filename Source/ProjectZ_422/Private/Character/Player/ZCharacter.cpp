@@ -16,6 +16,7 @@
 #include "ZPlayerAnimInstance.h"
 #include "ZPlayerController.h"
 #include "ZCharacterStatusComponent.h"
+#include "ZChangeFireModeInterface.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
@@ -691,27 +692,27 @@ void AZCharacter::Attack()
 
 	switch (CurrentWeapon->GetWeaponCategory())
 	{
-	case EWeaponCategory::Gun:
-	{
-		/*
-			장전중인 경우 return
-		*/
-		auto Gun = Cast<AZGun>(CurrentWeapon);
-		check(Gun != nullptr);
-		if (Gun->IsReloading())
+		case EWeaponCategory::Gun:
 		{
-			return;
+			/*
+				장전중인 경우 return
+			*/
+			auto Gun = Cast<AZGun>(CurrentWeapon);
+			check(Gun != nullptr);
+			if (Gun->IsReloading())
+			{
+				return;
+			}
 		}
-	}
-	case EWeaponCategory::Grenade:
-	{
-		/*
-			수류탄을 깐 상황이면 return
-		*/
+		case EWeaponCategory::Grenade:
+		{
+			/*
+				수류탄을 깐 상황이면 return
+			*/
 
 
-		break;
-	}
+			break;
+		}
 	}
 
 	if (IsSwitchingWeapon())
@@ -1051,14 +1052,20 @@ void AZCharacter::ChangeFireMode()
 	{
 		return;
 	}
-	
-	if (EWeaponCategory::Gun == CurrentWeapon->GetWeaponCategory())
-	{
-		auto Gun = Cast<AZGun>(CurrentWeapon);
-		check(nullptr != Gun);
 
-		Gun->ChangeFireMode();
+	auto ChangeModeInterface = Cast<IZChangeFireModeInterface>(CurrentWeapon);
+	if (ChangeModeInterface)
+	{
+		ChangeModeInterface->ChangeFireMode();
 	}
+
+	//if (EWeaponCategory::Gun == CurrentWeapon->GetWeaponCategory())
+	//{
+	//	auto Gun = Cast<AZGun>(CurrentWeapon);
+	//	check(nullptr != Gun);
+
+	//	Gun->ChangeFireMode();
+	//}
 
 }
 

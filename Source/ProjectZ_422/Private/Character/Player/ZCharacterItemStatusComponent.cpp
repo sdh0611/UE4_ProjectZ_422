@@ -619,17 +619,23 @@ AZItem * UZCharacterItemStatusComponent::GetItemByIndex(int32 ItemIndex) const
 
 AZItem * UZCharacterItemStatusComponent::GetItemByName(const FString & ItemName)
 {
+	AZItem* Result = nullptr;
+
 	for (const auto& Item : ItemList)
 	{
 		if (Item)
 		{
-			if (ItemName == Item->GetItemName() && !Item->IsItemQuantityMaximum())
+			if (ItemName == Item->GetItemName())
 			{
-				return Item;
+				Result = Item;
+				if (!Item->IsItemQuantityMaximum())
+				{
+					break;
+				}
 			}
 		}
 	}
 
-	return nullptr;
+	return Result;
 }
 

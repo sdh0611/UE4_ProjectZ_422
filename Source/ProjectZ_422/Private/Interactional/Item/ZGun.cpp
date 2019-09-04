@@ -16,6 +16,7 @@ AZGun::AZGun()
 {
 	bIsReloading = false;
 	bWantsToFire = false;
+	bIsFiring = false;
 
 	MaxAmmo = 30;
 	CurrentAmmo = 0.f;
@@ -42,25 +43,53 @@ void AZGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//if (BulletClass)
+	//{
+	//	if (IsWantsToFire())
+	//	{
+	//		FireTimer += DeltaTime;
+	//		if (FireTimer >= FireDelay)
+	//		{
+	//			Fire();
+	//			FireTimer = 0.f;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (FireTimer != 0.f)
+	//		{
+	//			FireTimer = 0.f;
+	//		}
+	//	}
+	//}
+
+
+	/* 연사모드가 있는 총기류를 제외한 나머지 총기들의 기본 shot 동작 */
 	if (BulletClass)
 	{
-		if (IsWantsToFire())
+		if (bIsFiring)
 		{
 			FireTimer += DeltaTime;
 			if (FireTimer >= FireDelay)
 			{
-				Fire();
+				bIsFiring = false;
 				FireTimer = 0.f;
+		
+				if (EFireMode::AutoFire == GetFireMode())
+				{
+					if (IsWantsToFire())
+					{
+						Fire();
+					}
+				}
+
 			}
+
 		}
-		else
-		{
-			if (FireTimer != 0.f)
-			{
-				FireTimer = 0.f;
-			}
-		}
+
 	}
+
+
 
 }
 
@@ -87,30 +116,27 @@ void AZGun::Reload()
 	}
 	ZLOG_S(Warning);
 
-	auto Ammo = ItemOwner->GetItemStatusComponent()->GetItemByName(UseAmmoName);
-	if (nullptr == Ammo)
+	while (IsCanReload())
 	{
-		ZLOG(Error, TEXT("Ammo not exist."));
-		return;
+		auto Ammo = ItemOwner->GetItemStatusComponent()->GetItemByName(UseAmmoName);
+		if (nullptr == Ammo)
+		{
+			ZLOG(Error, TEXT("Ammo not exist."));
+			break;
+		}
+
+		int32 ReloadAmmo = MaxAmmo - CurrentAmmo;
+		if (Ammo->GetCurrentQuantityOfItem() < ReloadAmmo)
+		{
+			ReloadAmmo = Ammo->GetCurrentQuantityOfItem();
+		}
+
+		Ammo->AdjustQuantity(-ReloadAmmo);
+
+		CurrentAmmo += ReloadAmmo;
 	}
 
-	int32 ReloadAmmo = MaxAmmo - CurrentAmmo;
-	if (Ammo->GetCurrentQuantityOfItem() < ReloadAmmo)
-	{
-		ReloadAmmo = Ammo->GetCurrentQuantityOfItem();
-	}
-
-	Ammo->AdjustQuantity(-ReloadAmmo);
-
-	CurrentAmmo += ReloadAmmo;
 	OnItemInfoChanged.Broadcast();
-}
-
-void AZGun::ChangeFireMode()
-{
-	uint8 CurrentFireMode = static_cast<uint8>(FireMode);
-	
-	SetFireMode(static_cast<EFireMode>((++CurrentFireMode) % 2));
 }
 
 void AZGun::SetIsReloading(bool NewState)
@@ -261,10 +287,15 @@ void AZGun::Fire()
 	//	}
 	//}
 
+
+	bIsFiring = true;
+
 	//if (EFireMode::SingleShot == FireMode)
 	//{
 	//	FireEnd();
 	//}
+
+
 
 	Super::Fire();
 }

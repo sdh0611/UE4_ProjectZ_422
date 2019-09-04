@@ -98,7 +98,6 @@ public:
 
 public:
 	void Reload();
-	void ChangeFireMode();
 
 public:
 	void SetIsReloading(bool NewState);
@@ -121,6 +120,13 @@ public:
 protected:
 	bool CheckNeedToReload();
 
+public:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bIsReloading;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	bool bWantsToFire;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class UParticleSystem* FireEffect;
@@ -135,10 +141,7 @@ protected:
 	TSubclassOf<class AZBulletProjectile> BulletClass;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	bool bIsReloading;
-
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	bool bWantsToFire;
+	bool bIsFiring;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	int32 CurrentAmmo;

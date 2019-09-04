@@ -23,6 +23,11 @@ AZShotgun::AZShotgun()
 
 void AZShotgun::Fire()
 {
+	if (bIsFiring)
+	{
+		return;
+	}
+
 	if (CheckNeedToReload())
 	{
 		if (EmptySound)
@@ -38,10 +43,7 @@ void AZShotgun::Fire()
 		return;
 	}
 
-	if (!IsWantsToFire())
-	{
-		SetWantsToFire(true);
-	}
+	SetWantsToFire(false);
 
 	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
 	FVector LaunchDirection = FVector::ZeroVector;
@@ -68,14 +70,16 @@ void AZShotgun::Fire()
 	/* Shot spread logic부분. */
 	for (const auto& Dir : DirList)
 	{
-		float RandomShotRange = FMath::RandRange(-ShotRange, ShotRange);
+		float RandomShotRangeY = FMath::RandRange(-ShotRange, ShotRange);
+		float RandomShotRangeZ = FMath::RandRange(-ShotRange, ShotRange);
 
-		LaunchDirection = (EndPoint + Dir + RandomShotRange) - MuzzleLocation;
+		LaunchDirection = (EndPoint + Dir + FVector(0.f, RandomShotRangeY, RandomShotRangeZ)) - MuzzleLocation;
 
 		AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
 		if (nullptr == Projectile)
 		{
 			/* 산탄 생성 실패이므로 중단. */
+			ZLOG(Error, TEXT("Failed to spawn bullet.."));
 			bSuccess = false;
 			break;
 		}
@@ -101,11 +105,6 @@ void AZShotgun::Fire()
 		{
 			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
 		}
-	}
-
-	if (EFireMode::SingleShot == FireMode)
-	{
-		FireEnd();
 	}
 
 	Super::Fire();
