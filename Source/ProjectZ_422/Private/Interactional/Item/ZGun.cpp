@@ -27,9 +27,8 @@ AZGun::AZGun()
 	BulletSpeed = 10000.f;
 	BulletLifeSpan = 3.f;
 
-	MaxSpread = 0.2f;
-	SpreadIncrement = 0.2f;
-
+	CurrentSpread = 0.f;
+	BulletSpread= 0.2f;
 	SpreadDecrement = 0.005f;
 
 	FireMode = EFireMode::SingleShot;
@@ -74,10 +73,6 @@ void AZGun::Tick(float DeltaTime)
 
 		}
 
-	}
-
-	if (!IsWantsToFire())
-	{
 		if (CurrentSpread > 0.f)
 		{
 			CurrentSpread -= (SpreadDecrement);
@@ -86,6 +81,7 @@ void AZGun::Tick(float DeltaTime)
 				CurrentSpread = 0.f;
 			}
 		}
+
 	}
 
 }
@@ -110,6 +106,8 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 	UseAmmoName = NewGunData->UseAmmoName;
 	BulletSpeed = NewGunData->BulletSpeed;
 	GunType = GetGunTypeFromString(NewGunData->GunType);
+	BulletSpread = NewGunData->BulletSpread;
+	SpreadDecrement = NewGunData->SpreadDecrement;
 
 }
 
@@ -227,7 +225,7 @@ void AZGun::Fire()
 	bIsFiring = true;
 
 	/* Recoil */
-	CurrentSpread = FMath::Clamp<float>(CurrentSpread + SpreadIncrement, 0.f, MaxSpread);
+	CurrentSpread = BulletSpread;
 
 	float SpreadYaw = FMath::RandRange(-CurrentSpread, CurrentSpread);
 

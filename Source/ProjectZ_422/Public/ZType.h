@@ -154,6 +154,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float BulletSpeed;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float BulletSpread;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	float SpreadDecrement;
+
 };
 
 

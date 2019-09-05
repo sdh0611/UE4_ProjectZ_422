@@ -117,7 +117,8 @@ void AZBulletProjectile::TraceBullet()
 			auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(5.f, 5.f, 5.f), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 			if (DecalComponent)
 			{
-				DecalComponent->SetFadeScreenSize(0.005f);
+				DecalComponent->SetFadeScreenSize(5.f);
+				DecalComponent->SetLifeSpan(4.f);
 			}
 		}
 		Destroy();

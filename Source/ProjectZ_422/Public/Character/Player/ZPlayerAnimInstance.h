@@ -61,10 +61,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsEquipGun;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsAiming;
 
 private:
