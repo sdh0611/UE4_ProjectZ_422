@@ -4,6 +4,7 @@
 #include "ZGrenade.h"
 #include "ZGrenadeProjectile.h"
 #include "ZCharacter.h"
+#include "ZGameInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,7 +30,16 @@ void AZGrenade::InitItemData(const FZItemData * const NewItemData)
 {
 	Super::InitItemData(NewItemData);
 
-	auto NewGrenadeData = static_cast<const FZGrenadeData*>(NewItemData);
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(nullptr != MyGameInstance);
+
+	auto NewGrenadeData = MyGameInstance->GetGrenadeDataByName(NewItemData->ItemName);
+	if (nullptr == NewGrenadeData)
+	{
+		ZLOG(Error, TEXT("Invalid grenade data."));
+		return;
+	}
+
 	ExplosionRadius = NewGrenadeData->ExplosionRadius;
 	ExplosionDelay = NewGrenadeData->ExplosionDelay;
 

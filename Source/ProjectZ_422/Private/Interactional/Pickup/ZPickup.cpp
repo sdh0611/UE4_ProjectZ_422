@@ -64,31 +64,13 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 		if (NewItem)
 		{
 			ZLOG(Warning, TEXT("Spawn item success!"));
-			// Code for test
-			if (NewItem->GetItemType() == EItemType::Weapon)
-			{
-				auto NewWeapon = Cast<AZWeapon>(NewItem);
-				check(nullptr != NewWeapon);
-				ZLOG(Warning, TEXT("%s"), *Name);
-				
-				auto MyGameInstance = GetGameInstance<UZGameInstance>();
-				check(nullptr != MyGameInstance);
 
-				switch (NewWeapon->GetWeaponCategory())
-				{
-					case EWeaponCategory::Gun:
-					{
-						NewWeapon->InitItemData(MyGameInstance->GetGunDataByName(Name));
-						break;
-					}
-					case EWeaponCategory::Grenade:
-					{
-						NewWeapon->InitItemData(MyGameInstance->GetGrenadeDataByName(Name));
-						break;
-					}
-				}
+			auto MyGameInstance = GetGameInstance<UZGameInstance>();
+			check(nullptr != MyGameInstance);
 
-			}
+			NewItem->InitItemData(MyGameInstance->GetItemDataByName(Name));
+
+
 			// Add item in character's item status component.
 			NewCharacter->GetItemStatusComponent()->AddItem(NewItem, this);
 		}

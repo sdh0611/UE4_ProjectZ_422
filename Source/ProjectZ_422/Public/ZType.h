@@ -97,16 +97,19 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZWeaponData : public FZItemData
+struct FZWeaponData : public FTableRowBase
 {
 
 	GENERATED_BODY()
 
 public:
 	FZWeaponData()
-		: FZItemData(), Damage(0.f), WeaponCategory(TEXT("Invalid"))
+		: Damage(0.f), WeaponCategory(TEXT("Invalid"))
 	{
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float Damage;
@@ -121,17 +124,20 @@ public:
 		WeaponData를 WeaponCategory에 맞게 세분화시킴.
 */
 USTRUCT(BlueprintType)
-struct FZGunData : public FZWeaponData
+struct FZGunData : public FTableRowBase
 {
 
 	GENERATED_BODY()
 
 public:
 	FZGunData()
-		: FZWeaponData(), FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT("")), 
+		: FireDelay(1.f), MaxAmmo(30), UseAmmoName(TEXT("")), 
 		GunType(TEXT("Default")), BulletSpeed(10000.f)
 	{
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float FireDelay;
@@ -152,16 +158,19 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZGrenadeData : public FZWeaponData
+struct FZGrenadeData : public FTableRowBase
 {
 
 	GENERATED_BODY()
 
 public:
 	FZGrenadeData()
-		: FZWeaponData(), ExplosionDelay(1.f), ExplosionRadius(0.f)
+		: ExplosionDelay(1.f), ExplosionRadius(0.f)
 	{
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float ExplosionDelay;
@@ -174,16 +183,19 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZRecoveryData : public FZItemData
+struct FZRecoveryData : public FTableRowBase
 {
 	GENERATED_BODY()
 
 public:
 	FZRecoveryData()
-		: FZItemData(), RecoveryAmount(0.f), RecoveryDelay(1.f)
+		: RecoveryAmount(0.f), RecoveryDelay(1.f)
 	{
 	}
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float RecoveryAmount;
 
@@ -193,15 +205,18 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct FZDopingData : public FZItemData
+struct FZDopingData : public FTableRowBase
 {
 	GENERATED_BODY()
 
 public:
 	FZDopingData()
-		: FZItemData(), DopingAmount(0.f), DopingTime(1.f)
+		: DopingAmount(0.f), DopingTime(1.f)
 	{
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	float DopingAmount;
@@ -225,8 +240,7 @@ public:
 	{
 
 	}
-
-	
+		
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 

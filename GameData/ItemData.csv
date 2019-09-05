@@ -1,3 +1,11 @@
 ,ItemName,ItemWeight,MaxQuantity
-1,Bandage,3,
-2,FirstkitAid,20,
+1,Bandage,3,100
+2,FirstkitAid,20,10
+3,M4A1,0,1
+4,AK-47,0,1
+5,Shotgun,0,1
+6,Grenade,2,20
+7,Doping,1,30
+8,5.56mm,1,300
+9,7.62mm,1,300
+10,12Gauge,1,40

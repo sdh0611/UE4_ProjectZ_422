@@ -35,7 +35,7 @@ public:
 	/*
 		전체 ItemData 검색
 	*/
-	const FZItemData* const GetItemDataByName(const FString& Name, EItemType ItemType);
+	const FZItemData* const GetItemDataByName(const FString& ItemName);
 
 	/*
 		WeaponTable 관련
@@ -87,6 +87,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = MeshDataTable)
 	class UDataTable* SkeletalMeshDataTable;
+
+	UPROPERTY(EditAnywhere, Category = WeaponDataTable)
+	class UDataTable* ItemDataTable;
 
 	UPROPERTY(EditAnywhere, Category = WeaponDataTable)
 	class UDataTable* WeaponDataTable;

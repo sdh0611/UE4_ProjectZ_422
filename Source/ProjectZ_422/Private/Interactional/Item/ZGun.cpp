@@ -6,6 +6,7 @@
 #include "ZCharacterItemStatusComponent.h"
 #include "ZPlayerController.h"
 #include "ZBulletProjectile.h"
+#include "ZGameInstance.h"
 #include "Engine/World.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "ConstructorHelpers.h"
@@ -93,7 +94,15 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 {
 	Super::InitItemData(NewItemData);
 
-	auto NewGunData = static_cast<const FZGunData*>(NewItemData);
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(nullptr != MyGameInstance);
+
+	auto NewGunData = MyGameInstance->GetGunDataByName(NewItemData->ItemName);
+	if (nullptr == NewGunData)
+	{
+		ZLOG(Error, TEXT("Invalid gun data."));
+		return;
+	}
 
 	FireDelay = NewGunData->FireDelay;
 	MaxAmmo = NewGunData->MaxAmmo;

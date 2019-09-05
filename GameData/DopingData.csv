@@ -1,2 +1,2 @@
-,DopingAmount,DopingTime,ItemName,ItemWeight,MaxQuantity
-1,30,10,Doping,3,
+,ItemName,DopingAmount,DopingTime
+1,Doping,30,10

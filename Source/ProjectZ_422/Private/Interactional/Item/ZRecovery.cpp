@@ -4,6 +4,7 @@
 #include "ZRecovery.h"
 #include "ZCharacter.h"
 #include "ZCharacterStatusComponent.h"
+#include "ZGameInstance.h"
 
 AZRecovery::AZRecovery()
 {
@@ -21,7 +22,15 @@ void AZRecovery::InitItemData(const FZItemData * NewItemData)
 {
 	Super::InitItemData(NewItemData);
 
-	auto NewRecoveryData = static_cast<const FZRecoveryData*>(NewItemData);
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(nullptr != MyGameInstance);
+
+	auto NewRecoveryData = MyGameInstance->GetRecoveryDataByName(NewItemData->ItemName);
+	if (nullptr == NewRecoveryData)
+	{
+		ZLOG(Error, TEXT("Invalid recovery data."));
+		return;
+	}
 
 	RecoveryAmount = NewRecoveryData->RecoveryAmount;
 	RecoveryDelay = NewRecoveryData->RecoveryDelay;

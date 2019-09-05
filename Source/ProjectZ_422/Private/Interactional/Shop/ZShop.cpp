@@ -123,13 +123,15 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 	auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
 	check(nullptr != ZGameInstance);
 
-	const FZItemData* ItemData = nullptr;;
+	const FZItemData* ItemData = ZGameInstance->GetItemDataByName(BuyItemData->ItemName);
 
 	switch (GetItemTypeFromString(BuyItemData->ItemType))
 	{
 		case EItemType::Weapon:
 		{
 			auto WeaponData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
+			check(nullptr != WeaponData);
+
 			switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
 			{
 				case EWeaponCategory::Gun:
@@ -151,8 +153,6 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 						}
 					}
 
-					ItemData = GunData;
-
 					break;
 				}
 				case EWeaponCategory::Knife:
@@ -163,13 +163,11 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 				case EWeaponCategory::Grenade:
 				{
 					ZLOG(Error, TEXT("Buy Grenade."));
-					ItemData = ZGameInstance->GetGrenadeDataByName(BuyItemData->ItemName);
 					SpawnItemClass = GrenadeClass;
 					break;
 				}
 				default:
 				{
-					
 					ZLOG(Error, TEXT("Invalid type."));
 					return;
 				}
@@ -179,19 +177,16 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 		}
 		case EItemType::Recovery:
 		{
-			ItemData = ZGameInstance->GetRecoveryDataByName(BuyItemData->ItemName);
 			SpawnItemClass = RecoveryClass;
 			break;
 		}
 		case EItemType::Doping:
 		{
-			ItemData = ZGameInstance->GetDopingDataByName(BuyItemData->ItemName);
 			SpawnItemClass = DopingClass;
 			break;
 		}
 		case EItemType::Ammo:
 		{
-			ItemData = ZGameInstance->GetAmmoDataByName(BuyItemData->ItemName);
 			SpawnItemClass = AmmoClass;
 			break;
 		}

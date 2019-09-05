@@ -73,10 +73,18 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 {
 	Super::InitItemData(NewItemData);
 
-	auto NewWeaponData = static_cast<const FZWeaponData*>(NewItemData);
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(nullptr != MyGameInstance);
+
+	auto NewWeaponData = MyGameInstance->GetWeaponDataByName(NewItemData->ItemName);
+	if (nullptr == NewWeaponData)
+	{
+		ZLOG(Error, TEXT("Invalid weapon data."));
+		return;
+	}
 
 	Damage = NewWeaponData->Damage;
-	auto SKMesh = GetGameInstance<UZGameInstance>()->GetSkeletalMesh(ItemName);
+	auto SKMesh = MyGameInstance->GetSkeletalMesh(ItemName);
 	check(nullptr != SKMesh);
 	WeaponMesh->SetSkeletalMesh(SKMesh);
 

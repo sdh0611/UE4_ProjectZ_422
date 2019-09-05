@@ -179,7 +179,7 @@ void AZItem::OnDropped(int32 Quantity)
 		/* 초기화에 사용할 ItemData 검색. */
 		auto MyGameInstance = GetGameInstance<UZGameInstance>();
 		check(nullptr != MyGameInstance);
-		const FZItemData* ItemData = MyGameInstance->GetItemDataByName(GetItemName(), GetItemType());
+		const FZItemData* ItemData = MyGameInstance->GetItemDataByName(GetItemName());
 		if (nullptr == ItemData)
 		{
 			ZLOG(Error, TEXT("Failed to find item data.."));
