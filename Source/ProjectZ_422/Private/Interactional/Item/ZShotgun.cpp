@@ -51,30 +51,29 @@ void AZShotgun::Fire()
 	FVector LaunchDirection = FVector::ZeroVector;
 	FVector EndPoint = FVector::ZeroVector;
 
-	FHitResult Hit = WeaponTrace(100000.f);
-	if (Hit.bBlockingHit)
-	{
-		EndPoint = Hit.ImpactPoint;
-		LaunchDirection = Hit.ImpactPoint - MuzzleLocation;
-	}
-	else
-	{
-		EndPoint = Hit.TraceEnd;
-	}
-
+	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
+	EndPoint = (Hit.bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd);
+	//EndPoint = Hit.TraceEnd;
+	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = ItemOwner;
-
+	
 	/* 모든 산탄이 정상적으로 생성되었는지 체크함. */
 	bool bSuccess = true;
 
 	/* Shot spread logic부분. */
+	float RandomShotRangeY = 0.f;
+	float RandomShotRangeZ = 0.f;
+
+	/* 거리에 비례해서 펴져야하기 떄문에 HitDistance에 임의 상수를 곱해서 ShotRange에 더해줌. */
+	float NewShotRange = ShotRange + Hit.Distance * 0.02f;
+
 	for (const auto& Dir : DirList)
 	{
-		float RandomShotRangeY = FMath::RandRange(-ShotRange, ShotRange);
-		float RandomShotRangeZ = FMath::RandRange(-ShotRange, ShotRange);
-
+		RandomShotRangeY = FMath::RandRange(-NewShotRange, NewShotRange);
+		RandomShotRangeZ = FMath::RandRange(-NewShotRange, NewShotRange);
+		
 		LaunchDirection = (EndPoint + Dir + FVector(0.f, RandomShotRangeY, RandomShotRangeZ)) - MuzzleLocation;
 
 		AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);

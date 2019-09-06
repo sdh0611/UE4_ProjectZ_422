@@ -7,8 +7,8 @@
 #include "ZCharacterAnimInstance.h"
 #include "ZPlayerAnimInstance.generated.h"
 
-DECLARE_DELEGATE(FOnGrenadeThrow);
-DECLARE_DELEGATE(FOnKnifeAttack);
+//DECLARE_DELEGATE(FOnGrenadeThrow);
+//DECLARE_DELEGATE(FOnKnifeAttack);
 
 /**
  * 
@@ -25,7 +25,6 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	void BindFireMontage(class AZWeapon* NewWeapon);
 	void PlayHitMontage();
 
 public:
@@ -37,10 +36,6 @@ public:
 	bool IsAiming() const;
 
 private:
-	void PlayFireGunMontage();
-	void PlayThrowGrenadeMontage();
-	void PlayAttackKnifeMontage();
-
 	UFUNCTION()
 	void AnimNotify_ReloadCheck();
 
@@ -54,9 +49,9 @@ private:
 	void AnimNotify_ThrowCheck();
 
 public:
-	FOnGrenadeThrow OnGrenadeThrow;
+	//FOnGrenadeThrow OnGrenadeThrow;
 
-	FOnKnifeAttack OnKnifeAttack;
+	//FOnKnifeAttack OnKnifeAttack;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;

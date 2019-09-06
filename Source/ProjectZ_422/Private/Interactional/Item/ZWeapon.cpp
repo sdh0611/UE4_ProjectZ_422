@@ -30,6 +30,9 @@ AZWeapon::AZWeapon()
 	bIsEquipped = false;
 
 	Damage = 1.f;
+	TraceDistance = 100000.f;
+
+	bToggleDebug = false;
 
 	WeaponCategory = EWeaponCategory::Invalid;
 
@@ -144,7 +147,7 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 	}
 
 	FVector StartLoc = CamLoc;
-	FVector EndLoc = StartLoc + 10000.f * CamRot.Vector();
+	FVector EndLoc = StartLoc + Distance * CamRot.Vector();
 
 	FCollisionQueryParams TraceParams(TEXT("WeaponTrace"), true, this);
 	TraceParams.bReturnPhysicalMaterial = false;

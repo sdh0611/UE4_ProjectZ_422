@@ -45,7 +45,7 @@ void AZAR::Fire()
 
 	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
 	FVector LaunchDirection = FVector::ZeroVector;
-	FHitResult Hit = WeaponTrace(100000.f);
+	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
 	if (Hit.bBlockingHit)
 	{
 		LaunchDirection = Hit.ImpactPoint - MuzzleLocation;

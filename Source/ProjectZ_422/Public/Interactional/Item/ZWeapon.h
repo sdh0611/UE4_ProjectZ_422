@@ -114,12 +114,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float Damage;
 
+	UPROPERTY(EditAnywhere, Category = Weapon)
+	float TraceDistance;
+
 	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	EWeaponCategory WeaponCategory;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	class USoundBase* FireSound;
 
-
+	UPROPERTY(EditAnywhere)
+	bool bToggleDebug;
 
 };
