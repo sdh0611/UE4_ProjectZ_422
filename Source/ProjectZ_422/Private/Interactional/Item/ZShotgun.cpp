@@ -62,7 +62,9 @@ void AZShotgun::Fire()
 	/* 모든 산탄이 정상적으로 생성되었는지 체크함. */
 	bool bSuccess = true;
 
-	/* Shot spread logic부분. */
+	/* 
+		Shot spread logic부분. 
+	*/
 	float RandomShotRangeY = 0.f;
 	float RandomShotRangeZ = 0.f;
 
