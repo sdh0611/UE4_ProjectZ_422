@@ -27,6 +27,8 @@ AZTanker::AZTanker()
 
 	ImpulseSphere = CreateDefaultSubobject<USphereComponent>(TEXT("ImpulseSphere"));
 	ImpulseSphere->SetupAttachment(GetCapsuleComponent());
+
+	StatusComponent->SetMaxHP(1000.f);
 }
 
 void AZTanker::BeginPlay()

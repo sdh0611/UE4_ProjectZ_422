@@ -6,6 +6,10 @@
 #include "GameFramework/GameStateBase.h"
 #include "ZGameState.generated.h"
 
+/*
+	NOTE:
+		게임의 상태를 받아와서 기록만 하는 역할.
+*/
 
 /**
  * 
@@ -22,11 +26,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	void IncreaseCurrentWave();
-
 	/*
 		현재 Zombie 개체수 조정.
-		기본은 덧셈
+		기본 동작은 덧셈
 	*/
 	void AdjustCurrentNumZombies(int32 NewValue);
 	void UpdateRemainTime(float NewRemainTime);
@@ -35,6 +37,7 @@ public:
 public:
 	/* Setter */
 	void SetTotalWave(int32 NewTotalWave);
+	void SetCurrentWave(int32 NewCurrentWave);
 
 	/* Getter */
 	int32 GetTotalWave() const;

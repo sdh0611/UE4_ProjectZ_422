@@ -22,6 +22,7 @@ enum class EGamePhase: uint8
 	HalfTime,
 	WaveTime,
 	Boss,
+	End,
 	Win,
 	Lose
 };
@@ -51,6 +52,7 @@ public:
 
 protected:
 	/* Getter */
+	bool IsGameEnd();
 	bool IsGameClear();
 	bool IsWaveEnd();
 	float GetCurrentRemainTime() const;
@@ -64,7 +66,7 @@ protected:
 	EGameModeState GameModeState;
 
 	/* 전체 Wave */
-	UPROPERTY(EditAnywhere, Category = GameState)
+	UPROPERTY(EditAnywhere, Category = GameMode)
 	int32 TotalWave;
 
 	/* 현재 Wave */

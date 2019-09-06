@@ -22,21 +22,6 @@ void AZGameState::Tick(float DeltaTime)
 
 }
 
-void AZGameState::IncreaseCurrentWave()
-{
-	++CurrentWave;
-
-	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
-	{
-		auto PC = Cast<AZPlayerController>(Controller->Get());
-		if (PC)
-		{
-			PC->GetZHUD()->GetUserHUD()->UpdateCurrentWave(CurrentWave);
-		}
-	}
-
-}
-
 void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
 {
 	CurrentNumZombies += NewValue;
@@ -59,11 +44,43 @@ void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
 
 void AZGameState::SetTotalWave(int32 NewTotalWave)
 {
+	if (NewTotalWave < 1)
+	{
+		ZLOG(Error, TEXT("Invalid value."));
+		return;
+	}
+
 	TotalWave = NewTotalWave;
+}
+
+void AZGameState::SetCurrentWave(int32 NewCurrentWave)
+{
+	if (NewCurrentWave < 1)
+	{
+		ZLOG(Error, TEXT("Invalid value."));
+		return;
+	}
+
+	CurrentWave = NewCurrentWave;
+
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC)
+		{
+			PC->GetZHUD()->GetUserHUD()->UpdateCurrentWave(CurrentWave);
+		}
+	}
 }
 
 void AZGameState::UpdateRemainTime(float NewRemainTime)
 {
+	if (NewRemainTime < 0.f)
+	{
+		ZLOG(Error, TEXT("Invalid value."));
+		return;
+	}
+
 	RemainTime = NewRemainTime;
 
 	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)

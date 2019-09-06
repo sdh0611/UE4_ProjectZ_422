@@ -12,6 +12,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+//#include "Perception/AIPerceptionComponent.h"
 
 
 

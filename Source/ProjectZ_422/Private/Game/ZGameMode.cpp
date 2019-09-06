@@ -15,7 +15,6 @@
 #include "ZPlayerState.h"
 #include "EngineUtils.h"
 
-
 AZGameMode::AZGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,6 +27,9 @@ AZGameMode::AZGameMode()
 
 	CurrentGamePhase = EGamePhase::Ready;
 	GameModeState = EGameModeState::ReadyToStart;
+
+	CurrentWave = 0;
+
 	HalfTime = 10.f;
 	WaveTime = 300.f;
 	CurrentRemainTime = 0.f;
@@ -41,7 +43,10 @@ void AZGameMode::BeginPlay()
 	/* 첫 시작시 준비시간 부여 */
 	CurrentGamePhase = EGamePhase::HalfTime;
 	CurrentRemainTime = HalfTime;
+
 	auto MyGameState = GetGameState<AZGameState>();
+	check(nullptr != MyGameState);
+	MyGameState->SetTotalWave(TotalWave);
 
 	/* Level내의 Spawner 저장 */
 	for (TActorIterator<AZEnemySpawner> Iterator(GetWorld()); Iterator; ++Iterator)
@@ -57,8 +62,10 @@ void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	UpdateGameTime(DeltaTime);
-
+	if (!IsGameEnd())
+	{
+		UpdateGameTime(DeltaTime);
+	}
 
 	//CurrentRemainTime -= DeltaTime;
 
@@ -124,26 +131,29 @@ void AZGameMode::UpdateGameTime(float DeltaTime)
 			case EGamePhase::HalfTime:
 			{
 				/* WaveTime Phase로 전환 */
+				ZLOG(Error, TEXT("Turn wave time."));
 				HandleGamePhase(EGamePhase::WaveTime);
 				break;
 			}
 			case EGamePhase::WaveTime:
 			{
 				/* Wave 체크 후 Wave 10 미만이면 HalfTime으로 전환, Wave 10이면 Boss로 전환 */
-				if (CurrentWave <= TotalWave)
+				if (CurrentWave < TotalWave)
 				{
+					ZLOG(Error, TEXT("Turn half time."));
 					HandleGamePhase(EGamePhase::HalfTime);
 				}
 				else
 				{
-					HandleGamePhase(EGamePhase::Boss);
+					ZLOG(Error, TEXT("Turn win."));
+					HandleGamePhase(EGamePhase::Win);
 				}
 				break;
 			}
 			case EGamePhase::Boss:
 			{
 				/* Clear여부 체크 */
-				
+
 
 				break;
 			}
@@ -164,68 +174,87 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
 {
 	switch (NewCurrentGameState)
 	{
-		case EGamePhase::HalfTime:
+	case EGamePhase::HalfTime:
+	{
+		/* Spawner 비활성화 */
+		for (const auto& Spawner : EnemySpawners)
 		{
-			/* Spawner 비활성화 */
+			Spawner->SetActive(false);
+		}
+
+		/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
+		CurrentRemainTime = HalfTime;
+		for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+		{
+			Shop->OpenShop();
+		}
+		break;
+	}
+	case EGamePhase::WaveTime:
+	{
+		/*
+			남은 시간을 WaveTime만큼으로 초기화하고, 상점 닫음
+			Spawner 활성화 및 Wave 증가
+		*/
+		CurrentRemainTime = WaveTime;
+		++CurrentWave;
+		auto ZGameState = Cast<AZGameState>(GameState);
+		if (nullptr != ZGameState)
+		{
+			/*	Wave정보 업데이트 */
+			ZGameState->SetCurrentWave(CurrentWave);
 			for (const auto& Spawner : EnemySpawners)
 			{
 				Spawner->SetActive(false);
 			}
 
-			/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
-			CurrentRemainTime = HalfTime;
-			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
-			{
-				Shop->OpenShop();
-			}
-			break;
 		}
-		case EGamePhase::WaveTime:
+
+		/* Spawner 활성화 */
+		for (const auto& Spawner : EnemySpawners)
 		{
-			/* 
-				남은 시간을 WaveTime만큼으로 초기화하고, 상점 닫음
-				Spawner 활성화 및 Wave 증가
-			*/
-			CurrentRemainTime = WaveTime;
-			auto ZGameState = Cast<AZGameState>(GameState);
-			if (nullptr != ZGameState)
-			{
-				/*	Wave정보 업데이트 */
-				ZGameState->IncreaseCurrentWave();
-				for (const auto& Spawner : EnemySpawners)
-				{
-					Spawner->SetActive(false);
-				}
-
-			}
-
-			/* Spawner 활성화 */
-			for (const auto& Spawner : EnemySpawners)
-			{
-				Spawner->SetActive(true);
-			}
-
-			/* 상점 닫음 */
-			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
-			{
-				Shop->CloseShop();
-			}
-
-			break;
+			Spawner->SetActive(true);
 		}
 
+		/* 상점 닫음 */
+		for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+		{
+			Shop->CloseShop();
+		}
+
+		break;
+	}
+	case EGamePhase::Win:
+	{
+		ZLOG(Error, TEXT("You Win!"));
+		for (const auto& Spawner : EnemySpawners)
+		{
+			Spawner->SetActive(false);
+		}
+		break;
+	}
 
 
 	}
 
-	CurrentGamePhase= NewCurrentGameState;
+	CurrentGamePhase = NewCurrentGameState;
 
 
 }
 
+bool AZGameMode::IsGameEnd()
+{
+	return (CurrentGamePhase == EGamePhase::Win || CurrentGamePhase == EGamePhase::Lose);
+}
+
 bool AZGameMode::IsGameClear()
 {
-	return CurrentWave > TotalWave;
+	if ((CurrentWave > TotalWave) && (GetGameState<AZGameState>()->GetCurrentNumZombies() < 1))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 bool AZGameMode::IsWaveEnd()

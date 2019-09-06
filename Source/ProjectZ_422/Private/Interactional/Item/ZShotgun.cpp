@@ -69,7 +69,7 @@ void AZShotgun::Fire()
 	float RandomShotRangeZ = 0.f;
 
 	/* 거리에 비례해서 펴져야하기 떄문에 HitDistance에 임의 상수를 곱해서 ShotRange에 더해줌. */
-	float NewShotRange = ShotRange + Hit.Distance * 0.02f;
+	float NewShotRange = ShotRange + Hit.Distance * 0.025f;
 
 	for (const auto& Dir : DirList)
 	{
