@@ -18,6 +18,10 @@ public:
 	AZPlayerController();
 
 public:
+	virtual void BeginPlay() override;
+
+
+public:
 	class AZHUD* const GetZHUD() const;
 	class UZCharacterItemStatusComponent* const GetCharacterItemStatusComponent() const;
 

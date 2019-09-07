@@ -40,6 +40,7 @@ public:
 
 public:
 	//virtual void StartPlay() override;
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
@@ -84,6 +85,10 @@ protected:
 	/* Game 진행시간. -> 초(Second) 단위 */
 	UPROPERTY(VisibleAnywhere, Category = GameMode)
 	float CurrentRemainTime;
+
+	/* 현재 레벨 이름 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = GameMode)
+	FName CurrentLevelName;
 
 	UPROPERTY()
 	TArray<class AZEnemySpawner*> EnemySpawners;

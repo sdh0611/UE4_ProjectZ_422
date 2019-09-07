@@ -394,6 +394,7 @@ void AZCharacter::OnDead()
 	if (PlayerController)
 	{
 		DisableInput(PlayerController);
+		PlayerController->GetZHUD()->GetUserHUD()->DrawDeadMenuWidget();
 	}
 	//PlayerController->SetCinematicMode(true, false, false, true, true);
 

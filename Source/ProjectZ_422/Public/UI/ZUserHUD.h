@@ -28,7 +28,7 @@ public:
 	/* Currnet Money Info 업데이트 관련 */
 	void UpdateCurrentMoneyInfo(int32 NewMoney);
 
-	/* 해당 메소드들은 GameState에서 델리게이트로 업데이트 시킬 것. */
+	/* 해당 메소드들은 GameState에서 업데이트 시킬 것. */
 	void UpdateRemainTime(float NewTime);
 	void UpdateCurrentWave(int32 NewCurrentWave);
 	void UpdateNumZombies(int32 NewValue);
@@ -39,11 +39,13 @@ public:
 	*/
 	void DrawInventoryWidget();
 	void DrawShopWidget();
+	void DrawDeadMenuWidget();
 	/*
 		화면에서 Widget을지우기 위한 메소드들
 	 */
 	void RemoveInventoryWidget();
 	void RemoveShopWidget();
+	void RemoveDeadMenuWidget();
 
 public:
 	/*
@@ -80,6 +82,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZInputNumberWidget* InputNumberWidget;
+
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
+	class UUserWidget* DeadMenuWidget;
 
 	UPROPERTY()
 	class UTextBlock* CurrentMoneyInfoText;

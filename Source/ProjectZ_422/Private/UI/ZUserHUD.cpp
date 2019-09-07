@@ -47,6 +47,11 @@ void UZUserHUD::NativeConstruct()
 	check(nullptr != NewInputNumberWidget);
 	InputNumberWidget = NewInputNumberWidget;
 
+	/* Dead menu widget */
+	auto NewDeadMenuWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("UI_Dead")));
+	check(nullptr != NewDeadMenuWidget);
+	DeadMenuWidget = NewDeadMenuWidget;
+	DeadMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 
 	/* Money text */
 	auto NewCurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
@@ -158,7 +163,7 @@ void UZUserHUD::DrawShopWidget()
 	auto PlayerController = GetOwningPlayer();
 
 	FInputModeGameAndUI InputMode;
-	InputMode.SetWidgetToFocus(InventoryWidget->GetCachedWidget());
+	InputMode.SetWidgetToFocus(ShopWidget->GetCachedWidget());
 
 	ShopWidget->SetUserFocus(PlayerController);
 
@@ -168,6 +173,24 @@ void UZUserHUD::DrawShopWidget()
 	PlayerController->bEnableMouseOverEvents = true;
 
 	bIsShopOnScreen = true;
+
+}
+
+void UZUserHUD::DrawDeadMenuWidget()
+{
+	DeadMenuWidget->SetVisibility(ESlateVisibility::Visible);
+
+	auto PlayerController = GetOwningPlayer();
+
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(DeadMenuWidget->GetCachedWidget());
+
+	ShopWidget->SetUserFocus(PlayerController);
+
+	PlayerController->SetInputMode(InputMode);
+	PlayerController->bShowMouseCursor = true;
+	PlayerController->bEnableClickEvents = true;
+	PlayerController->bEnableMouseOverEvents = true;
 
 }
 
@@ -197,6 +220,19 @@ void UZUserHUD::RemoveShopWidget()
 	PlayerController->bEnableMouseOverEvents = false;
 
 	bIsShopOnScreen = false;
+}
+
+void UZUserHUD::RemoveDeadMenuWidget()
+{
+	DeadMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+
+	auto PlayerController = GetOwningPlayer();
+
+	PlayerController->SetInputMode(FInputModeGameOnly());
+	PlayerController->bShowMouseCursor = false;
+	PlayerController->bEnableClickEvents = false;
+	PlayerController->bEnableMouseOverEvents = false;
+
 }
 
 bool UZUserHUD::IsInventoryOnScreen() const

@@ -13,5 +13,16 @@ UCLASS()
 class PROJECTZ_422_API AZMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void BeginPlay() override;
+	//virtual void SetupInputComponent() override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UUserWidget> MenuWidgetClass;
+
+	UPROPERTY()
+	class UUserWidget* MenuWidget;
+
 };

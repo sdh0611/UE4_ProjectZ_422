@@ -15,6 +15,15 @@ AZPlayerController::AZPlayerController()
 
 }
 
+void AZPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FInputModeGameOnly InputMode;
+	SetInputMode(InputMode);
+
+}
+
 AZHUD * const AZPlayerController::GetZHUD() const
 {
 	return Cast<AZHUD>(GetHUD());
