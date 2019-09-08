@@ -65,6 +65,8 @@ void UZInventoryItemWidget::BindItem(AZItem * NewItem)
 	FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
 	QuantityOfItem->SetText(FText::FromString(Quantity));
 
+	ItemImage->SetBrushFromTexture(Item->GetItemImage());
+
 	// Item 정보 갱신을 위한 델리게이트 바인딩.
 	NewItem->OnItemInfoChanged.AddUObject(this, &UZInventoryItemWidget::UpdateWidget);	
 	// Item 목록에서 삭제하기 위한 델리게이트 바인딩.

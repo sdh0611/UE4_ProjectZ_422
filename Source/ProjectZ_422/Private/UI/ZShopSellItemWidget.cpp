@@ -64,6 +64,8 @@ void UZShopSellItemWidget::BindItem(AZItem * NewItem)
 	Item->OnItemRemoved.AddUObject(this, &UZShopSellItemWidget::ClearWidget);
 	Item->OnItemInfoChanged.AddUObject(this, &UZShopSellItemWidget::UpdateWidget);
 
+	ItemImage->SetBrushFromTexture(Item->GetItemImage());
+
 	/*
 		Update item name
 	*/

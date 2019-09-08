@@ -28,9 +28,7 @@ public:
 	*/
 	class UStaticMesh* const GetStaticMesh(const FString& Name);
 	class USkeletalMesh* const GetSkeletalMesh(const FString& Name);
-
-	const FZStaticMeshData* const GetStaticMeshData(const FString& MeshName);
-	const FZSkeletalMeshData* const GetSkeletalMeshData(const FString& MeshName);
+	class UTexture2D* const GetItemImage(const FString& Name);
 
 	/*
 		전체 ItemData 검색
@@ -77,6 +75,7 @@ private:
 	/* 애셋 로딩 요청 */
 	void LoadStaticMesh();
 	void LoadSkeletalMesh();
+	void LoadImage();
 
 public:
 	FStreamableManager AssetLoader;
@@ -87,6 +86,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = MeshDataTable)
 	class UDataTable* SkeletalMeshDataTable;
+
+	UPROPERTY(EditAnywhere, Category = ImageDataTable)
+	class UDataTable* ItemImageDataTable;
 
 	UPROPERTY(EditAnywhere, Category = WeaponDataTable)
 	class UDataTable* ItemDataTable;
@@ -119,6 +121,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = MeshTable)
 	TMap<FString, class USkeletalMesh*> SkeletalMeshTable;
 
+	UPROPERTY(VisibleAnywhere, Category = ImageTable)
+	TMap<FString, class UTexture2D*> ItemImageTable;
 
 
 };

@@ -246,6 +246,11 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 	ItemName = NewItemData->ItemName;
 	ItemWeight = NewItemData->ItemWeight;
 	MaxQuantityOfItem = NewItemData->MaxQuantity;
+
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(MyGameInstance);
+	ItemImage = MyGameInstance->GetItemImage(ItemName);
+
 }
 
 
@@ -385,6 +390,11 @@ int32 AZItem::GetItemWeight() const
 int32 AZItem::GetInventoryIndex() const
 {
 	return InventoryIndex;
+}
+
+UTexture2D * const AZItem::GetItemImage() const
+{
+	return ItemImage;
 }
 
 AZCharacter * const AZItem::GetItemOwner() const

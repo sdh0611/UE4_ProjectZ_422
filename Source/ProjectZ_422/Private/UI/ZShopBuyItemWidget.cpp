@@ -6,6 +6,7 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZInputNumberWidget.h"
+#include "ZGameInstance.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -49,6 +50,16 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 	ShopItemData = NewShopItemData;
 	//ZLOG(Error, TEXT("Item : %s"), *(ShopItemData->ItemName));
 
+	if (nullptr == ItemImage)
+	{
+		ZLOG(Error, TEXT("ItemImage invalid."));
+	}
+	else
+	{
+		ItemImage->SetBrushFromTexture(GetGameInstance<UZGameInstance>()->GetItemImage(ShopItemData->ItemName));
+	}
+
+
 	if (nullptr == ItemName)
 	{
 		ZLOG(Error, TEXT("ItemNameText invalid."));
@@ -66,6 +77,7 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 	{
 		ItemPrice->SetText(FText::FromString(FString::FromInt(ShopItemData->ItemPrice).Append("$")));
 	}
+
 
 }
 

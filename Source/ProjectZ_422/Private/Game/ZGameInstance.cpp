@@ -16,6 +16,7 @@ void UZGameInstance::Init()
 
 	LoadStaticMesh();
 	LoadSkeletalMesh();
+	LoadImage();
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
@@ -38,35 +39,16 @@ USkeletalMesh * const UZGameInstance::GetSkeletalMesh(const FString & Name)
 	return nullptr;
 }
 
-const FZStaticMeshData * const UZGameInstance::GetStaticMeshData(const FString & MeshName)
+UTexture2D * const UZGameInstance::GetItemImage(const FString & Name)
 {
-	auto Names = StaticMeshDataTable->GetRowNames();
-	for (const auto& Name : Names)
+	if (ItemImageTable.Contains(Name))
 	{
-		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
-		if (Data->Name == MeshName)
-		{
-			return Data;
-		}
+		return ItemImageTable[Name];
 	}
 
 	return nullptr;
 }
 
-const FZSkeletalMeshData * const UZGameInstance::GetSkeletalMeshData(const FString & MeshName)
-{
-	auto Names = SkeletalMeshDataTable->GetRowNames();
-	for (const auto& Name : Names)
-	{
-		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
-		if (Data->Name == MeshName)
-		{
-			return Data;
-		}
-	}
-
-	return nullptr;
-}
 
 const FZItemData * const UZGameInstance::GetItemDataByName(const FString & ItemName)
 {
@@ -271,5 +253,32 @@ void UZGameInstance::LoadSkeletalMesh()
 			SkeletalMeshTable.Add(Data->Name, SkeletalMesh.Get());
 		}
 	}
+
+}
+
+void UZGameInstance::LoadImage()
+{
+	if (nullptr == ItemImageDataTable)
+	{
+		ZLOG(Error, TEXT("ItemImageTable not exist.."));
+		return;
+	}
+
+	TArray<FName> Names = ItemImageDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto Data = ItemImageDataTable->FindRow<FZImageData>(Name, TEXT(""));
+
+		FSoftObjectPath ObjectPath(Data->ImagePath);
+		AssetLoader.RequestSyncLoad(ObjectPath);
+
+		TSoftObjectPtr<UTexture2D> Image(Data->ImagePath);
+		if (Image.IsValid())
+		{
+			ItemImageTable.Add(Data->Name, Image.Get());
+		}
+
+	}
+
 
 }

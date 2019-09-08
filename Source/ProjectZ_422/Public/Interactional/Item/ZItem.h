@@ -111,7 +111,7 @@ public:
 
 public:
 	/*
-		Item 개수를 조정하기 위한 메소드.
+		Item 개수를 조정하기 위한 메소드. 기본 동작은 덧셈.
 		@return : 은 해당 Item의 최대 보유 갯수를 초과한 만큼의 값.
 	*/
 	int32 AdjustQuantity(int32 Value);
@@ -134,6 +134,7 @@ public:
 	int32 GetCurrentQuantityOfItem() const;
 	int32 GetItemWeight() const;
 	int32 GetInventoryIndex() const;
+	class UTexture2D* const GetItemImage() const;
 	class AZCharacter* const GetItemOwner() const;
 	bool IsItemQuantityMaximum() const;
 	EItemType GetItemType() const;
@@ -177,6 +178,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	int32 InventoryIndex;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	class UTexture2D* ItemImage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	class AZCharacter* ItemOwner;

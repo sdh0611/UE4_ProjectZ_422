@@ -69,6 +69,29 @@ public:
 
 };
 
+
+USTRUCT(BlueprintType)
+struct FZImageData : public FTableRowBase
+{
+
+	GENERATED_BODY()
+
+public:
+	FZImageData()
+		:Name(TEXT("")), ImagePath(TEXT(""))
+	{
+
+	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
+	FString Name;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
+	FString ImagePath;
+
+};
+
+
 /*
 	ItemData
 */
@@ -261,8 +284,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	bool bIsDealOnlyOne;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	FString ItemImagePath;
 
 };

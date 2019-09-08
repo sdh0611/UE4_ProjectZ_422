@@ -1,0 +1,11 @@
+,Name,ImagePath
+1,M4A1,Texture2D'/Game/GameData/ItemImage/Weapon/T_M4A1_512x256.T_M4A1_512x256'
+2,AK-47,Texture2D'/Game/GameData/ItemImage/Weapon/T_AK-47_512x256.T_AK-47_512x256'
+3,Shotgun,Texture2D'/Game/GameData/ItemImage/Weapon/T_Shotgun_512x256.T_Shotgun_512x256'
+4,Grenade,Texture2D'/Game/GameData/ItemImage/Weapon/T_Grenade_512x256.T_Grenade_512x256'
+5,Bandage,Texture2D'/Game/GameData/ItemImage/Recovery/T_Bandage_128x128.T_Bandage_128x128'
+6,FirstkitAid,Texture2D'/Game/GameData/ItemImage/Recovery/T_FirstAidKit_128x128.T_FirstAidKit_128x128'
+7,Doping,Texture2D'/Game/GameData/ItemImage/Doping/T_Doping_128x128.T_Doping_128x128'
+8,5.56mm,Texture2D'/Game/GameData/ItemImage/Ammo/T_556_128x128PNG.T_556_128x128PNG'
+9,7.62mm,Texture2D'/Game/GameData/ItemImage/Ammo/T_762_128x128.T_762_128x128'
+10,12Gauge,Texture2D'/Game/GameData/ItemImage/Ammo/T_12Gauge_128x128.T_12Gauge_128x128'
