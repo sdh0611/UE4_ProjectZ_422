@@ -4,6 +4,7 @@
 #include "ZShopBuyWidget.h"
 #include "ZShopBuyItemWidget.h"
 #include "ZItem.h"
+#include "ZTooltipWidget.h"
 #include "Components/ScrollBox.h"
 
 
@@ -29,6 +30,10 @@ void UZShopBuyWidget::NativeConstruct()
 	auto NewAmmoHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("AmmoHolder")));
 	check(nullptr != NewAmmoHolder);
 	AmmoHolder = NewAmmoHolder;
+
+	auto NewToolTipWidget = Cast<UZTooltipWidget>(GetWidgetFromName(TEXT("UI_ToolTip")));
+	check(NewToolTipWidget);
+	ShopToolTipWidget = NewToolTipWidget;
 
 }
 
@@ -84,4 +89,9 @@ void UZShopBuyWidget::ClearWidget()
 	RecoveryHolder->ClearChildren();
 	DopingHolder->ClearChildren();
 	AmmoHolder->ClearChildren();
+}
+
+UZTooltipWidget * const UZShopBuyWidget::GetToolTipWidget() const
+{
+	return ShopToolTipWidget;
 }

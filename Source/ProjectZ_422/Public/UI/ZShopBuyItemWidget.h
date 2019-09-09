@@ -19,11 +19,13 @@ class PROJECTZ_422_API UZShopBuyItemWidget : public UUserWidget, public IZNumber
 	
 public:
 	virtual void NativeConstruct() override;
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
 	
 	virtual void OnReceiveNumberInput(int32 NewNumber) override;
 
 public:
-	void SetParentShopWidget(class UUserWidget* NewParent);
+	void SetParentShopWidget(class UZShopBuyWidget* NewParent);
 	void BindShopItemData(struct FZShopItemData* NewShopItemData);
 
 private:
@@ -50,6 +52,6 @@ protected:
 	class UButton* BuyButton;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyItemWidget)
-	TWeakObjectPtr<class UUserWidget> ParentShopWidget;
+	TWeakObjectPtr<class UZShopBuyWidget> ParentShopWidget;
 
 };

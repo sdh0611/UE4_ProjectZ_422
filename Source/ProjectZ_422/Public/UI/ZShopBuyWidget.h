@@ -24,6 +24,9 @@ public:
 	void ClearWidget();
 
 public:
+	class UZTooltipWidget* const GetToolTipWidget() const;
+
+public:
 	/*
 		해당 Property는 이거 하나때문에 생성자 만들기 귀찮아서 그냥 에디터에서 할당해주기로함..
 	*/
@@ -42,5 +45,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyWidget)
 	class UScrollBox* AmmoHolder;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyWidget)
+	class UZTooltipWidget* ShopToolTipWidget;
 
 };

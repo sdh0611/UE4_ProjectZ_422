@@ -7,6 +7,8 @@
 #include "ZUserHUD.h"
 #include "ZInputNumberWidget.h"
 #include "ZGameInstance.h"
+#include "ZShopBuyWidget.h"
+#include "ZTooltipWidget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -34,12 +36,34 @@ void UZShopBuyItemWidget::NativeConstruct()
 
 }
 
+void UZShopBuyItemWidget::NativeOnMouseEnter(const FGeometry & InGeometry, const FPointerEvent & InMouseEvent)
+{
+	Super::NativeOnMouseEnter(InGeometry, InMouseEvent);
+
+	if (ParentShopWidget.IsValid())
+	{
+		ParentShopWidget.Get()->GetToolTipWidget()->BindItemInfo(ShopItemData->ItemName);
+	}
+
+}
+
+void UZShopBuyItemWidget::NativeOnMouseLeave(const FPointerEvent & InMouseEvent)
+{
+	Super::NativeOnMouseLeave(InMouseEvent);
+
+	//if (ParentShopWidget.IsValid())
+	//{
+	//	ParentShopWidget.Get()->GetToolTipWidget()->ClearWidget();
+	//}
+
+}
+
 void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
 	OnBuyShopItem.Execute(ShopItemData, NewNumber);
 }
 
-void UZShopBuyItemWidget::SetParentShopWidget(UUserWidget * NewParent)
+void UZShopBuyItemWidget::SetParentShopWidget(UZShopBuyWidget * NewParent)
 {
 	ParentShopWidget = NewParent;
 }
