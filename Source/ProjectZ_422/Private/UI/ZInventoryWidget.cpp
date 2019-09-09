@@ -38,6 +38,7 @@ void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 	auto Widget = CreateWidget<UZInventoryItemWidget>(GetOwningPlayer(), InventoryItemWidgetClass);
 	if (Widget)
 	{
+		Widget->SetPadding(5.f);
 		ItemHolder->AddChild(Widget);
 		Widget->BindItem(NewItem);
 	}

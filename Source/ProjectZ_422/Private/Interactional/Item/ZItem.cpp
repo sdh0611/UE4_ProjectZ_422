@@ -246,6 +246,7 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 	ItemName = NewItemData->ItemName;
 	ItemWeight = NewItemData->ItemWeight;
 	MaxQuantityOfItem = NewItemData->MaxQuantity;
+	ItemExplanation = FText::FromString(NewItemData->ItemExplanation);
 
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	check(MyGameInstance);
@@ -395,6 +396,11 @@ int32 AZItem::GetInventoryIndex() const
 UTexture2D * const AZItem::GetItemImage() const
 {
 	return ItemImage;
+}
+
+const FText & AZItem::GetItemExplanation() const
+{
+	return ItemExplanation;
 }
 
 AZCharacter * const AZItem::GetItemOwner() const

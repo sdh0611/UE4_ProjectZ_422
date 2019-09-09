@@ -101,26 +101,26 @@ public:
 	/*
 		현재 Player가 들고 있는 무기인지의 여부
 	*/
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon)
 	bool bIsEquipped;
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	class USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	int32 WeaponInventoryIndex;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	float Damage;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	float TraceDistance;
 
 	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	EWeaponCategory WeaponCategory;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	class USoundBase* FireSound;
 
 	UPROPERTY(EditAnywhere)

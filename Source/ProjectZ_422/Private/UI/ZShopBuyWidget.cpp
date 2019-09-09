@@ -42,6 +42,8 @@ UZShopBuyItemWidget* UZShopBuyWidget::AddItem(FZShopItemData* NewItemData)
 		return nullptr;
 	}
 
+	BuyItemWidget->SetPadding(5.f);
+
 	switch (GetItemTypeFromString(NewItemData->ItemType))
 	{
 		case EItemType::Weapon:
@@ -70,6 +72,7 @@ UZShopBuyItemWidget* UZShopBuyWidget::AddItem(FZShopItemData* NewItemData)
 		}
 	}
 	
+	BuyItemWidget->SetParentShopWidget(this);
 	BuyItemWidget->BindShopItemData(NewItemData);
 
 	return BuyItemWidget;

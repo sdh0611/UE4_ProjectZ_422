@@ -42,6 +42,8 @@ UZShopSellItemWidget* UZShopSellWidget::AddItem(AZItem* NewItem)
 		return nullptr;
 	}
 
+	SellItemWidget->SetPadding(5.f);
+
 	switch (NewItem->GetItemType())
 	{
 		case EItemType::Weapon:

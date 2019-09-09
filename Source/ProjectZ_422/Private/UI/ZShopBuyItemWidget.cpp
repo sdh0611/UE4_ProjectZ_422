@@ -39,6 +39,11 @@ void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 	OnBuyShopItem.Execute(ShopItemData, NewNumber);
 }
 
+void UZShopBuyItemWidget::SetParentShopWidget(UUserWidget * NewParent)
+{
+	ParentShopWidget = NewParent;
+}
+
 void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 {
 	if (nullptr == NewShopItemData)
@@ -80,6 +85,7 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 
 
 }
+
 
 void UZShopBuyItemWidget::OnBuyButtonClick()
 {

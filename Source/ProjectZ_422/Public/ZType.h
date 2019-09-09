@@ -116,6 +116,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	int32 MaxQuantity;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	FString ItemExplanation;
+
 };
 
 
@@ -275,9 +279,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	int32 ItemPrice;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	FString ItemExplanation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString ItemType;

@@ -23,6 +23,7 @@ public:
 	virtual void OnReceiveNumberInput(int32 NewNumber) override;
 
 public:
+	void SetParentShopWidget(class UUserWidget* NewParent);
 	void BindShopItemData(struct FZShopItemData* NewShopItemData);
 
 private:
@@ -47,5 +48,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyItemWidget)
 	class UButton* BuyButton;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyItemWidget)
+	TWeakObjectPtr<class UUserWidget> ParentShopWidget;
 
 };

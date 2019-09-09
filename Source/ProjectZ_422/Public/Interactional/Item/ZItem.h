@@ -135,6 +135,7 @@ public:
 	int32 GetItemWeight() const;
 	int32 GetInventoryIndex() const;
 	class UTexture2D* const GetItemImage() const;
+	const FText& GetItemExplanation() const;
 	class AZCharacter* const GetItemOwner() const;
 	bool IsItemQuantityMaximum() const;
 	EItemType GetItemType() const;
@@ -180,11 +181,14 @@ protected:
 	int32 InventoryIndex;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	FText ItemExplanation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	class UTexture2D* ItemImage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	class AZCharacter* ItemOwner;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
 	EItemType ItemType;
 
