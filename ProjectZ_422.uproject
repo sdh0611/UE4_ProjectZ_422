@@ -17,7 +17,8 @@
 		},
 		{
 			"Name": "ProjectZLoadingScreen",
-			"Type": "Runtime"	
+			"Type": "Runtime",
+			"LoadingPhase": "PreLoadingScreen"
 		}
 	]
 }

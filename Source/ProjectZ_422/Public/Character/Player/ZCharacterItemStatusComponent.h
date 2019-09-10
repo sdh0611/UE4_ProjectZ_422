@@ -16,8 +16,8 @@ class PROJECTZ_422_API UZCharacterItemStatusComponent : public UActorComponent
 	{
 		Main1 = 0,
 		Main2,
-		Knife,
-		Grenade
+		Grenade,
+		Knife
 	};
 
 public:	

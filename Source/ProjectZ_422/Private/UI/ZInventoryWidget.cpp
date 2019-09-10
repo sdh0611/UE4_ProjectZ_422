@@ -29,6 +29,11 @@ void UZInventoryWidget::NativeConstruct()
 	check(nullptr != NewItemHolder);
 	ItemHolder = NewItemHolder;
 
+	auto NewWeaponHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("WeaponHolder1")));
+	check(nullptr != NewWeaponHolder);
+	WeaponHolder = NewWeaponHolder;
+	
+
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -52,4 +57,7 @@ void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 
 void UZInventoryWidget::AddItemToWeaponInventory(AZWeapon * const NewWeapon)
 {
+	auto Widget = WeaponHolder->GetChildAt(NewWeapon->GetWeaponInventoryIndex());
+
+
 }

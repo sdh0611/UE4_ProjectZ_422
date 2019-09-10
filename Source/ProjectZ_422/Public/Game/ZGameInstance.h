@@ -119,12 +119,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = ShopDataTable)
 	class UDataTable* ShopItemDataTable;
 
-	
-	UPROPERTY(EditDefaultsOnly, Category = LoadingScreen)
-	TSubclassOf<class UUserWidget> LoadingScreenWidgetClass;
-
-	UPROPERTY()
-	class UUserWidget* LoadingScreenWidget;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = MeshTable)
