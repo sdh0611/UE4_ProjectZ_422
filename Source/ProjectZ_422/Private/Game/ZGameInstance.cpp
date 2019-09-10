@@ -2,8 +2,8 @@
 
 
 #include "ZGameInstance.h"
-#include "Engine/StaticMesh.h"
-#include "ConstructorHelpers.h"
+#include "UserWidget.h"
+#include "MoviePlayer.h"
 
 UZGameInstance::UZGameInstance()
 {
@@ -17,6 +17,18 @@ void UZGameInstance::Init()
 	LoadStaticMesh();
 	LoadSkeletalMesh();
 	LoadImage();
+
+	UUserWidget* NewLoadingScreenWidget = CreateWidget<UUserWidget>(this, LoadingScreenWidgetClass);
+	if (nullptr == NewLoadingScreenWidget)
+	{
+		ZLOG(Error, TEXT("Loading screen error."));
+		return;
+	}
+
+	LoadingScreenWidget = NewLoadingScreenWidget;
+
+	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
@@ -279,6 +291,29 @@ void UZGameInstance::LoadImage()
 		}
 
 	}
+	
+
+}
+
+void UZGameInstance::OnPreLoadMap(const FString & MapName)
+{
+	if (!IsRunningDedicatedServer())
+	{
+		ZLOG_S(Error);
+		FLoadingScreenAttributes LoadingScreen;
+		LoadingScreen.bAutoCompleteWhenLoadingCompletes = false;
+		LoadingScreen.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
+		//LoadingScreen.WidgetLoadingScreen = LoadingScreenWidget->GetCachedWidget();
+	
+		GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+	}
+
+}
+
+void UZGameInstance::OnPostLoadMap(UWorld * NewWorld)
+{
+	ZLOG_S(Error);
+
 
 
 }

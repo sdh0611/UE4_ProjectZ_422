@@ -14,6 +14,10 @@
 				"CoreUObject",
 				"AIModule"
 			]
+		},
+		{
+			"Name": "ProjectZLoadingScreen",
+			"Type": "Runtime"	
 		}
 	]
 }

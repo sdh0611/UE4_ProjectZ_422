@@ -72,10 +72,15 @@ public:
 	const FZShopItemData* const GetShopItemDataByName(const FString& ShopItemName);
 
 private:
-	/* 애셋 로딩 요청 */
+	/* 애셋 로딩 */
 	void LoadStaticMesh();
 	void LoadSkeletalMesh();
 	void LoadImage();
+
+	/* 맵 로딩 */
+	void OnPreLoadMap(const FString& MapName);
+	void OnPostLoadMap(UWorld* NewWorld);
+
 
 public:
 	FStreamableManager AssetLoader;
@@ -113,6 +118,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = ShopDataTable)
 	class UDataTable* ShopItemDataTable;
+
+	
+	UPROPERTY(EditDefaultsOnly, Category = LoadingScreen)
+	TSubclassOf<class UUserWidget> LoadingScreenWidgetClass;
+
+	UPROPERTY()
+	class UUserWidget* LoadingScreenWidget;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = MeshTable)

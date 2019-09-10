@@ -27,10 +27,10 @@ public:
 
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = Inventory)
+	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	TSubclassOf<class UZInventoryItemWidget> InventoryItemWidgetClass;
 
-	UPROPERTY(VisibleAnywhere, Category = Inventory)
+	UPROPERTY(EditDefaultsOnly, Category = Inventory)
 	TSubclassOf<class UZWeaponInventoryItemWidget> WeaponInventoryItemWidgetClass;
 
 private:

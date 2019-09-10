@@ -2,16 +2,15 @@
 
 using UnrealBuildTool;
 
-public class ProjectZ_422 : ModuleRules
+public class ProjectZLoadingScreen : ModuleRules
 {
-	public ProjectZ_422(ReadOnlyTargetRules Target) : base(Target)
+	public ProjectZLoadingScreen(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG",
-            "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer" });
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "UMG" });
+
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "MoviePlayer" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

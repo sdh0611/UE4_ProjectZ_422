@@ -9,6 +9,6 @@ public class ProjectZ_422EditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 
-		ExtraModuleNames.AddRange( new string[] { "ProjectZ_422" } );
+		ExtraModuleNames.AddRange( new string[] { "ProjectZ_422", "ProjectZLoadingScreen" } );
 	}
 }

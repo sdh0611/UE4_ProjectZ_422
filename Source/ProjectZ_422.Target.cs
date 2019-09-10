@@ -9,6 +9,6 @@ public class ProjectZ_422Target : TargetRules
 	{
 		Type = TargetType.Game;
 
-		ExtraModuleNames.AddRange( new string[] { "ProjectZ_422" } );
+		ExtraModuleNames.AddRange( new string[] { "ProjectZ_422", "ProjectZLoadingScreen" } );
 	}
 }
