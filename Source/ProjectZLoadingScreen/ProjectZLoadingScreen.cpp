@@ -85,6 +85,7 @@ public:
 			LoadingScreen.bAutoCompleteWhenLoadingCompletes = true;
 			LoadingScreen.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
 			//LoadingScreen.MoviePaths.Add(TEXT("LoadingScreen"));
+
 			GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
 		}
 	}

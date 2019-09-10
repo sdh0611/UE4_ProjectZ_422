@@ -152,8 +152,10 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("DropWeapon"), IE_Pressed, this, &AZCharacter::DropWeapon);
 	PlayerInputComponent->BindAction(TEXT("Slot1"), IE_Pressed, this, &AZCharacter::Slot1);
 	PlayerInputComponent->BindAction(TEXT("Slot2"), IE_Pressed, this, &AZCharacter::Slot2);
+	PlayerInputComponent->BindAction(TEXT("Slot3"), IE_Pressed, this, &AZCharacter::Slot3);
 	PlayerInputComponent->BindAction(TEXT("Slot4"), IE_Pressed, this, &AZCharacter::Slot4);
 	PlayerInputComponent->BindAction(TEXT("ChangeFireMode"), IE_Pressed, this, &AZCharacter::ChangeFireMode);
+	PlayerInputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZCharacter::ToggleInGameMenu);
 
 	// For debug
 	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
@@ -1053,6 +1055,11 @@ void AZCharacter::Slot2()
 	SwitchWeapon(1);
 }
 
+void AZCharacter::Slot3()
+{
+	SwitchWeapon(2);
+}
+
 void AZCharacter::Slot4()
 {
 	SwitchWeapon(3);
@@ -1079,6 +1086,10 @@ void AZCharacter::ChangeFireMode()
 	//	Gun->ChangeFireMode();
 	//}
 
+}
+
+void AZCharacter::ToggleInGameMenu()
+{
 }
 
 void AZCharacter::AddMoney()

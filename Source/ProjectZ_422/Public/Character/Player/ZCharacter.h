@@ -95,8 +95,10 @@ private:
 	void SwitchWeapon(int32 NewWeaponIndex);
 	void Slot1();
 	void Slot2();
+	void Slot3();
 	void Slot4();
 	void ChangeFireMode();
+	void ToggleInGameMenu();
 
 	/*
 		µð¹ö±ë¿ë
