@@ -85,6 +85,19 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 	Super::OnInteraction(NewCharacter);
 }
 
+void AZShop::OnFocus()
+{
+	BodyMesh->SetRenderCustomDepth(true);
+
+}
+
+void AZShop::OnFocusEnd()
+{
+	BodyMesh->SetRenderCustomDepth(false);
+
+
+}
+
 void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 {
 	if (Quantity < 1)

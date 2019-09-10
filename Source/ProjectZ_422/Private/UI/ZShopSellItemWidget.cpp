@@ -3,6 +3,7 @@
 
 #include "ZShopSellItemWidget.h"
 #include "ZItem.h"
+#include "ZWeapon.h"
 #include "ZPlayerController.h"
 #include "ZHUD.h"
 #include "ZUserHUD.h"
@@ -62,8 +63,10 @@ void UZShopSellItemWidget::BindItem(AZItem * NewItem)
 		델리게이트 바인딩
 	*/
 	Item->OnItemRemoved.AddUObject(this, &UZShopSellItemWidget::ClearWidget);
-	Item->OnItemInfoChanged.AddUObject(this, &UZShopSellItemWidget::UpdateWidget);
 
+	/*
+		Update item image
+	*/
 	ItemImage->SetBrushFromTexture(Item->GetItemImage());
 
 	/*

@@ -89,6 +89,16 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 	Super::OnInteraction(NewCharacter);
 }
 
+void AZPickup::OnFocus()
+{
+	Mesh->SetRenderCustomDepth(true);
+}
+
+void AZPickup::OnFocusEnd()
+{
+	Mesh->SetRenderCustomDepth(false);
+}
+
 void AZPickup::WhenSpawnedByItem()
 {
 	SetActive(true);

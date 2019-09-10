@@ -20,6 +20,8 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void OnInteraction(class AZCharacter* NewCharacter);
+	virtual void OnFocus() override;
+	virtual void OnFocusEnd() override;
 
 public:
 	void Buy(struct FZShopItemData* BuyItemData, int32 Quantity = 1);

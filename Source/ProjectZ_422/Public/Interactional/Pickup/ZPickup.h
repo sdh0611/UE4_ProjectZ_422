@@ -20,6 +20,9 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void OnInteraction(class AZCharacter* NewCharacter) override;
+	virtual void OnFocus() override;
+	virtual void OnFocusEnd() override;
+
 
 public:
 	void WhenSpawnedByItem();

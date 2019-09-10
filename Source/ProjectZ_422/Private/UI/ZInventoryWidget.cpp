@@ -3,6 +3,7 @@
 
 #include "ZInventoryWidget.h"
 #include "ZInventoryItemWidget.h"
+#include "ZWeaponInventoryItemWidget.h"
 #include "ZItem.h"
 #include "ZWeapon.h"
 #include "Components/ScrollBox.h"
@@ -57,7 +58,13 @@ void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 
 void UZInventoryWidget::AddItemToWeaponInventory(AZWeapon * const NewWeapon)
 {
-	auto Widget = WeaponHolder->GetChildAt(NewWeapon->GetWeaponInventoryIndex());
-
+	auto WeaponWidget = Cast<UZWeaponInventoryItemWidget>(WeaponHolder->GetChildAt(NewWeapon->GetWeaponInventoryIndex()));
+	if (nullptr == WeaponWidget)
+	{
+		ZLOG(Error, TEXT("Weapon Inventory widget not exist."));
+		return;
+	}
+	
+	WeaponWidget->BindWeapon(NewWeapon);
 
 }

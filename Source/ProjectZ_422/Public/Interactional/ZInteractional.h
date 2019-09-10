@@ -25,8 +25,8 @@ public:
 
 	virtual void OnInteraction(class AZCharacter* NewCharacter);
 	// Character의 LineTrace와 충돌했을 때
-	void OnFocus();
+	virtual void OnFocus();
 	// Character의 LineTrace에서 벗어났을 때
-	void OnFocusEnd();
+	virtual void OnFocusEnd();
 
 };
