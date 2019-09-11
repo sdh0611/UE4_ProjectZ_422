@@ -29,7 +29,7 @@ public:
 	class UZUserHUD* const GetUserHUD() const;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = WidgetClass)
+	UPROPERTY(EditDefaultsOnly, Category = WidgetClass)
 	TSubclassOf<class UZUserHUD> UserHUDClass;
 
 private:

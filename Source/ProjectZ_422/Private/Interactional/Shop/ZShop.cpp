@@ -63,10 +63,10 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 
 	if (NewCharacter)
 	{
-		if (EnterPlayer == NewCharacter)
-		{
-			return;
-		}
+		//if (EnterPlayer == NewCharacter)
+		//{
+		//	return;
+		//}
 
 		auto PlayerController = Cast<AZPlayerController>(NewCharacter->GetController());
 		if (nullptr == PlayerController)

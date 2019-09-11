@@ -121,9 +121,6 @@ void AZCharacter::Tick(float DeltaTime)
 
 	}
 
-
-
-	//CheckCharacterRotation(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -156,6 +153,8 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Slot4"), IE_Pressed, this, &AZCharacter::Slot4);
 	PlayerInputComponent->BindAction(TEXT("ChangeFireMode"), IE_Pressed, this, &AZCharacter::ChangeFireMode);
 	PlayerInputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZCharacter::ToggleInGameMenu);
+	PlayerInputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZCharacter::RemoveWidgetFromTop);
+
 
 	// For debug
 	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
@@ -396,9 +395,8 @@ void AZCharacter::OnDead()
 	if (PlayerController)
 	{
 		DisableInput(PlayerController);
-		PlayerController->GetZHUD()->GetUserHUD()->DrawDeadMenuWidget();
+		PlayerController->GetZHUD()->GetUserHUD()->DrawEndGameMenuWidget();
 	}
-	//PlayerController->SetCinematicMode(true, false, false, true, true);
 
 }
 
@@ -669,16 +667,7 @@ void AZCharacter::ToggleInventory()
 		auto UserHUDWidget = HUD->GetUserHUD();
 		if (UserHUDWidget)
 		{
-			if (UserHUDWidget->IsInventoryOnScreen())
-			{
-				// Inventory가 화면에 있는 경우.
-				UserHUDWidget->RemoveInventoryWidget();
-			}
-			else
-			{
-				// Inventory가 화면에 없는 경우.
-				UserHUDWidget->DrawInventoryWidget();
-			}
+			UserHUDWidget->ToggleInventoryWidget();
 		}
 	}
 
@@ -1090,6 +1079,28 @@ void AZCharacter::ChangeFireMode()
 
 void AZCharacter::ToggleInGameMenu()
 {
+	auto HUD = PlayerController->GetZHUD();
+	if (HUD)
+	{
+		auto UserHUDWidget = HUD->GetUserHUD();
+		if (UserHUDWidget)
+		{
+			UserHUDWidget->ToggleInGameMenuWIdget();
+		}
+	}
+}
+
+void AZCharacter::RemoveWidgetFromTop()
+{
+	auto HUD = PlayerController->GetZHUD();
+	if (HUD)
+	{
+		auto UserHUDWidget = HUD->GetUserHUD();
+		if (UserHUDWidget)
+		{
+			UserHUDWidget->RemoveWidgetFromTop();
+		}
+	}
 }
 
 void AZCharacter::AddMoney()

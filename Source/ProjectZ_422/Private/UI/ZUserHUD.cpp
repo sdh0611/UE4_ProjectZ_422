@@ -48,10 +48,17 @@ void UZUserHUD::NativeConstruct()
 	InputNumberWidget = NewInputNumberWidget;
 
 	/* Dead menu widget */
-	auto NewDeadMenuWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("UI_Dead")));
+	auto NewDeadMenuWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
 	check(nullptr != NewDeadMenuWidget);
-	DeadMenuWidget = NewDeadMenuWidget;
-	DeadMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+	EndGameMenuWidget = NewDeadMenuWidget;
+	EndGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+
+	/* InGame menu widget */
+	auto NewInGameMenuWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("UI_InGame")));
+	check(nullptr != NewInGameMenuWidget);
+	InGameMenuWidget = NewInGameMenuWidget;
+	InGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+
 
 	/* Money text */
 	auto NewCurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
@@ -138,107 +145,116 @@ void UZUserHUD::UpdateNumZombies(int32 NewValue)
 	CurrentNumZombiesText->SetText(FText::FromString(CurrentNumZombies));
 }
 
+void UZUserHUD::ToggleInventoryWidget()
+{
+	if (ESlateVisibility::Hidden == InventoryWidget->GetVisibility())
+	{
+		DrawInventoryWidget();
+	}
+	else
+	{
+		RemoveInventoryWidget();
+	}
+	
+
+}
+
+void UZUserHUD::ToggleShopWidget()
+{
+	if (ESlateVisibility::Hidden == ShopWidget->GetVisibility())
+	{
+		DrawShopWidget();
+	}
+	else
+	{
+		RemoveShopWidget();
+	}
+}
+
+void UZUserHUD::ToggleInGameMenuWIdget()
+{
+	if (ESlateVisibility::Hidden == InGameMenuWidget->GetVisibility())
+	{
+		DrawInGameMenuWidget();
+	}
+	else
+	{
+		RemoveInGameMenuWidget();
+	}
+}
+
 void UZUserHUD::DrawInventoryWidget()
 {
-	InventoryWidget->SetVisibility(ESlateVisibility::Visible);
-
-	FInputModeGameAndUI InputMode;
-	InputMode.SetWidgetToFocus(InventoryWidget->GetCachedWidget());
-
-	auto PlayerController = GetOwningPlayer();
-
-	PlayerController->SetInputMode(InputMode);
-	PlayerController->bShowMouseCursor = true;
-	PlayerController->bEnableClickEvents = true;
-	PlayerController->bEnableMouseOverEvents = true;
-
-	bIsInventoryOnScreen = true;
-
+	AddWidgetToList(InventoryWidget);
 }
 
 void UZUserHUD::DrawShopWidget()
 {
-	ShopWidget->SetVisibility(ESlateVisibility::Visible);
-
-	auto PlayerController = GetOwningPlayer();
-
-	FInputModeGameAndUI InputMode;
-	InputMode.SetWidgetToFocus(ShopWidget->GetCachedWidget());
-
-	ShopWidget->SetUserFocus(PlayerController);
-
-	PlayerController->SetInputMode(InputMode);
-	PlayerController->bShowMouseCursor = true;
-	PlayerController->bEnableClickEvents = true;
-	PlayerController->bEnableMouseOverEvents = true;
-
+	AddWidgetToList(ShopWidget);
 	bIsShopOnScreen = true;
-
 }
 
-void UZUserHUD::DrawDeadMenuWidget()
+void UZUserHUD::DrawEndGameMenuWidget()
 {
-	DeadMenuWidget->SetVisibility(ESlateVisibility::Visible);
+	AddWidgetToList(EndGameMenuWidget);
+}
 
-	auto PlayerController = GetOwningPlayer();
-
-	FInputModeUIOnly InputMode;
-	InputMode.SetWidgetToFocus(DeadMenuWidget->GetCachedWidget());
-
-	ShopWidget->SetUserFocus(PlayerController);
-
-	PlayerController->SetInputMode(InputMode);
-	PlayerController->bShowMouseCursor = true;
-	PlayerController->bEnableClickEvents = true;
-	PlayerController->bEnableMouseOverEvents = true;
-
+void UZUserHUD::DrawInGameMenuWidget()
+{
+	AddWidgetToList(InGameMenuWidget);
 }
 
 void UZUserHUD::RemoveInventoryWidget()
 {
-	InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
-
-	auto PlayerController = GetOwningPlayer();
-
-	PlayerController->SetInputMode(FInputModeGameOnly());
-	PlayerController->bShowMouseCursor = false;
-	PlayerController->bEnableClickEvents = false;
-	PlayerController->bEnableMouseOverEvents = false;
-
-	bIsInventoryOnScreen = false;
+	RemoveWidgetFromList(InventoryWidget);
 }
 
 void UZUserHUD::RemoveShopWidget()
 {
-	ShopWidget->SetVisibility(ESlateVisibility::Hidden);
-
-	auto PlayerController = GetOwningPlayer();
-
-	PlayerController->SetInputMode(FInputModeGameOnly());
-	PlayerController->bShowMouseCursor = false;
-	PlayerController->bEnableClickEvents = false;
-	PlayerController->bEnableMouseOverEvents = false;
+	RemoveWidgetFromList(ShopWidget);
 
 	bIsShopOnScreen = false;
 }
 
-void UZUserHUD::RemoveDeadMenuWidget()
+void UZUserHUD::RemoveEndGameMenuWidget()
 {
-	DeadMenuWidget->SetVisibility(ESlateVisibility::Hidden);
-
-	auto PlayerController = GetOwningPlayer();
-
-	PlayerController->SetInputMode(FInputModeGameOnly());
-	PlayerController->bShowMouseCursor = false;
-	PlayerController->bEnableClickEvents = false;
-	PlayerController->bEnableMouseOverEvents = false;
+	RemoveWidgetFromList(EndGameMenuWidget);
 
 }
 
-bool UZUserHUD::IsInventoryOnScreen() const
+void UZUserHUD::RemoveInGameMenuWidget()
 {
-	return bIsInventoryOnScreen;
+	RemoveWidgetFromList(InGameMenuWidget);
 }
+
+void UZUserHUD::RemoveAllWidgetFromScreen()
+{
+	int32 Size = DrawWidgetList.Num();
+	for (int i = 0; i < Size; ++i)
+	{
+		RemoveWidgetFromTop();
+	}
+}
+
+void UZUserHUD::RemoveWidgetFromTop()
+{
+	if (IsDrawWidgetListEmpty())
+	{
+		return;
+	}
+
+	DrawWidgetList.Pop().Get()->SetVisibility(ESlateVisibility::Hidden);
+	if (IsDrawWidgetListEmpty())
+	{
+		auto PlayerController = GetOwningPlayer();
+
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->bShowMouseCursor = false;
+		PlayerController->bEnableClickEvents = false;
+		PlayerController->bEnableMouseOverEvents = false;
+	}
+}
+
 
 bool UZUserHUD::IsShopWidgetOnScreen() const
 {
@@ -263,4 +279,73 @@ UZCurrentWeaponInfoWidget * const UZUserHUD::GetCurrentWeaponInfoWidget() const
 UZInputNumberWidget * const UZUserHUD::GetInputNumberWidget() const
 {
 	return InputNumberWidget;
+}
+
+void UZUserHUD::IncreaseStackNum()
+{
+	++WidgetStackNum;
+
+}
+
+void UZUserHUD::DecreaseStackNum()
+{
+	if (WidgetStackNum < 1)
+	{
+		return;
+	}
+
+	--WidgetStackNum;
+
+}
+
+void UZUserHUD::AddWidgetToList(UUserWidget * Widget)
+{
+	if(DrawWidgetList.Contains(Widget))
+	{
+		return;
+	}
+
+	if (IsDrawWidgetListEmpty())
+	{
+		FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(InventoryWidget->GetCachedWidget());
+
+		auto PlayerController = GetOwningPlayer();
+
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->bShowMouseCursor = true;
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;
+
+		if (Widget->bIsFocusable)
+		{
+			Widget->SetUserFocus(PlayerController);
+		}
+
+	}
+
+	Widget->SetVisibility(ESlateVisibility::Visible);
+	DrawWidgetList.AddUnique(Widget);
+}
+
+void UZUserHUD::RemoveWidgetFromList(UUserWidget* Widget)
+{
+	Widget->SetVisibility(ESlateVisibility::Hidden);
+	DrawWidgetList.RemoveSingle(Widget);
+
+	if (IsDrawWidgetListEmpty())
+	{
+		auto PlayerController = GetOwningPlayer();
+
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->bShowMouseCursor = false;
+		PlayerController->bEnableClickEvents = false;
+		PlayerController->bEnableMouseOverEvents = false;
+	}
+
+}
+
+bool UZUserHUD::IsDrawWidgetListEmpty()
+{
+	return DrawWidgetList.Num() < 1;
 }

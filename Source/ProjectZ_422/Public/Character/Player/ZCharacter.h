@@ -99,6 +99,7 @@ private:
 	void Slot4();
 	void ChangeFireMode();
 	void ToggleInGameMenu();
+	void RemoveWidgetFromTop();
 
 	/*
 		µð¹ö±ë¿ë
