@@ -136,7 +136,7 @@ void UZInventoryItemWidget::UpdateWidget()
 void UZInventoryItemWidget::OnDropButtonClicked()
 {
 
-	if (Item->GetMaxQuantityOfItem() <= 1)
+	if (Item->GetCurrentQuantityOfItem() <= 1)
 	{
 		OnReceiveNumberInput(1);
 	}

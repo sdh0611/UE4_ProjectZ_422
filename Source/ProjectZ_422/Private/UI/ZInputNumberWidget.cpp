@@ -29,11 +29,26 @@ void UZInputNumberWidget::NativeConstruct()
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
+void UZInputNumberWidget::OnDrawScreen()
+{
+	Super::OnDrawScreen();
+
+}
+
+void UZInputNumberWidget::OnRemoveScreen()
+{
+	Super::OnRemoveScreen();
+	BindWidget(nullptr);
+	InputText->SetText(FText::GetEmpty());
+}
+
 void UZInputNumberWidget::BindWidget(UUserWidget * NewWidget)
 {
 	WidgetBinded = NewWidget;
-	InputText->SetKeyboardFocus();
-
+	if (NewWidget)
+	{
+		InputText->SetKeyboardFocus();
+	}
 }
 
 int32 UZInputNumberWidget::GetInputNumber() const
@@ -51,6 +66,7 @@ void UZInputNumberWidget::OnTextCommitted(const FText & Text, ETextCommit::Type 
 	if (!Text.IsNumeric())
 	{
 		ZLOG(Error, TEXT("Not number."));
+		OnRemoveScreen();
 		return;
 	}
 
@@ -58,18 +74,20 @@ void UZInputNumberWidget::OnTextCommitted(const FText & Text, ETextCommit::Type 
 	if (NumberString.Contains(TEXT(".")))
 	{
 		ZLOG(Error, TEXT("Not integer."));
+		OnRemoveScreen();
 		return;
 	}
 
 	if (NumberString.Contains(TEXT("-")))
 	{
 		ZLOG(Error, TEXT("Not positive."));
+		OnRemoveScreen();
 		return;
 	}
 
 	int Number = FCString::Atoi(*NumberString);
 	ZLOG(Warning, TEXT("Commit number : %d"), Number);
-	/* 숫자값을 넘겨줌. */
+	/* 인터페이스를 통해 숫자값을 넘겨줌. */
 	if (WidgetBinded)
 	{
 		auto NumberInterface = Cast<IZNumberWidgetInterface>(WidgetBinded);
@@ -80,8 +98,7 @@ void UZInputNumberWidget::OnTextCommitted(const FText & Text, ETextCommit::Type 
 	}
 
 	/* 토글 */
-	SetVisibility(ESlateVisibility::Hidden);
-	WidgetBinded = nullptr;
+	OnRemoveScreen();
 }
 
 void UZInputNumberWidget::OnOKButtonClicked()
@@ -123,13 +140,7 @@ void UZInputNumberWidget::OnOKButtonClicked()
 
 
 	/* 토글 */
-	//FInputModeUIOnly InputMode;
-	//InputMode.SetWidgetToFocus(InputText->GetCachedWidget());
-	//GetOwningPlayer()->SetInputMode(InputMode);
-
-	InputText->SetText(FText::GetEmpty());
-	SetVisibility(ESlateVisibility::Hidden);
-	WidgetBinded = nullptr;
+	OnRemoveScreen();
 }
 
 void UZInputNumberWidget::OnCancelButtonClicked()
@@ -137,10 +148,5 @@ void UZInputNumberWidget::OnCancelButtonClicked()
 	ZLOG_S(Warning);
 	
 	/* 토글 */
-	//FInputModeGameOnly InputMode;
-	//GetOwningPlayer()->SetInputMode(InputMode);
-
-	InputText->SetText(FText::GetEmpty());
-	SetVisibility(ESlateVisibility::Hidden);
-	WidgetBinded = nullptr;
+	OnRemoveScreen();
 }

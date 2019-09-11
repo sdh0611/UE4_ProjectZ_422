@@ -3,21 +3,23 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "Blueprint/UserWidget.h"
+#include "ZUserWidget.h"
 #include "ZInputNumberWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API UZInputNumberWidget : public UUserWidget
+class PROJECTZ_422_API UZInputNumberWidget : public UZUserWidget
 {
 	GENERATED_BODY()
 
 
 public:
 	virtual void NativeConstruct() override;
-	
+	virtual void OnDrawScreen() override;
+	virtual void OnRemoveScreen() override;
+
 public:
 	void BindWidget(class UUserWidget* NewWidget);
 

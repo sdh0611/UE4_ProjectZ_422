@@ -43,7 +43,7 @@ void UZShopSellItemWidget::NativeConstruct()
 
 void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
-	OnSellItem.Execute(Item, NewNumber);
+	OnSellItem.Execute(GetOwningPlayerPawn(), Item, NewNumber);
 }
 
 void UZShopSellItemWidget::BindItem(AZItem * NewItem)
@@ -119,7 +119,7 @@ void UZShopSellItemWidget::OnSellButtonClick()
 {
 	ZLOG_S(Warning);
 	
-	if (Item->GetMaxQuantityOfItem() <= 1)
+	if (Item->GetCurrentQuantityOfItem() <= 1)
 	{
 		OnReceiveNumberInput(1);
 	}

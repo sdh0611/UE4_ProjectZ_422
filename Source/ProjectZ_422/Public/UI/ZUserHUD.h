@@ -40,6 +40,11 @@ public:
 	void ToggleInventoryWidget();
 	void ToggleShopWidget();
 	void ToggleInGameMenuWIdget();
+	/*
+		NOTE(9.11):
+			폐기 예정
+	*/
+	void ToggleInputNumberWidget();
 
 	/*
 		화면에 Widget을 띄우기 위한 메소드들
@@ -49,12 +54,23 @@ public:
 	void DrawEndGameMenuWidget();
 	void DrawInGameMenuWidget();
 	/*
+		NOTE(9.11):
+			폐기 예정
+	*/
+	void DrawInputNumberWidget();
+	
+	/*
 		화면에서 Widget을지우기 위한 메소드들
 	 */
 	void RemoveInventoryWidget();
 	void RemoveShopWidget();
 	void RemoveEndGameMenuWidget();
 	void RemoveInGameMenuWidget();
+	/*
+		NOTE(9.11):
+			폐기 예정
+	*/
+	void RemoveInputNumberWidget();
 
 	/* UI 제거.(HUD제외) */
 	void RemoveAllWidgetFromScreen();
@@ -76,12 +92,9 @@ public:
 	class UZInputNumberWidget* const GetInputNumberWidget() const;
 
 protected:
-	void AddWidgetToList(class UUserWidget* Widget);
-	void RemoveWidgetFromList(class UUserWidget* Widget);
+	void AddWidgetToList(class UZUserWidget* Widget);
+	void RemoveWidgetFromList(class UZUserWidget* Widget);
 	bool IsDrawWidgetListEmpty();
-
-	void IncreaseStackNum();
-	void DecreaseStackNum();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
@@ -103,10 +116,10 @@ protected:
 	class UZInputNumberWidget* InputNumberWidget;
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
-	class UUserWidget* EndGameMenuWidget;
+	class UZUserWidget* EndGameMenuWidget;
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
-	class UUserWidget* InGameMenuWidget;
+	class UZUserWidget* InGameMenuWidget;
 
 	UPROPERTY()
 	class UTextBlock* CurrentMoneyInfoText;
@@ -124,9 +137,7 @@ protected:
 	class UTextBlock* CurrentNumZombiesText;
 
 private:
-	int32 WidgetStackNum = 0;
-
 	UPROPERTY(VisibleAnywhere)
-	TArray<TWeakObjectPtr<class UUserWidget>> DrawWidgetList;
+	TArray<TWeakObjectPtr<class UZUserWidget>> DrawWidgetList;
 
 };

@@ -10,15 +10,8 @@
 #include "ConstructorHelpers.h"
 
 UZInventoryWidget::UZInventoryWidget(const FObjectInitializer& ObjectInitializer)
-	:UUserWidget(ObjectInitializer)
+	:UZUserWidget(ObjectInitializer)
 {
-	//static ConstructorHelpers::FClassFinder<UZInventoryItemWidget>
-	//	UI_ITEM(TEXT("WidgetBlueprint'/Game/Blueprint/Widget/UI_InventoryItem.UI_InventoryItem_C'"));
-	//if (UI_ITEM.Succeeded())
-	//{
-	//	InventoryItemWidgetClass = UI_ITEM.Class;
-	//}
-
 }
 
 void UZInventoryWidget::NativeConstruct()

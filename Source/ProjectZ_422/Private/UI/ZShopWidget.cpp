@@ -35,6 +35,28 @@ void UZShopWidget::NativeConstruct()
 
 }
 
+void UZShopWidget::OnDrawScreen()
+{
+	Super::OnDrawScreen();
+}
+
+void UZShopWidget::OnRemoveScreen()
+{
+	Super::OnRemoveScreen();
+
+	if (Shop)
+	{
+		Shop->OnExitShop();
+		ShopBuyWidget->ClearWidget();
+		ShopSellWidget->ClearWidget();
+		BindShop(nullptr);
+	}
+	else
+	{
+		RemoveFromParent();
+	}
+}
+
 void UZShopWidget::BindShop(AZShop * NewShop)
 {
 	ZLOG_S(Warning);

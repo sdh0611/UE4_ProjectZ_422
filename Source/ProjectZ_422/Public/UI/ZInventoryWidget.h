@@ -4,13 +4,14 @@
 
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
+#include "ZUserWidget.h"
 #include "ZInventoryWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API UZInventoryWidget : public UUserWidget
+class PROJECTZ_422_API UZInventoryWidget : public UZUserWidget
 {
 	GENERATED_BODY()
 	
@@ -19,6 +20,7 @@ public:
 
 public:
 	virtual void NativeConstruct() override;
+	
 
 public:
 	void AddItemToInventory(class AZItem* const NewItem);

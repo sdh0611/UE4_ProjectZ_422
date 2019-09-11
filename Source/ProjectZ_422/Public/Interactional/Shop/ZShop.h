@@ -24,8 +24,8 @@ public:
 	virtual void OnFocusEnd() override;
 
 public:
-	void Buy(struct FZShopItemData* BuyItemData, int32 Quantity = 1);
-	void Sell(class AZItem* SellItem, int32 Quantity = 1);
+	void Buy(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity = 1);
+	void Sell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
 	void OnExitShop();
 
 	/* HalfTime에 상점 활성화 */
@@ -35,15 +35,8 @@ public:
 
 	struct FZShopItemData* const FindShopItemData(const FString& ShopItemName) const;
 
-public:
-	/* Setter */
-	void SetEnterPlayer(class AZCharacter* NewPlayer);
-
-	/* Getter */
-	class AZCharacter* const GetEnterPlayer() const;
-
 private:
-	void ConstructShopWidget();
+	void ConstructShopWidget(class AZCharacter* EnterCharacter);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shop)
@@ -76,9 +69,6 @@ protected:
 	TSubclassOf<class AZItem> AmmoClass;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = Shop)
-	class AZCharacter* EnterPlayer;
-
 	UPROPERTY()
 	class UDataTable* ShopItemDataTable;
 

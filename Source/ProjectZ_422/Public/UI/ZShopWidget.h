@@ -3,20 +3,22 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "Blueprint/UserWidget.h"
+#include "ZUserWidget.h"
 #include "ZShopWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API UZShopWidget : public UUserWidget
+class PROJECTZ_422_API UZShopWidget : public UZUserWidget
 {
 	GENERATED_BODY()
 
 public:
 	virtual void NativeConstruct() override;
-
+	virtual void OnDrawScreen() override;
+	virtual void OnRemoveScreen() override;
+	
 public:
 	void BindShop(class AZShop* NewShop);
 	void ConstructBuyWidget(class UDataTable* const ShopItemData);

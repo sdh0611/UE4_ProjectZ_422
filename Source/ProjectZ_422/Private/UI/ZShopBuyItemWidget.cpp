@@ -60,7 +60,7 @@ void UZShopBuyItemWidget::NativeOnMouseLeave(const FPointerEvent & InMouseEvent)
 
 void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
-	OnBuyShopItem.Execute(ShopItemData, NewNumber);
+	OnBuyShopItem.Execute(GetOwningPlayerPawn(), ShopItemData, NewNumber);
 }
 
 void UZShopBuyItemWidget::SetParentShopWidget(UZShopBuyWidget * NewParent)
@@ -125,13 +125,12 @@ void UZShopBuyItemWidget::OnBuyButtonClick()
 		if (PC)
 		{
 			auto UserHUD = PC->GetZHUD()->GetUserHUD();
-			
 			if (UserHUD)
 			{
 				auto InputWidget = UserHUD->GetInputNumberWidget();
 				if (InputWidget)
 				{
-					InputWidget->SetVisibility(ESlateVisibility::Visible);
+					InputWidget->OnDrawScreen();
 					InputWidget->BindWidget(this);
 				}
 			}

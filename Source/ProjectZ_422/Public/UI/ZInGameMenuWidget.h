@@ -5,7 +5,10 @@
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
 #include "ZInGameMenuWidget.generated.h"
-
+/*
+	NOTE(9.11):
+		Æó±â ¿¹Á¤.
+*/
 /**
  * 
  */

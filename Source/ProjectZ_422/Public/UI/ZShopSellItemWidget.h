@@ -7,7 +7,7 @@
 #include "ZNumberWidgetInterface.h"
 #include "ZShopSellItemWidget.generated.h"
 
-DECLARE_DELEGATE_TwoParams(FOnSellItem, class AZItem*, int32);
+DECLARE_DELEGATE_ThreeParams(FOnSellItem, APawn*, class AZItem*, int32);
 
 /**
  * 

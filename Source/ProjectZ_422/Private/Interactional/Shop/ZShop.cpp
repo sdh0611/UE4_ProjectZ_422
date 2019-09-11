@@ -63,24 +63,8 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 
 	if (NewCharacter)
 	{
-		//if (EnterPlayer == NewCharacter)
-		//{
-		//	return;
-		//}
-
-		auto PlayerController = Cast<AZPlayerController>(NewCharacter->GetController());
-		if (nullptr == PlayerController)
-		{
-			return;
-		}
-		PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget()->BindShop(this);
-		PlayerController->GetZHUD()->GetUserHUD()->DrawShopWidget();
-		
+		ConstructShopWidget(NewCharacter);	
 	}
-
-	SetEnterPlayer(NewCharacter);
-
-	ConstructShopWidget();
 
 	Super::OnInteraction(NewCharacter);
 }
@@ -98,15 +82,22 @@ void AZShop::OnFocusEnd()
 
 }
 
-void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
+void AZShop::Buy(APawn* Pawn, FZShopItemData* BuyItemData, int32 Quantity)
 {
+	auto Player = Cast<AZCharacter>(Pawn);
+	if (nullptr == Player)
+	{
+		ZLOG(Error, TEXT("Invalid pawn."));
+		return;
+	}
+
 	if (Quantity < 1)
 	{
 		ZLOG(Error, TEXT("Invalid quantity value."));
 		return;
 	}
 
-	auto ItemStatusComponent = EnterPlayer->GetItemStatusComponent();
+	auto ItemStatusComponent = Player->GetItemStatusComponent();
 	if (nullptr == ItemStatusComponent)
 	{
 		ZLOG(Error, TEXT("ItemStatusComponent not exist."));
@@ -253,8 +244,15 @@ void AZShop::Buy(FZShopItemData* BuyItemData, int32 Quantity)
 
 }
 
-void AZShop::Sell(AZItem* SellItem, int32 Quantity)
+void AZShop::Sell(APawn* Pawn, AZItem* SellItem, int32 Quantity)
 {
+	auto Player = Cast<AZCharacter>(Pawn);
+	if (nullptr == Player)
+	{
+		ZLOG(Error, TEXT("Invalid pawn."));
+		return;
+	}
+
 	if (Quantity < 1)
 	{
 		ZLOG(Error, TEXT("Invalid quantity value."));
@@ -263,7 +261,7 @@ void AZShop::Sell(AZItem* SellItem, int32 Quantity)
 
 	int32 TotalQuantity = Quantity;
 
-	auto ItemStatusComponent = EnterPlayer->GetItemStatusComponent();
+	auto ItemStatusComponent = Player->GetItemStatusComponent();
 	if (nullptr == ItemStatusComponent)
 	{
 		ZLOG(Error, TEXT("ItemStatusComponent not exist."));
@@ -301,20 +299,23 @@ void AZShop::Sell(AZItem* SellItem, int32 Quantity)
 	
 }
 
+/*
+	NOTE(9.11):
+		폐기 예정.
+*/
 void AZShop::OnExitShop()
 {
-	if (EnterPlayer)
-	{
-		auto PlayerController = EnterPlayer->GetController<AZPlayerController>();
-		if (nullptr == PlayerController)
-		{
-			return;
-		}
+	//if (EnterPlayer)
+	//{
+	//	auto PlayerController = EnterPlayer->GetController<AZPlayerController>();
+	//	if (nullptr == PlayerController)
+	//	{
+	//		return;
+	//	}
 
-		PlayerController->GetZHUD()->GetUserHUD()->RemoveShopWidget();
-	}
+	//	PlayerController->GetZHUD()->GetUserHUD()->RemoveShopWidget();
+	//}
 
-	SetEnterPlayer(nullptr);
 }
 
 void AZShop::OpenShop()
@@ -342,34 +343,36 @@ FZShopItemData * const AZShop::FindShopItemData(const FString & ShopItemName) co
 	return nullptr;
 }
 
-void AZShop::SetEnterPlayer(AZCharacter * NewPlayer)
-{
-	EnterPlayer = NewPlayer;
-}
-
-AZCharacter * const AZShop::GetEnterPlayer() const
-{
-	return EnterPlayer;
-}
-
-
-void AZShop::ConstructShopWidget()
+void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
 {
 	ZLOG_S(Warning);
-	
-	auto PlayerController = Cast<AZPlayerController>(EnterPlayer->GetController());
-	if (nullptr == PlayerController)
+	if (nullptr == EnterCharacter)
 	{
 		return;
 	}
 
+	/* 상점 전체 틀 그림. */
+	auto PlayerController = Cast<AZPlayerController>(EnterCharacter->GetController());
+	if (nullptr == PlayerController)
+	{
+		return;
+	}
+	PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget()->BindShop(this);
+	PlayerController->GetZHUD()->GetUserHUD()->DrawShopWidget();
+	
+	/* 상점 아이템들을 그리기 위한 준비. */
 	auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget());
 	if (nullptr == ShopWidget)
 	{
 		return;
 	}
 
-	auto ItemStatusComponent = EnterPlayer->GetItemStatusComponent();
+	auto ItemStatusComponent = EnterCharacter->GetItemStatusComponent();
+	if (nullptr == ItemStatusComponent)
+	{
+		ZLOG(Error, TEXT("ItemStatusComponent not exist.."));
+		return;
+	}
 
 	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
 	ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());

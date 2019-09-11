@@ -7,7 +7,7 @@
 #include "ZNumberWidgetInterface.h"
 #include "ZShopBuyItemWidget.generated.h"
 
-DECLARE_DELEGATE_TwoParams(FOnBuyShopItem, struct FZShopItemData*, int32);
+DECLARE_DELEGATE_ThreeParams(FOnBuyShopItem, APawn*, struct FZShopItemData*, int32);
 
 /**
  * 

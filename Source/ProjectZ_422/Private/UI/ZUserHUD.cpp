@@ -2,6 +2,7 @@
 
 
 #include "ZUserHUD.h"
+#include "ZUserWidget.h"
 #include "ZGameState.h"
 #include "ZInventoryWidget.h"
 #include "ZShopWidget.h"
@@ -48,13 +49,13 @@ void UZUserHUD::NativeConstruct()
 	InputNumberWidget = NewInputNumberWidget;
 
 	/* Dead menu widget */
-	auto NewDeadMenuWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
+	auto NewDeadMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
 	check(nullptr != NewDeadMenuWidget);
 	EndGameMenuWidget = NewDeadMenuWidget;
 	EndGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 
 	/* InGame menu widget */
-	auto NewInGameMenuWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("UI_InGame")));
+	auto NewInGameMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_InGame")));
 	check(nullptr != NewInGameMenuWidget);
 	InGameMenuWidget = NewInGameMenuWidget;
 	InGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -183,6 +184,18 @@ void UZUserHUD::ToggleInGameMenuWIdget()
 	}
 }
 
+void UZUserHUD::ToggleInputNumberWidget()
+{
+	if (ESlateVisibility::Hidden == InGameMenuWidget->GetVisibility())
+	{
+		DrawInputNumberWidget();
+	}
+	else
+	{
+		RemoveInputNumberWidget();
+	}
+}
+
 void UZUserHUD::DrawInventoryWidget()
 {
 	AddWidgetToList(InventoryWidget);
@@ -202,6 +215,11 @@ void UZUserHUD::DrawEndGameMenuWidget()
 void UZUserHUD::DrawInGameMenuWidget()
 {
 	AddWidgetToList(InGameMenuWidget);
+}
+
+void UZUserHUD::DrawInputNumberWidget()
+{
+	AddWidgetToList(InputNumberWidget);
 }
 
 void UZUserHUD::RemoveInventoryWidget()
@@ -227,6 +245,11 @@ void UZUserHUD::RemoveInGameMenuWidget()
 	RemoveWidgetFromList(InGameMenuWidget);
 }
 
+void UZUserHUD::RemoveInputNumberWidget()
+{
+	RemoveWidgetFromList(InputNumberWidget);
+}
+
 void UZUserHUD::RemoveAllWidgetFromScreen()
 {
 	int32 Size = DrawWidgetList.Num();
@@ -243,7 +266,7 @@ void UZUserHUD::RemoveWidgetFromTop()
 		return;
 	}
 
-	DrawWidgetList.Pop().Get()->SetVisibility(ESlateVisibility::Hidden);
+	DrawWidgetList.Pop().Get()->OnRemoveScreen();
 	if (IsDrawWidgetListEmpty())
 	{
 		auto PlayerController = GetOwningPlayer();
@@ -281,24 +304,7 @@ UZInputNumberWidget * const UZUserHUD::GetInputNumberWidget() const
 	return InputNumberWidget;
 }
 
-void UZUserHUD::IncreaseStackNum()
-{
-	++WidgetStackNum;
-
-}
-
-void UZUserHUD::DecreaseStackNum()
-{
-	if (WidgetStackNum < 1)
-	{
-		return;
-	}
-
-	--WidgetStackNum;
-
-}
-
-void UZUserHUD::AddWidgetToList(UUserWidget * Widget)
+void UZUserHUD::AddWidgetToList(UZUserWidget * Widget)
 {
 	if(DrawWidgetList.Contains(Widget))
 	{
@@ -324,13 +330,13 @@ void UZUserHUD::AddWidgetToList(UUserWidget * Widget)
 
 	}
 
-	Widget->SetVisibility(ESlateVisibility::Visible);
+	Widget->OnDrawScreen();
 	DrawWidgetList.AddUnique(Widget);
 }
 
-void UZUserHUD::RemoveWidgetFromList(UUserWidget* Widget)
+void UZUserHUD::RemoveWidgetFromList(UZUserWidget* Widget)
 {
-	Widget->SetVisibility(ESlateVisibility::Hidden);
+	Widget->OnRemoveScreen();
 	DrawWidgetList.RemoveSingle(Widget);
 
 	if (IsDrawWidgetListEmpty())
