@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ProjectZ_422.h"
+#include "ZGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "ZUserHUD.generated.h"
 
@@ -32,6 +33,7 @@ public:
 	void UpdateRemainTime(float NewTime);
 	void UpdateCurrentWave(int32 NewCurrentWave);
 	void UpdateNumZombies(int32 NewValue);
+	void UpdatePhaseText(EGamePhase NewPhase);
 
 public:
 	/*
@@ -126,6 +128,9 @@ protected:
 
 	UPROPERTY()
 	class UTextBlock* RemainTimeText;
+
+	UPROPERTY()
+	class UTextBlock* PhaseText;
 
 	UPROPERTY()
 	class UTextBlock* TotalWaveText;

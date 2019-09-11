@@ -60,6 +60,11 @@ void UZShopBuyItemWidget::NativeOnMouseLeave(const FPointerEvent & InMouseEvent)
 
 void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
+	if (NewNumber < 1)
+	{
+		return;
+	}
+
 	OnBuyShopItem.Execute(GetOwningPlayerPawn(), ShopItemData, NewNumber);
 }
 

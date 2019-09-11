@@ -43,6 +43,12 @@ void AZGameMode::InitGame(const FString & MapName, const FString & Options, FStr
 	CurrentLevelName = *MapName;
 }
 
+void AZGameMode::PostLogin(APlayerController * NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+}
+
 void AZGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -116,7 +122,7 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 	}
 
 	KillerPawn->GetItemStatusComponent()->AdjustMoney(Zombie->GetZombieValue());
-
+	KillerState->AdjustScore(Zombie->GetZombieScore());
 
 }
 
@@ -177,74 +183,90 @@ void AZGameMode::UpdateGameTime(float DeltaTime)
 
 }
 
-void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGameState)
+void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 {
-	switch (NewCurrentGameState)
+	switch (NewCurrentGamePhase)
 	{
-	case EGamePhase::HalfTime:
-	{
-		/* Spawner 비활성화 */
-		for (const auto& Spawner : EnemySpawners)
+		case EGamePhase::HalfTime:
 		{
-			Spawner->SetActive(false);
-		}
-
-		/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
-		CurrentRemainTime = HalfTime;
-		for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
-		{
-			Shop->OpenShop();
-		}
-		break;
-	}
-	case EGamePhase::WaveTime:
-	{
-		/*
-			남은 시간을 WaveTime만큼으로 초기화하고, 상점 닫음
-			Spawner 활성화 및 Wave 증가
-		*/
-		CurrentRemainTime = WaveTime;
-		++CurrentWave;
-		auto ZGameState = Cast<AZGameState>(GameState);
-		if (nullptr != ZGameState)
-		{
-			/*	Wave정보 업데이트 */
-			ZGameState->SetCurrentWave(CurrentWave);
+			/* Spawner 비활성화 */
 			for (const auto& Spawner : EnemySpawners)
 			{
 				Spawner->SetActive(false);
 			}
 
-		}
+			/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
+			CurrentRemainTime = HalfTime;
+			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			{
+				Shop->OpenShop();
+			}
 
-		/* Spawner 활성화 */
-		for (const auto& Spawner : EnemySpawners)
+			break;
+		}
+		case EGamePhase::WaveTime:
 		{
-			Spawner->SetActive(true);
-		}
+			/*
+				남은 시간을 WaveTime만큼으로 초기화하고, 상점 닫음
+				Spawner 활성화 및 Wave 증가
+			*/
+			CurrentRemainTime = WaveTime;
+			++CurrentWave;
+			auto ZGameState = Cast<AZGameState>(GameState);
+			if (nullptr != ZGameState)
+			{
+				/*	Wave정보 업데이트 */
+				ZGameState->SetCurrentWave(CurrentWave);
+				for (const auto& Spawner : EnemySpawners)
+				{
+					Spawner->SetActive(false);
+				}
 
-		/* 상점 닫음 */
-		for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			}
+
+			/* Spawner 활성화 */
+			for (const auto& Spawner : EnemySpawners)
+			{
+				Spawner->SetActive(true);
+			}
+
+			/* 상점 닫음 */
+			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			{
+				Shop->CloseShop();
+			}
+
+			break;
+		}
+		case EGamePhase::Win:
 		{
-			Shop->CloseShop();
+			ZLOG(Error, TEXT("You Win!"));
+			for (const auto& Spawner : EnemySpawners)
+			{
+				Spawner->SetActive(false);
+			}
+			break;
 		}
 
-		break;
+
 	}
-	case EGamePhase::Win:
+
+	/* Phase text 업데이트 */
+	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
 	{
-		ZLOG(Error, TEXT("You Win!"));
-		for (const auto& Spawner : EnemySpawners)
+		auto MyPC = Cast<AZPlayerController>(Iter->Get());
+		if (MyPC)
 		{
-			Spawner->SetActive(false);
+			auto MyHUD = MyPC->GetZHUD()->GetUserHUD();
+			if (MyHUD)
+			{
+				MyHUD->UpdatePhaseText(NewCurrentGamePhase);
+			}
 		}
-		break;
 	}
 
 
-	}
-
-	CurrentGamePhase = NewCurrentGameState;
+	CurrentGamePhase = NewCurrentGamePhase;
 
 
 }

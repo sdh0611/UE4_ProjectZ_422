@@ -19,10 +19,10 @@ public:
 
 public:
 	void AddKill();
-
+	void AdjustScore(int32 NewScore);
+	
 private:
 	int32 Kills;
 
-	
-
+	int32 CurScore;
 };

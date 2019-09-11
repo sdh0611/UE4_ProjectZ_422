@@ -34,6 +34,8 @@ AZBaseZombie::AZBaseZombie()
 	SprintSpeed = 500.f;
 
 	ZombieValue = 100;
+	ZombieScore = 100;
+
 	AttackDamage = 10.f;
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
@@ -145,6 +147,11 @@ void AZBaseZombie::ChangeZombieState(EZombieState NewState)
 int32 AZBaseZombie::GetZombieValue() const
 {
 	return ZombieValue;
+}
+
+int32 AZBaseZombie::GetZombieScore() const
+{
+	return ZombieScore;
 }
 
 UZZombieAnimInstance * const AZBaseZombie::GetZombieAnimInstance() const

@@ -45,6 +45,11 @@ void UZInventoryItemWidget::NativeConstruct()
 
 void UZInventoryItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
+	if (NewNumber < 1)
+	{
+		return;
+	}
+
 	Item->OnDropped(NewNumber);
 }
 

@@ -489,12 +489,14 @@ void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
 	{
 		CurrentMoney = 0;
 	}
+
 	ZLOG(Warning, TEXT("Current money : %d$"), CurrentMoney);
 	auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 	if (nullptr == PlayerController)
 	{
 		return;
 	}
+
 	PlayerController->GetZHUD()->GetUserHUD()->UpdateCurrentMoneyInfo(CurrentMoney);
 
 }

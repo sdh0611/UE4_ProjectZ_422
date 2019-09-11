@@ -43,6 +43,11 @@ void UZShopSellItemWidget::NativeConstruct()
 
 void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
 {
+	if (NewNumber < 1)
+	{
+		return;
+	}
+
 	OnSellItem.Execute(GetOwningPlayerPawn(), Item, NewNumber);
 }
 

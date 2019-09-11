@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ZUserHUD.h"
 #include "ZUserWidget.h"
 #include "ZGameState.h"
+#include "ZGameMode.h"
 #include "ZInventoryWidget.h"
 #include "ZShopWidget.h"
 #include "ZHPBarWidget.h"
@@ -71,6 +72,11 @@ void UZUserHUD::NativeConstruct()
 	check(nullptr != NewRemainTimeText);
 	RemainTimeText = NewRemainTimeText;
 
+	/* Phase text */
+	auto NewPhaseText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Phase")));
+	check(nullptr != NewPhaseText);
+	PhaseText = NewPhaseText;
+
 	/* Total wave text */
 	auto NewTotalWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_TotalWaveValue")));
 	check(nullptr != NewTotalWaveText);
@@ -87,19 +93,15 @@ void UZUserHUD::NativeConstruct()
 	CurrentNumZombiesText = NewCurrentNumZombiesText;
 	
 
-	/* HPBarø° StatusComponent πŸ¿Œµ˘ */
+	/* HPBarÏóê StatusComponent Î∞îÏù∏Îî© */
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
 	check(nullptr != Player);
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
 
-	/* Money Info æ˜µ•¿Ã∆Æ */
+	/* Money Info ÏóÖÎç∞Ïù¥Ìä∏ */
 	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
 
 
-	/* 
-		¿Ã∫Œ∫– UI ¡¶∞≈µ… ∂ß Delegate binding æÓ∂ª∞‘ ¡¶∞≈«“¡ˆ ∞ÌπŒ«ÿ∫¡æﬂ«‘. 
-		->NativeDestruct() »£√‚µ… ∂ß ¡¶∞≈«‘.
-	*/
 	auto MyGameState = GetWorld()->GetGameState<AZGameState>();
 	if (MyGameState)
 	{
@@ -107,6 +109,12 @@ void UZUserHUD::NativeConstruct()
 		UpdateCurrentWave(MyGameState->GetCurrentWave());
 		UpdateNumZombies(MyGameState->GetCurrentNumZombies());
 		TotalWaveText->SetText(FText::FromString(FString::FromInt(MyGameState->GetTotalWave())));
+	}
+
+	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+	if (MyGameMode)
+	{
+		UpdatePhaseText(MyGameMode->GetCurrentGamePhase());
 	}
 
 }
@@ -144,6 +152,35 @@ void UZUserHUD::UpdateNumZombies(int32 NewValue)
 {
 	FString CurrentNumZombies = FString::FromInt(NewValue);
 	CurrentNumZombiesText->SetText(FText::FromString(CurrentNumZombies));
+}
+
+void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
+{
+	if (nullptr == PhaseText)
+	{
+		ZLOG(Error, TEXT("Phase text not exist.."));
+		return;
+	}
+
+	switch (NewPhase)
+	{
+		case EGamePhase::HalfTime:
+		{
+			PhaseText->SetText(FText::FromString(TEXT("Ï†ÑÌà¨Ïóê ÎåÄÎπÑÌïòÏã≠ÏãúÏò§ !")));
+			break;
+		}
+		case EGamePhase::WaveTime:
+		{
+			PhaseText->SetText(FText::FromString(TEXT("Îã§Í∞ÄÏò§Îäî Ï†ÅÎì§ÏùÑ Î¨ºÎ¶¨ÏπòÏã≠ÏãúÏò§!")));
+			break;
+		}
+		default:
+		{
+			PhaseText->SetText(FText::GetEmpty());
+			break;
+		}
+
+	}
 }
 
 void UZUserHUD::ToggleInventoryWidget()
