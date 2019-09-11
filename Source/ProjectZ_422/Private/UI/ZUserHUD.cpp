@@ -174,6 +174,11 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 			PhaseText->SetText(FText::FromString(TEXT("다가오는 적들을 물리치십시오!")));
 			break;
 		}
+		case EGamePhase::Win:
+		{
+			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다!")));
+			break;
+		}
 		default:
 		{
 			PhaseText->SetText(FText::GetEmpty());
