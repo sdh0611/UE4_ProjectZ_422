@@ -305,7 +305,7 @@ void AZShop::OnExitShop()
 {
 	if (EnterPlayer)
 	{
-		auto PlayerController = Cast<AZPlayerController>(EnterPlayer->GetController());
+		auto PlayerController = EnterPlayer->GetController<AZPlayerController>();
 		if (nullptr == PlayerController)
 		{
 			return;

@@ -110,9 +110,11 @@ void UZShopWidget::OnExitButtonClicked()
 		Shop->OnExitShop();
 		ShopBuyWidget->ClearWidget();
 		ShopSellWidget->ClearWidget();
+		BindShop(nullptr);
 	}
 	else
 	{
+		SetVisibility(ESlateVisibility::Hidden);
 		RemoveFromParent();
 	}
 }
