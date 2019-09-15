@@ -97,6 +97,15 @@ protected:
 	void AddWidgetToList(class UZUserWidget* Widget);
 	void RemoveWidgetFromList(class UZUserWidget* Widget);
 	bool IsDrawWidgetListEmpty();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void CallWarningAnim();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CallFadeInAnim();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CallFadeOutAnim();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))

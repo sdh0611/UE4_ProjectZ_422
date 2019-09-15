@@ -167,16 +167,21 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 		case EGamePhase::HalfTime:
 		{
 			PhaseText->SetText(FText::FromString(TEXT("전투에 대비하십시오 !")));
+			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
 			break;
 		}
 		case EGamePhase::WaveTime:
 		{
-			PhaseText->SetText(FText::FromString(TEXT("다가오는 적들을 물리치십시오!")));
+			//PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 0.f))));
+			PhaseText->SetText(FText::FromString(TEXT("적들이 몰려옵니다 !")));
+			CallWarningAnim();
 			break;
 		}
 		case EGamePhase::Win:
 		{
-			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다!")));
+			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
+			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
+			//CallFadeInAnim();
 			break;
 		}
 		default:

@@ -155,7 +155,6 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZCharacter::ToggleInGameMenu);
 	PlayerInputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZCharacter::RemoveWidgetFromTop);
 
-
 	// For debug
 	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
 	PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);

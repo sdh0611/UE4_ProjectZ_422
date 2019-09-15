@@ -161,4 +161,5 @@ void UZCurrentWeaponInfoWidget::ClearWidget()
 	WeaponName->SetText(FText::GetEmpty());
 	CurrentAmmo->SetText(FText::GetEmpty());
 	MaxAmmo->SetText(FText::GetEmpty());
+	FireMode->SetText(FText::GetEmpty());
 }
