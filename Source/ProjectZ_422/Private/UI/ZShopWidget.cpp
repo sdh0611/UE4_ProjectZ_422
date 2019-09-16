@@ -8,6 +8,9 @@
 #include "ZShopSellWidget.h"
 #include "ZShopSellItemWidget.h"
 #include "ZItem.h"
+#include "ZCharacter.h"
+#include "ZPlayerController.h"
+#include "ZCharacterItemStatusComponent.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
@@ -22,8 +25,9 @@ void UZShopWidget::NativeConstruct()
 	check(nullptr != NewExitButton);
 	ExitButton = NewExitButton;
 
-	SetVisibility(ESlateVisibility::Hidden);
-	ExitButton->OnClicked.AddDynamic(this, &UZShopWidget::OnExitButtonClicked);
+	auto NewCurrentMoney = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrentMoney")));
+	check(NewCurrentMoney);
+	CurrentMoney = NewCurrentMoney;
 
 	auto NewShopBuyWidget = Cast<UZShopBuyWidget>(GetWidgetFromName(TEXT("UI_Shop_Buy")));
 	check(nullptr != NewShopBuyWidget);
@@ -32,6 +36,21 @@ void UZShopWidget::NativeConstruct()
 	auto NewShopSellWidget = Cast<UZShopSellWidget>(GetWidgetFromName(TEXT("UI_Shop_Sell")));
 	check(nullptr != NewShopSellWidget);
 	ShopSellWidget = NewShopSellWidget;
+
+
+	SetVisibility(ESlateVisibility::Hidden);
+	ExitButton->OnClicked.AddDynamic(this, &UZShopWidget::OnExitButtonClicked);
+
+	/* ItemStatus에 바인딩. */
+	auto Player = GetOwningPlayerPawn<AZCharacter>();
+	if (nullptr == Player)
+	{
+		ZLOG(Error, TEXT("Player not exist..."));
+		return;
+	}
+
+	UpdateCurrentMoney(Player->GetItemStatusComponent()->GetCurrentMoney());
+	Player->GetItemStatusComponent()->OnMoneyInfoChange.AddUObject(this, &UZShopWidget::UpdateCurrentMoney);
 
 }
 
@@ -121,6 +140,11 @@ void UZShopWidget::AddItemToSellWidget(AZItem* NewItem)
 	
 	ShopSellItemWidget->OnSellItem.BindUObject(Shop, &AZShop::Sell);
 
+}
+
+void UZShopWidget::UpdateCurrentMoney(int32 NewMoney)
+{
+	CurrentMoney->SetText(FText::FromString(FString::FromInt(NewMoney)));
 }
 
 

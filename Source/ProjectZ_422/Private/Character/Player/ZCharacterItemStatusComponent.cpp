@@ -497,7 +497,9 @@ void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
 		return;
 	}
 
-	PlayerController->GetZHUD()->GetUserHUD()->UpdateCurrentMoneyInfo(CurrentMoney);
+	//PlayerController->GetZHUD()->GetUserHUD()->UpdateCurrentMoneyInfo(CurrentMoney);
+
+	OnMoneyInfoChange.Broadcast(CurrentMoney);
 
 }
 

@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "ZCharacterItemStatusComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnMoneyInfoChange, int32);
+
 enum EWeaponSlot : uint8
 {
 	Main1 = 0,
@@ -94,6 +96,10 @@ private:
 		@return : InventoryIndex. 빈 공간이 없다면 -1 반환.
 	*/
 	int32 AllocateInventoryIndex();
+
+public:
+	/* UI와 연동 */
+	FOnMoneyInfoChange OnMoneyInfoChange;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = ItemStatus)

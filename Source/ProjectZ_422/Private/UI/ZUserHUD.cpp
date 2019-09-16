@@ -99,8 +99,8 @@ void UZUserHUD::NativeConstruct()
 	HPBarWidget->BindStatus(Player->GetStatusComponent());
 
 	/* Money Info 업데이트 */
+	Player->GetItemStatusComponent()->OnMoneyInfoChange.AddUObject(this, &UZUserHUD::UpdateCurrentMoneyInfo);
 	UpdateCurrentMoneyInfo(Player->GetItemStatusComponent()->GetCurrentMoney());
-
 
 	auto MyGameState = GetWorld()->GetGameState<AZGameState>();
 	if (MyGameState)

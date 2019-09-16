@@ -25,6 +25,7 @@ public:
 	void ConstructSellWidget(const TArray<class AZItem*>& ItemList);
 	void AddItemToBuyWidget(struct FZShopItemData* const NewShopItemData);
 	void AddItemToSellWidget(class AZItem* NewItem);
+	void UpdateCurrentMoney(int32 NewMoney);
 
 private:
 
@@ -36,6 +37,9 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ShopWidget)
 	class UButton* ExitButton;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ShopWidget)
+	class UTextBlock* CurrentMoney;
 
 	UPROPERTY(VisibleAnywhere, Category = Shop)
 	class UZShopBuyWidget* ShopBuyWidget;
