@@ -22,6 +22,19 @@ public:
 	void UpdateWidget();
 	void ClearWidget();
 
+protected:
+	class UTexture2D* const FindTexture(const FName& Name) const;
+
+private:
+	void LoadIconImage();
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UDataTable* IconDataTable;
+
+	UPROPERTY()
+	TMap<FName, UTexture2D*> IconTable;
+
 private:
 	UPROPERTY()
 	class AZWeapon* Weapon;
@@ -37,5 +50,8 @@ private:
 
 	UPROPERTY()
 	class UTextBlock* FireMode;
+
+	UPROPERTY()
+	class UImage* WeaponIcon;
 
 };

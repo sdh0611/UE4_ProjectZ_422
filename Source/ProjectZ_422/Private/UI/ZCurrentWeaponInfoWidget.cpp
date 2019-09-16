@@ -4,7 +4,10 @@
 #include "ZCurrentWeaponInfoWidget.h"
 #include "ZWeapon.h"
 #include "ZGun.h"
+#include "ZGameInstance.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
+
 
 void UZCurrentWeaponInfoWidget::NativeConstruct()
 {
@@ -26,10 +29,18 @@ void UZCurrentWeaponInfoWidget::NativeConstruct()
 	check(nullptr != NewFireMode);
 	FireMode = NewFireMode;
 
+	auto NewWeaponIcon = Cast<UImage>(GetWidgetFromName(TEXT("IMG_WeaponIcon")));
+	check(nullptr != NewWeaponIcon);
+	WeaponIcon = NewWeaponIcon;
+
 	WeaponName->SetText(FText::GetEmpty());
-	CurrentAmmo->SetText(FText::GetEmpty());
-	MaxAmmo->SetText(FText::GetEmpty());
+	CurrentAmmo->SetText(FText::FromString(FString::FromInt(0)));
+	MaxAmmo->SetText(FText::FromString(FString::FromInt(0)));
 	FireMode->SetText(FText::GetEmpty());
+	WeaponIcon->SetVisibility(ESlateVisibility::Hidden);
+
+	LoadIconImage();
+
 }
 
 void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
@@ -43,6 +54,9 @@ void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
 	Weapon = NewWeapon;
 
 	WeaponName->SetText(FText::FromString(Weapon->GetItemName()));
+
+	WeaponIcon->SetBrushFromTexture(FindTexture(*NewWeapon->GetItemName()));
+	WeaponIcon->SetVisibility(ESlateVisibility::Visible);
 
 	switch (NewWeapon->GetWeaponCategory())
 	{
@@ -79,19 +93,30 @@ void UZCurrentWeaponInfoWidget::BindWeapon(AZWeapon * NewWeapon)
 			FText Text = FText::FromString(FString::FromInt(NewWeapon->GetCurrentQuantityOfItem()));
 			CurrentAmmo->SetText(Text);
 			MaxAmmo->SetText(Text);
+
 			FireMode->SetText(FText::GetEmpty());
 			break;
 		}
 		case EWeaponCategory::Knife:
 		{
-			CurrentAmmo->SetText(FText::GetEmpty());
-			MaxAmmo->SetText(FText::GetEmpty());
+			CurrentAmmo->SetText(FText::FromString(FString::FromInt(0)));
+			MaxAmmo->SetText(FText::FromString(FString::FromInt(0)));
+
 			FireMode->SetText(FText::GetEmpty());
 			break;
 		}
 		default:
 		{
 			ZLOG(Error, TEXT("Invalid category."));
+
+			WeaponIcon->SetVisibility(ESlateVisibility::Hidden);
+			WeaponIcon->SetBrushFromTexture(nullptr);
+			
+			CurrentAmmo->SetText(FText::GetEmpty());
+
+			MaxAmmo->SetText(FText::GetEmpty());
+			
+			FireMode->SetText(FText::GetEmpty());
 			break;
 		}
 	}
@@ -158,8 +183,60 @@ void UZCurrentWeaponInfoWidget::ClearWidget()
 {
 	Weapon = nullptr;
 
+	WeaponIcon->SetVisibility(ESlateVisibility::Hidden);
+	WeaponIcon->SetBrushFromTexture(nullptr);
+
 	WeaponName->SetText(FText::GetEmpty());
-	CurrentAmmo->SetText(FText::GetEmpty());
-	MaxAmmo->SetText(FText::GetEmpty());
+	
+	CurrentAmmo->SetText(FText::FromString(FString::FromInt(0)));
+	
+	MaxAmmo->SetText(FText::FromString(FString::FromInt(0)));
+	
 	FireMode->SetText(FText::GetEmpty());
+}
+
+UTexture2D * const UZCurrentWeaponInfoWidget::FindTexture(const FName & Name) const
+{
+	if (IconTable.Contains(Name))
+	{
+		return IconTable[Name];
+	}
+
+	return nullptr;
+}
+
+void UZCurrentWeaponInfoWidget::LoadIconImage()
+{
+	if (nullptr == IconDataTable)
+	{
+		ZLOG(Error, TEXT("IconData not exist.."));
+		return;
+	}
+
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(MyGameInstance);
+
+	TArray<FName> Names = IconDataTable->GetRowNames();
+
+	for (const auto& Name : Names)
+	{
+		auto Data = IconDataTable->FindRow<FZImageData>(Name, TEXT(""));
+		if (Data)
+		{
+			FSoftObjectPath Path(Data->ImagePath);
+			MyGameInstance->AssetLoader.RequestSyncLoad(Path);
+
+			TSoftObjectPtr<UTexture2D> Icon(Data->ImagePath);
+			if (Icon.IsValid())
+			{
+				IconTable.Add(*Data->Name, Icon.Get());
+			}
+
+		}
+		
+	}
+
+
+
+
 }

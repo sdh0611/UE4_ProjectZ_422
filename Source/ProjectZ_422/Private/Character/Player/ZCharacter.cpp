@@ -938,7 +938,7 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 		*/
 		switch (CurrentWeapon->GetWeaponInventoryIndex())
 		{
-			case 0:
+			case EWeaponSlot::Main1:
 			{
 				/*
 					장전중인 경우 장전 취소
@@ -954,7 +954,7 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
 				break;
 			}
-			case 1:
+			case EWeaponSlot::Main2:
 			{
 				/*
 					장전중인 경우 장전 취소
@@ -970,11 +970,11 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
 				break;
 			}
-			case 2:
+			case EWeaponSlot::Knife:
 			{
 				break;
 			}
-			case 3:
+			case EWeaponSlot::Grenade:
 			{
 				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
 				break;

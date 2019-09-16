@@ -6,19 +6,19 @@
 #include "Components/ActorComponent.h"
 #include "ZCharacterItemStatusComponent.generated.h"
 
+enum EWeaponSlot : uint8
+{
+	Main1 = 0,
+	Main2,
+	Grenade,
+	Knife
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTZ_422_API UZCharacterItemStatusComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	enum EWeaponSlot : uint8
-	{
-		Main1 = 0,
-		Main2,
-		Grenade,
-		Knife
-	};
 
 public:	
 	// Sets default values for this component's properties
