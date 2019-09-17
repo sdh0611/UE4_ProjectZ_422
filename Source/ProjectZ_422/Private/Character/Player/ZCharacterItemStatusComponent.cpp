@@ -524,7 +524,7 @@ void UZCharacterItemStatusComponent::SetMaxSizeOfItemList(int32 NewMaxSize)
 	for (int32 Index = ItemList.Num(); Index < MaxSizeOfItemList; ++Index)
 	{
 		//Item Drop 코드 기재할 것.
-
+		TempItemList[Index]->OnDropped();
 	}
 
 	MaxSizeOfItemList = NewMaxSize;

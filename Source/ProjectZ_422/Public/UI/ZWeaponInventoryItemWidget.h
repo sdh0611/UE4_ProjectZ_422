@@ -5,6 +5,10 @@
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
 #include "ZWeaponInventoryItemWidget.generated.h"
+/*
+	NOTE(9.17) : 
+		Æó±â ¿¹Á¤.
+*/
 
 /**
  * 
