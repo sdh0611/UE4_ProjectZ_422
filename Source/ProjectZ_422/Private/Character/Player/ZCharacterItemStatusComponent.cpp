@@ -7,6 +7,7 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZInventoryWidget.h"
+#include "ZWeaponInventoryWidget.h"
 #include "ZShopWidget.h"
 #include "ZPickup.h"
 #include "ZWeapon.h"
@@ -126,10 +127,10 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 			if (PlayerController)
 			{
-				auto InventoryWidget = PlayerController->GetZHUD()->GetUserHUD()->GetInventoryWidget();
-				if (nullptr == InventoryWidget)
+				auto UserHUD = PlayerController->GetZHUD()->GetUserHUD();
+				if (nullptr == UserHUD)
 				{
-					ZLOG(Error, TEXT("Inventory widget not exsit.."));
+					ZLOG(Error, TEXT("UserHUD not exsit.."));
 				}
 				else
 				{
@@ -139,11 +140,11 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 					{
 						AZWeapon* NewWeapon = Cast<AZWeapon>(NewItem);
 						check(NewWeapon);
-						InventoryWidget->AddItemToWeaponInventory(NewWeapon);
+						UserHUD->GetWeaponInventoryWidget()->AddItemToWeaponInventory(NewWeapon);
 					}
 					else
 					{
-						InventoryWidget->AddItemToInventory(NewItem);
+						UserHUD->GetInventoryWidget()->AddItemToInventory(NewItem);
 					}
 				}
 

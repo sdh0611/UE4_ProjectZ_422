@@ -89,6 +89,7 @@ public:
 		Widget을 얻어오기 위한 Get메소드들
 	*/
 	class UZInventoryWidget* const GetInventoryWidget() const;
+	class UZWeaponInventoryWidget* const GetWeaponInventoryWidget() const;
 	class UZShopWidget* const GetShopWidget() const;
 	class UZCurrentWeaponInfoWidget* const GetCurrentWeaponInfoWidget() const;
 	class UZInputNumberWidget* const GetInputNumberWidget() const;
@@ -113,6 +114,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZInventoryWidget* InventoryWidget;
+
+	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
+	class UZWeaponInventoryWidget* WeaponInventoryWidget;
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZShopWidget* ShopWidget;

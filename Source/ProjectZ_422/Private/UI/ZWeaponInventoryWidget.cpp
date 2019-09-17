@@ -4,6 +4,7 @@
 #include "ZWeaponInventoryWidget.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "ZGameInstance.h"
+#include "ZWeapon.h"
 #include "Components/Image.h"
 
 void UZWeaponInventoryWidget::NativeConstruct()
@@ -22,16 +23,16 @@ void UZWeaponInventoryWidget::NativeConstruct()
 	LoadIconImage();
 }
 
-void UZWeaponInventoryWidget::AddItemToWeaponInventory(const FName& Name, int32 WeaponInventoryIndex)
+void UZWeaponInventoryWidget::AddItemToWeaponInventory(class AZWeapon* NewWeapon)
 {
-	auto WeaponIcon = FindTexture(Name);
+	auto WeaponIcon = FindTexture(*NewWeapon->GetItemName());
 	if (nullptr == WeaponIcon)
 	{
 		ZLOG(Error, TEXT("Invalid weapon.."));
 		return;
 	}
 
-	switch (WeaponInventoryIndex)
+	switch (NewWeapon->GetWeaponInventoryIndex())
 	{
 		case EWeaponSlot::Main1:
 		{

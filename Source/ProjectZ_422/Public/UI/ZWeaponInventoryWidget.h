@@ -18,7 +18,7 @@ public:
 	virtual void NativeConstruct() override;
 	
 public:
-	void AddItemToWeaponInventory(const FName& Name, int32 WeaponInventoryIndex);
+	void AddItemToWeaponInventory(class AZWeapon* NewWeapon);
 	void UpdateWidget();
 	void ClearWidget(int32 WeaponInventoryIndex);
 
