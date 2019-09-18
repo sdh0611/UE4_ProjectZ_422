@@ -127,7 +127,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 			if (PlayerController)
 			{
-				auto UserHUD = PlayerController->GetZHUD()->GetUserHUD();
+				auto UserHUD = PlayerController->GetUserHUD();
 				if (nullptr == UserHUD)
 				{
 					ZLOG(Error, TEXT("UserHUD not exsit.."));
@@ -149,10 +149,10 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 				}
 
 				// ShopSellWidget Update
-				if (PlayerController->GetZHUD()->GetUserHUD()->IsShopWidgetOnScreen())
+				if (PlayerController->GetUserHUD()->IsShopWidgetOnScreen())
 				{
 					ZLOG(Warning, TEXT("Add Item to SellWidget"));
-					auto ShopSellWidget = PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget();
+					auto ShopSellWidget = PlayerController->GetUserHUD()->GetShopWidget();
 					if (ShopSellWidget)
 					{
 						ShopSellWidget->AddItemToSellWidget(NewItem);

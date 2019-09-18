@@ -357,11 +357,11 @@ void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
 	{
 		return;
 	}
-	PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget()->BindShop(this);
-	PlayerController->GetZHUD()->GetUserHUD()->DrawShopWidget();
+	PlayerController->GetUserHUD()->GetShopWidget()->BindShop(this);
+	PlayerController->GetUserHUD()->DrawShopWidget();
 	
 	/* 상점 아이템들을 그리기 위한 준비. */
-	auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetZHUD()->GetUserHUD()->GetShopWidget());
+	auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetUserHUD()->GetShopWidget());
 	if (nullptr == ShopWidget)
 	{
 		return;

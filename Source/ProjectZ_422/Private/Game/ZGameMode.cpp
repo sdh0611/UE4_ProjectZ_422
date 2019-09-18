@@ -257,7 +257,7 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 		auto MyPC = Cast<AZPlayerController>(Iter->Get());
 		if (MyPC)
 		{
-			auto MyHUD = MyPC->GetZHUD()->GetUserHUD();
+			auto MyHUD = MyPC->GetUserHUD();
 			if (MyHUD)
 			{
 				MyHUD->UpdatePhaseText(NewCurrentGamePhase);

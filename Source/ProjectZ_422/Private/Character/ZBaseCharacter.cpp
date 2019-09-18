@@ -35,7 +35,6 @@ AZBaseCharacter::AZBaseCharacter()
 	DisappearTime = 5.f;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	bUseControllerRotationYaw = true;
@@ -79,13 +78,6 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
 	{
 		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
-		//UPhysicalMaterial* PhysicalMaterial = PointDamage->HitInfo.PhysMaterial.Get();
-		//if (PhysicalMaterial->SurfaceType == SURFACE_HEAD)
-		//{
-		//	ZLOG(Error, TEXT("Headshot."));
-		//	FinalDamage *= 5.f;
-		//}
-
 		if (HitEffect)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,
@@ -107,6 +99,14 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 		ZLOG(Warning, TEXT("Dead!!"));
 		
 		OnDead();
+	}
+	else
+	{
+		auto Anim = GetAnimInstance();
+		if (::IsValid(Anim))
+		{
+			Anim->PlayCharacterMontage(TEXT("Hit"));
+		}
 	}
 
 	return FinalDamage;

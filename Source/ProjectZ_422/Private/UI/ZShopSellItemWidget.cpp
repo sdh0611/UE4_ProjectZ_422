@@ -133,7 +133,7 @@ void UZShopSellItemWidget::OnSellButtonClick()
 		auto PC = GetOwningPlayer<AZPlayerController>();
 		if (PC)
 		{
-			auto UserHUD = PC->GetZHUD()->GetUserHUD();
+			auto UserHUD = PC->GetUserHUD();
 			if (UserHUD)
 			{
 				auto InputWidget = UserHUD->GetInputNumberWidget();

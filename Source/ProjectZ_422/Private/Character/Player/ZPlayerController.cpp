@@ -7,6 +7,7 @@
 #include "ZPlayerCameraManager.h"
 #include "ZCharacter.h"
 #include "ZCharacterItemStatusComponent.h"
+#include "ZUserHUD.h"
 
 
 AZPlayerController::AZPlayerController()
@@ -19,9 +20,29 @@ void AZPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (nullptr == UserHUDClass)
+	{
+		ZLOG(Error, TEXT("UserHUDClass null."));
+		return;
+	}
+
+	UserHUD = CreateWidget<UZUserHUD>(this, UserHUDClass);
+	if (nullptr == UserHUD)
+	{
+		ZLOG(Error, TEXT("Failed to create UserHUD."));
+		return;
+	}
+
+	UserHUD->AddToViewport();
+
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
 
+}
+
+UZUserHUD * const AZPlayerController::GetUserHUD() const
+{
+	return UserHUD;
 }
 
 AZHUD * const AZPlayerController::GetZHUD() const
