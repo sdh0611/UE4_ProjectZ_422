@@ -39,8 +39,5 @@ protected:
 protected:
 	UPROPERTY()
 	class UImage* WeaponImage;
-
-	UPROPERTY()
-	class UTextBlock* SlotName;
-
+	   
 };

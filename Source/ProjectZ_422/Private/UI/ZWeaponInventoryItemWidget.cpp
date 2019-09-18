@@ -3,6 +3,7 @@
 
 #include "ZWeaponInventoryItemWidget.h"
 #include "ZWeapon.h"
+#include "ZCharacterItemStatusComponent.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
@@ -10,9 +11,8 @@ void UZWeaponInventoryItemWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	auto NewWeaponImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_Weapon")));
-	check(NewWeaponImage);
-	WeaponImage = NewWeaponImage;
+	WeaponImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_Weapon")));
+	check(WeaponImage);
 
 }
 
@@ -35,6 +35,7 @@ void UZWeaponInventoryItemWidget::ClearWidget()
 	{
 		WeaponImage->SetBrushFromTexture(nullptr);
 		WeaponImage->SetVisibility(ESlateVisibility::Hidden);
+		BindingWeapon.Get()->OnItemRemoved.RemoveAll(this);
 	}
 
 }
@@ -51,5 +52,6 @@ void UZWeaponInventoryItemWidget::UpdateWidget()
 		WeaponImage->SetBrushFromTexture(BindingWeapon.Get()->GetItemImage());
 		WeaponImage->SetVisibility(ESlateVisibility::Visible);
 	}
+
 
 }

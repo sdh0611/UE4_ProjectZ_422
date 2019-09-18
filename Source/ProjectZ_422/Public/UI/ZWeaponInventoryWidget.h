@@ -20,30 +20,16 @@ public:
 public:
 	void AddItemToWeaponInventory(class AZWeapon* NewWeapon);
 	void UpdateWidget();
-	void ClearWidget(int32 WeaponInventoryIndex);
-
-protected:
-	class UTexture2D* const FindTexture(const FName& Name) const;
-
-private:
-	void LoadIconImage();
-
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UDataTable* IconDataTable;
-
-	UPROPERTY()
-	TMap<FName, UTexture2D*> IconTable;
 
 protected:
 	UPROPERTY()
-	class UImage* WeaponMainFirst;
+	class UZWeaponInventoryItemWidget* WeaponMainFirst;
 	
 	UPROPERTY()
-	class UImage* WeaponMainSecond;
+	class UZWeaponInventoryItemWidget* WeaponMainSecond;
 	
 	UPROPERTY()
-	class UImage* WeaponGrenade;
+	class UZWeaponInventoryItemWidget* WeaponGrenade;
 
 
 };
