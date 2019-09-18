@@ -140,7 +140,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 					{
 						AZWeapon* NewWeapon = Cast<AZWeapon>(NewItem);
 						check(NewWeapon);
-						UserHUD->GetWeaponInventoryWidget()->AddItemToWeaponInventory(NewWeapon);
+						UserHUD->GetInventoryWidget()->AddItemToWeaponInventory(NewWeapon);
 					}
 					else
 					{

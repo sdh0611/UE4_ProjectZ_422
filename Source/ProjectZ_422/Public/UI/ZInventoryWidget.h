@@ -40,6 +40,9 @@ private:
 	class UScrollBox* ItemHolder;
 
 	UPROPERTY()
-	class UScrollBox* WeaponHolder;
+	class UZWeaponInventoryWidget* WeaponInventoryWidget;
+
+	//UPROPERTY()
+	//class UScrollBox* WeaponHolder;
 
 };

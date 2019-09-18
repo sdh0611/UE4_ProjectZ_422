@@ -6,7 +6,6 @@
 #include "ZGameState.h"
 #include "ZGameMode.h"
 #include "ZInventoryWidget.h"
-#include "ZWeaponInventoryWidget.h"
 #include "ZShopWidget.h"
 #include "ZHPBarWidget.h"
 #include "ZCurrentWeaponInfoWidget.h"
@@ -29,11 +28,6 @@ void UZUserHUD::NativeConstruct()
 	auto NewInventoryWidget = Cast<UZInventoryWidget>(GetWidgetFromName(TEXT("UI_Inventory")));
 	check(nullptr != NewInventoryWidget);
 	InventoryWidget = NewInventoryWidget;
-
-	/* WeaponInventory */
-	auto NewWeaponInventoryWidget = Cast<UZWeaponInventoryWidget>(GetWidgetFromName(TEXT("UI_WeaponInventory")));
-	check(nullptr != NewWeaponInventoryWidget);
-	WeaponInventoryWidget = NewWeaponInventoryWidget;
 
 	/* Shop widget */
 	auto NewShopWidget = Cast<UZShopWidget>(GetWidgetFromName(TEXT("UI_Shop")));
@@ -340,11 +334,6 @@ bool UZUserHUD::IsShopWidgetOnScreen() const
 UZInventoryWidget * const UZUserHUD::GetInventoryWidget() const
 {
 	return InventoryWidget;
-}
-
-UZWeaponInventoryWidget * const UZUserHUD::GetWeaponInventoryWidget() const
-{
-	return WeaponInventoryWidget;
 }
 
 UZShopWidget * const UZUserHUD::GetShopWidget() const

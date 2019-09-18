@@ -6,6 +6,7 @@
 #include "ZWeaponInventoryItemWidget.h"
 #include "ZItem.h"
 #include "ZWeapon.h"
+#include "ZWeaponInventoryWidget.h"
 #include "Components/ScrollBox.h"
 #include "ConstructorHelpers.h"
 
@@ -19,13 +20,15 @@ void UZInventoryWidget::NativeConstruct()
 	ZLOG(Warning, TEXT("InventoryWidget construct."));
 	Super::NativeConstruct();
 
-	auto NewItemHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("ItemHolder")));
-	check(nullptr != NewItemHolder);
-	ItemHolder = NewItemHolder;
+	ItemHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("ItemHolder")));
+	check(ItemHolder);
 
-	auto NewWeaponHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("WeaponHolder1")));
-	check(nullptr != NewWeaponHolder);
-	WeaponHolder = NewWeaponHolder;
+	WeaponInventoryWidget = Cast <UZWeaponInventoryWidget>(GetWidgetFromName(TEXT("UI_WeaponInventory")));
+	check(WeaponInventoryWidget);
+
+	//auto NewWeaponHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("WeaponHolder1")));
+	//check(nullptr != NewWeaponHolder);
+	//WeaponHolder = NewWeaponHolder;
 	
 
 	SetVisibility(ESlateVisibility::Hidden);
@@ -51,13 +54,13 @@ void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 
 void UZInventoryWidget::AddItemToWeaponInventory(AZWeapon * const NewWeapon)
 {
-	auto WeaponWidget = Cast<UZWeaponInventoryItemWidget>(WeaponHolder->GetChildAt(NewWeapon->GetWeaponInventoryIndex()));
-	if (nullptr == WeaponWidget)
-	{
-		ZLOG(Error, TEXT("Weapon Inventory widget not exist."));
-		return;
-	}
-	
-	WeaponWidget->BindWeapon(NewWeapon);
+	//auto WeaponWidget = Cast<UZWeaponInventoryItemWidget>(WeaponHolder->GetChildAt(NewWeapon->GetWeaponInventoryIndex()));
+	//if (nullptr == WeaponWidget)
+	//{
+	//	ZLOG(Error, TEXT("Weapon Inventory widget not exist."));
+	//	return;
+	//}
+
+	WeaponInventoryWidget->AddItemToWeaponInventory(NewWeapon);
 
 }
