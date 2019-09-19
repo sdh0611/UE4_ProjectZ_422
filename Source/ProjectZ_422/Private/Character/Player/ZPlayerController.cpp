@@ -26,14 +26,17 @@ void AZPlayerController::BeginPlay()
 		return;
 	}
 
-	UserHUD = CreateWidget<UZUserHUD>(this, UserHUDClass);
-	if (nullptr == UserHUD)
+	if (IsLocalPlayerController())
 	{
-		ZLOG(Error, TEXT("Failed to create UserHUD."));
-		return;
-	}
+		UserHUD = CreateWidget<UZUserHUD>(this, UserHUDClass);
+		if (nullptr == UserHUD)
+		{
+			ZLOG(Error, TEXT("Failed to create UserHUD."));
+			return;
+		}
 
-	UserHUD->AddToViewport();
+		UserHUD->AddToViewport();
+	}
 
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);

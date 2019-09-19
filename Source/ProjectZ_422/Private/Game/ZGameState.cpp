@@ -84,6 +84,7 @@ void AZGameState::UpdateRemainTime(float NewRemainTime)
 
 	RemainTime = NewRemainTime;
 
+	
 	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
 	{
 		auto PC = Cast<AZPlayerController>(Controller->Get());
