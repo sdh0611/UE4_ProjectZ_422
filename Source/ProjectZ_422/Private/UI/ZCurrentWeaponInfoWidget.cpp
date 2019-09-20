@@ -216,26 +216,37 @@ void UZCurrentWeaponInfoWidget::LoadIconImage()
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	check(MyGameInstance);
 
-	TArray<FName> Names = IconDataTable->GetRowNames();
+	//TArray<FName> Names = IconDataTable->GetRowNames();
 
+	//for (const auto& Name : Names)
+	//{
+	//	auto Data = IconDataTable->FindRow<FZImageData>(Name, TEXT(""));
+	//	if (Data)
+	//	{
+	//		FSoftObjectPath Path(Data->ImagePath);
+	//		MyGameInstance->AssetLoader.RequestSyncLoad(Path);
+
+	//		TSoftObjectPtr<UTexture2D> Icon(Data->ImagePath);
+	//		if (Icon.IsValid())
+	//		{
+	//			IconTable.Add(*Data->Name, Icon.Get());
+	//		}
+
+	//	}
+	//	
+	//}
+
+	TArray<FName> Names = IconDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = IconDataTable->FindRow<FZImageData>(Name, TEXT(""));
-		if (Data)
+
+		if (!Data->ImagePath.IsNull())
 		{
-			FSoftObjectPath Path(Data->ImagePath);
-			MyGameInstance->AssetLoader.RequestSyncLoad(Path);
-
-			TSoftObjectPtr<UTexture2D> Icon(Data->ImagePath);
-			if (Icon.IsValid())
-			{
-				IconTable.Add(*Data->Name, Icon.Get());
-			}
-
+			IconTable.Add(*Data->Name, MyGameInstance->AssetLoader.LoadSynchronous(Data->ImagePath));
 		}
-		
-	}
 
+	}
 
 
 

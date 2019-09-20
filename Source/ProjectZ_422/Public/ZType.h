@@ -34,7 +34,7 @@ struct PROJECTZ_422_API FZStaticMeshData : public FTableRowBase
 
 public:
 	FZStaticMeshData()
-		:Name(TEXT("")), StaticMeshPath(TEXT(""))
+		:Name(TEXT(""))
 	{
 
 	}
@@ -43,7 +43,7 @@ public:
 	FString Name;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
-	FString StaticMeshPath;
+	TSoftObjectPtr<class UStaticMesh> StaticMeshPath;
 
 };
 
@@ -56,7 +56,7 @@ struct PROJECTZ_422_API FZSkeletalMeshData : public FTableRowBase
 
 public:
 	FZSkeletalMeshData()
-		:Name(TEXT("")), SkeletalMeshPath(TEXT(""))
+		:Name(TEXT(""))
 	{
 
 	}
@@ -65,7 +65,7 @@ public:
 	FString Name;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
-	FString SkeletalMeshPath;
+	TSoftObjectPtr<class USkeletalMesh> SkeletalMeshPath;
 
 };
 
@@ -78,7 +78,7 @@ struct PROJECTZ_422_API FZImageData : public FTableRowBase
 
 public:
 	FZImageData()
-		:Name(TEXT("")), ImagePath(TEXT(""))
+		:Name(TEXT(""))
 	{
 
 	}
@@ -87,7 +87,7 @@ public:
 	FString Name;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
-	FString ImagePath;
+	TSoftObjectPtr<class UTexture2D> ImagePath;
 
 };
 

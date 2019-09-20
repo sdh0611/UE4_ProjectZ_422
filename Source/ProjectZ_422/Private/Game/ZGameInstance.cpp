@@ -3,6 +3,8 @@
 
 #include "ZGameInstance.h"
 #include "ProjectZLoadingScreen.h"
+#include "Engine/StaticMesh.h"
+#include "Engine/SkeletalMesh.h"
 #include "MoviePlayer.h"
 #include "ModuleManager.h"
 
@@ -218,21 +220,31 @@ void UZGameInstance::LoadStaticMesh()
 		return;
 	}
 
+	//TArray<FName> Names = StaticMeshDataTable->GetRowNames();
+	//for (const auto& Name : Names)
+	//{
+	//	auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
+
+	//	FSoftObjectPath ObjectPath(Data->StaticMeshPath);
+	//	AssetLoader.RequestSyncLoad(ObjectPath);
+
+	//	TSoftObjectPtr<UStaticMesh> StaticMesh(Data->StaticMeshPath);
+	//	if (StaticMesh.IsValid())
+	//	{
+	//		StaticMeshTable.Add(Data->Name, StaticMesh.Get());
+	//	}
+	//}
+
 	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
 
-		FSoftObjectPath ObjectPath(Data->StaticMeshPath);
-		AssetLoader.RequestSyncLoad(ObjectPath);
-
-		TSoftObjectPtr<UStaticMesh> StaticMesh(Data->StaticMeshPath);
-		if (StaticMesh.IsValid())
+		if (!Data->StaticMeshPath.IsNull())
 		{
-			StaticMeshTable.Add(Data->Name, StaticMesh.Get());
+			StaticMeshTable.Add(Data->Name, AssetLoader.LoadSynchronous<UStaticMesh>(Data->StaticMeshPath));
 		}
 	}
-
 }
 
 void UZGameInstance::LoadSkeletalMesh()
@@ -243,21 +255,30 @@ void UZGameInstance::LoadSkeletalMesh()
 		return;
 	}
 	
+	//TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
+	//for (const auto& Name : Names)
+	//{
+	//	auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
+
+	//	FSoftObjectPath ObjectPath(Data->SkeletalMeshPath);
+	//	AssetLoader.RequestSyncLoad(ObjectPath);
+
+	//	TSoftObjectPtr<USkeletalMesh> SkeletalMesh(Data->SkeletalMeshPath);
+	//	if (SkeletalMesh.IsValid())
+	//	{
+	//		SkeletalMeshTable.Add(Data->Name, SkeletalMesh.Get());
+	//	}
+	//}
+
 	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
-
-		FSoftObjectPath ObjectPath(Data->SkeletalMeshPath);
-		AssetLoader.RequestSyncLoad(ObjectPath);
-
-		TSoftObjectPtr<USkeletalMesh> SkeletalMesh(Data->SkeletalMeshPath);
-		if (SkeletalMesh.IsValid())
+		if (!Data->SkeletalMeshPath.IsNull())
 		{
-			SkeletalMeshTable.Add(Data->Name, SkeletalMesh.Get());
+			SkeletalMeshTable.Add(Data->Name, AssetLoader.LoadSynchronous<USkeletalMesh>(Data->SkeletalMeshPath));
 		}
 	}
-
 }
 
 void UZGameInstance::LoadImage()
@@ -268,18 +289,30 @@ void UZGameInstance::LoadImage()
 		return;
 	}
 
+	//TArray<FName> Names = ItemImageDataTable->GetRowNames();
+	//for (const auto& Name : Names)
+	//{
+	//	auto Data = ItemImageDataTable->FindRow<FZImageData>(Name, TEXT(""));
+
+	//	FSoftObjectPath ObjectPath(Data->ImagePath);
+	//	AssetLoader.RequestSyncLoad(ObjectPath);
+
+	//	TSoftObjectPtr<UTexture2D> Image(Data->ImagePath);
+	//	if (Image.IsValid())
+	//	{
+	//		ItemImageTable.Add(Data->Name, Image.Get());
+	//	}
+
+	//}
+
 	TArray<FName> Names = ItemImageDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto Data = ItemImageDataTable->FindRow<FZImageData>(Name, TEXT(""));
 
-		FSoftObjectPath ObjectPath(Data->ImagePath);
-		AssetLoader.RequestSyncLoad(ObjectPath);
-
-		TSoftObjectPtr<UTexture2D> Image(Data->ImagePath);
-		if (Image.IsValid())
+		if (!Data->ImagePath.IsNull())
 		{
-			ItemImageTable.Add(Data->Name, Image.Get());
+			ItemImageTable.Add(Data->Name, AssetLoader.LoadSynchronous(Data->ImagePath));
 		}
 
 	}
