@@ -39,6 +39,7 @@ public:
 	/* Setter */
 	void SetTotalWave(int32 NewTotalWave);
 	void SetCurrentWave(int32 NewCurrentWave);
+	void SetCurrentNumZombies(int32 NewNumZombies);
 
 	/* Getter */
 	int32 GetTotalWave() const;

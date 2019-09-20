@@ -102,12 +102,17 @@ void AZEnemySpawner::SpawnEnemy()
 				Enemy->SetActive(true);
 			}
 
-			auto MyGameState = GetWorld()->GetGameState<AZGameState>();
-			if (MyGameState)
-			{
-				MyGameState->AdjustCurrentNumZombies(1);
-			}
+			//auto MyGameState = GetWorld()->GetGameState<AZGameState>();
+			//if (MyGameState)
+			//{
+			//	MyGameState->AdjustCurrentNumZombies(1);
+			//}
 
+			auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+			if (MyGameMode)
+			{
+				MyGameMode->AdjustZombieNum(1);
+			}
 
 			break;
 		}

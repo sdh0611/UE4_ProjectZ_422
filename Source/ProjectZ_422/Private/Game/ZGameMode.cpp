@@ -14,6 +14,7 @@
 #include "ZUserHUD.h"
 #include "ZPlayerState.h"
 #include "EngineUtils.h"
+#include "TimerManager.h"
 
 AZGameMode::AZGameMode()
 {
@@ -108,11 +109,7 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 	}
 
 	/* 좀비 개체수 조정 */
-	auto ZGameState = Cast<AZGameState>(GameState);
-	if(ZGameState)
-	{
-		ZGameState->AdjustCurrentNumZombies(-1);
-	}
+	AdjustZombieNum(-1);
 
 	/* Killer 소지금 증가 */
 	auto KillerPawn = Cast<AZCharacter>(Killer->GetPawn());
@@ -129,6 +126,15 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 EGamePhase AZGameMode::GetCurrentGamePhase() const
 {
 	return CurrentGamePhase;
+}
+
+void AZGameMode::StopAllSpawner()
+{
+	for (const auto& Spawner : EnemySpawners)
+	{
+		Spawner->SetActive(false);
+	}
+
 }
 
 void AZGameMode::UpdateGameTime(float DeltaTime)
@@ -237,6 +243,9 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 				Shop->CloseShop();
 			}
 
+			/* Stop spawner timer 등록 */
+			GetWorld()->GetTimerManager().SetTimer(StopSpawnTimer, this, &AZGameMode::StopAllSpawner, CurrentRemainTime);
+
 			break;
 		}
 		case EGamePhase::Win:
@@ -279,6 +288,22 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 
 	CurrentGamePhase = NewCurrentGamePhase;
 
+
+}
+
+void AZGameMode::AdjustZombieNum(int32 Value)
+{
+	CurrentNumZombies += Value;
+	if (CurrentNumZombies < 0)
+	{
+		CurrentNumZombies = 0;
+	}
+
+	auto MyGameState = GetGameState<AZGameState>();
+	if (MyGameState)
+	{
+		MyGameState->SetCurrentNumZombies(CurrentNumZombies);
+	}
 
 }
 

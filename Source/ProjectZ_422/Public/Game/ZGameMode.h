@@ -51,11 +51,14 @@ public:
 public:
 	void UpdateGameTime(float DeltaTime);
 	void HandleGamePhase(EGamePhase NewCurrentGameState);
+	void AdjustZombieNum(int32 Value);
 
 public:
 	EGamePhase GetCurrentGamePhase() const;
 
 protected:
+	void StopAllSpawner();
+
 	/* Getter */
 	bool IsGameEnd();
 	bool IsGameClear();
@@ -63,6 +66,8 @@ protected:
 	float GetCurrentRemainTime() const;
 
 protected:
+	FTimerHandle StopSpawnTimer;
+
 	UPROPERTY(EditAnywhere, Category = GameMode)
 	EGamePhase CurrentGamePhase;
 
@@ -76,6 +81,10 @@ protected:
 	/* 현재 Wave */
 	UPROPERTY(VisibleAnywhere, Category = GameMode)
 	int32 CurrentWave;
+
+	/* 현재 좀비의 수 */
+	UPROPERTY(VisibleAnywhere, Category = GameState)
+	int32 CurrentNumZombies;
 
 	/* Wave사이에 준비시간. -> 초(Second) 단위 */
 	UPROPERTY(EditAnywhere, Category = GameMode)

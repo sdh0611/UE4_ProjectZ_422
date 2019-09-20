@@ -74,6 +74,27 @@ void AZGameState::SetCurrentWave(int32 NewCurrentWave)
 	}
 }
 
+void AZGameState::SetCurrentNumZombies(int32 NewNumZombies)
+{
+	if (NewNumZombies < 0)
+	{
+		ZLOG(Error, TEXT("Invalid value.."));
+		return;
+	}
+
+	CurrentNumZombies = NewNumZombies;
+
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC && PC->IsLocalPlayerController())
+		{
+			PC->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+		}
+	}
+
+}
+
 void AZGameState::UpdateRemainTime(float NewRemainTime)
 {
 	if (NewRemainTime < 0.f)
