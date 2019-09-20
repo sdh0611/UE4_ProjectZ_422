@@ -169,6 +169,7 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 			PhaseText->SetText(FText::FromString(TEXT("전투에 대비하십시오 !")));
 			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
 			break;
+			CallFadeAnim();
 		}
 		case EGamePhase::WaveTime:
 		{
@@ -181,7 +182,14 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 		{
 			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
 			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
-			//CallFadeInAnim();
+			CallFadeInAnim();
+			break;
+		}
+		case EGamePhase::Lose:
+		{
+			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
+			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
+			CallFadeInAnim();
 			break;
 		}
 		default:

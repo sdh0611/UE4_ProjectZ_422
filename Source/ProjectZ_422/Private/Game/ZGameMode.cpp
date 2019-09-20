@@ -135,8 +135,6 @@ void AZGameMode::UpdateGameTime(float DeltaTime)
 {
 	CurrentRemainTime -= DeltaTime;
 
-	//OnTimeUpdate.Broadcast(CurrentRemainTime);
-
 	if (CurrentRemainTime <= 0.f)
 	{
 		switch (CurrentGamePhase)
@@ -158,8 +156,11 @@ void AZGameMode::UpdateGameTime(float DeltaTime)
 				}
 				else
 				{
-					ZLOG(Error, TEXT("Turn win."));
-					HandleGamePhase(EGamePhase::Win);
+					if (IsGameClear())
+					{
+						ZLOG(Error, TEXT("Turn win."));
+						HandleGamePhase(EGamePhase::Win);
+					}
 				}
 				break;
 			}
@@ -240,14 +241,24 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 		}
 		case EGamePhase::Win:
 		{
-			ZLOG(Error, TEXT("You Win!"));
+			ZLOG(Error, TEXT("Win."));
 			for (const auto& Spawner : EnemySpawners)
 			{
 				Spawner->SetActive(false);
 			}
+
 			break;
 		}
+		case EGamePhase::Lose:
+		{
+			ZLOG(Error, TEXT("Lose."));
+			for (const auto& Spawner : EnemySpawners)
+			{
+				Spawner->SetActive(false);
+			}
 
+			break;
+		}
 
 	}
 

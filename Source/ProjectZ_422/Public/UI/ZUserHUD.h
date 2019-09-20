@@ -105,7 +105,7 @@ protected:
 	void CallFadeInAnim();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void CallFadeOutAnim();
+	void CallFadeAnim();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))

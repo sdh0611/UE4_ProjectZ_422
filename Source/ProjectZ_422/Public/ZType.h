@@ -27,7 +27,7 @@ class PROJECTZ_422_API UZType : public UObject
 */
 
 USTRUCT(BlueprintType)
-struct FZStaticMeshData : public FTableRowBase
+struct PROJECTZ_422_API FZStaticMeshData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -49,7 +49,7 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZSkeletalMeshData : public FTableRowBase
+struct PROJECTZ_422_API FZSkeletalMeshData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -71,7 +71,7 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZImageData : public FTableRowBase
+struct PROJECTZ_422_API FZImageData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -97,7 +97,7 @@ public:
 */
 
 USTRUCT(BlueprintType)
-struct FZItemData : public FTableRowBase
+struct PROJECTZ_422_API FZItemData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -124,7 +124,7 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZWeaponData : public FTableRowBase
+struct PROJECTZ_422_API FZWeaponData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -151,7 +151,7 @@ public:
 		WeaponData를 WeaponCategory에 맞게 세분화시킴.
 */
 USTRUCT(BlueprintType)
-struct FZGunData : public FTableRowBase
+struct PROJECTZ_422_API FZGunData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -191,7 +191,7 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZGrenadeData : public FTableRowBase
+struct PROJECTZ_422_API FZGrenadeData : public FTableRowBase
 {
 
 	GENERATED_BODY()
@@ -216,7 +216,7 @@ public:
 
 
 USTRUCT(BlueprintType)
-struct FZRecoveryData : public FTableRowBase
+struct PROJECTZ_422_API FZRecoveryData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -238,7 +238,7 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct FZDopingData : public FTableRowBase
+struct PROJECTZ_422_API FZDopingData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -264,7 +264,7 @@ public:
 */
 
 USTRUCT(BlueprintType)
-struct FZShopItemData : public FTableRowBase
+struct PROJECTZ_422_API FZShopItemData : public FTableRowBase
 {
 	GENERATED_BODY()
 
