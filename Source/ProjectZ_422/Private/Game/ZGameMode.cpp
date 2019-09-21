@@ -219,6 +219,7 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 			*/
 			CurrentRemainTime = WaveTime;
 			++CurrentWave;
+
 			auto ZGameState = Cast<AZGameState>(GameState);
 			if (nullptr != ZGameState)
 			{
@@ -272,17 +273,10 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 	}
 
 	/* Phase text 업데이트 */
-	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	auto MyGameState = GetGameState<AZGameState>();
+	if (MyGameState)
 	{
-		auto MyPC = Cast<AZPlayerController>(Iter->Get());
-		if (MyPC)
-		{
-			auto MyHUD = MyPC->GetUserHUD();
-			if (MyHUD)
-			{
-				MyHUD->UpdatePhaseText(NewCurrentGamePhase);
-			}
-		}
+		MyGameState->SetCurrentGamePhase(NewCurrentGamePhase);
 	}
 
 
@@ -314,7 +308,7 @@ bool AZGameMode::IsGameEnd()
 
 bool AZGameMode::IsGameClear()
 {
-	if ((CurrentWave > TotalWave) && (GetGameState<AZGameState>()->GetCurrentNumZombies() < 1))
+	if ((CurrentWave >= TotalWave) && (CurrentNumZombies < 1))
 	{
 		return true;
 	}

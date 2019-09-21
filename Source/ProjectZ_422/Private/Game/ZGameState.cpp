@@ -36,7 +36,10 @@ void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
 		auto PC = Cast<AZPlayerController>(Controller->Get());
 		if (PC && PC->IsLocalPlayerController())
 		{
-			PC->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+			}
 		}
 
 	}
@@ -69,7 +72,10 @@ void AZGameState::SetCurrentWave(int32 NewCurrentWave)
 		auto PC = Cast<AZPlayerController>(Controller->Get());
 		if (PC && PC->IsLocalPlayerController())
 		{
-			PC->GetUserHUD()->UpdateCurrentWave(CurrentWave);
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateCurrentWave(CurrentWave);
+			}
 		}
 	}
 }
@@ -89,8 +95,30 @@ void AZGameState::SetCurrentNumZombies(int32 NewNumZombies)
 		auto PC = Cast<AZPlayerController>(Controller->Get());
 		if (PC && PC->IsLocalPlayerController())
 		{
-			PC->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+			}
 		}
+	}
+
+}
+
+void AZGameState::SetCurrentGamePhase(EGamePhase NewPhase)
+{
+	CurrentGamePhase = NewPhase;
+
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC && PC->IsLocalPlayerController())
+		{
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdatePhaseText(CurrentGamePhase);
+			}
+		}
+
 	}
 
 }
@@ -111,7 +139,10 @@ void AZGameState::UpdateRemainTime(float NewRemainTime)
 		auto PC = Cast<AZPlayerController>(Controller->Get());
 		if (PC && PC->IsLocalPlayerController())
 		{
-			PC->GetUserHUD()->UpdateRemainTime(RemainTime);
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateRemainTime(RemainTime);
+			}
 		}
 	}
 

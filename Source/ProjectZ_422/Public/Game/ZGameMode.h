@@ -69,20 +69,33 @@ protected:
 	FTimerHandle StopSpawnTimer;
 
 	UPROPERTY(EditAnywhere, Category = GameMode)
-	EGamePhase CurrentGamePhase;
-
-	UPROPERTY(EditAnywhere, Category = GameMode)
 	EGameModeState GameModeState;
 
-	/* 전체 Wave */
+	/*
+		현재 페이즈.
+		GameState에 기록하는 프로퍼티.
+	*/
+	UPROPERTY(EditAnywhere, Category = GameMode)
+	EGamePhase CurrentGamePhase;
+
+	/* 
+		전체 Wave. 
+		GameState에 기록하는 프로퍼티.
+	*/
 	UPROPERTY(EditAnywhere, Category = GameMode)
 	int32 TotalWave;
 
-	/* 현재 Wave */
+	/* 
+		현재 Wave. 
+		GameState에 기록하는 프로퍼티.
+	*/
 	UPROPERTY(VisibleAnywhere, Category = GameMode)
 	int32 CurrentWave;
 
-	/* 현재 좀비의 수 */
+	/* 
+		현재 좀비의 수.
+		GameState에 기록하는 프로퍼티.
+	*/
 	UPROPERTY(VisibleAnywhere, Category = GameState)
 	int32 CurrentNumZombies;
 
@@ -94,7 +107,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = GameMode)
 	float WaveTime;
 
-	/* Game 진행시간. -> 초(Second) 단위 */
+	/*
+		Game 진행시간. -> 초(Second) 단위 
+		GameState에 기록하는 프로퍼티.
+	*/
 	UPROPERTY(VisibleAnywhere, Category = GameMode)
 	float CurrentRemainTime;
 

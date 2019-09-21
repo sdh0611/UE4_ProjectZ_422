@@ -3,13 +3,14 @@
 #pragma once
 
 #include "ProjectZ_422.h"
+#include "ZGameMode.h"
 #include "GameFramework/GameStateBase.h"
 #include "ZGameState.generated.h"
 
 /*
 	NOTE:
 		게임의 상태를 받아와서 기록만 하는 역할.
-		UI Update하는 부분은 추후 Server에서 RPC로 업데이트시킬 것.
+		UI Update하는 부분은 추후 프로퍼티 속성에 ReplicatedUsing 설정해서 UI업데이트 시킬 것.
 */
 
 /**
@@ -40,6 +41,8 @@ public:
 	void SetTotalWave(int32 NewTotalWave);
 	void SetCurrentWave(int32 NewCurrentWave);
 	void SetCurrentNumZombies(int32 NewNumZombies);
+	void SetCurrentGamePhase(EGamePhase NewPhase);
+
 
 	/* Getter */
 	int32 GetTotalWave() const;
@@ -63,5 +66,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = GameState)
 	float ElapsedTime;
+
+	UPROPERTY(VisibleAnywhere, Category = GameState)
+	EGamePhase CurrentGamePhase;
 
 };

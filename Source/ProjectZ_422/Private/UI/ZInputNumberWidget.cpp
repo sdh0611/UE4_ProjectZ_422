@@ -94,6 +94,10 @@ void UZInputNumberWidget::OnTextCommitted(const FText & Text, ETextCommit::Type 
 		if (NumberInterface)
 		{
 			NumberInterface->OnReceiveNumberInput(Number);
+			if (WidgetBinded)
+			{
+				WidgetBinded->SetUserFocus(GetOwningPlayer());
+			}
 		}
 	}
 
@@ -135,6 +139,10 @@ void UZInputNumberWidget::OnOKButtonClicked()
 		if (NumberInterface)
 		{
 			NumberInterface->OnReceiveNumberInput(Number);
+			if (WidgetBinded)
+			{
+				WidgetBinded->SetUserFocus(GetOwningPlayer());
+			}
 		}
 	}
 
@@ -146,7 +154,10 @@ void UZInputNumberWidget::OnOKButtonClicked()
 void UZInputNumberWidget::OnCancelButtonClicked()
 {
 	ZLOG_S(Warning);
-	
+	if (WidgetBinded)
+	{
+		WidgetBinded->SetUserFocus(GetOwningPlayer());
+	}
 	/* ≈‰±€ */
 	OnRemoveScreen();
 }
