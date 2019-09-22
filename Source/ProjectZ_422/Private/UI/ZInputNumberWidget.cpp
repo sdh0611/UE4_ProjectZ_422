@@ -162,16 +162,4 @@ void UZInputNumberWidget::OnCancelButtonClicked()
 	OnRemoveScreen();
 }
 
-FReply UZInputNumberWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)
-{
-	auto Result = Super::NativeOnKeyDown(InGeometry, InKeyEvent);
 
-	//FKey Key = InKeyEvent.GetKey();
-	//if (Key == EKeys::Escape)
-	//{
-	//	OnRemoveScreen();
-	//}
-
-
-	return Result;
-}

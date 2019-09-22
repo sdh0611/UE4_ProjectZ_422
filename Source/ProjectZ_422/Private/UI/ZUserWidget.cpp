@@ -2,6 +2,8 @@
 
 
 #include "ZUserWidget.h"
+#include "ZUserHUD.h"
+#include "ZPlayerController.h"
 
 void UZUserWidget::OnDrawScreen()
 {
@@ -19,4 +21,22 @@ void UZUserWidget::OnRemoveScreen()
 
 	SetVisibility(ESlateVisibility::Hidden);
 
+}
+
+FReply UZUserWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)
+{
+	auto Result = Super::NativeOnKeyDown(InGeometry, InKeyEvent);
+
+	//if (InKeyEvent.GetKey() == EKeys::Escape)
+	//{
+	//	ZLOG_S(Error);
+	//	auto PC = GetOwningPlayer<AZPlayerController>();
+	//	if (PC && PC->GetUserHUD())
+	//	{
+	//		PC->GetUserHUD()->RemoveWidgetFromList(this);
+	//	}
+	//	//OnRemoveScreen();
+	//}
+
+	return Result;
 }

@@ -80,6 +80,9 @@ public:
 	/* Handle Stack */
 	void RemoveWidgetFromTop();
 
+	void AddWidgetToList(class UZUserWidget* Widget);
+	void RemoveWidgetFromList(class UZUserWidget* Widget);
+
 public:
 	/*
 		각각의 Widget의 상태를 얻어오는 메소드들
@@ -94,8 +97,6 @@ public:
 	class UZInputNumberWidget* const GetInputNumberWidget() const;
 
 protected:
-	void AddWidgetToList(class UZUserWidget* Widget);
-	void RemoveWidgetFromList(class UZUserWidget* Widget);
 	bool IsDrawWidgetListEmpty();
 	
 	UFUNCTION(BlueprintImplementableEvent)
@@ -153,5 +154,7 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<TWeakObjectPtr<class UZUserWidget>> DrawWidgetList;
+	
+	//int32 DrawWidgetNum = 0;
 
 };

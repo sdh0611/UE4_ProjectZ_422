@@ -21,6 +21,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void OnRemoveScreen();
 	
+
+protected:
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+
+
 public:
 	bool bCanDestruct = false;
 

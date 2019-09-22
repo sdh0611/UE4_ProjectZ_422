@@ -91,7 +91,7 @@ void UZUserHUD::NativeConstruct()
 	auto NewCurrentNumZombiesText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_NumZombiesValue")));
 	check(nullptr != NewCurrentNumZombiesText);
 	CurrentNumZombiesText = NewCurrentNumZombiesText;
-	
+
 
 	/* HPBar에 StatusComponent 바인딩 */
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
@@ -164,39 +164,39 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 
 	switch (NewPhase)
 	{
-		case EGamePhase::HalfTime:
-		{
-			PhaseText->SetText(FText::FromString(TEXT("전투에 대비하십시오 !")));
-			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
-			break;
-			CallFadeAnim();
-		}
-		case EGamePhase::WaveTime:
-		{
-			//PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 0.f))));
-			PhaseText->SetText(FText::FromString(TEXT("적들이 몰려옵니다 !")));
-			CallWarningAnim();
-			break;
-		}
-		case EGamePhase::Win:
-		{
-			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
-			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
-			CallFadeInAnim();
-			break;
-		}
-		case EGamePhase::Lose:
-		{
-			PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
-			PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
-			CallFadeInAnim();
-			break;
-		}
-		default:
-		{
-			PhaseText->SetText(FText::GetEmpty());
-			break;
-		}
+	case EGamePhase::HalfTime:
+	{
+		PhaseText->SetText(FText::FromString(TEXT("전투에 대비하십시오 !")));
+		PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
+		break;
+		CallFadeAnim();
+	}
+	case EGamePhase::WaveTime:
+	{
+		//PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 0.f))));
+		PhaseText->SetText(FText::FromString(TEXT("적들이 몰려옵니다 !")));
+		CallWarningAnim();
+		break;
+	}
+	case EGamePhase::Win:
+	{
+		PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
+		PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
+		CallFadeInAnim();
+		break;
+	}
+	case EGamePhase::Lose:
+	{
+		PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
+		PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
+		CallFadeInAnim();
+		break;
+	}
+	default:
+	{
+		PhaseText->SetText(FText::GetEmpty());
+		break;
+	}
 
 	}
 }
@@ -211,7 +211,7 @@ void UZUserHUD::ToggleInventoryWidget()
 	{
 		RemoveInventoryWidget();
 	}
-	
+
 
 }
 
@@ -285,7 +285,6 @@ void UZUserHUD::RemoveInventoryWidget()
 void UZUserHUD::RemoveShopWidget()
 {
 	RemoveWidgetFromList(ShopWidget);
-
 	bIsShopOnScreen = false;
 }
 
@@ -361,6 +360,11 @@ UZInputNumberWidget * const UZUserHUD::GetInputNumberWidget() const
 
 void UZUserHUD::AddWidgetToList(UZUserWidget * Widget)
 {
+	if (nullptr == Widget)
+	{
+		return;
+	}
+
 	if(DrawWidgetList.Contains(Widget))
 	{
 		return;
@@ -387,10 +391,43 @@ void UZUserHUD::AddWidgetToList(UZUserWidget * Widget)
 
 	Widget->OnDrawScreen();
 	DrawWidgetList.AddUnique(Widget);
+
+	//if (Widget)
+	//{
+	//	ZLOG_S(Error);
+	//	FInputModeGameAndUI InputMode;
+	//	InputMode.SetWidgetToFocus(InventoryWidget->GetCachedWidget());
+
+	//	if (IsDrawWidgetListEmpty())
+	//	{
+	//		auto PlayerController = GetOwningPlayer();
+
+	//		PlayerController->SetInputMode(InputMode);
+	//		PlayerController->bShowMouseCursor = true;
+	//		PlayerController->bEnableClickEvents = true;
+	//		PlayerController->bEnableMouseOverEvents = true;
+
+	//		if (Widget->bIsFocusable)
+	//		{
+	//			Widget->SetUserFocus(PlayerController);
+	//		}
+
+	//	}
+
+	//	Widget->OnDrawScreen();
+	//	
+	//	++DrawWidgetNum;
+	//}
+
 }
 
 void UZUserHUD::RemoveWidgetFromList(UZUserWidget* Widget)
 {
+	if (nullptr == Widget)
+	{
+		return;
+	}
+
 	Widget->OnRemoveScreen();
 	DrawWidgetList.RemoveSingle(Widget);
 
@@ -404,9 +441,30 @@ void UZUserHUD::RemoveWidgetFromList(UZUserWidget* Widget)
 		PlayerController->bEnableMouseOverEvents = false;
 	}
 
+	//ZLOG_S(Error);
+	//if (Widget)
+	//{
+	//	ZLOG_S(Error);
+	//	--DrawWidgetNum;
+
+	//	Widget->OnRemoveScreen();
+	//	if (IsDrawWidgetListEmpty())
+	//	{
+	//		auto PlayerController = GetOwningPlayer();
+
+	//		PlayerController->SetInputMode(FInputModeGameOnly());
+	//		PlayerController->bShowMouseCursor = false;
+	//		PlayerController->bEnableClickEvents = false;
+	//		PlayerController->bEnableMouseOverEvents = false;
+	//	
+	//	}
+
+	//}
+
 }
 
 bool UZUserHUD::IsDrawWidgetListEmpty()
 {
 	return DrawWidgetList.Num() < 1;
+	//return DrawWidgetNum < 1;
 }

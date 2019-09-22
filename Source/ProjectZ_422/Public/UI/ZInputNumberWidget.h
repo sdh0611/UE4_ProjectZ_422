@@ -36,8 +36,6 @@ protected:
 	UFUNCTION()
 	void OnCancelButtonClicked();
 
-	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UEditableTextBox* InputText;
