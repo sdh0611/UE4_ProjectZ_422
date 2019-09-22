@@ -78,7 +78,8 @@ void AZGameMode::Tick(float DeltaTime)
 	
 	if (!IsGameEnd())
 	{
-		UpdateGameTime(DeltaTime);
+		CurrentRemainTime -= DeltaTime;
+		UpdateGamePhase();
 	}
 
 	//CurrentRemainTime -= DeltaTime;
@@ -137,10 +138,8 @@ void AZGameMode::StopAllSpawner()
 
 }
 
-void AZGameMode::UpdateGameTime(float DeltaTime)
+void AZGameMode::UpdateGamePhase()
 {
-	CurrentRemainTime -= DeltaTime;
-
 	if (CurrentRemainTime <= 0.f)
 	{
 		switch (CurrentGamePhase)
@@ -299,6 +298,10 @@ void AZGameMode::AdjustZombieNum(int32 Value)
 		MyGameState->SetCurrentNumZombies(CurrentNumZombies);
 	}
 
+	if (IsWaveEnd())
+	{
+		UpdateGamePhase(0.f);
+	}
 }
 
 bool AZGameMode::IsGameEnd()
@@ -318,15 +321,30 @@ bool AZGameMode::IsGameClear()
 
 bool AZGameMode::IsWaveEnd()
 {
-	if (EGamePhase::WaveTime != GetCurrentGamePhase())
+	if (CurrentRemainTime > 0.f)
 	{
 		return false;
 	}
 
-	return (CurrentRemainTime <= 0.f);
+	if (CurrentNumZombies > 0)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 float AZGameMode::GetCurrentRemainTime() const
 {
 	return CurrentRemainTime;
+}
+
+void AZGameMode::UpdateGameTime()
+{
+	CurrentRemainTime -= 0.1f;
+	if (CurrentRemainTime <= 0.f)
+	{
+		UpdateGamePhase();
+	}
+	
 }

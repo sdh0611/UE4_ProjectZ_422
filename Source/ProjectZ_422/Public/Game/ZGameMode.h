@@ -49,7 +49,7 @@ public:
 	void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
 
 public:
-	void UpdateGameTime(float DeltaTime);
+	void UpdateGamePhase();
 	void HandleGamePhase(EGamePhase NewCurrentGameState);
 	void AdjustZombieNum(int32 Value);
 
@@ -59,13 +59,19 @@ public:
 protected:
 	void StopAllSpawner();
 
+	/* PhaseTimer 바인딩용 */
+	void UpdateGameTime();
+
 	/* Getter */
 	bool IsGameEnd();
 	bool IsGameClear();
 	bool IsWaveEnd();
 	float GetCurrentRemainTime() const;
 
+
 protected:
+	FTimerHandle PhaseTimer;
+
 	FTimerHandle StopSpawnTimer;
 
 	UPROPERTY(EditAnywhere, Category = GameMode)
