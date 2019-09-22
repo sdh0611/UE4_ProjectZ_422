@@ -94,10 +94,10 @@ void UZInputNumberWidget::OnTextCommitted(const FText & Text, ETextCommit::Type 
 		if (NumberInterface)
 		{
 			NumberInterface->OnReceiveNumberInput(Number);
-			if (WidgetBinded)
-			{
-				WidgetBinded->SetUserFocus(GetOwningPlayer());
-			}
+			//if (WidgetBinded)
+			//{
+			//	WidgetBinded->SetUserFocus(GetOwningPlayer());
+			//}
 		}
 	}
 
@@ -139,10 +139,10 @@ void UZInputNumberWidget::OnOKButtonClicked()
 		if (NumberInterface)
 		{
 			NumberInterface->OnReceiveNumberInput(Number);
-			if (WidgetBinded)
-			{
-				WidgetBinded->SetUserFocus(GetOwningPlayer());
-			}
+			//if (WidgetBinded)
+			//{
+			//	WidgetBinded->SetUserFocus(GetOwningPlayer());
+			//}
 		}
 	}
 
@@ -154,10 +154,24 @@ void UZInputNumberWidget::OnOKButtonClicked()
 void UZInputNumberWidget::OnCancelButtonClicked()
 {
 	ZLOG_S(Warning);
-	if (WidgetBinded)
-	{
-		WidgetBinded->SetUserFocus(GetOwningPlayer());
-	}
+	//if (WidgetBinded)
+	//{
+	//	WidgetBinded->SetUserFocus(GetOwningPlayer());
+	//}
 	/* ≈‰±€ */
 	OnRemoveScreen();
+}
+
+FReply UZInputNumberWidget::NativeOnKeyDown(const FGeometry & InGeometry, const FKeyEvent & InKeyEvent)
+{
+	auto Result = Super::NativeOnKeyDown(InGeometry, InKeyEvent);
+
+	//FKey Key = InKeyEvent.GetKey();
+	//if (Key == EKeys::Escape)
+	//{
+	//	OnRemoveScreen();
+	//}
+
+
+	return Result;
 }

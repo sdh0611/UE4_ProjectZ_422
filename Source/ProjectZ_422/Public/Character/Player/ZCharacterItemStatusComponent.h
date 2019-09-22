@@ -113,23 +113,23 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = ItemStatus)
 	TArray<class AZWeapon*> WeaponInventory;
 
-private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true))
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus)
 	int32 MaxSizeOfItemList;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true), Transient)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus, Transient)
 	int32 CurrentSizeOfItemList;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus)
 	int32 MaxWeight;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true), Transient)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus, Transient)
 	int32 CurrentWeight;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true), Transient)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ItemStatus, Transient)
 	int32 CurrentMoney;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemStatus, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = ItemStatus)
 	class AZCharacter* OwnerCharacter;
 
 };

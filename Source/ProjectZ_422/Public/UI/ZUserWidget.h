@@ -15,7 +15,10 @@ class PROJECTZ_422_API UZUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
 	virtual void OnDrawScreen();
+
+	UFUNCTION(BlueprintCallable)
 	virtual void OnRemoveScreen();
 	
 public:
