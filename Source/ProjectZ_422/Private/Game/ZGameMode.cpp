@@ -76,21 +76,15 @@ void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (!IsGameEnd())
-	{
-		CurrentRemainTime -= DeltaTime;
-		UpdateGamePhase();
-	}
-
-	//CurrentRemainTime -= DeltaTime;
-
-	//OnTimeUpdate.Broadcast(CurrentRemainTime);
-
-	/* Wave 클리어여부 체크 */
-	//if (CurrentRemainTime <= 0.f)
+	//if (!IsGameEnd())
 	//{
-	//	HandleGamePhase(EGamePhase::HalfTime);
+	//	CurrentRemainTime -= DeltaTime;
+	//	if (CurrentRemainTime <= 0.f)
+	//	{
+	//		UpdateGamePhase();
+	//	}
 	//}
+
 
 }
 
@@ -140,51 +134,44 @@ void AZGameMode::StopAllSpawner()
 
 void AZGameMode::UpdateGamePhase()
 {
-	if (CurrentRemainTime <= 0.f)
+	switch (CurrentGamePhase)
 	{
-		switch (CurrentGamePhase)
+		case EGamePhase::HalfTime:
 		{
-			case EGamePhase::HalfTime:
+			/* WaveTime Phase로 전환 */
+			ZLOG(Error, TEXT("Turn wave time."));
+			HandleGamePhase(EGamePhase::WaveTime);
+			break;
+		}
+		case EGamePhase::WaveTime:
+		{
+			/* Wave 체크 후 Wave 10 미만이면 HalfTime으로 전환, Wave 10이면 Boss로 전환 */
+			if (CurrentWave < TotalWave)
 			{
-				/* WaveTime Phase로 전환 */
-				ZLOG(Error, TEXT("Turn wave time."));
-				HandleGamePhase(EGamePhase::WaveTime);
-				break;
-			}
-			case EGamePhase::WaveTime:
-			{
-				/* Wave 체크 후 Wave 10 미만이면 HalfTime으로 전환, Wave 10이면 Boss로 전환 */
-				if (CurrentWave < TotalWave)
+				if (IsWaveEnd())
 				{
 					ZLOG(Error, TEXT("Turn half time."));
 					HandleGamePhase(EGamePhase::HalfTime);
 				}
-				else
-				{
-					if (IsGameClear())
-					{
-						ZLOG(Error, TEXT("Turn win."));
-						HandleGamePhase(EGamePhase::Win);
-					}
-				}
-				break;
 			}
-			case EGamePhase::Boss:
+			else
 			{
-				/* Clear여부 체크 */
-
-
-				break;
+				if (IsGameClear())
+				{
+					ZLOG(Error, TEXT("Turn win."));
+					HandleGamePhase(EGamePhase::Win);
+				}
 			}
-
+			break;
 		}
-	}
+		case EGamePhase::Boss:
+		{
+			/* Clear여부 체크 */
 
-	/* GameState에 시간 업데이트 */
-	auto ZGameState = Cast<AZGameState>(GameState);
-	if (ZGameState)
-	{
-		ZGameState->UpdateRemainTime(CurrentRemainTime);
+
+			break;
+		}
+
 	}
 
 }
@@ -208,6 +195,9 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 				Shop->OpenShop();
 			}
 
+			/* Phase timer 등록 */
+			GetWorld()->GetTimerManager().SetTimer(PhaseTimer, this, &AZGameMode::UpdateGameTime, 0.1f, true);
+
 			break;
 		}
 		case EGamePhase::WaveTime:
@@ -219,6 +209,7 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 			CurrentRemainTime = WaveTime;
 			++CurrentWave;
 
+			/*	GameState 업데이트.	*/
 			auto ZGameState = Cast<AZGameState>(GameState);
 			if (nullptr != ZGameState)
 			{
@@ -245,6 +236,9 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 
 			/* Stop spawner timer 등록 */
 			GetWorld()->GetTimerManager().SetTimer(StopSpawnTimer, this, &AZGameMode::StopAllSpawner, CurrentRemainTime);
+
+			/* Phase timer 등록 */
+			GetWorld()->GetTimerManager().SetTimer(PhaseTimer, this, &AZGameMode::UpdateGameTime, 0.1f, true);
 
 			break;
 		}
@@ -300,7 +294,7 @@ void AZGameMode::AdjustZombieNum(int32 Value)
 
 	if (IsWaveEnd())
 	{
-		UpdateGamePhase(0.f);
+		UpdateGamePhase();
 	}
 }
 
@@ -342,9 +336,20 @@ float AZGameMode::GetCurrentRemainTime() const
 void AZGameMode::UpdateGameTime()
 {
 	CurrentRemainTime -= 0.1f;
+
+	/* GameState에 시간 업데이트 */
+	auto ZGameState = Cast<AZGameState>(GameState);
+	if (ZGameState)
+	{
+		ZGameState->UpdateRemainTime(CurrentRemainTime);
+	}
+
 	if (CurrentRemainTime <= 0.f)
 	{
+		GetWorld()->GetTimerManager().ClearTimer(PhaseTimer);
+
 		UpdateGamePhase();
+		
 	}
 	
 }
