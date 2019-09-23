@@ -22,6 +22,8 @@ class PROJECTZ_422_API UZType : public UObject
 */
 #define SURFACE_HEAD SurfaceType1 
 #define SURFACE_BODY SurfaceType2
+
+
 /*
 	Mesh관련 데이터형
 */
