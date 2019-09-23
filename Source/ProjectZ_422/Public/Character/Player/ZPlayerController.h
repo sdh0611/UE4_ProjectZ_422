@@ -19,6 +19,8 @@ public:
 
 public:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+
 
 public:
 	/*
@@ -31,6 +33,12 @@ public:
 	class AZHUD* const GetZHUD() const;
 
 	class UZCharacterItemStatusComponent* const GetCharacterItemStatusComponent() const;
+
+
+protected:
+	void ToggleInventory();
+	void ToggleInGameMenu();
+	void RemoveWidgetFromTop();
 
 public:
 	UPROPERTY(EditDefaultsOnly)

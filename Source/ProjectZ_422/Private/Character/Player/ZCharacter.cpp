@@ -140,7 +140,7 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AZCharacter::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AZCharacter::SprintRelease);
 	PlayerInputComponent->BindAction(TEXT("Interaction"), IE_Pressed, this, &AZCharacter::Interaction);
-	PlayerInputComponent->BindAction(TEXT("ToggleInventory"), IE_Pressed, this, &AZCharacter::ToggleInventory);
+	//PlayerInputComponent->BindAction(TEXT("ToggleInventory"), IE_Pressed, this, &AZCharacter::ToggleInventory);
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AZCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Released, this, &AZCharacter::AttackEnd);
 	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Pressed, this, &AZCharacter::Aim);
@@ -152,8 +152,8 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Slot3"), IE_Pressed, this, &AZCharacter::Slot3);
 	PlayerInputComponent->BindAction(TEXT("Slot4"), IE_Pressed, this, &AZCharacter::Slot4);
 	PlayerInputComponent->BindAction(TEXT("ChangeFireMode"), IE_Pressed, this, &AZCharacter::ChangeFireMode);
-	PlayerInputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZCharacter::ToggleInGameMenu);
-	PlayerInputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZCharacter::RemoveWidgetFromTop);
+	//PlayerInputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZCharacter::ToggleInGameMenu);
+	//PlayerInputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZCharacter::RemoveWidgetFromTop);
 
 	// For debug
 	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
@@ -658,15 +658,15 @@ void AZCharacter::Interaction()
 	}
 }
 
-void AZCharacter::ToggleInventory()
-{
-	auto UserHUDWidget = PlayerController->GetUserHUD();
-	if (UserHUDWidget)
-	{
-		UserHUDWidget->ToggleInventoryWidget();
-	}
-
-}
+//void AZCharacter::ToggleInventory()
+//{
+//	auto UserHUDWidget = PlayerController->GetUserHUD();
+//	if (UserHUDWidget)
+//	{
+//		UserHUDWidget->ToggleInventoryWidget();
+//	}
+//
+//}
 
 void AZCharacter::Attack()
 {
@@ -1072,23 +1072,23 @@ void AZCharacter::ChangeFireMode()
 
 }
 
-void AZCharacter::ToggleInGameMenu()
-{
-	auto UserHUDWidget = PlayerController->GetUserHUD();
-	if (UserHUDWidget)
-	{
-		UserHUDWidget->ToggleInGameMenuWIdget();
-	}
-}
-
-void AZCharacter::RemoveWidgetFromTop()
-{
-	auto UserHUDWidget = PlayerController->GetUserHUD();
-	if (UserHUDWidget)
-	{
-		UserHUDWidget->RemoveWidgetFromTop();
-	}
-}
+//void AZCharacter::ToggleInGameMenu()
+//{
+//	auto UserHUDWidget = PlayerController->GetUserHUD();
+//	if (UserHUDWidget)
+//	{
+//		UserHUDWidget->ToggleInGameMenuWIdget();
+//	}
+//}
+//
+//void AZCharacter::RemoveWidgetFromTop()
+//{
+//	auto UserHUDWidget = PlayerController->GetUserHUD();
+//	if (UserHUDWidget)
+//	{
+//		UserHUDWidget->RemoveWidgetFromTop();
+//	}
+//}
 
 void AZCharacter::AddMoney()
 {

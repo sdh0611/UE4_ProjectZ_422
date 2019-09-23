@@ -43,6 +43,17 @@ void AZPlayerController::BeginPlay()
 
 }
 
+void AZPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	InputComponent->BindAction(TEXT("ToggleInventory"), IE_Pressed, this, &AZPlayerController::ToggleInventory);
+
+	InputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZPlayerController::ToggleInGameMenu);
+	InputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZPlayerController::RemoveWidgetFromTop);
+
+
+}
+
 UZUserHUD * const AZPlayerController::GetUserHUD() const
 {
 	return UserHUD;
@@ -62,4 +73,31 @@ UZCharacterItemStatusComponent * const AZPlayerController::GetCharacterItemStatu
 	}
 
 	return nullptr;
+}
+
+void AZPlayerController::ToggleInventory()
+{
+	if (GetUserHUD())
+	{
+		GetUserHUD()->ToggleInventoryWidget();
+	}
+
+}
+
+void AZPlayerController::ToggleInGameMenu()
+{
+	if (GetUserHUD())
+	{
+		GetUserHUD()->ToggleInGameMenuWIdget();
+	}
+
+}
+
+void AZPlayerController::RemoveWidgetFromTop()
+{
+	if (GetUserHUD())
+	{
+		GetUserHUD()->RemoveWidgetFromTop();
+	}
+
 }

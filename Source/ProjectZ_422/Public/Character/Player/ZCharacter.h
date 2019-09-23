@@ -85,7 +85,7 @@ private:
 		Item 관련 동작들
 	*/
 	void Interaction();
-	void ToggleInventory();
+	//void ToggleInventory();
 	void Attack();
 	void AttackEnd();
 	void Aim();
@@ -98,8 +98,8 @@ private:
 	void Slot3();
 	void Slot4();
 	void ChangeFireMode();
-	void ToggleInGameMenu();
-	void RemoveWidgetFromTop();
+	//void ToggleInGameMenu();
+	//void RemoveWidgetFromTop();
 
 	/*
 		디버깅용
