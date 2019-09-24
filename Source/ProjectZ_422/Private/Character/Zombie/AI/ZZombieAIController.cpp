@@ -8,24 +8,9 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "ConstructorHelpers.h"
 
 AZZombieAIController::AZZombieAIController()
 {
-	//static ConstructorHelpers::FObjectFinder<UBehaviorTree>
-	//	BT_ZOMBIE(TEXT("BehaviorTree'/Game/AI/Zombie/BT_ZZombie.BT_ZZombie'"));
-	//if (BT_ZOMBIE.Succeeded())
-	//{
-	//	ZombieBT = BT_ZOMBIE.Object;
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UBlackboardData>
-	//	BB_ZOMBIE(TEXT("BlackboardData'/Game/AI/Zombie/BB_ZZomble.BB_ZZomble'"));
-	//if (BB_ZOMBIE.Succeeded())
-	//{
-	//	ZombieBB = BB_ZOMBIE.Object;
-	//}
-
 	HomePosKey = TEXT("HomePos");
 	TargetPosKey = TEXT("TargetPos");
 	TargetActorKey = TEXT("TargetPawn");

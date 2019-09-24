@@ -57,7 +57,7 @@ void AZZombie::OnSensingPlayer(APawn * Pawn)
 		return;
 	}
 
-	auto ZombieController = Cast<AZZombieAIController>(GetController());
+	auto ZombieController = GetController<AZZombieAIController>();
 	if (nullptr == ZombieController)
 	{
 		return;
@@ -140,9 +140,9 @@ void AZZombie::AttackCheck()
 	CollisionParams.bReturnPhysicalMaterial = false;
 	CollisionParams.bTraceComplex = false;
 
-	bool bResult = GetWorld()->SweepMultiByProfile(Hits, GetActorLocation(),
+	bool bResult = GetWorld()->SweepMultiByChannel(Hits, GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
-		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
+		FQuat::Identity, ENEMY_ATTACK, FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
 
 	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
 	if (!bResult)

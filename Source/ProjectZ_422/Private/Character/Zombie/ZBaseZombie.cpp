@@ -29,6 +29,7 @@ AZBaseZombie::AZBaseZombie()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+	GetCharacterMovement()->bUseRVOAvoidance = true;
 
 	WalkSpeed = 200.f;
 	SprintSpeed = 500.f;
