@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
 #include "Components/AudioComponent.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 AZBaseCharacter::AZBaseCharacter()
@@ -112,6 +113,14 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	return FinalDamage;
 }
 
+void AZBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZBaseCharacter, bIsSprinting);
+
+}
+
 FHitResult AZBaseCharacter::GetTraceHit(const FVector & TraceStart, const FVector & TraceEnd)
 {
 	FHitResult Hit;
@@ -144,6 +153,7 @@ void AZBaseCharacter::Revive()
 void AZBaseCharacter::SetIsSprinting(bool NewState)
 {
 	bIsSprinting = NewState;
+	ServerSetSprinting(NewState);
 }
 
 void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
@@ -153,7 +163,14 @@ void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
 		return;
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	}
 }
 
 void AZBaseCharacter::SetActive(bool bActive)
@@ -287,6 +304,30 @@ void AZBaseCharacter::OnRemoved()
 	else
 	{
 		Destroy();
+	}
+}
+
+bool AZBaseCharacter::ServerSetSprinting_Validate(bool bNewState)
+{
+	return true;
+}
+
+void AZBaseCharacter::ServerSetSprinting_Implementation(bool bNewState)
+{
+	bIsSprinting = bNewState;
+
+	OnRep_IsSprinting();
+}
+
+void AZBaseCharacter::OnRep_IsSprinting()
+{
+	if (bIsSprinting)
+	{
+		SetCurrentSpeed(SprintSpeed);
+	}
+	else
+	{
+		SetCurrentSpeed(WalkSpeed);
 	}
 }
 

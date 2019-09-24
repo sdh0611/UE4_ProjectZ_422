@@ -6,6 +6,7 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "Engine/World.h"
+#include "UnrealNetwork.h"
 
 AZGameState::AZGameState()
 {
@@ -13,7 +14,7 @@ AZGameState::AZGameState()
 	CurrentWave = 0;
 	CurrentNumZombies = 0;
 	RemainTime = 0.f;
-	ElapsedTime = 0.f;
+	CurrentGamePhase = EGamePhase::Ready;
 }
 
 void AZGameState::Tick(float DeltaTime)
@@ -21,6 +22,20 @@ void AZGameState::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+void AZGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZGameState, TotalWave);
+	DOREPLIFETIME(AZGameState, CurrentWave);
+	DOREPLIFETIME(AZGameState, CurrentNumZombies);
+	DOREPLIFETIME(AZGameState, RemainTime);
+	DOREPLIFETIME(AZGameState, CurrentGamePhase);
+
+}
+
+
 
 void AZGameState::AdjustCurrentNumZombies(int32 NewValue)
 {
@@ -168,7 +183,72 @@ float AZGameState::GetRemainTime() const
 	return RemainTime;
 }
 
-float AZGameState::GetElaspedTime() const
+void AZGameState::OnRep_TotalWave()
 {
-	return ElapsedTime;
+
+
+}
+
+void AZGameState::OnRep_CurrentWave()
+{
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC && PC->IsLocalPlayerController())
+		{
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateCurrentWave(CurrentWave);
+			}
+		}
+
+	}
+}
+
+void AZGameState::OnRep_CurrentNumZombies()
+{
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC && PC->IsLocalPlayerController())
+		{
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateNumZombies(CurrentNumZombies);
+			}
+		}
+
+	}
+}
+
+void AZGameState::OnRep_RemainTime()
+{
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC && PC->IsLocalPlayerController())
+		{
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdateRemainTime(RemainTime);
+			}
+		}
+
+	}
+}
+
+void AZGameState::OnRep_CurrentGamePhase()
+{
+	for (auto Controller = GetWorld()->GetPlayerControllerIterator(); Controller; ++Controller)
+	{
+		auto PC = Cast<AZPlayerController>(Controller->Get());
+		if (PC && PC->IsLocalPlayerController())
+		{
+			if (PC->GetUserHUD())
+			{
+				PC->GetUserHUD()->UpdatePhaseText(CurrentGamePhase);
+			}
+		}
+
+	}
 }

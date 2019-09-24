@@ -25,6 +25,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "UnrealNetwork.h"
+
 
 // Sets default values
 AZCharacter::AZCharacter()
@@ -104,22 +106,23 @@ void AZCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	auto NewInteractionActor = GetInteractionalInView();
-	if (InteractionActor != NewInteractionActor)
-	{
-		if (InteractionActor)
-		{
-			InteractionActor->OnFocusEnd();
-		}
+	/* 팅겨서 일단 주석처리. */
+	//auto NewInteractionActor = GetInteractionalInView();
+	//if (InteractionActor != NewInteractionActor)
+	//{
+	//	if (InteractionActor)
+	//	{
+	//		InteractionActor->OnFocusEnd();
+	//	}
 
-		if (NewInteractionActor)
-		{
-			NewInteractionActor->OnFocus();
-		}
+	//	if (NewInteractionActor)
+	//	{
+	//		NewInteractionActor->OnFocus();
+	//	}
 
-		InteractionActor = NewInteractionActor;
+	//	InteractionActor = NewInteractionActor;
 
-	}
+	//}
 
 }
 
@@ -255,18 +258,6 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 
 }
 
-void AZCharacter::SetCurrentSpeed(float NewSpeed)
-{
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-	}
-
-}
 
 void AZCharacter::SetActive(bool bActive)
 {
