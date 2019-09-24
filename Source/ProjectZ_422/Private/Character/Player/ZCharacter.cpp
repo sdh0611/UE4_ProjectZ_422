@@ -659,7 +659,9 @@ void AZCharacter::Interaction()
 
 	if (InteractionActor)
 	{
-		InteractionActor->OnInteraction(this);
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Interact."));
+		ServerOnInteract(InteractionActor);
+		//InteractionActor->OnInteraction(this);
 	}
 }
 
@@ -1124,5 +1126,14 @@ bool AZCharacter::ServerCheckInteractionalActor_Validate(AZInteractional * Inter
 void AZCharacter::ServerCheckInteractionalActor_Implementation(AZInteractional * Interactional)
 {
 
+}
 
+bool AZCharacter::ServerOnInteract_Validate(AZInteractional * Interactional)
+{
+	return true;
+}
+
+void AZCharacter::ServerOnInteract_Implementation(AZInteractional * Interactional)
+{
+	Interactional->OnInteraction(this);
 }

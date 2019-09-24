@@ -118,6 +118,10 @@ private:
 	bool ServerCheckInteractionalActor_Validate(class AZInteractional* Interactional);
 	void ServerCheckInteractionalActor_Implementation(class AZInteractional* Interactional);
 
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerOnInteract(class AZInteractional* Interactional);
+	bool ServerOnInteract_Validate(class AZInteractional* Interactional);
+	void ServerOnInteract_Implementation(class AZInteractional* Interactional);
 
 	/* Server to client call RPC */
 

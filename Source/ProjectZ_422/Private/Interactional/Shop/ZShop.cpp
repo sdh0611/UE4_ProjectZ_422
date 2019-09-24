@@ -56,6 +56,7 @@ void AZShop::BeginPlay()
 
 void AZShop::OnInteraction(AZCharacter * NewCharacter)
 {
+	ZLOG_S(Error);
 	if (!bIsShopOpen)
 	{
 		return;
@@ -63,7 +64,8 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 
 	if (NewCharacter)
 	{
-		ConstructShopWidget(NewCharacter);	
+		ZLOG_S(Error);
+		ConstructShopWidget(NewCharacter);
 	}
 
 	Super::OnInteraction(NewCharacter);
