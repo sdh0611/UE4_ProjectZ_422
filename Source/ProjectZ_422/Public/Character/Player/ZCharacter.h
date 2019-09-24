@@ -5,10 +5,12 @@
 #include "ProjectZ_422.h"
 #include "GameFramework/Character.h"
 #include "ZBaseCharacter.h"
+#include "GenericTeamAgentInterface.h"
+#include "Interface/ZAITargetableInterface.h"
 #include "ZCharacter.generated.h"
 
 UCLASS()
-class PROJECTZ_422_API AZCharacter : public AZBaseCharacter
+class PROJECTZ_422_API AZCharacter : public AZBaseCharacter, public IZAITargetableInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -32,6 +34,11 @@ public:
 		class AController* EventInstigator, class AActor* DamageCauser) override;
 
 	virtual void Revive() override;
+
+	virtual bool IsTargetable() const override;
+	virtual bool IsDead() const override;
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
 
 public:
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
@@ -110,6 +117,8 @@ private:
 
 
 protected:
+	FGenericTeamId TeamId;
+
 	/* Sockets */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName MainWeaponSocketName;

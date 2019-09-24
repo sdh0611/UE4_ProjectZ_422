@@ -5,6 +5,7 @@
 #include "ProjectZ_422.h"
 #include "AIController.h"
 #include "ZBaseZombie.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "ZZombieAIController.generated.h"
 
 /**
@@ -21,14 +22,16 @@ public:
 public:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
-	
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
 public:
 	bool RunAI();
 	void StopAI(const FString& Reason);
 	void StopAI();
 
 public:
-	void SetTargetPawn(class APawn* Target);
+	void SetTargetActor(class AActor* Target);
 	void SetZombieCurrentState(EZombieState NewState);
 
 	UObject* const GetTargetPawn() const;
@@ -36,6 +39,13 @@ public:
 	const FName& GetTargetPosKey() const;
 	const FName& GetTargetActorKey() const;
 	const FName& GetCurrentStateKey() const;
+
+protected:
+	UFUNCTION()
+	void OnPerceptionUpdate(const TArray<AActor*>& UpdatedActors);
+
+	UFUNCTION()
+	void OnTargetPerceptionUpdate(AActor* Actor, FAIStimulus Stimulus);
 
 protected:
 	/* 추적 실패할 시 돌아올 좌표값 키네임 */
@@ -54,6 +64,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName CurrentStateKey;
 
+	UPROPERTY(VisibleDefaultsOnly)
+	class UAISenseConfig_Sight* SightConfig;
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	class UAIPerceptionComponent* AISense;
 	
+
 
 };

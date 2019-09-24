@@ -13,8 +13,8 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "ConstructorHelpers.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Interface/ZAITargetableInterface.h"
 
 
 AZZombie::AZZombie()
@@ -74,7 +74,7 @@ void AZZombie::OnSensingPlayer(APawn * Pawn)
 		if (!Player->IsDead())
 		{
 			/* Target ¼³Á¤ */
-			ZombieController->SetTargetPawn(Player);
+			ZombieController->SetTargetActor(Player);
 			ChangeZombieState(EZombieState::Chase);
 		}
 	}
@@ -140,9 +140,9 @@ void AZZombie::AttackCheck()
 	CollisionParams.bReturnPhysicalMaterial = false;
 	CollisionParams.bTraceComplex = false;
 
-	bool bResult = GetWorld()->SweepMultiByProfile(Hits, GetActorLocation(),
+	bool bResult = GetWorld()->SweepMultiByChannel(Hits, GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
-		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
+		FQuat::Identity, ENEMY_ATTACK, FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
 
 	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
 	if (!bResult)
@@ -153,12 +153,11 @@ void AZZombie::AttackCheck()
 	for (const auto& Hit : Hits)
 	{
 		ZLOG(Error, TEXT("Name : %s"), *Hit.Actor->GetName());
-		auto Character = Cast<AZCharacter>(Hit.Actor);
-		if (nullptr == Character)
+		auto Targetable = Cast<IZAITargetableInterface>(Hit.GetActor());
+		if (Targetable && (!Targetable->IsDead()))
 		{
-			continue;
+			Hit.GetActor()->TakeDamage(AttackDamage, FDamageEvent(), Controller, this);	
 		}
-		Character->TakeDamage(AttackDamage, FDamageEvent(), Controller, this);
 
 	}
 

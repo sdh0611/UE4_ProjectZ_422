@@ -164,7 +164,7 @@ void AZBomber::OnSensingPlayer(APawn * Pawn)
 		if (!Player->IsDead())
 		{
 			/* Target ¼³Á¤ */
-			ZombieController->SetTargetPawn(Player);
+			ZombieController->SetTargetActor(Player);
 			ChangeZombieState(EZombieState::Chase);
 		}
 	}

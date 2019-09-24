@@ -82,6 +82,8 @@ AZCharacter::AZCharacter()
 
 	CurrentWeapon = nullptr;
 
+	TeamId = FGenericTeamId(1);
+
 	Tags.Add(TEXT("Player"));
 }
 
@@ -181,6 +183,21 @@ void AZCharacter::Revive()
 	{
 		EnableInput(PlayerController);
 	}
+}
+
+bool AZCharacter::IsTargetable() const
+{
+	return true;
+}
+
+bool AZCharacter::IsDead() const
+{
+	return IsDead();
+}
+
+FGenericTeamId AZCharacter::GetGenericTeamId() const
+{
+	return TeamId;
 }
 
 FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)

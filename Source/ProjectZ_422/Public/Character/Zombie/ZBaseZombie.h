@@ -91,8 +91,8 @@ protected:
 
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
-	class UPawnSensingComponent* Sense;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
+	//class UPawnSensingComponent* Sense;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
 	//class UAIPerceptionComponent* AIPerception;

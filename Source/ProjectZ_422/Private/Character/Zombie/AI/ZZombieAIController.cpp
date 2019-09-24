@@ -8,43 +8,40 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "ConstructorHelpers.h"
+#include "Interface/ZAITargetableInterface.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Navigation/CrowdFollowingComponent.h"
 
 AZZombieAIController::AZZombieAIController()
 {
-	//static ConstructorHelpers::FObjectFinder<UBehaviorTree>
-	//	BT_ZOMBIE(TEXT("BehaviorTree'/Game/AI/Zombie/BT_ZZombie.BT_ZZombie'"));
-	//if (BT_ZOMBIE.Succeeded())
-	//{
-	//	ZombieBT = BT_ZOMBIE.Object;
-	//}
-
-	//static ConstructorHelpers::FObjectFinder<UBlackboardData>
-	//	BB_ZOMBIE(TEXT("BlackboardData'/Game/AI/Zombie/BB_ZZomble.BB_ZZomble'"));
-	//if (BB_ZOMBIE.Succeeded())
-	//{
-	//	ZombieBB = BB_ZOMBIE.Object;
-	//}
+	SetGenericTeamId(FGenericTeamId(0));
 
 	HomePosKey = TEXT("HomePos");
 	TargetPosKey = TEXT("TargetPos");
 	TargetActorKey = TEXT("TargetPawn");
 	CurrentStateKey = TEXT("CurrentState");
+
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	SightConfig->DetectionByAffiliation.bDetectEnemies = false;
+	SightConfig->DetectionByAffiliation.bDetectEnemies = false;
+	SightConfig->SightRadius = 1000.f;
+	SightConfig->LoseSightRadius = 1000.f;
+	SightConfig->PeripheralVisionAngleDegrees = 80.f;
+	SightConfig->SetMaxAge(3.f);
+
+	AISense = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AISense"));
+	AISense->ConfigureSense(*SightConfig);
+
+	SetPathFollowingComponent(CreateDefaultSubobject<UCrowdFollowingComponent>(TEXT("PathComponent.")));
+
 }
 
 void AZZombieAIController::OnPossess(APawn * InPawn)
 {
 	Super::OnPossess(InPawn);
 	ZLOG_S(Warning);
-	//if (UseBlackboard(ZombieBB, Blackboard))
-	//{
-	//	Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
-	//	if (!RunBehaviorTree(ZombieBT))
-	//	{
-	//		ZLOG(Error, TEXT("Couldn't run BT."));
-	//		return;
-	//	}
-	//}
 
 	auto Zombie = Cast<AZBaseZombie>(GetPawn());
 	if (Zombie)
@@ -73,18 +70,28 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 
 void AZZombieAIController::OnUnPossess()
 {
-	//StopAI(TEXT("UnPossess"));
 	StopAI();
 
 	Super::OnUnPossess();
 }
 
+void AZZombieAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AISense->OnPerceptionUpdated.AddDynamic(this, &AZZombieAIController::OnPerceptionUpdate);
+	AISense->OnTargetPerceptionUpdated.AddDynamic(this, &AZZombieAIController::OnTargetPerceptionUpdate);
+
+}
+
+void AZZombieAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);	
+
+}
+
 bool AZZombieAIController::RunAI()
 {
-	//if (!UseBlackboard(ZombieBB, Blackboard))
-	//{
-	//	return false;
-	//}
 	auto Zombie = Cast<AZBaseZombie>(GetPawn());
 	if (nullptr == Zombie)
 	{
@@ -126,12 +133,11 @@ void AZZombieAIController::StopAI()
 
 }
 
-void AZZombieAIController::SetTargetPawn(APawn* Target)
+void AZZombieAIController::SetTargetActor(AActor* Target)
 {
 	if (Blackboard)
 	{
 		Blackboard->SetValueAsObject(TargetActorKey, Target);
-		//Blackboard->SetValueAsVector(TargetPosKey, Target->GetActorLocation());
 	}
 
 }
@@ -141,6 +147,12 @@ void AZZombieAIController::SetZombieCurrentState(EZombieState NewState)
 	if (Blackboard)
 	{
 		Blackboard->SetValueAsEnum(CurrentStateKey, (uint8)NewState);
+	}
+
+	auto MyPawn = Cast<AZBaseZombie>(GetPawn());
+	if (::IsValid(MyPawn))
+	{
+		MyPawn->ChangeZombieState(NewState);
 	}
 
 }
@@ -172,4 +184,36 @@ const FName & AZZombieAIController::GetCurrentStateKey() const
 {
 	// TODO: 여기에 반환 구문을 삽입합니다.
 	return CurrentStateKey;
+}
+
+void AZZombieAIController::OnPerceptionUpdate(const TArray<AActor*>& UpdatedActors)
+{
+	auto MyPawn = Cast<AZBaseZombie>(GetPawn());
+	if (!::IsValid(MyPawn))
+	{
+		return;
+	}
+
+	/* 이 부분 나중에 수정. (Queue로 Target목록 받아서 처리하게끔)*/
+	if (EZombieState::Idle != MyPawn->GetZombieState())
+	{
+		return;
+	}
+
+	for (const auto& Actor : UpdatedActors)
+	{
+		auto Targetable = Cast<IZAITargetableInterface>(Actor);
+		if(Targetable && !(Targetable->IsDead()))
+		{
+			SetTargetActor(Actor);
+			SetZombieCurrentState(EZombieState::Chase);
+		}
+	}
+
+}
+
+void AZZombieAIController::OnTargetPerceptionUpdate(AActor * Actor, FAIStimulus Stimulus)
+{
+
+
 }

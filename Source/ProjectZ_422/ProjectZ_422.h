@@ -16,3 +16,5 @@ static const ECollisionChannel WEAPON = ECC_GameTraceChannel2;
 static const ECollisionChannel PROJECTILE_TRACE = ECC_GameTraceChannel3;
 static const ECollisionChannel WEAPON_TRACE = ECC_GameTraceChannel4;
 static const ECollisionChannel ZCHARACTER = ECC_GameTraceChannel5;
+static const ECollisionChannel ENEMY = ECC_GameTraceChannel6;
+static const ECollisionChannel ENEMY_ATTACK = ECC_GameTraceChannel7;

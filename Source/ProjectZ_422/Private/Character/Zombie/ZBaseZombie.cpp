@@ -21,14 +21,15 @@ AZBaseZombie::AZBaseZombie()
 	AIControllerClass = AZZombieAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
-	Sense->SetPeripheralVisionAngle(60.f);
-	Sense->SightRadius = 2000;
-	Sense->HearingThreshold = 600;
-	Sense->LOSHearingThreshold = 1200;
+	//Sense = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSense"));
+	//Sense->SetPeripheralVisionAngle(60.f);
+	//Sense->SightRadius = 2000;
+	//Sense->HearingThreshold = 600;
+	//Sense->LOSHearingThreshold = 1200;
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+	GetCharacterMovement()->bUseRVOAvoidance = true;
 
 	WalkSpeed = 200.f;
 	SprintSpeed = 500.f;
@@ -49,10 +50,10 @@ void AZBaseZombie::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Sense)
-	{
-		Sense->OnSeePawn.AddDynamic(this, &AZBaseZombie::OnSeePlayer);
-	}
+	//if (Sense)
+	//{
+	//	Sense->OnSeePawn.AddDynamic(this, &AZBaseZombie::OnSeePlayer);
+	//}
 
 	auto ZombieAnim = GetZombieAnimInstance();
 	check(nullptr != ZombieAnim);
@@ -116,7 +117,7 @@ void AZBaseZombie::SetActive(bool bActive)
 
 	ZLOG_S(Error);
 	
-	Sense->SetSensingUpdatesEnabled(bActive);
+	//Sense->SetSensingUpdatesEnabled(bActive);
 
 	if (bActive)
 	{
@@ -136,12 +137,12 @@ void AZBaseZombie::ChangeZombieState(EZombieState NewState)
 {
 	ZombieState = NewState;
 
-	auto ZombieAI = GetController<AZZombieAIController>();
-	if (ZombieAI)
-	{
-		ZLOG_S(Error);
-		ZombieAI->SetZombieCurrentState(NewState);
-	}
+	//auto ZombieAI = GetController<AZZombieAIController>();
+	//if (ZombieAI)
+	//{
+	//	ZLOG_S(Error);
+	//	ZombieAI->SetZombieCurrentState(NewState);
+	//}
 }
 
 int32 AZBaseZombie::GetZombieValue() const
