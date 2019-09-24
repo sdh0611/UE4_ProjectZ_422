@@ -37,8 +37,7 @@ public:
 public:
 	void SetIsSprinting(bool NewState);
 
-	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
-	virtual void SetCurrentSpeed(float NewSpeed);
+	void SetCurrentSpeed(float NewSpeed);
 
 	virtual void SetActive(bool bActive);
 

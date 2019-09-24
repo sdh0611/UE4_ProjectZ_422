@@ -255,19 +255,6 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 
 }
 
-void AZCharacter::SetCurrentSpeed(float NewSpeed)
-{
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-	}
-
-}
-
 void AZCharacter::SetActive(bool bActive)
 {
 	if (bActive)

@@ -153,7 +153,14 @@ void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
 		return;
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	}
 }
 
 void AZBaseCharacter::SetActive(bool bActive)

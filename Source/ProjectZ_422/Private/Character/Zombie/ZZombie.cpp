@@ -52,32 +52,6 @@ void AZZombie::OnSensingPlayer(APawn * Pawn)
 {
 	Super::OnSensingPlayer(Pawn);
 
-	if (GetZombieState() != EZombieState::Idle)
-	{
-		return;
-	}
-
-	auto ZombieController = GetController<AZZombieAIController>();
-	if (nullptr == ZombieController)
-	{
-		return;
-	}
-
-	//if (ZombieController->GetTargetPawn())
-	//{
-	//	return;
-	//}
-
-	auto Player = Cast<AZCharacter>(Pawn);
-	if (Player)
-	{
-		if (!Player->IsDead())
-		{
-			/* Target ¼³Á¤ */
-			ZombieController->SetTargetPawn(Player);
-			ChangeZombieState(EZombieState::Chase);
-		}
-	}
 }
 
 void AZZombie::Revive()

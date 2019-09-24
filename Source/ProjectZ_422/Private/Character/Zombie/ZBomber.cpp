@@ -5,6 +5,7 @@
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
 #include "ZCharacterStatusComponent.h"
+#include "ZGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
@@ -114,6 +115,11 @@ void AZBomber::Explosion()
 		Destroy();
 	}
 
+	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+	if (MyGameMode)
+	{
+		MyGameMode->AdjustZombieNum(-1);
+	}
 }
 
 void AZBomber::ChangeZombieState(EZombieState NewState)
@@ -146,29 +152,6 @@ void AZBomber::ChangeZombieState(EZombieState NewState)
 void AZBomber::OnSensingPlayer(APawn * Pawn)
 {
 	Super::OnSensingPlayer(Pawn);
-
-	if (GetZombieState() != EZombieState::Idle)
-	{
-		return;
-	}
-
-	auto ZombieController = Cast<AZZombieAIController>(GetController());
-	if (nullptr == ZombieController)
-	{
-		return;
-	}
-
-	auto Player = Cast<AZCharacter>(Pawn);
-	if (Player)
-	{
-		if (!Player->IsDead())
-		{
-			/* Target ¼³Á¤ */
-			ZombieController->SetTargetPawn(Player);
-			ChangeZombieState(EZombieState::Chase);
-		}
-	}
-
 }
 
 void AZBomber::OnDead()

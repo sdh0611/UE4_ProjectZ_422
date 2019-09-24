@@ -89,6 +89,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintReadOnly)
 	class UBehaviorTree* ZombieBT;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, BlueprintReadOnly)
+	class USoundBase* DetectSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, BlueprintReadOnly)
+	class USoundBase* AttackSound;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)

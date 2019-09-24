@@ -40,7 +40,6 @@ public:
 	void SetIsAiming(bool NewState);
 	void SetIsSwitchingWeapon(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
-	virtual void SetCurrentSpeed(float NewSpeed) override;
 	virtual void SetActive(bool bActive) override;
 
 public:

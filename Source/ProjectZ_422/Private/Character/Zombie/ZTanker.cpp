@@ -165,33 +165,6 @@ void AZTanker::OnDead()
 void AZTanker::OnSensingPlayer(APawn * Pawn)
 {
 	Super::OnSensingPlayer(Pawn);
-	if (GetZombieState() != EZombieState::Idle)
-	{
-		return;
-	}
-
-	auto ZombieController = Cast<AZZombieAIController>(GetController());
-	if (nullptr == ZombieController)
-	{
-		return;
-	}
-
-	//if (ZombieController->GetTargetPawn())
-	//{
-	//	return;
-	//}
-
-	auto Player = Cast<AZCharacter>(Pawn);
-	if (Player)
-	{
-		if (!Player->IsDead())
-		{
-			/* Target ¼³Á¤ */
-			ZombieController->SetTargetPawn(Player);
-			ChangeZombieState(EZombieState::Chase);
-			//bIsScreaming = true;
-		}
-	}
 	
 }
 

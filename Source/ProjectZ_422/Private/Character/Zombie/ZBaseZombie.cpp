@@ -12,7 +12,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-//#include "Perception/AIPerceptionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 
@@ -172,7 +172,10 @@ EZombieState AZBaseZombie::GetZombieState() const
 
 void AZBaseZombie::AttackCheck()
 {
-
+	if (AttackSound)
+	{
+		UGameplayStatics::SpawnSoundAttached(AttackSound, RootComponent);
+	}
 }
 
 void AZBaseZombie::OnDead()
@@ -225,5 +228,31 @@ void AZBaseZombie::OnSensingPlayer(APawn * Pawn)
 		return;
 	}
 
+	if (GetZombieState() != EZombieState::Idle)
+	{
+		return;
+	}
+
+	auto ZombieController = Cast<AZZombieAIController>(GetController());
+	if (nullptr == ZombieController)
+	{
+		return;
+	}
+
+	auto Player = Cast<AZCharacter>(Pawn);
+	if (Player)
+	{
+		if (!Player->IsDead())
+		{
+			/* Target ¼³Á¤ */
+			ZombieController->SetTargetPawn(Player);
+			ChangeZombieState(EZombieState::Chase);
+			if (DetectSound)
+			{
+				UGameplayStatics::SpawnSoundAttached(DetectSound, RootComponent);
+			}
+
+		}
+	}
 
 }

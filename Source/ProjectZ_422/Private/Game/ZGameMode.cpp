@@ -336,6 +336,10 @@ float AZGameMode::GetCurrentRemainTime() const
 void AZGameMode::UpdateGameTime()
 {
 	CurrentRemainTime -= 0.1f;
+	if (CurrentRemainTime <= 0.f)
+	{
+		CurrentRemainTime = 0.f;
+	}
 
 	/* GameState에 시간 업데이트 */
 	auto ZGameState = Cast<AZGameState>(GameState);
