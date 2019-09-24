@@ -38,7 +38,17 @@ public:
 	class UAnimMontage* const GetCurrentPlayMontage() const;
 
 public:
+	UFUNCTION()
+	void AnimNotify_DamagedEndCheck();
+
+public:
 	FOnGrenadeThrow OnGrenadeThrow;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsSprinting;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
+	bool bIsDamaged;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
@@ -53,11 +63,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsCrouching;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
-	bool bIsSprinting;
-
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
-	//bool bIsDead;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	class UAnimMontage* CurrentPlayMontage;

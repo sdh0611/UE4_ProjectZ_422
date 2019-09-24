@@ -17,6 +17,7 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 	bIsCrouching = false;
 	bIsSprinting = false;
 	//bIsDead = false;
+	bIsDamaged = false;
 
 	CurrentPlayMontage = nullptr;
 }
@@ -121,4 +122,9 @@ UAnimMontage * const UZCharacterAnimInstance::FindMontageByName(const FString & 
 UAnimMontage * const UZCharacterAnimInstance::GetCurrentPlayMontage() const
 {
 	return CurrentPlayMontage;
+}
+
+void UZCharacterAnimInstance::AnimNotify_DamagedEndCheck()
+{
+	bIsDamaged = false;
 }

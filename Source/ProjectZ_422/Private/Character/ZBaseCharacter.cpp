@@ -105,7 +105,8 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 		auto Anim = GetAnimInstance();
 		if (::IsValid(Anim))
 		{
-			Anim->PlayCharacterMontage(TEXT("Hit"));
+			Anim->bIsDamaged = true;
+			//Anim->PlayCharacterMontage(TEXT("Hit"));
 		}
 	}
 
