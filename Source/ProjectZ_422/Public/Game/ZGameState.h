@@ -54,8 +54,8 @@ public:
 
 
 protected:
-
 	/* Replicated using method */
+	
 	UFUNCTION()
 	void OnRep_TotalWave();
 	

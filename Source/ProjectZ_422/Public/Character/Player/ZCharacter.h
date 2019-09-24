@@ -31,7 +31,10 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, 
 		class AController* EventInstigator, class AActor* DamageCauser) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void Revive() override;
+
 
 public:
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
@@ -107,6 +110,19 @@ private:
 	void DamageSelf();
 	void Ragdoll();
 
+
+private:
+	/* Client to server call RPC */
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerCheckInteractionalActor(class AZInteractional* Interactional);
+	bool ServerCheckInteractionalActor_Validate(class AZInteractional* Interactional);
+	void ServerCheckInteractionalActor_Implementation(class AZInteractional* Interactional);
+
+
+	/* Server to client call RPC */
+
+
+	/* Replicated using method */
 
 protected:
 	/* Sockets */
