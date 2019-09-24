@@ -34,7 +34,7 @@ AZZombieAIController::AZZombieAIController()
 	AISense = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AISense"));
 	AISense->ConfigureSense(*SightConfig);
 
-	SetPathFollowingComponent(CreateDefaultSubobject<UCrowdFollowingComponent>(TEXT("PathComponent.")));
+	//SetPathFollowingComponent(CreateDefaultSubobject<UCrowdFollowingComponent>(TEXT("PathComponent.")));
 
 }
 
@@ -86,7 +86,7 @@ void AZZombieAIController::BeginPlay()
 
 void AZZombieAIController::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);	
+	Super::Tick(DeltaTime);
 
 }
 
@@ -97,14 +97,14 @@ bool AZZombieAIController::RunAI()
 	{
 		return false;
 	}
-	
+
 	GetBlackboardComponent()->SetValueAsVector(HomePosKey, Zombie->GetActorLocation());
 	if (!RunBehaviorTree(Zombie->GetZombieBT()))
 	{
 		ZLOG(Error, TEXT("Couldn't run BT."));
 		return false;
 	}
-	
+
 	GetBlackboardComponent()->SetValueAsEnum(CurrentStateKey, (uint8)EZombieState::Idle);
 
 	return true;
@@ -116,9 +116,9 @@ void AZZombieAIController::StopAI(const FString & Reason)
 	{
 		GetBrainComponent()->StopLogic(Reason);
 	}
-	/* 
+	/*
 		NOTE(7.27):
-			임시로 하드코딩함. 
+			임시로 하드코딩함.
 	*/
 	GetBlackboardComponent()->ClearValue(TargetActorKey);
 }
@@ -203,10 +203,21 @@ void AZZombieAIController::OnPerceptionUpdate(const TArray<AActor*>& UpdatedActo
 	for (const auto& Actor : UpdatedActors)
 	{
 		auto Targetable = Cast<IZAITargetableInterface>(Actor);
-		if(Targetable && !(Targetable->IsDead()))
+		if (Targetable && !(Targetable->IsDead()))
 		{
-			SetTargetActor(Actor);
-			SetZombieCurrentState(EZombieState::Chase);
+			if (Actor->ActorHasTag(TEXT("Prop")))
+			{
+				if (GetPathFollowingComponent()->HasPartialPath())
+				{
+					SetTargetActor(Actor);
+					SetZombieCurrentState(EZombieState::Chase);
+				}
+			}
+			else if (Actor->ActorHasTag(TEXT("Player")))
+			{
+				SetTargetActor(Actor);
+				SetZombieCurrentState(EZombieState::Chase);
+			}
 		}
 	}
 

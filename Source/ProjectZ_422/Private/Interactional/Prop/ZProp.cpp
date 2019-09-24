@@ -19,6 +19,7 @@ AZProp::AZProp()
 
 	TeamId = FGenericTeamId(1);
 	
+	Tags.Add(TEXT("Prop"));
 }
 
 // Called when the game starts or when spawned
