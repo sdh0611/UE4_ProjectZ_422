@@ -29,7 +29,6 @@ public:
 
 public:
 	void SetIsSprinting(bool NewState);
-	//void SetIsDead(bool NewState);
 
 public:
 	bool IsSprinting() const;
