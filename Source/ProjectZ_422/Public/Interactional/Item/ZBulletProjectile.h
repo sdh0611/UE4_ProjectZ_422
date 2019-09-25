@@ -36,7 +36,4 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UMaterialInterface* Decal;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UParticleSystemComponent* ProjectileTrailParticle;
-
 };

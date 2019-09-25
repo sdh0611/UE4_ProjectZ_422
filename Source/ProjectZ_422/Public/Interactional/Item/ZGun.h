@@ -119,6 +119,8 @@ public:
 
 protected:
 	bool CheckNeedToReload();
+	void SpawnTrail(const FVector& EndPoint);
+	void PlayCameraShake();
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
@@ -129,7 +131,14 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	TSubclassOf<UCameraShake> FireCameraShake;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class UParticleSystem* FireEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	class UParticleSystem* ProjectileTrail;
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class USoundBase* EmptySound;
@@ -137,6 +146,10 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	FName EffectAttachSocketName;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	FName TrailTargetParam;
+
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	TSubclassOf<class AZBulletProjectile> BulletClass;

@@ -51,7 +51,6 @@ void AZPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZPlayerController::ToggleInGameMenu);
 	InputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZPlayerController::RemoveWidgetFromTop);
 
-
 }
 
 UZUserHUD * const AZPlayerController::GetUserHUD() const

@@ -85,12 +85,15 @@ void AZShotgun::Fire()
 			ZLOG(Error, TEXT("Failed to spawn bullet.."));
 			bSuccess = false;
 			break;
+
 		}
 
 		Projectile->SetDamage(Damage / ShotNumber);
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
 		Projectile->SetBulletSpeed(BulletSpeed);
 		Projectile->SetBulletLifeSpan(BulletLifeSpan);
+
+		SpawnTrail(LaunchDirection);
 	}
 
 	if (bSuccess)

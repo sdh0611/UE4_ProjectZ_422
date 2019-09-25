@@ -21,9 +21,6 @@ AZBulletProjectile::AZBulletProjectile()
 	ProjectileMesh->SetupAttachment(RootComponent);
 	//Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	ProjectileTrailParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ProjectileParticle"));
-	ProjectileTrailParticle->SetupAttachment(RootComponent);
-
 	Movement->InitialSpeed = 3000.f;
 	Movement->ProjectileGravityScale = 0.f;
 
@@ -123,3 +120,4 @@ void AZBulletProjectile::TraceBullet()
 	}
 	//ProjectileTrailParticle->SetVectorParameter(TEXT("EndPoint"), PreLocation);
 }
+

@@ -55,8 +55,6 @@ void AZAR::Fire()
 		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
 	}
 
-
-
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = ItemOwner;
@@ -80,7 +78,9 @@ void AZAR::Fire()
 			{
 				UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
 			}
-
+			
+			SpawnTrail(Hit.bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd);
+			PlayCameraShake();
 		}
 		else
 		{

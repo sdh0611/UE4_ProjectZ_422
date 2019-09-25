@@ -12,6 +12,7 @@
 #include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AZGun::AZGun()
 {
@@ -28,7 +29,7 @@ AZGun::AZGun()
 	BulletLifeSpan = 3.f;
 
 	CurrentSpread = 0.f;
-	BulletSpread= 0.2f;
+	BulletSpread = 0.2f;
 	SpreadDecrement = 0.005f;
 
 	FireMode = EFireMode::SingleShot;
@@ -44,7 +45,7 @@ AZGun::AZGun()
 void AZGun::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void AZGun::Tick(float DeltaTime)
@@ -60,7 +61,7 @@ void AZGun::Tick(float DeltaTime)
 			{
 				bIsFiring = false;
 				FireTimer = 0.f;
-		
+
 				if (EFireMode::SingleShot != GetFireMode())
 				{
 					if (IsWantsToFire())
@@ -212,7 +213,7 @@ EFireMode AZGun::GetFireMode() const
 
 UAnimMontage * const AZGun::GetFireAnimMontage() const
 {
-	if(ItemOwner->IsAiming())
+	if (ItemOwner->IsAiming())
 	{
 		return FindMontage(TEXT("FireAim"));
 	}
@@ -231,7 +232,7 @@ void AZGun::Fire()
 
 	ItemOwner->AddControllerPitchInput(-CurrentSpread);
 	ItemOwner->AddControllerYawInput(SpreadYaw);
-	
+
 	Super::Fire();
 }
 
@@ -243,4 +244,34 @@ void AZGun::FireEnd()
 bool AZGun::CheckNeedToReload()
 {
 	return CurrentAmmo < 1;
+}
+
+void AZGun::SpawnTrail(const FVector & EndPoint)
+{
+	if (ProjectileTrail)
+	{
+		FVector MuzzleLoc = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+		
+		UParticleSystemComponent* TrailPSC = UGameplayStatics::SpawnEmitterAtLocation(this, ProjectileTrail, MuzzleLoc);
+		if (TrailPSC)
+		{
+			TrailPSC->SetVectorParameter(TrailTargetParam, EndPoint);
+		}
+
+
+	}
+
+
+}
+
+void AZGun::PlayCameraShake()
+{
+	if (FireCameraShake)
+	{
+		auto MyPC = ItemOwner->GetController<APlayerController>();
+		if (MyPC)
+		{
+			MyPC->ClientPlayCameraShake(FireCameraShake);
+		}
+	}
 }
