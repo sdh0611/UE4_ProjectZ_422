@@ -15,6 +15,8 @@ AZZombieAIController::AZZombieAIController()
 	TargetPosKey = TEXT("TargetPos");
 	TargetActorKey = TEXT("TargetPawn");
 	CurrentStateKey = TEXT("CurrentState");
+
+	TargetPos = FVector(0.f, 0.f, 0.f);
 }
 
 void AZZombieAIController::OnPossess(APawn * InPawn)
@@ -52,7 +54,7 @@ void AZZombieAIController::OnPossess(APawn * InPawn)
 
 	if (Blackboard)
 	{
-		Blackboard->SetValueAsVector(TargetPosKey, FVector(0.f, 0.f, 0.f));
+		Blackboard->SetValueAsVector(TargetPosKey, TargetPos);
 	}
 }
 

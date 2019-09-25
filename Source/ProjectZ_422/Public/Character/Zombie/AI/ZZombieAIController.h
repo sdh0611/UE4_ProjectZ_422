@@ -54,6 +54,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName CurrentStateKey;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector TargetPos;
 	
 
 };
