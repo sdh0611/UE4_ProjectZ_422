@@ -156,6 +156,7 @@ protected:
 	UPROPERTY()
 	class UTextBlock* CurrentNumZombiesText;
 
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<TWeakObjectPtr<class UZUserWidget>> DrawWidgetList;
