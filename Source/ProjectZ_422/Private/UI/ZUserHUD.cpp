@@ -468,3 +468,4 @@ bool UZUserHUD::IsDrawWidgetListEmpty()
 	return DrawWidgetList.Num() < 1;
 	//return DrawWidgetNum < 1;
 }
+

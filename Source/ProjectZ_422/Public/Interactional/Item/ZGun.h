@@ -131,7 +131,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
-	TSubclassOf<UCameraShake> FireCameraShake;
+	TSubclassOf<class UCameraShake> FireCameraShake;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)

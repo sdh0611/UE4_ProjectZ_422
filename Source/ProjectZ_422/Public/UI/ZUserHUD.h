@@ -96,6 +96,10 @@ public:
 	class UZCurrentWeaponInfoWidget* const GetCurrentWeaponInfoWidget() const;
 	class UZInputNumberWidget* const GetInputNumberWidget() const;
 
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CallFadeOutBloodSplatterAnim();
+
 protected:
 	bool IsDrawWidgetListEmpty();
 	
@@ -107,6 +111,7 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CallFadeAnim();
+
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))

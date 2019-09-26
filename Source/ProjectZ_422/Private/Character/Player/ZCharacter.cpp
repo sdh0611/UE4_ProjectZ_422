@@ -168,6 +168,15 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	auto MyPC = GetController<AZPlayerController>();
+	if (MyPC)
+	{
+		auto MyHUD = MyPC->GetUserHUD();
+		if (MyHUD)
+		{
+			MyHUD->CallFadeOutBloodSplatterAnim();
+		}
+	}
 	//StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	return FinalDamage;
