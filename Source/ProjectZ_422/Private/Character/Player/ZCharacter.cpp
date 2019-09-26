@@ -295,7 +295,7 @@ bool AZCharacter::IsSwitchingWeapon()
 
 AZInteractional * AZCharacter::GetInteractionalInView()
 {
-	auto MyPC = Cast<AZPlayerController>(GetController());
+	auto MyPC = GetController<AZPlayerController>();
 	if (!MyPC)
 	{
 		return nullptr;

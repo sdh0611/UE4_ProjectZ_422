@@ -16,8 +16,8 @@
 #include "ZDoping.h"
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "ConstructorHelpers.h"
-
+#include "UnrealNetwork.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AZShop::AZShop()
 {
@@ -65,7 +65,7 @@ void AZShop::OnInteraction(AZCharacter * NewCharacter)
 	if (NewCharacter)
 	{
 		ZLOG_S(Error);
-		ConstructShopWidget(NewCharacter);
+		ClientConstructShopWidget(NewCharacter);
 	}
 
 	Super::OnInteraction(NewCharacter);
@@ -80,6 +80,15 @@ void AZShop::OnFocus()
 void AZShop::OnFocusEnd()
 {
 	BodyMesh->SetRenderCustomDepth(false);
+
+
+}
+
+void AZShop::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZShop, bIsShopOpen);
 
 
 }
@@ -378,5 +387,42 @@ void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
 
 	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
 	ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
+
+}
+
+void AZShop::ClientConstructShopWidget_Implementation(AZCharacter * EnterCharacter)
+{
+	ZLOG_S(Warning);
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("ConstructShop"));
+	if (nullptr == EnterCharacter)
+	{
+		return;
+	}
+
+	///* 상점 전체 틀 그림. */
+	//auto PlayerController = Cast<AZPlayerController>(EnterCharacter->GetController());
+	//if (nullptr == PlayerController)
+	//{
+	//	return;
+	//}
+	//PlayerController->GetUserHUD()->GetShopWidget()->BindShop(this);
+	//PlayerController->GetUserHUD()->DrawShopWidget();
+
+	///* 상점 아이템들을 그리기 위한 준비. */
+	//auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetUserHUD()->GetShopWidget());
+	//if (nullptr == ShopWidget)
+	//{
+	//	return;
+	//}
+
+	//auto ItemStatusComponent = EnterCharacter->GetItemStatusComponent();
+	//if (nullptr == ItemStatusComponent)
+	//{
+	//	ZLOG(Error, TEXT("ItemStatusComponent not exist.."));
+	//	return;
+	//}
+
+	//ShopWidget->ConstructBuyWidget(ShopItemDataTable);
+	//ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
 
 }

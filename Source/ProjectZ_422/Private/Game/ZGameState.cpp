@@ -17,6 +17,14 @@ AZGameState::AZGameState()
 	CurrentGamePhase = EGamePhase::Ready;
 }
 
+void AZGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
+
+}
+
 void AZGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

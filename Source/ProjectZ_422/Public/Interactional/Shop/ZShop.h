@@ -22,6 +22,7 @@ public:
 	virtual void OnInteraction(class AZCharacter* NewCharacter);
 	virtual void OnFocus() override;
 	virtual void OnFocusEnd() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	void Buy(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity = 1);
@@ -38,8 +39,19 @@ public:
 private:
 	void ConstructShopWidget(class AZCharacter* EnterCharacter);
 
+protected:
+	/* Client to server RPC */
+
+	/* Server to client RPC */
+	UFUNCTION(Client, Reliable)
+	void ClientConstructShopWidget(class AZCharacter* EnterCharacter);
+	void ClientConstructShopWidget_Implementation(class AZCharacter* EnterCharacter);
+
+
+	/* Replicated using */
+
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shop)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shop, Replicated)
 	bool bIsShopOpen;
 
 protected:

@@ -75,15 +75,6 @@ void AZGameMode::BeginPlay()
 void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	//if (!IsGameEnd())
-	//{
-	//	CurrentRemainTime -= DeltaTime;
-	//	if (CurrentRemainTime <= 0.f)
-	//	{
-	//		UpdateGamePhase();
-	//	}
-	//}
 
 
 }
