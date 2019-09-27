@@ -33,6 +33,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	/*
@@ -97,6 +98,21 @@ private:
 	*/
 	int32 AllocateInventoryIndex();
 
+
+private:
+	/* Client to server RPC */
+
+
+
+	/* Server to client RPC */
+
+
+
+	/* Replicated using method */
+	UFUNCTION()
+	void OnRep_CurrentMoney();
+
+
 public:
 	/* UI¿Í ¿¬µ¿ */
 	FOnMoneyInfoChange OnMoneyInfoChange;
@@ -123,13 +139,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus)
 	int32 MaxWeight;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus, Transient)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus, Transient, Replicated)
 	int32 CurrentWeight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ItemStatus, Transient)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ItemStatus, Transient, ReplicatedUsing = OnRep_CurrentMoney)
 	int32 CurrentMoney;
 
 	UPROPERTY(BlueprintReadOnly, Category = ItemStatus)
-	class AZCharacter* OwnerCharacter;
+	TWeakObjectPtr<class AZCharacter> OwnerCharacter;
 
 };

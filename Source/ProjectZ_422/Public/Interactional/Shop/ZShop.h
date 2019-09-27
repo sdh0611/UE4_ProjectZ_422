@@ -41,11 +41,17 @@ private:
 
 protected:
 	/* Client to server RPC */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerBuy(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity);
+	bool ServerBuy_Validate(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity);
+	void ServerBuy_Implementation(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
+	bool ServerSell_Validate(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
+	void ServerSell_Implementation(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
 
 	/* Server to client RPC */
-	UFUNCTION(Client, Reliable)
-	void ClientConstructShopWidget(class AZCharacter* EnterCharacter);
-	void ClientConstructShopWidget_Implementation(class AZCharacter* EnterCharacter);
 
 
 	/* Replicated using */

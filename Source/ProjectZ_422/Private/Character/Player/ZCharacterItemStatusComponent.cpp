@@ -15,6 +15,7 @@
 #include "ZRecovery.h"
 #include "ZDoping.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -23,6 +24,8 @@ UZCharacterItemStatusComponent::UZCharacterItemStatusComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
+	
+	bReplicates = true;
 
 	// ...
 	MaxSizeOfItemList = 30;
@@ -53,6 +56,14 @@ void UZCharacterItemStatusComponent::BeginPlay()
 void UZCharacterItemStatusComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+}
+
+void UZCharacterItemStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+
 
 }
 
@@ -117,7 +128,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 			// 해당 Index에 Item포인터 할당.
 			ItemList[AllocatedIndex] = NewItem;
 			NewItem->SetInventoryIndex(AllocatedIndex);
-			NewItem->SetItemOwner(OwnerCharacter);
+			NewItem->SetItemOwner(OwnerCharacter.Get());
 			if (OwnerPickup)
 			{
 				NewItem->SetPickup(OwnerPickup);
@@ -146,18 +157,20 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 					{
 						UserHUD->GetInventoryWidget()->AddItemToInventory(NewItem);
 					}
+
+					// ShopSellWidget Update
+					if (UserHUD->IsShopWidgetOnScreen())
+					{
+						ZLOG(Warning, TEXT("Add Item to SellWidget"));
+						auto ShopSellWidget = PlayerController->GetUserHUD()->GetShopWidget();
+						if (ShopSellWidget)
+						{
+							ShopSellWidget->AddItemToSellWidget(NewItem);
+						}
+					}
+
 				}
 
-				// ShopSellWidget Update
-				if (PlayerController->GetUserHUD()->IsShopWidgetOnScreen())
-				{
-					ZLOG(Warning, TEXT("Add Item to SellWidget"));
-					auto ShopSellWidget = PlayerController->GetUserHUD()->GetShopWidget();
-					if (ShopSellWidget)
-					{
-						ShopSellWidget->AddItemToSellWidget(NewItem);
-					}
-				}
 			}
 
 		}
@@ -499,9 +512,6 @@ void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
 	}
 
 	//PlayerController->GetZHUD()->GetUserHUD()->UpdateCurrentMoneyInfo(CurrentMoney);
-
-	OnMoneyInfoChange.Broadcast(CurrentMoney);
-
 }
 
 void UZCharacterItemStatusComponent::SetMaxSizeOfItemList(int32 NewMaxSize)
@@ -619,6 +629,11 @@ int32 UZCharacterItemStatusComponent::AllocateInventoryIndex()
 
 	// ItemList가 꽉찬 경우.
 	return -1;
+}
+
+void UZCharacterItemStatusComponent::OnRep_CurrentMoney()
+{
+	OnMoneyInfoChange.Broadcast(CurrentMoney);
 }
 
 AZItem * UZCharacterItemStatusComponent::GetItemByIndex(int32 ItemIndex) const
