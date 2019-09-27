@@ -7,7 +7,7 @@
 #include "ZNumberWidgetInterface.h"
 #include "ZShopBuyItemWidget.generated.h"
 
-DECLARE_DELEGATE_ThreeParams(FOnBuyShopItem, APlayerController*, int32, int32);
+DECLARE_DELEGATE_TwoParams(FOnBuyShopItem, int32, int32);
 
 /**
  * 

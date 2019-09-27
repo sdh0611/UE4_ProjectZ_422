@@ -55,7 +55,7 @@ void AZShop::OpenShop(AZPlayerController* NewPC)
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("ShopInteraction."));
 	if (NewPC)
 	{
-		ConstructShopWidget(Cast<AZCharacter>(NewPC->GetPawn()));
+		//ConstructShopWidget(Cast<AZCharacter>(NewPC->GetPawn()));
 	}
 
 }
@@ -76,10 +76,10 @@ void AZShop::Buy(APlayerController* PC, int32 BuyItemShopID, int32 Quantity)
 	ServerBuy(PC, BuyItemShopID, Quantity);
 }
 
-void AZShop::Sell(APawn* Pawn, AZItem* SellItem, int32 Quantity)
+void AZShop::Sell(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity)
 {
 	/* Server RPC */
-	ServerSell(Pawn, SellItem, Quantity);
+	ServerSell(PC, SellItemInventoryIndex, Quantity);
 }
 
 
@@ -113,41 +113,41 @@ FZShopItemData * const AZShop::FindShopItemDataByID(int32 NewShopID) const
 	return nullptr;
 }
 
-void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
-{
-	ZLOG_S(Warning);
-	if (nullptr == EnterCharacter)
-	{
-		return;
-	}
-
-	/* 상점 전체 틀 그림. */
-	auto PlayerController = Cast<AZPlayerController>(EnterCharacter->GetController());
-	if (nullptr == PlayerController)
-	{
-		return;
-	}
-	PlayerController->GetUserHUD()->GetShopWidget()->BindShop(this);
-	PlayerController->GetUserHUD()->DrawShopWidget();
-	
-	/* 상점 아이템들을 그리기 위한 준비. */
-	auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetUserHUD()->GetShopWidget());
-	if (nullptr == ShopWidget)
-	{
-		return;
-	}
-
-	auto ItemStatusComponent = EnterCharacter->GetItemStatusComponent();
-	if (nullptr == ItemStatusComponent)
-	{
-		ZLOG(Error, TEXT("ItemStatusComponent not exist.."));
-		return;
-	}
-
-	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
-	ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
-
-}
+//void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
+//{
+//	ZLOG_S(Warning);
+//	if (nullptr == EnterCharacter)
+//	{
+//		return;
+//	}
+//
+//	/* 상점 전체 틀 그림. */
+//	auto PlayerController = Cast<AZPlayerController>(EnterCharacter->GetController());
+//	if (nullptr == PlayerController)
+//	{
+//		return;
+//	}
+//	PlayerController->GetUserHUD()->GetShopWidget()->BindShop(this);
+//	PlayerController->GetUserHUD()->DrawShopWidget();
+//	
+//	/* 상점 아이템들을 그리기 위한 준비. */
+//	auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetUserHUD()->GetShopWidget());
+//	if (nullptr == ShopWidget)
+//	{
+//		return;
+//	}
+//
+//	auto ItemStatusComponent = EnterCharacter->GetItemStatusComponent();
+//	if (nullptr == ItemStatusComponent)
+//	{
+//		ZLOG(Error, TEXT("ItemStatusComponent not exist.."));
+//		return;
+//	}
+//
+//	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
+//	ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
+//
+//}
 
 bool AZShop::ServerBuy_Validate(APlayerController * PC, int32 BuyItemShopID, int32 Quantity)
 {
@@ -191,150 +191,156 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 		돈계산
 		-> 돈이 부족한 경우엔 그대로 메소드 return
 	*/
-	//int32 TotalQuantity = Quantity;
-	//int32 TotalPayment = (BuyItemData->ItemPrice) * Quantity;
-	//if (ItemStatusComponent->GetCurrentMoney() < TotalPayment)
-	//{
-	//	ZLOG(Warning, TEXT("Money is not enough to buy item"));
-	//	TotalQuantity = (ItemStatusComponent->GetCurrentMoney()) / (BuyItemData->ItemPrice);
-	//	TotalPayment = (BuyItemData->ItemPrice) * TotalQuantity;
-	//}
+	int32 TotalQuantity = Quantity;
+	int32 TotalPayment = (BuyItemData->ItemPrice) * Quantity;
+	if (ItemStatusComponent->GetCurrentMoney() < TotalPayment)
+	{
+		ZLOG(Warning, TEXT("Money is not enough to buy item"));
+		TotalQuantity = (ItemStatusComponent->GetCurrentMoney()) / (BuyItemData->ItemPrice);
+		TotalPayment = (BuyItemData->ItemPrice) * TotalQuantity;
+	}
 
-	//ItemStatusComponent->AdjustMoney(-TotalPayment);
+	ItemStatusComponent->AdjustMoney(-TotalPayment);
 
-	///*
-	//	Item생성 및 ItemList에 추가
-	//*/
-	//TSubclassOf<AZItem> SpawnItemClass = nullptr;
+	/*
+		Item생성 및 ItemList에 추가
+	*/
+	TSubclassOf<AZItem> SpawnItemClass = nullptr;
 
-	//auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
-	//check(nullptr != ZGameInstance);
+	auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
+	check(nullptr != ZGameInstance);
 
-	//const FZItemData* ItemData = ZGameInstance->GetItemDataByName(BuyItemData->ItemName);
+	const FZItemData* ItemData = ZGameInstance->GetItemDataByName(BuyItemData->ItemName);
 
-	//switch (GetItemTypeFromString(BuyItemData->ItemType))
-	//{
-	//case EItemType::Weapon:
-	//{
-	//	auto WeaponData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
-	//	check(nullptr != WeaponData);
+	switch (GetItemTypeFromString(BuyItemData->ItemType))
+	{
+	case EItemType::Weapon:
+	{
+		auto WeaponData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
+		check(nullptr != WeaponData);
 
-	//	switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
-	//	{
-	//	case EWeaponCategory::Gun:
-	//	{
-	//		auto GunData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
-	//		check(GunData != nullptr);
+		switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
+		{
+		case EWeaponCategory::Gun:
+		{
+			auto GunData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
+			check(GunData != nullptr);
 
-	//		switch (GetGunTypeFromString(GunData->GunType))
-	//		{
-	//		case EGunType::AR:
-	//		{
-	//			SpawnItemClass = ARClass;
-	//			break;
-	//		}
-	//		case EGunType::Shotgun:
-	//		{
-	//			SpawnItemClass = ShotgunClass;
-	//			break;
-	//		}
-	//		}
+			switch (GetGunTypeFromString(GunData->GunType))
+			{
+			case EGunType::AR:
+			{
+				SpawnItemClass = ARClass;
+				break;
+			}
+			case EGunType::Shotgun:
+			{
+				SpawnItemClass = ShotgunClass;
+				break;
+			}
+			}
 
-	//		break;
-	//	}
-	//	case EWeaponCategory::Knife:
-	//	{
-	//		//SpawnItemClass = AZKnife::StaticClass();
-	//		break;
-	//	}
-	//	case EWeaponCategory::Grenade:
-	//	{
-	//		ZLOG(Error, TEXT("Buy Grenade."));
-	//		SpawnItemClass = GrenadeClass;
-	//		break;
-	//	}
-	//	default:
-	//	{
-	//		ZLOG(Error, TEXT("Invalid type."));
-	//		return;
-	//	}
-	//	}
+			break;
+		}
+		case EWeaponCategory::Knife:
+		{
+			//SpawnItemClass = AZKnife::StaticClass();
+			break;
+		}
+		case EWeaponCategory::Grenade:
+		{
+			ZLOG(Error, TEXT("Buy Grenade."));
+			SpawnItemClass = GrenadeClass;
+			break;
+		}
+		default:
+		{
+			ZLOG(Error, TEXT("Invalid type."));
+			return;
+		}
+		}
 
-	//	break;
-	//}
-	//case EItemType::Recovery:
-	//{
-	//	SpawnItemClass = RecoveryClass;
-	//	break;
-	//}
-	//case EItemType::Doping:
-	//{
-	//	SpawnItemClass = DopingClass;
-	//	break;
-	//}
-	//case EItemType::Ammo:
-	//{
-	//	SpawnItemClass = AmmoClass;
-	//	break;
-	//}
-	//default:
-	//{
-	//	ZLOG(Error, TEXT("Invalid ItemType"));
-	//	return;
-	//}
-	//}
+		break;
+	}
+	case EItemType::Recovery:
+	{
+		SpawnItemClass = RecoveryClass;
+		break;
+	}
+	case EItemType::Doping:
+	{
+		SpawnItemClass = DopingClass;
+		break;
+	}
+	case EItemType::Ammo:
+	{
+		SpawnItemClass = AmmoClass;
+		break;
+	}
+	default:
+	{
+		ZLOG(Error, TEXT("Invalid ItemType"));
+		return;
+	}
+	}
 
-	//int32 RemainQuantity = TotalQuantity;
-	//while (RemainQuantity > ItemData->MaxQuantity)
-	//{
-	//	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
-	//	if (nullptr == NewItem)
-	//	{
-	//		ZLOG(Error, TEXT("Failed to spawn item."));
-	//		return;
-	//	}
+	int32 RemainQuantity = TotalQuantity;
+	while (RemainQuantity > ItemData->MaxQuantity)
+	{
+		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
+		if (nullptr == NewItem)
+		{
+			ZLOG(Error, TEXT("Failed to spawn item."));
+			return;
+		}
 
-	//	if (nullptr == ItemData)
-	//	{
-	//		ZLOG(Error, TEXT("Invalid item data."));
-	//		return;
-	//	}
-	//	ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
+		if (nullptr == ItemData)
+		{
+			ZLOG(Error, TEXT("Invalid item data."));
+			return;
+		}
+		ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
 
-	//	NewItem->InitItemData(ItemData);
-	//	NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);
-	//	ItemStatusComponent->AddItem(NewItem);
-	//	RemainQuantity -= ItemData->MaxQuantity;
-	//}
+		NewItem->InitItemData(ItemData);
+		NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);
+		ItemStatusComponent->AddItem(NewItem);
+		RemainQuantity -= ItemData->MaxQuantity;
+	}
 
-	//AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
-	//if (nullptr == NewItem)
-	//{
-	//	ZLOG(Error, TEXT("Failed to spawn item."));
-	//	return;
-	//}
+	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
+	if (nullptr == NewItem)
+	{
+		ZLOG(Error, TEXT("Failed to spawn item."));
+		return;
+	}
 
-	//if (nullptr == ItemData)
-	//{
-	//	ZLOG(Error, TEXT("Invalid item data."));
-	//	return;
-	//}
-	//ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
+	if (nullptr == ItemData)
+	{
+		ZLOG(Error, TEXT("Invalid item data."));
+		return;
+	}
+	ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
 
-	//NewItem->InitItemData(ItemData);
-	//NewItem->SetCurrentQuantityOfItem(RemainQuantity);
-	//ItemStatusComponent->AddItem(NewItem);
+	NewItem->InitItemData(ItemData);
+	NewItem->SetCurrentQuantityOfItem(RemainQuantity);
+	ItemStatusComponent->AddItem(NewItem);
 
 }
 
-bool AZShop::ServerSell_Validate(APawn * Pawn, AZItem * SellItem, int32 Quantity)
+bool AZShop::ServerSell_Validate(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity)
 {
 	return true;
 }
 
-void AZShop::ServerSell_Implementation(APawn * Pawn, AZItem * SellItem, int32 Quantity)
+void AZShop::ServerSell_Implementation(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity)
 {
-	auto Player = Cast<AZCharacter>(Pawn);
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Sell Item process."));
+	if (nullptr == PC)
+	{
+		return;
+	}
+
+	auto Player = Cast<AZCharacter>(PC->GetPawn());
 	if (nullptr == Player)
 	{
 		ZLOG(Error, TEXT("Invalid pawn."));
@@ -356,6 +362,12 @@ void AZShop::ServerSell_Implementation(APawn * Pawn, AZItem * SellItem, int32 Qu
 		return;
 	}
 
+	AZItem* SellItem = ItemStatusComponent->GetItemByIndex(SellItemInventoryIndex);
+	if (nullptr == SellItem)
+	{
+		return;
+	}
+
 	auto ShopItemData = FindShopItemDataByName(SellItem->GetItemName());
 	if (nullptr == ShopItemData)
 	{
@@ -363,6 +375,7 @@ void AZShop::ServerSell_Implementation(APawn * Pawn, AZItem * SellItem, int32 Qu
 		return;
 	}
 
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("In Sell Item process."));
 	/*
 		돈계산
 		-> 판매 가격은 상점 구매 가격의 7할로 통일.

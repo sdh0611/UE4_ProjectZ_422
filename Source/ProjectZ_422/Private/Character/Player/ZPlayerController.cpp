@@ -100,6 +100,31 @@ void AZPlayerController::Buy_Implementation(int32 BuyItemShopID, int32 Quantity)
 	}
 }
 
+bool AZPlayerController::Sell_Validate(int32 SellItemInventoryIndex, int32 Quantity)
+{
+	if (SellItemInventoryIndex < 0)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void AZPlayerController::Sell_Implementation(int32 SellItemInventoryIndex, int32 Quantity)
+{
+	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+	if (MyGameMode)
+	{
+		auto Shop = MyGameMode->GetShop();
+		if (Shop && Shop->bIsShopOpen)
+		{
+			Shop->Sell(this, SellItemInventoryIndex, Quantity);
+		}
+
+	}
+
+}
+
 void AZPlayerController::OpenShop()
 {
 	//if (nullptr == Shop)
@@ -108,7 +133,7 @@ void AZPlayerController::OpenShop()
 	//	return;
 	//}
 
-	///* 로컬에서만 실행. */
+	/* 로컬에서만 실행. */
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop."));
 	ConstructShopWidget();
 	//Shop->OpenShop(this);

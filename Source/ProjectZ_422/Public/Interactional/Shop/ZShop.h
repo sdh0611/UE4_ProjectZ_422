@@ -23,14 +23,14 @@ public:
 
 public:
 	void Buy(APlayerController* PC, int32 BuyItemShopID, int32 Quantity = 1);
-	void Sell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
+	void Sell(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity = 1);
 	void OpenShop(class AZPlayerController* NewCharacter);
 
 	struct FZShopItemData* const FindShopItemDataByName(const FString& ShopItemName) const;
 	struct FZShopItemData* const FindShopItemDataByID(int32 NewShopID) const;
 
 private:
-	void ConstructShopWidget(class AZCharacter* EnterCharacter);
+	//void ConstructShopWidget(class AZCharacter* EnterCharacter);
 
 protected:
 	/* Client to server RPC */
@@ -40,9 +40,9 @@ protected:
 	void ServerBuy_Implementation(APlayerController* PC, int32 BuyItemShopID, int32 Quantity);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerSell(APawn* Pawn, class AZItem* SellItem, int32 Quantity);
-	bool ServerSell_Validate(APawn* Pawn, class AZItem* SellItem, int32 Quantity);
-	void ServerSell_Implementation(APawn* Pawn, class AZItem* SellItem, int32 Quantity);
+	void ServerSell(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity);
+	bool ServerSell_Validate(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity);
+	void ServerSell_Implementation(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity);
 
 	/* Server to client RPC */
 

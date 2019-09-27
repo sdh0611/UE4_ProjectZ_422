@@ -9,6 +9,7 @@
 #include "ZUserHUD.h"
 #include "ZInputNumberWidget.h"
 #include "ZGameInstance.h"
+#include "ZPlayerController.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -48,7 +49,12 @@ void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
 		return;
 	}
 
-	OnSellItem.Execute(GetOwningPlayerPawn(), Item, NewNumber);
+	auto MyPC = GetOwningPlayer<AZPlayerController>();
+	if (MyPC)
+	{
+		MyPC->Sell(Item->GetInventoryIndex(), NewNumber);
+	}
+	//OnSellItem.Execute(GetOwningPlayerPawn(), Item, NewNumber);
 }
 
 void UZShopSellItemWidget::BindItem(AZItem * NewItem)
@@ -103,7 +109,7 @@ void UZShopSellItemWidget::BindItem(AZItem * NewItem)
 
 void UZShopSellItemWidget::UpdateWidget()
 {
-	if (nullptr == Item)
+	if (!Item.IsValid())
 	{
 		ZLOG(Error, TEXT("Item is null"));
 		return;
