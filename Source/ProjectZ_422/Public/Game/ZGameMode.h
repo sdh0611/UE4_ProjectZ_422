@@ -55,6 +55,7 @@ public:
 
 public:
 	EGamePhase GetCurrentGamePhase() const;
+	class AZShop* const GetShop() const;
 
 protected:
 	void StopAllSpawner();
@@ -73,6 +74,12 @@ protected:
 	FTimerHandle PhaseTimer;
 
 	FTimerHandle StopSpawnTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class AZShop> ShopClass;
+
+	UPROPERTY()
+	class AZShop* Shop;
 
 	UPROPERTY(EditAnywhere, Category = GameMode)
 	EGameModeState GameModeState;

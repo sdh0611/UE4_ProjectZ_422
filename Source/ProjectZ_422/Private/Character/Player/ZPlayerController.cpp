@@ -8,6 +8,11 @@
 #include "ZCharacter.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "ZUserHUD.h"
+#include "ZShopWidget.h"
+#include "ZShop.h"
+#include "ZGameMode.h"
+#include "ZGameInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 AZPlayerController::AZPlayerController()
@@ -37,6 +42,7 @@ void AZPlayerController::BeginPlay()
 
 		UserHUD->AddToViewport();
 	}
+
 
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
@@ -72,6 +78,107 @@ UZCharacterItemStatusComponent * const AZPlayerController::GetCharacterItemStatu
 	}
 
 	return nullptr;
+}
+
+bool AZPlayerController::Buy_Validate(int32 BuyItemShopID, int32 Quantity)
+{
+	return true;
+}
+
+void AZPlayerController::Buy_Implementation(int32 BuyItemShopID, int32 Quantity)
+{
+	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+	if (MyGameMode)
+	{
+		auto Shop = MyGameMode->GetShop();
+		if (Shop && Shop->bIsShopOpen)
+		{
+			Shop->Buy(this, BuyItemShopID, Quantity);
+		}
+
+	}
+}
+
+bool AZPlayerController::Sell_Validate(int32 SellItemInventoryIndex, int32 Quantity)
+{
+	if (SellItemInventoryIndex < 0)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void AZPlayerController::Sell_Implementation(int32 SellItemInventoryIndex, int32 Quantity)
+{
+	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+	if (MyGameMode)
+	{
+		auto Shop = MyGameMode->GetShop();
+		if (Shop && Shop->bIsShopOpen)
+		{
+			Shop->Sell(this, SellItemInventoryIndex, Quantity);
+		}
+
+	}
+
+}
+
+void AZPlayerController::OpenShop()
+{
+	//if (nullptr == Shop)
+	//{
+	//	ZLOG(Error, TEXT("Shop is null."));
+	//	return;
+	//}
+
+	/* 로컬에서만 실행. */
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop."));
+	ConstructShopWidget();
+	//Shop->OpenShop(this);
+	
+
+
+}
+
+void AZPlayerController::ConstructShopWidget()
+{
+	ZLOG_S(Warning);
+	if(nullptr == UserHUD)
+	{
+		return;
+	}
+
+	/* 상점 전체 틀 그림. */
+	UserHUD->DrawShopWidget();
+
+	/* 상점 아이템들을 그리기 위한 준비. */
+	auto ShopWidget = Cast<UZShopWidget>(UserHUD->GetShopWidget());
+	if (nullptr == ShopWidget)
+	{
+		return;
+	}
+
+	auto MyPawn = Cast<AZCharacter>(GetPawn());
+	if (nullptr == MyPawn)
+	{
+		return;
+	}
+
+	auto ItemStatusComponent = MyPawn->GetItemStatusComponent();
+	if (nullptr == ItemStatusComponent)
+	{
+		ZLOG(Error, TEXT("ItemStatusComponent not exist.."));
+		return;
+	}
+
+	UDataTable* ShopItemDataTable = GetGameInstance<UZGameInstance>()->GetShopItemDataTable();
+
+	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
+	ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
+
+
+
 }
 
 void AZPlayerController::ToggleInventory()

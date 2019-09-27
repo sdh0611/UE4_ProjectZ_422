@@ -15,6 +15,7 @@
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
 #include "Components/WidgetSwitcher.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 void UZShopWidget::NativeConstruct()
@@ -63,12 +64,11 @@ void UZShopWidget::OnRemoveScreen()
 {
 	Super::OnRemoveScreen();
 
-	if (Shop)
+	if (!bCanDestruct)
 	{
-		Shop->OnExitShop();
 		ShopBuyWidget->ClearWidget();
 		ShopSellWidget->ClearWidget();
-		BindShop(nullptr);
+		//BindShop(nullptr);
 	}
 	else
 	{
@@ -79,7 +79,7 @@ void UZShopWidget::OnRemoveScreen()
 void UZShopWidget::BindShop(AZShop * NewShop)
 {
 	ZLOG_S(Warning);
-	Shop = NewShop;
+	//Shop = NewShop;
 	
 }
 
@@ -111,10 +111,10 @@ void UZShopWidget::ConstructSellWidget(const TArray<class AZItem*>& ItemList)
 void UZShopWidget::AddItemToBuyWidget(FZShopItemData * const NewShopItemData)
 {
 	auto ShopItemWidget = ShopBuyWidget->AddItem(NewShopItemData);
-	if (ShopItemWidget)
-	{
-		ShopItemWidget->OnBuyShopItem.BindUObject(Shop, &AZShop::Buy);
-	}
+	//if (ShopItemWidget)
+	//{
+	//	ShopItemWidget->OnBuyShopItem.BindUObject(Shop, &AZShop::Buy);
+	//}
 }
 
 void UZShopWidget::AddItemToSellWidget(AZItem* NewItem)
@@ -138,7 +138,7 @@ void UZShopWidget::AddItemToSellWidget(AZItem* NewItem)
 		return;
 	}
 	
-	ShopSellItemWidget->OnSellItem.BindUObject(Shop, &AZShop::Sell);
+	//ShopSellItemWidget->OnSellItem.BindUObject(Shop, &AZShop::Sell);
 
 }
 
@@ -151,16 +151,15 @@ void UZShopWidget::UpdateCurrentMoney(int32 NewMoney)
 
 void UZShopWidget::OnExitButtonClicked()
 {
-	if (Shop)
-	{
-		Shop->OnExitShop();
-		ShopBuyWidget->ClearWidget();
-		ShopSellWidget->ClearWidget();
-		BindShop(nullptr);
-	}
-	else
-	{
-		SetVisibility(ESlateVisibility::Hidden);
-		RemoveFromParent();
-	}
+	//if (Shop)
+	//{
+	//	ShopBuyWidget->ClearWidget();
+	//	ShopSellWidget->ClearWidget();
+	//	BindShop(nullptr);
+	//}
+	//else
+	//{
+	//	SetVisibility(ESlateVisibility::Hidden);
+	//	RemoveFromParent();
+	//}
 }

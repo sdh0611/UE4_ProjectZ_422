@@ -28,6 +28,8 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 		class AController* EventInstigator, class AActor* DamageCauser) override;
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	FHitResult GetTraceHit(const FVector& TraceStart, const FVector& TraceEnd);
@@ -37,6 +39,7 @@ public:
 public:
 	void SetIsSprinting(bool NewState);
 
+	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
 	void SetCurrentSpeed(float NewSpeed);
 
 	virtual void SetActive(bool bActive);
@@ -69,8 +72,25 @@ protected:
 	*/
 	virtual void OnRemoved();
 
+
+protected:
+	/* Client to server call RPC */
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSetSprinting(bool bNewState);
+	bool ServerSetSprinting_Validate(bool bNewState);
+	void ServerSetSprinting_Implementation(bool bNewState);
+
+
+	/* Server to client call RPC */
+
+
+	/* Replicated using method */
+	UFUNCTION()
+	void OnRep_IsSprinting();
+
+
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsSprinting)
 	bool bIsSprinting;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)

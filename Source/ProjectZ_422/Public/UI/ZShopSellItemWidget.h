@@ -7,7 +7,7 @@
 #include "ZNumberWidgetInterface.h"
 #include "ZShopSellItemWidget.generated.h"
 
-DECLARE_DELEGATE_ThreeParams(FOnSellItem, APawn*, class AZItem*, int32);
+DECLARE_DELEGATE_TwoParams(FOnSellItem, int32, int32);
 
 /**
  * 
@@ -35,8 +35,8 @@ public:
 	FOnSellItem OnSellItem;
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SellItemWidget, Meta = (AllowPrivateAccess = true))
-	class AZItem* Item;
+	UPROPERTY(BlueprintReadOnly, Category = SellItemWidget, Meta = (AllowPrivateAccess = true))
+	TWeakObjectPtr<class AZItem> Item;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SellItemWidget)

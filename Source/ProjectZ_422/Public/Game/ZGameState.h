@@ -25,7 +25,10 @@ public:
 	AZGameState();
 
 public:
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 
 public:
 	/*
@@ -49,25 +52,42 @@ public:
 	int32 GetCurrentWave() const;
 	int32 GetCurrentNumZombies() const;
 	float GetRemainTime() const;
-	float GetElaspedTime() const;
+
+
+protected:
+	/* Replicated using method */
+	
+	UFUNCTION()
+	void OnRep_TotalWave();
+	
+	UFUNCTION()
+	void OnRep_CurrentWave();
+	
+	UFUNCTION()
+	void OnRep_CurrentNumZombies();
+	
+	UFUNCTION()
+	void OnRep_RemainTime();
+	
+	UFUNCTION()
+	void OnRep_CurrentGamePhase();
+
+
 
 private:
-	UPROPERTY(EditAnywhere, Category = GameState)
+	UPROPERTY(EditAnywhere, Category = GameState, ReplicatedUsing = OnRep_TotalWave)
 	int32 TotalWave;
 
-	UPROPERTY(VisibleAnywhere, Category = GameState)
+	UPROPERTY(VisibleAnywhere, Category = GameState, ReplicatedUsing = OnRep_CurrentWave)
 	int32 CurrentWave;
 
-	UPROPERTY(VisibleAnywhere, Category = GameState)
+	UPROPERTY(VisibleAnywhere, Category = GameState, ReplicatedUsing = OnRep_CurrentNumZombies)
 	int32 CurrentNumZombies;
 
-	UPROPERTY(VisibleAnywhere, Category = GameState)
+	UPROPERTY(VisibleAnywhere, Category = GameState, ReplicatedUsing = OnRep_RemainTime)
 	float RemainTime;
 
-	UPROPERTY(VisibleAnywhere, Category = GameState)
-	float ElapsedTime;
-
-	UPROPERTY(VisibleAnywhere, Category = GameState)
+	UPROPERTY(VisibleAnywhere, Category = GameState, ReplicatedUsing = OnRep_CurrentGamePhase)
 	EGamePhase CurrentGamePhase;
 
 };

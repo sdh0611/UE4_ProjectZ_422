@@ -21,6 +21,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+public:
+	void OpenShop();
+	void ConstructShopWidget();
 
 public:
 	/*
@@ -33,6 +36,23 @@ public:
 	class AZHUD* const GetZHUD() const;
 
 	class UZCharacterItemStatusComponent* const GetCharacterItemStatusComponent() const;
+
+public:
+	/* From client to server  */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Buy(int32 BuyItemShopID, int32 Quantity);
+	bool Buy_Validate(int32 BuyItemShopID, int32 Quantity);
+	void Buy_Implementation(int32 BuyItemShopID, int32 Quantity);
+
+	/* From server to client */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Sell(int32 SellItemInventoryIndex, int32 Quantity);
+	bool Sell_Validate(int32 SellItemInventoryIndex, int32 Quantity);
+	void Sell_Implementation(int32 SellItemInventoryIndex, int32 Quantity);
+
+
+	/* Replicated using */
+
 
 
 protected:
@@ -47,6 +67,7 @@ public:
 private:
 	UPROPERTY()
 	class UZUserHUD* UserHUD;
+
 
 
 };

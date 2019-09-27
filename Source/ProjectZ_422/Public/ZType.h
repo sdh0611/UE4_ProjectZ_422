@@ -272,10 +272,13 @@ struct PROJECTZ_422_API FZShopItemData : public FTableRowBase
 
 public:
 	FZShopItemData()
+		:ShopID(-1)
 	{
 
 	}
-		
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	int32 ShopID;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 

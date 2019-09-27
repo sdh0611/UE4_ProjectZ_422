@@ -23,8 +23,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "UnrealNetwork.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AZCharacter::AZCharacter()
@@ -104,6 +106,7 @@ void AZCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/* 팅겨서 일단 주석처리. */
 	auto NewInteractionActor = GetInteractionalInView();
 	if (InteractionActor != NewInteractionActor)
 	{
@@ -180,6 +183,14 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 	//StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	return FinalDamage;
+}
+
+void AZCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+
+
 }
 
 void AZCharacter::Revive()
@@ -292,9 +303,15 @@ bool AZCharacter::IsSwitchingWeapon()
 
 AZInteractional * AZCharacter::GetInteractionalInView()
 {
+	auto MyPC = GetController<AZPlayerController>();
+	if (!MyPC)
+	{
+		return nullptr;
+	}
+
 	FVector CamLoc;
 	FRotator CamRot;
-	GetController()->GetPlayerViewPoint(CamLoc, CamRot);
+	MyPC->GetPlayerViewPoint(CamLoc, CamRot);
 
 	const FVector Direction = CamRot.Vector();
 	const FVector TraceStart = CamLoc;
@@ -650,6 +667,8 @@ void AZCharacter::Interaction()
 
 	if (InteractionActor)
 	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Interact."));
+		//ServerOnInteract(InteractionActor);
 		InteractionActor->OnInteraction(this);
 	}
 }
@@ -1106,3 +1125,14 @@ void AZCharacter::Ragdoll()
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	GetMesh()->SetSimulatePhysics(true);
 }
+
+bool AZCharacter::ServerCheckInteractionalActor_Validate(AZInteractional * Interactional)
+{
+	return true;
+}
+
+void AZCharacter::ServerCheckInteractionalActor_Implementation(AZInteractional * Interactional)
+{
+
+}
+

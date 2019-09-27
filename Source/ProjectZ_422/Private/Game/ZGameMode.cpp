@@ -13,8 +13,11 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZPlayerState.h"
+#include "ZShop.h"
+#include "ZShopSpawnPoint.h"
 #include "EngineUtils.h"
 #include "TimerManager.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AZGameMode::AZGameMode()
 {
@@ -62,10 +65,23 @@ void AZGameMode::BeginPlay()
 	check(nullptr != MyGameState);
 	MyGameState->SetTotalWave(TotalWave);
 
+	auto World = GetWorld();
+	check(World);
+
 	/* Level내의 Spawner 저장 */
-	for (TActorIterator<AZEnemySpawner> Iterator(GetWorld()); Iterator; ++Iterator)
+	for (TActorIterator<AZEnemySpawner> Iterator(World); Iterator; ++Iterator)
 	{
 		EnemySpawners.Add(*Iterator);
+	}
+
+	if (ShopClass)
+	{
+		Shop = World->SpawnActor<AZShop>(ShopClass);
+		if (nullptr == Shop)
+		{
+			ZLOG(Error, TEXT("Failed to spawn shop.."));
+		}
+
 	}
 
 	/* 처음은 HalfTime으로 시작 */
@@ -75,15 +91,6 @@ void AZGameMode::BeginPlay()
 void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	//if (!IsGameEnd())
-	//{
-	//	CurrentRemainTime -= DeltaTime;
-	//	if (CurrentRemainTime <= 0.f)
-	//	{
-	//		UpdateGamePhase();
-	//	}
-	//}
 
 
 }
@@ -121,6 +128,11 @@ void AZGameMode::AdjustKillScore(AController * Killer, AController * Victim, APa
 EGamePhase AZGameMode::GetCurrentGamePhase() const
 {
 	return CurrentGamePhase;
+}
+
+AZShop * const AZGameMode::GetShop() const
+{
+	return Shop;
 }
 
 void AZGameMode::StopAllSpawner()
@@ -190,9 +202,10 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 
 			/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
 			CurrentRemainTime = HalfTime;
-			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			//for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
 			{
-				Shop->OpenShop();
+				UKismetSystemLibrary::PrintString(GetWorld(), TEXT("GM OpenShop."));
+				Shop->bIsShopOpen = true;
 			}
 
 			/* Phase timer 등록 */
@@ -229,9 +242,9 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 			}
 
 			/* 상점 닫음 */
-			for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			//for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
 			{
-				Shop->CloseShop();
+				Shop->bIsShopOpen = false;
 			}
 
 			/* Stop spawner timer 등록 */

@@ -48,7 +48,7 @@ protected:
 	class UZShopSellWidget* ShopSellWidget;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = ShopWidget)
-	class AZShop* Shop;
+	//UPROPERTY(VisibleAnywhere, Category = ShopWidget)
+	//class AZShop* Shop;
 
 };
