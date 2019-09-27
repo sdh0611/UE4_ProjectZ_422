@@ -42,7 +42,7 @@ void UZShopBuyItemWidget::NativeOnMouseEnter(const FGeometry & InGeometry, const
 
 	if (ParentShopWidget.IsValid())
 	{
-		ParentShopWidget.Get()->GetToolTipWidget()->BindItemInfo(ShopItemData->ItemName);
+		ParentShopWidget.Get()->GetToolTipWidget()->BindItemInfo(ItemName->GetText().ToString());
 	}
 
 }
@@ -65,7 +65,7 @@ void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 		return;
 	}
 
-	OnBuyShopItem.Execute(GetOwningPlayerPawn(), ShopItemData, NewNumber);
+	OnBuyShopItem.Execute(GetOwningPlayerPawn(), ShopID, NewNumber);
 }
 
 void UZShopBuyItemWidget::SetParentShopWidget(UZShopBuyWidget * NewParent)
@@ -81,7 +81,9 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 		return;
 	}
 
-	ShopItemData = NewShopItemData;
+	bIsDealOnlyOne = NewShopItemData->bIsDealOnlyOne;
+	ShopID = NewShopItemData->ShopID;
+	//ShopItemData = NewShopItemData;
 	//ZLOG(Error, TEXT("Item : %s"), *(ShopItemData->ItemName));
 
 	if (nullptr == ItemImage)
@@ -90,7 +92,7 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 	}
 	else
 	{
-		ItemImage->SetBrushFromTexture(GetGameInstance<UZGameInstance>()->GetItemImage(ShopItemData->ItemName));
+		ItemImage->SetBrushFromTexture(GetGameInstance<UZGameInstance>()->GetItemImage(NewShopItemData->ItemName));
 	}
 
 
@@ -100,7 +102,7 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 	}
 	else
 	{
-		ItemName->SetText(FText::FromString(ShopItemData->ItemName));
+		ItemName->SetText(FText::FromString(NewShopItemData->ItemName));
 	}
 
 	if (nullptr == ItemPrice)
@@ -109,7 +111,7 @@ void UZShopBuyItemWidget::BindShopItemData(FZShopItemData * NewShopItemData)
 	}
 	else 
 	{
-		ItemPrice->SetText(FText::FromString(FString::FromInt(ShopItemData->ItemPrice).Append("$")));
+		ItemPrice->SetText(FText::FromString(FString::FromInt(NewShopItemData->ItemPrice).Append("$")));
 	}
 
 
@@ -120,7 +122,7 @@ void UZShopBuyItemWidget::OnBuyButtonClick()
 {
 	ZLOG_S(Warning);
 
-	if (ShopItemData->bIsDealOnlyOne)
+	if (bIsDealOnlyOne)
 	{
 		OnReceiveNumberInput(1);
 	}

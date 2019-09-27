@@ -94,10 +94,10 @@ void AZShop::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 
 }
 
-void AZShop::Buy(APawn* Pawn, FZShopItemData* BuyItemData, int32 Quantity)
+void AZShop::Buy(APawn* Pawn, int32 BuyItemShopID, int32 Quantity)
 {
 	/* Server RPC */
-	ServerBuy(Pawn, BuyItemData, Quantity);
+	ServerBuy(Pawn, BuyItemShopID, Quantity);
 
 	//auto Player = Cast<AZCharacter>(Pawn);
 	//if (nullptr == Player)
@@ -346,13 +346,28 @@ void AZShop::CloseShop()
 	bIsShopOpen = false;
 }
 
-FZShopItemData * const AZShop::FindShopItemData(const FString & ShopItemName) const
+FZShopItemData * const AZShop::FindShopItemDataByName(const FString & ShopItemName) const
 {
 	TArray<FName> Names = ShopItemDataTable->GetRowNames();
 	for (const auto& Name : Names)
 	{
 		auto ShopItemData = ShopItemDataTable->FindRow<FZShopItemData>(Name, TEXT(""));
 		if (ShopItemData->ItemName == ShopItemName)
+		{
+			return ShopItemData;
+		}
+	}
+
+	return nullptr;
+}
+
+FZShopItemData * const AZShop::FindShopItemDataByID(int32 NewShopID) const
+{
+	TArray<FName> Names = ShopItemDataTable->GetRowNames();
+	for (const auto& Name : Names)
+	{
+		auto ShopItemData = ShopItemDataTable->FindRow<FZShopItemData>(Name, TEXT(""));
+		if (ShopItemData->ShopID == NewShopID)
 		{
 			return ShopItemData;
 		}
@@ -397,12 +412,12 @@ void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
 
 }
 
-bool AZShop::ServerBuy_Validate(APawn * Pawn, FZShopItemData * BuyItemData, int32 Quantity)
+bool AZShop::ServerBuy_Validate(APawn * Pawn, int32 BuyItemShopID, int32 Quantity)
 {
 	return true;
 }
 
-void AZShop::ServerBuy_Implementation(APawn * Pawn, FZShopItemData * BuyItemData, int32 Quantity)
+void AZShop::ServerBuy_Implementation(APawn * Pawn, int32 BuyItemShopID, int32 Quantity)
 {
 	auto Player = Cast<AZCharacter>(Pawn);
 	if (nullptr == Player)
@@ -424,6 +439,13 @@ void AZShop::ServerBuy_Implementation(APawn * Pawn, FZShopItemData * BuyItemData
 		return;
 	}
 
+	/* Shop data 가져오기 */
+	auto BuyItemData = FindShopItemDataByID(BuyItemShopID);
+	if (nullptr == BuyItemData)
+	{
+		ZLOG(Error, TEXT("ShopItemData not exist."));
+		return;
+	}
 	/*
 		돈계산
 		-> 돈이 부족한 경우엔 그대로 메소드 return
@@ -593,7 +615,7 @@ void AZShop::ServerSell_Implementation(APawn * Pawn, AZItem * SellItem, int32 Qu
 		return;
 	}
 
-	auto ShopItemData = FindShopItemData(SellItem->GetItemName());
+	auto ShopItemData = FindShopItemDataByName(SellItem->GetItemName());
 	if (nullptr == ShopItemData)
 	{
 		ZLOG(Error, TEXT("Invalid value."));

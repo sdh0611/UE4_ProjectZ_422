@@ -7,7 +7,7 @@
 #include "ZNumberWidgetInterface.h"
 #include "ZShopBuyItemWidget.generated.h"
 
-DECLARE_DELEGATE_ThreeParams(FOnBuyShopItem, APawn*, struct FZShopItemData*, int32);
+DECLARE_DELEGATE_ThreeParams(FOnBuyShopItem, APawn*, int32, int32);
 
 /**
  * 
@@ -36,7 +36,10 @@ public:
 	FOnBuyShopItem OnBuyShopItem;
 
 private:
-	struct FZShopItemData* ShopItemData;
+	//struct FZShopItemData* ShopItemData;
+	bool bIsDealOnlyOne = false;
+
+	int32 ShopID = -1;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyItemWidget)

@@ -25,7 +25,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	void Buy(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity = 1);
+	void Buy(APawn* Pawn, int32 BuyItemShopID, int32 Quantity = 1);
 	void Sell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
 	void OnExitShop();
 
@@ -34,7 +34,8 @@ public:
 	/* WaveTime 혹은 BossTime에 상점 비활성화 */
 	void CloseShop();
 
-	struct FZShopItemData* const FindShopItemData(const FString& ShopItemName) const;
+	struct FZShopItemData* const FindShopItemDataByName(const FString& ShopItemName) const;
+	struct FZShopItemData* const FindShopItemDataByID(int32 NewShopID) const;
 
 private:
 	void ConstructShopWidget(class AZCharacter* EnterCharacter);
@@ -42,9 +43,9 @@ private:
 protected:
 	/* Client to server RPC */
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerBuy(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity);
-	bool ServerBuy_Validate(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity);
-	void ServerBuy_Implementation(APawn* Pawn, struct FZShopItemData* BuyItemData, int32 Quantity);
+	void ServerBuy(APawn* Pawn, int32 BuyItemShopID, int32 Quantity);
+	bool ServerBuy_Validate(APawn* Pawn, int32 BuyItemShopID, int32 Quantity);
+	void ServerBuy_Implementation(APawn* Pawn, int32 BuyItemShopID, int32 Quantity);
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerSell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
