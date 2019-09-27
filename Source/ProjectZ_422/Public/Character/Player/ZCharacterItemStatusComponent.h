@@ -37,7 +37,7 @@ public:
 
 public:
 	/*
-		Item을 습득할 때 호출하게 될 메소드.
+		Item을 습득할 때 호출하게 될 메소드. -> 서버에서 동작할 로직.
 	*/
 	void AddItem(class AZItem* NewItem, class AZPickup* OwnerPickup = nullptr);
 
@@ -107,7 +107,6 @@ private:
 	/* Server to client RPC */
 
 
-
 	/* Replicated using method */
 	UFUNCTION()
 	void OnRep_CurrentMoney();
@@ -126,14 +125,14 @@ private:
 		ItemList와 포인터 공유
 		[Gun1] [Gun2] [Knife] [Grenade]
 	*/
-	UPROPERTY(VisibleAnywhere, Category = ItemStatus)
+	UPROPERTY(VisibleAnywhere, Category = ItemStatus, Replicated)
 	TArray<class AZWeapon*> WeaponInventory;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus)
 	int32 MaxSizeOfItemList;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus, Transient)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus, Transient, Replicated)
 	int32 CurrentSizeOfItemList;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemStatus)

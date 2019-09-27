@@ -12,6 +12,8 @@
 #include "ZShop.h"
 #include "ZGameMode.h"
 #include "ZGameInstance.h"
+#include "ZInventoryWidget.h"
+#include "ZWeapon.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -178,6 +180,50 @@ void AZPlayerController::CloseShop_Implementation()
 		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC RemoveShop"));
 		UserHUD->RemoveShopWidget();
 		//Shop->OpenShop(this);
+	}
+}
+
+bool AZPlayerController::ClientAddItemToInventoryWidget_Validate(AZItem * NewItem)
+{
+	return true;
+}
+
+void AZPlayerController::ClientAddItemToInventoryWidget_Implementation(AZItem * NewItem)
+{
+	if (nullptr == UserHUD)
+	{
+		ZLOG(Error, TEXT("UserHUD not exsit.."));
+	}
+	else
+	{
+		if (NewItem == nullptr)
+		{
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Item null.."));
+			return;
+		}
+		// Inventory에 Update
+		// Weapon은 WeaponInventory에 업데이트.
+		if (NewItem->GetItemType() == EItemType::Weapon)
+		{
+			AZWeapon* NewWeapon = Cast<AZWeapon>(NewItem);
+			check(NewWeapon);
+			UserHUD->GetInventoryWidget()->AddItemToWeaponInventory(NewWeapon);
+		}
+		else
+		{
+			UserHUD->GetInventoryWidget()->AddItemToInventory(NewItem);
+		}
+
+		// ShopSellWidget Update
+		if (UserHUD->IsShopWidgetOnScreen())
+		{
+			ZLOG(Warning, TEXT("Add Item to SellWidget"));
+			auto ShopSellWidget = UserHUD->GetShopWidget();
+			if (ShopSellWidget)
+			{
+				ShopSellWidget->AddItemToSellWidget(NewItem);
+			}
+		}
 	}
 }
 

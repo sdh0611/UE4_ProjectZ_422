@@ -291,6 +291,8 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 	int32 RemainQuantity = TotalQuantity;
 	while (RemainQuantity > ItemData->MaxQuantity)
 	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = PC;
 		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
 		if (nullptr == NewItem)
 		{
@@ -304,9 +306,10 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 			return;
 		}
 		ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
-
+		
 		NewItem->InitItemData(ItemData);
 		NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);
+		/* 동기화 해야된다 */
 		ItemStatusComponent->AddItem(NewItem);
 		RemainQuantity -= ItemData->MaxQuantity;
 	}
@@ -327,6 +330,7 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 
 	NewItem->InitItemData(ItemData);
 	NewItem->SetCurrentQuantityOfItem(RemainQuantity);
+	/* 동기화 해야된다. */
 	ItemStatusComponent->AddItem(NewItem);
 
 }

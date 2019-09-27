@@ -59,11 +59,16 @@ public:
 	bool ClientOpenShop_Validate();
 	void ClientOpenShop_Implementation();
 
-	
 	UFUNCTION(Client, Reliable, WithValidation)
 	void CloseShop();
 	bool CloseShop_Validate();
 	void CloseShop_Implementation();
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientAddItemToInventoryWidget(class AZItem* NewItem);
+	bool ClientAddItemToInventoryWidget_Validate(class AZItem* NewItem);
+	void ClientAddItemToInventoryWidget_Implementation(class AZItem* NewItem);
+
 
 	/* Replicated using */
 

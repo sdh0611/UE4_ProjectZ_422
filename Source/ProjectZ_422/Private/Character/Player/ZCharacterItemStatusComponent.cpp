@@ -16,7 +16,7 @@
 #include "ZDoping.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "UnrealNetwork.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values for this component's properties
 UZCharacterItemStatusComponent::UZCharacterItemStatusComponent()
@@ -63,7 +63,11 @@ void UZCharacterItemStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-
+	DOREPLIFETIME(UZCharacterItemStatusComponent, ItemList);
+	DOREPLIFETIME(UZCharacterItemStatusComponent, WeaponInventory);
+	DOREPLIFETIME(UZCharacterItemStatusComponent, CurrentSizeOfItemList);
+	DOREPLIFETIME(UZCharacterItemStatusComponent, CurrentWeight);
+	DOREPLIFETIME(UZCharacterItemStatusComponent, CurrentMoney);
 
 }
 
@@ -73,7 +77,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 		TODO(5.19) : EquipWeapon의 OnDropped를 실행하는 부분에서 버그발생.
 						-> ItemOwner가 null인데 ItemOwner를 불러서 생긴 현상. 이거 고치자
 	*/
-
+	UKismetSystemLibrary::PrintString(GetWorld(), NewItem->GetItemName());
 	ZLOG(Warning, TEXT("%s"), *NewItem->GetItemName());
 
 	switch (NewItem->GetItemType())
@@ -138,39 +142,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 			if (PlayerController)
 			{
-				auto UserHUD = PlayerController->GetUserHUD();
-				if (nullptr == UserHUD)
-				{
-					ZLOG(Error, TEXT("UserHUD not exsit.."));
-				}
-				else
-				{
-					// Inventory에 Update
-					// Weapon은 WeaponInventory에 업데이트.
-					if (NewItem->GetItemType() == EItemType::Weapon)
-					{
-						AZWeapon* NewWeapon = Cast<AZWeapon>(NewItem);
-						check(NewWeapon);
-						UserHUD->GetInventoryWidget()->AddItemToWeaponInventory(NewWeapon);
-					}
-					else
-					{
-						UserHUD->GetInventoryWidget()->AddItemToInventory(NewItem);
-					}
-
-					// ShopSellWidget Update
-					if (UserHUD->IsShopWidgetOnScreen())
-					{
-						ZLOG(Warning, TEXT("Add Item to SellWidget"));
-						auto ShopSellWidget = PlayerController->GetUserHUD()->GetShopWidget();
-						if (ShopSellWidget)
-						{
-							ShopSellWidget->AddItemToSellWidget(NewItem);
-						}
-					}
-
-				}
-
+				PlayerController->ClientAddItemToInventoryWidget(NewItem);
 			}
 
 		}
@@ -631,6 +603,7 @@ int32 UZCharacterItemStatusComponent::AllocateInventoryIndex()
 	// ItemList가 꽉찬 경우.
 	return -1;
 }
+
 
 void UZCharacterItemStatusComponent::OnRep_CurrentMoney()
 {
