@@ -27,7 +27,7 @@ void AZShopInteractional::OnInteraction(AZCharacter * NewCharacter)
 	}
 
 	/* PC내의 shop을 호출하는 코드 작성 */
-	MyPC->OpenShop();
+	MyPC->ServerCheckIsShopOpen();
 
 
 	Super::OnInteraction(NewCharacter);

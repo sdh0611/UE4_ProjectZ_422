@@ -56,6 +56,7 @@ public:
 public:
 	EGamePhase GetCurrentGamePhase() const;
 	class AZShop* const GetShop() const;
+	bool IsShopOpen();
 
 protected:
 	void StopAllSpawner();

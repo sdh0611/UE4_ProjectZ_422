@@ -511,6 +511,7 @@ void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
 		return;
 	}
 
+	OnRep_CurrentMoney();
 	//PlayerController->GetZHUD()->GetUserHUD()->UpdateCurrentMoneyInfo(CurrentMoney);
 }
 

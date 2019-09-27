@@ -202,11 +202,9 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 
 			/* 남은 시간을 HalfTime만큼으로 초기화하고, 상점 오픈 */
 			CurrentRemainTime = HalfTime;
-			//for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
-			{
-				UKismetSystemLibrary::PrintString(GetWorld(), TEXT("GM OpenShop."));
-				Shop->bIsShopOpen = true;
-			}
+
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("GM OpenShop."));
+			Shop->bIsShopOpen = true;
 
 			/* Phase timer 등록 */
 			GetWorld()->GetTimerManager().SetTimer(PhaseTimer, this, &AZGameMode::UpdateGameTime, 0.1f, true);
@@ -242,10 +240,17 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 			}
 
 			/* 상점 닫음 */
-			//for (TActorIterator<AZShop> Shop(GetWorld()); Shop; ++Shop)
+			Shop->bIsShopOpen = false;
+			for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
 			{
-				Shop->bIsShopOpen = false;
+				auto PC = Cast<AZPlayerController>(Iter->Get());
+				if (PC)
+				{
+					UKismetSystemLibrary::PrintString(GetWorld(), TEXT("CloseShop"));
+					PC->CloseShop();
+				}
 			}
+
 
 			/* Stop spawner timer 등록 */
 			GetWorld()->GetTimerManager().SetTimer(StopSpawnTimer, this, &AZGameMode::StopAllSpawner, CurrentRemainTime);
@@ -339,6 +344,16 @@ bool AZGameMode::IsWaveEnd()
 	}
 
 	return true;
+}
+
+bool AZGameMode::IsShopOpen()
+{
+	if (nullptr == Shop)
+	{
+		return false;
+	}
+
+	return Shop->bIsShopOpen;
 }
 
 float AZGameMode::GetCurrentRemainTime() const

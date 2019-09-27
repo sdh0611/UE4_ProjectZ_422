@@ -84,9 +84,6 @@ public:
 	void RemoveWidgetFromList(class UZUserWidget* Widget);
 
 public:
-	/*
-		각각의 Widget의 상태를 얻어오는 메소드들
-	*/
 	bool IsShopWidgetOnScreen() const;
 	/*
 		Widget을 얻어오기 위한 Get메소드들
@@ -114,9 +111,6 @@ protected:
 
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = UserHUD, Meta = (AllowPrivateAccess = true))
-	bool bIsShopOnScreen;
-
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZInventoryWidget* InventoryWidget;
 

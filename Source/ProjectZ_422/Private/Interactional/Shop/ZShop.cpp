@@ -189,7 +189,6 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 
 	/*
 		돈계산
-		-> 돈이 부족한 경우엔 그대로 메소드 return
 	*/
 	int32 TotalQuantity = Quantity;
 	int32 TotalPayment = (BuyItemData->ItemPrice) * Quantity;
@@ -197,6 +196,11 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 	{
 		ZLOG(Warning, TEXT("Money is not enough to buy item"));
 		TotalQuantity = (ItemStatusComponent->GetCurrentMoney()) / (BuyItemData->ItemPrice);
+		/* 1개도 못 살 정도면 return */
+		if (TotalQuantity < 1)
+		{
+			return;
+		}
 		TotalPayment = (BuyItemData->ItemPrice) * TotalQuantity;
 	}
 

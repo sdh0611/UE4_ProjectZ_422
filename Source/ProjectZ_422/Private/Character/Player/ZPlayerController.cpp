@@ -80,6 +80,24 @@ UZCharacterItemStatusComponent * const AZPlayerController::GetCharacterItemStatu
 	return nullptr;
 }
 
+bool AZPlayerController::ServerCheckIsShopOpen_Validate()
+{
+	return true;
+}
+
+void AZPlayerController::ServerCheckIsShopOpen_Implementation()
+{
+	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+	if (MyGameMode)
+	{
+		if (MyGameMode->IsShopOpen())
+		{
+			ClientOpenShop();
+		}
+	}
+
+}
+
 bool AZPlayerController::Buy_Validate(int32 BuyItemShopID, int32 Quantity)
 {
 	return true;
@@ -124,21 +142,43 @@ void AZPlayerController::Sell_Implementation(int32 SellItemInventoryIndex, int32
 
 }
 
-void AZPlayerController::OpenShop()
+bool AZPlayerController::ClientOpenShop_Validate()
 {
-	//if (nullptr == Shop)
-	//{
-	//	ZLOG(Error, TEXT("Shop is null."));
-	//	return;
-	//}
+	return true;
+}
 
+void AZPlayerController::ClientOpenShop_Implementation()
+{
 	/* 로컬에서만 실행. */
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop."));
-	ConstructShopWidget();
-	//Shop->OpenShop(this);
-	
+	if (UserHUD)
+	{
+		if (UserHUD->IsShopWidgetOnScreen())
+		{
+			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop fail."));
+			return;
+		}
 
+		ConstructShopWidget();
+		//Shop->OpenShop(this);
+	}
 
+}
+
+bool AZPlayerController::CloseShop_Validate()
+{
+	return true;
+}
+
+void AZPlayerController::CloseShop_Implementation()
+{
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC CloseShop"));
+	if (UserHUD)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC RemoveShop"));
+		UserHUD->RemoveShopWidget();
+		//Shop->OpenShop(this);
+	}
 }
 
 void AZPlayerController::ConstructShopWidget()

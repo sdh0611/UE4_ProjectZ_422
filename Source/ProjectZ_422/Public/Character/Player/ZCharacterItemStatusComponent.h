@@ -118,7 +118,7 @@ public:
 	FOnMoneyInfoChange OnMoneyInfoChange;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = ItemStatus)
+	UPROPERTY(VisibleAnywhere, Category = ItemStatus, Transient, Replicated)
 	TArray<class AZItem*> ItemList;
 
 	/*

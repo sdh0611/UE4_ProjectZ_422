@@ -259,7 +259,6 @@ void UZUserHUD::DrawInventoryWidget()
 void UZUserHUD::DrawShopWidget()
 {
 	AddWidgetToList(ShopWidget);
-	bIsShopOnScreen = true;
 }
 
 void UZUserHUD::DrawEndGameMenuWidget()
@@ -285,7 +284,6 @@ void UZUserHUD::RemoveInventoryWidget()
 void UZUserHUD::RemoveShopWidget()
 {
 	RemoveWidgetFromList(ShopWidget);
-	bIsShopOnScreen = false;
 }
 
 void UZUserHUD::RemoveEndGameMenuWidget()
@@ -330,12 +328,6 @@ void UZUserHUD::RemoveWidgetFromTop()
 		PlayerController->bEnableClickEvents = false;
 		PlayerController->bEnableMouseOverEvents = false;
 	}
-}
-
-
-bool UZUserHUD::IsShopWidgetOnScreen() const
-{
-	return bIsShopOnScreen;
 }
 
 UZInventoryWidget * const UZUserHUD::GetInventoryWidget() const
@@ -461,6 +453,11 @@ void UZUserHUD::RemoveWidgetFromList(UZUserWidget* Widget)
 
 	//}
 
+}
+
+bool UZUserHUD::IsShopWidgetOnScreen() const
+{
+	return ShopWidget ? (ShopWidget->GetVisibility() == ESlateVisibility::Visible) : false;
 }
 
 bool UZUserHUD::IsDrawWidgetListEmpty()

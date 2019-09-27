@@ -22,7 +22,6 @@ public:
 	virtual void SetupInputComponent() override;
 
 public:
-	void OpenShop();
 	void ConstructShopWidget();
 
 public:
@@ -40,16 +39,31 @@ public:
 public:
 	/* From client to server  */
 	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerCheckIsShopOpen();
+	bool ServerCheckIsShopOpen_Validate();
+	void ServerCheckIsShopOpen_Implementation();
+
+	UFUNCTION(Server, Reliable, WithValidation)
 	void Buy(int32 BuyItemShopID, int32 Quantity);
 	bool Buy_Validate(int32 BuyItemShopID, int32 Quantity);
 	void Buy_Implementation(int32 BuyItemShopID, int32 Quantity);
 
-	/* From server to client */
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Sell(int32 SellItemInventoryIndex, int32 Quantity);
 	bool Sell_Validate(int32 SellItemInventoryIndex, int32 Quantity);
 	void Sell_Implementation(int32 SellItemInventoryIndex, int32 Quantity);
 
+	/* From server to client */
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientOpenShop();
+	bool ClientOpenShop_Validate();
+	void ClientOpenShop_Implementation();
+
+	
+	UFUNCTION(Client, Reliable, WithValidation)
+	void CloseShop();
+	bool CloseShop_Validate();
+	void CloseShop_Implementation();
 
 	/* Replicated using */
 
@@ -67,7 +81,6 @@ public:
 private:
 	UPROPERTY()
 	class UZUserHUD* UserHUD;
-
 
 
 };
