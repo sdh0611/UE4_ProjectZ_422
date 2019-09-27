@@ -12,6 +12,8 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
+#include "ZShop.h"
 
 void UZShopBuyItemWidget::NativeConstruct()
 {
@@ -65,7 +67,13 @@ void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 		return;
 	}
 
-	OnBuyShopItem.Execute(GetOwningPlayerPawn(), ShopID, NewNumber);
+	auto MyPC = GetOwningPlayer<AZPlayerController>();
+	if (MyPC)
+	{
+		MyPC->Buy(ShopID, NewNumber);
+	}
+	//OnBuyShopItem.Execute(GetOwningPlayer(), ShopID, NewNumber);
+
 }
 
 void UZShopBuyItemWidget::SetParentShopWidget(UZShopBuyWidget * NewParent)

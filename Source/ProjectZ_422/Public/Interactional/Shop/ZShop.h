@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZShop : public AZInteractional
+class PROJECTZ_422_API AZShop : public AActor
 {
 	GENERATED_BODY()
 	
@@ -19,20 +19,12 @@ public:
 
 public:
 	virtual void BeginPlay() override;
-	virtual void OnInteraction(class AZCharacter* NewCharacter);
-	virtual void OnFocus() override;
-	virtual void OnFocusEnd() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
-	void Buy(APawn* Pawn, int32 BuyItemShopID, int32 Quantity = 1);
+	void Buy(APlayerController* PC, int32 BuyItemShopID, int32 Quantity = 1);
 	void Sell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
-	void OnExitShop();
-
-	/* HalfTime에 상점 활성화 */
-	void OpenShop();
-	/* WaveTime 혹은 BossTime에 상점 비활성화 */
-	void CloseShop();
+	void OpenShop(class AZPlayerController* NewCharacter);
 
 	struct FZShopItemData* const FindShopItemDataByName(const FString& ShopItemName) const;
 	struct FZShopItemData* const FindShopItemDataByID(int32 NewShopID) const;
@@ -43,14 +35,14 @@ private:
 protected:
 	/* Client to server RPC */
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerBuy(APawn* Pawn, int32 BuyItemShopID, int32 Quantity);
-	bool ServerBuy_Validate(APawn* Pawn, int32 BuyItemShopID, int32 Quantity);
-	void ServerBuy_Implementation(APawn* Pawn, int32 BuyItemShopID, int32 Quantity);
+	void ServerBuy(APlayerController* PC, int32 BuyItemShopID, int32 Quantity);
+	bool ServerBuy_Validate(APlayerController* PC, int32 BuyItemShopID, int32 Quantity);
+	void ServerBuy_Implementation(APlayerController* PC, int32 BuyItemShopID, int32 Quantity);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerSell(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
-	bool ServerSell_Validate(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
-	void ServerSell_Implementation(APawn* Pawn, class AZItem* SellItem, int32 Quantity = 1);
+	void ServerSell(APawn* Pawn, class AZItem* SellItem, int32 Quantity);
+	bool ServerSell_Validate(APawn* Pawn, class AZItem* SellItem, int32 Quantity);
+	void ServerSell_Implementation(APawn* Pawn, class AZItem* SellItem, int32 Quantity);
 
 	/* Server to client RPC */
 
@@ -93,11 +85,11 @@ private:
 
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Shop)
-	class UBoxComponent* BodyCollision;
+	//UPROPERTY(VisibleAnywhere, Category = Shop)
+	//class UBoxComponent* BodyCollision;
 
-	UPROPERTY(VisibleAnywhere, Category = Shop)
-	class USkeletalMeshComponent* BodyMesh;
+	//UPROPERTY(VisibleAnywhere, Category = Shop)
+	//class USkeletalMeshComponent* BodyMesh;
 
 
 };
