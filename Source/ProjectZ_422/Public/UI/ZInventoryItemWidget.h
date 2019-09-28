@@ -44,6 +44,10 @@ protected:
 	UFUNCTION()
 	void OnDropButtonClicked();
 
+public:
+	bool bIsEmpty = true;
+
+
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = ItemWidget)
 	class UImage* ItemImage;
@@ -58,5 +62,5 @@ protected:
 	class UButton* DropButton;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ItemWidget, Meta = (AllowPrivateAccess = true))
-	class AZItem* Item;
+	TWeakObjectPtr<class AZItem> Item;
 };

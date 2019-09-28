@@ -39,7 +39,6 @@ void UZShopWidget::NativeConstruct()
 	ShopSellWidget = NewShopSellWidget;
 
 
-	SetVisibility(ESlateVisibility::Hidden);
 	ExitButton->OnClicked.AddDynamic(this, &UZShopWidget::OnExitButtonClicked);
 
 	/* ItemStatus에 바인딩. */
@@ -53,6 +52,7 @@ void UZShopWidget::NativeConstruct()
 	UpdateCurrentMoney(Player->GetItemStatusComponent()->GetCurrentMoney());
 	Player->GetItemStatusComponent()->OnMoneyInfoChange.AddUObject(this, &UZShopWidget::UpdateCurrentMoney);
 
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UZShopWidget::OnDrawScreen()

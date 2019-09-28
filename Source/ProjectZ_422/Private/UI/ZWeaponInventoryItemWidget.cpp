@@ -4,6 +4,7 @@
 #include "ZWeaponInventoryItemWidget.h"
 #include "ZWeapon.h"
 #include "ZCharacterItemStatusComponent.h"
+#include "ZGameInstance.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
@@ -18,8 +19,16 @@ void UZWeaponInventoryItemWidget::NativeConstruct()
 
 void UZWeaponInventoryItemWidget::BindWeapon(AZWeapon * NewWeapon)
 {
+	ZLOG(Error, TEXT("binding weapon."));
+	if (nullptr == NewWeapon)
+	{
+		ClearWidget();
+		return;
+	}
+
 	BindingWeapon = NewWeapon;
-	
+	ZLOG(Error, TEXT("In binding weapon."));
+
 	if (BindingWeapon.IsValid())
 	{
 		BindingWeapon.Get()->OnItemRemoved.AddUObject(this, &UZWeaponInventoryItemWidget::ClearWidget);
@@ -35,7 +44,10 @@ void UZWeaponInventoryItemWidget::ClearWidget()
 	{
 		WeaponImage->SetBrushFromTexture(nullptr);
 		WeaponImage->SetVisibility(ESlateVisibility::Hidden);
-		BindingWeapon.Get()->OnItemRemoved.RemoveAll(this);
+		if (BindingWeapon.IsValid())
+		{
+			BindingWeapon.Get()->OnItemRemoved.RemoveAll(this);
+		}
 	}
 
 }
@@ -49,7 +61,8 @@ void UZWeaponInventoryItemWidget::UpdateWidget()
 
 	if (WeaponImage)
 	{
-		WeaponImage->SetBrushFromTexture(BindingWeapon.Get()->GetItemImage());
+		UTexture2D* Image = GetGameInstance<UZGameInstance>()->GetItemImage(BindingWeapon->GetItemName());
+		WeaponImage->SetBrushFromTexture(Image);
 		WeaponImage->SetVisibility(ESlateVisibility::Visible);
 	}
 

@@ -44,6 +44,8 @@ void UZTooltipWidget::BindItemInfo(const FString& NewItemName)
 		ExplanationText->SetText(ItemData->ItemExplanation);
 	}
 
+
+		   
 }
 
 void UZTooltipWidget::ClearWidget()

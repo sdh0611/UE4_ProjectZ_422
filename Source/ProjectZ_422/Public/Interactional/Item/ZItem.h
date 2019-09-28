@@ -86,12 +86,6 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/*
-		Item의 동작에 대한 메소드.
-	*/
-	//UFUNCTION(BlueprintCallable, Category = Item)
-	//virtual void OnUsed();
-
-	/*
 		Item이 Player에 의해 Drop될 때 호출될 메소드.
 	*/
 	UFUNCTION(BlueprintCallable, Category = Item)
@@ -181,22 +175,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	bool bIsActive;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	FString ItemName;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	int32 MaxQuantityOfItem;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, ReplicatedUsing = OnRep_ItemInfoChanged)
 	int32 CurrentQuantityOfItem;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	int32 ItemWeight;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, Replicated)
 	int32 InventoryIndex;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, Replicated)
 	FText ItemExplanation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)

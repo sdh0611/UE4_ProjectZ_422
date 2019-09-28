@@ -79,12 +79,10 @@ void UZShopSellWidget::NativeConstruct()
 
 void UZShopSellWidget::AddItem(AZItem* NewItem)
 {
-	ZLOG(Error, TEXT("AddItem to sell widget."));
 	switch (NewItem->GetItemType())
 	{
 		case EItemType::Weapon:
 		{
-			ZLOG(Error, TEXT("Sell Weapon."));
 			auto Children = WeaponHolder->GetAllChildren();
 			for (const auto& Child : Children)
 			{
@@ -99,7 +97,6 @@ void UZShopSellWidget::AddItem(AZItem* NewItem)
 		}
 		case EItemType::Recovery:
 		{
-			ZLOG(Error, TEXT("Sell Recovery."));
 				auto Children = RecoveryHolder->GetAllChildren();
 			for (const auto& Child : Children)
 			{
@@ -114,7 +111,6 @@ void UZShopSellWidget::AddItem(AZItem* NewItem)
 		}
 		case EItemType::Doping:
 		{
-			ZLOG(Error, TEXT("Sell Doping."));
 			auto Children = DopingHolder->GetAllChildren();
 			for (const auto& Child : Children)
 			{
@@ -129,7 +125,6 @@ void UZShopSellWidget::AddItem(AZItem* NewItem)
 		}
 		case EItemType::Ammo:
 		{
-			ZLOG(Error, TEXT("Sell Ammo."));
 			auto Children = AmmoHolder->GetAllChildren();
 			for (const auto& Child : Children)
 			{

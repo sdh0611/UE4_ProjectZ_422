@@ -67,19 +67,14 @@ void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 
 	DOREPLIFETIME(AZItem, bCanDestroy);
 	DOREPLIFETIME(AZItem, bIsActive);
+	DOREPLIFETIME(AZItem, ItemName);
+	DOREPLIFETIME(AZItem, MaxQuantityOfItem);
 	DOREPLIFETIME(AZItem, CurrentQuantityOfItem);
 	DOREPLIFETIME(AZItem, InventoryIndex);
+	DOREPLIFETIME(AZItem, ItemExplanation);
 	DOREPLIFETIME(AZItem, ItemOwner);
 
 }
-
-//void AZItem::OnUsed()
-//{
-//	ZLOG(Warning, TEXT("Use Item!"));
-//
-//	AdjustQuantity(-1);
-//
-//}
 
 void AZItem::OnDropped()
 {

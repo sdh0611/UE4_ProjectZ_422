@@ -203,7 +203,7 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 
 void UZUserHUD::ToggleInventoryWidget()
 {
-	if (ESlateVisibility::Hidden == InventoryWidget->GetVisibility())
+	if (ESlateVisibility::Collapsed == InventoryWidget->GetVisibility())
 	{
 		DrawInventoryWidget();
 	}
@@ -217,7 +217,7 @@ void UZUserHUD::ToggleInventoryWidget()
 
 void UZUserHUD::ToggleShopWidget()
 {
-	if (ESlateVisibility::Hidden == ShopWidget->GetVisibility())
+	if (ESlateVisibility::Collapsed == ShopWidget->GetVisibility())
 	{
 		DrawShopWidget();
 	}
@@ -229,7 +229,7 @@ void UZUserHUD::ToggleShopWidget()
 
 void UZUserHUD::ToggleInGameMenuWIdget()
 {
-	if (ESlateVisibility::Hidden == InGameMenuWidget->GetVisibility())
+	if (ESlateVisibility::Collapsed == InGameMenuWidget->GetVisibility())
 	{
 		DrawInGameMenuWidget();
 	}
@@ -241,7 +241,7 @@ void UZUserHUD::ToggleInGameMenuWIdget()
 
 void UZUserHUD::ToggleInputNumberWidget()
 {
-	if (ESlateVisibility::Hidden == InGameMenuWidget->GetVisibility())
+	if (ESlateVisibility::Collapsed == InGameMenuWidget->GetVisibility())
 	{
 		DrawInputNumberWidget();
 	}

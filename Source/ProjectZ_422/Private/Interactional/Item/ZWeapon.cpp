@@ -58,6 +58,7 @@ void AZWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AZWeapon, bIsEquipped);
+	DOREPLIFETIME(AZWeapon, WeaponInventoryIndex);
 
 }
 

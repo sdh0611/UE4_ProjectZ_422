@@ -31,7 +31,7 @@ void UZInventoryWidget::NativeConstruct()
 	//WeaponHolder = NewWeaponHolder;
 	
 
-	SetVisibility(ESlateVisibility::Hidden);
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UZInventoryWidget::AddItemToInventoryWidget(AZItem * const NewItem)

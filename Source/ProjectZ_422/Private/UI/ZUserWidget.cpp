@@ -15,6 +15,7 @@ void UZUserWidget::OnRemoveScreen()
 {
 	if (bCanDestruct)
 	{
+		ZLOG(Error, TEXT("Remove widget."));
 		RemoveFromParent();
 		return;
 	}

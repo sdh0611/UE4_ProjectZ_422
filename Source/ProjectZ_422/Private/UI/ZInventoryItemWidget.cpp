@@ -8,6 +8,7 @@
 #include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZInputNumberWidget.h"
+#include "ZGameInstance.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -24,23 +25,19 @@ void UZInventoryItemWidget::NativeConstruct()
 	ZLOG(Warning, TEXT("ItemWidget construct."));
 	Super::NativeConstruct();
 
-	auto NewItemImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_ItemImage")));
-	check(nullptr != NewItemImage);
-	ItemImage = NewItemImage;
+	ItemImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_ItemImage")));
+	check(ItemImage);
 
-	auto NewItemName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ItemName")));
-	check(nullptr != NewItemName);
-	ItemName = NewItemName;
+	ItemName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ItemName")));
+	check(ItemName);
 
-	auto NewQuantityOfItem = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_QuantityOfItem")));
-	check(nullptr != NewQuantityOfItem);
-	QuantityOfItem = NewQuantityOfItem;
+	QuantityOfItem = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_QuantityOfItem")));
+	check(QuantityOfItem);
 
-	auto NewDropButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Drop")));
-	check(nullptr != NewDropButton);
-	DropButton = NewDropButton;
+	DropButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Drop")));
+	check(DropButton);
 	DropButton->OnClicked.AddDynamic(this, &UZInventoryItemWidget::OnDropButtonClicked);
-	
+
 }
 
 void UZInventoryItemWidget::OnReceiveNumberInput(int32 NewNumber)
@@ -57,30 +54,40 @@ void UZInventoryItemWidget::BindItem(AZItem * NewItem)
 {
 	if (nullptr == NewItem)
 	{
-		ZLOG(Warning, TEXT("Invalid item pointer."));
+		ClearWidget();
 		return;
 	}
 
-	ZLOG(Warning, TEXT("Bind item pointer."));
-
 	Item = NewItem;
 
-	ItemName->SetText(FText::FromString(Item->GetItemName()));
+	bIsEmpty = false;
 
-	FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
-	QuantityOfItem->SetText(FText::FromString(Quantity));
+	if (ItemName)
+	{
+		ItemName->SetText(FText::FromString(Item->GetItemName()));
+	}
 
-	ItemImage->SetBrushFromTexture(Item->GetItemImage());
+	if (QuantityOfItem)
+	{
+		FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
+		QuantityOfItem->SetText(FText::FromString(Quantity));
+	}
+
+	if (ItemImage)
+	{
+		UTexture2D* Image = GetGameInstance<UZGameInstance>()->GetItemImage(Item->GetItemName());
+		ItemImage->SetBrushFromTexture(Image);
+	}
 
 	// Item 정보 갱신을 위한 델리게이트 바인딩.
-	NewItem->OnItemInfoChanged.AddUObject(this, &UZInventoryItemWidget::UpdateWidget);	
+	NewItem->OnItemInfoChanged.AddUObject(this, &UZInventoryItemWidget::UpdateWidget);
 	// Item 목록에서 삭제하기 위한 델리게이트 바인딩.
 	NewItem->OnItemRemoved.AddUObject(this, &UZInventoryItemWidget::ClearWidget);
 }
 
 AZItem * const UZInventoryItemWidget::GetBindingItem() const
 {
-	return Item;
+	return Item.Get();
 }
 
 FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeometry, const FPointerEvent & InMouseEvent)
@@ -91,8 +98,6 @@ FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeomet
 	{
 		return Result;
 	}
-
-	ZLOG_S(Warning);
 
 	if (nullptr == Item)
 	{
@@ -111,21 +116,25 @@ FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeomet
 
 void UZInventoryItemWidget::ClearWidget()
 {
-	ZLOG_S(Warning);
-	// Delegate 해제
-	Item->OnItemInfoChanged.RemoveAll(this);
-	Item->OnItemRemoved.RemoveAll(this);
+	if (Item.IsValid())
+	{
+		// Delegate 해제
+		Item->OnItemInfoChanged.RemoveAll(this);
+		Item->OnItemRemoved.RemoveAll(this);
 
-	Item = nullptr;
+		Item = nullptr;
+	}
+
+	bIsEmpty = true;
 
 	RemoveFromParent();
 }
 
 void UZInventoryItemWidget::UpdateWidget()
 {
-	if (nullptr == Item)
+	if (!Item.IsValid())
 	{
-		ZLOG(Error, TEXT("Item is null"));
+		ZLOG(Error, TEXT("Item is invalid"));
 		return;
 	}
 	ZLOG_S(Warning);
@@ -140,7 +149,6 @@ void UZInventoryItemWidget::UpdateWidget()
 // 폐기예정(5.18)
 void UZInventoryItemWidget::OnDropButtonClicked()
 {
-
 	if (Item->GetCurrentQuantityOfItem() <= 1)
 	{
 		OnReceiveNumberInput(1);

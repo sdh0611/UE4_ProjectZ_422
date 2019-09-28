@@ -65,7 +65,6 @@ void UZShopSellItemWidget::BindItem(AZItem * NewItem)
 		return;
 	}
 
-	ZLOG(Error, TEXT("BindItem to sell widget."));
 	Item = NewItem;
 	/*
 		Widget propertyµé update
@@ -77,7 +76,11 @@ void UZShopSellItemWidget::BindItem(AZItem * NewItem)
 	/*	Update item image */
 	if (ItemImage)
 	{
-		ItemImage->SetBrushFromTexture(Item->GetItemImage());
+		UTexture2D* Image = GetGameInstance<UZGameInstance>()->GetItemImage(Item->GetItemName());
+		if (Image)
+		{
+			ItemImage->SetBrushFromTexture(Image);
+		}
 	}
 	else
 	{
@@ -132,7 +135,6 @@ void UZShopSellItemWidget::UpdateWidget()
 
 void UZShopSellItemWidget::ClearWidget()
 {
-	ZLOG(Error, TEXT("Clear  sell widget."));
 	Item = nullptr;
 
 	bIsEmpty = true;
