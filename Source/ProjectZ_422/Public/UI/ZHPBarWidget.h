@@ -15,20 +15,38 @@ class PROJECTZ_422_API UZHPBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	virtual void NativeConstruct() override;
-
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
-
 	void BindStatus(class UZCharacterStatusComponent* NewStatusComponent);
 
 protected:
+	void InterpGage(float DeltaTime);
+
+	void SetUpdateBar();
+
 	UFUNCTION(BlueprintImplementableEvent, Category = HPBar)
 	void UpdateWidget();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = HPBar)
-	class UZCharacterStatusComponent* StatusComponent;
+	TWeakObjectPtr<class UZPlayerStatusComponent> StatusComponent;
+
+protected:
+	bool bCanUpdateBar = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float TargetHP;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float TargetHPRatio;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float TargetDopingGage;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float TargetDopingGageRatio;
 
 };

@@ -51,6 +51,7 @@ public:
 	bool IsSwitchingWeapon();
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
+	class UZPlayerStatusComponent* const GetPlayerStatusComponent() const;
 	class AZWeapon* const GetCurrentWeapon();
 	class UZPlayerAnimInstance* const GetCharacterAnimInstance();
 

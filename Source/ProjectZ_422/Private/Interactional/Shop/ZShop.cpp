@@ -214,78 +214,78 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 
 	switch (GetItemTypeFromString(BuyItemData->ItemType))
 	{
-	case EItemType::Weapon:
-	{
-		auto WeaponData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
-		check(nullptr != WeaponData);
-
-		switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
+		case EItemType::Weapon:
 		{
-		case EWeaponCategory::Gun:
-		{
-			auto GunData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
-			check(GunData != nullptr);
+			auto WeaponData = ZGameInstance->GetWeaponDataByName(BuyItemData->ItemName);
+			check(nullptr != WeaponData);
 
-			switch (GetGunTypeFromString(GunData->GunType))
+			switch (GetWeaponCategoryFromString(WeaponData->WeaponCategory))
 			{
-			case EGunType::AR:
-			{
-				SpawnItemClass = ARClass;
+				case EWeaponCategory::Gun:
+				{
+					auto GunData = ZGameInstance->GetGunDataByName(BuyItemData->ItemName);
+					check(GunData != nullptr);
+
+					switch (GetGunTypeFromString(GunData->GunType))
+					{
+					case EGunType::AR:
+					{
+						SpawnItemClass = ARClass;
+						break;
+					}
+					case EGunType::Shotgun:
+					{
+						SpawnItemClass = ShotgunClass;
+						break;
+					}
+					}
+
+					break;
+				}
+				case EWeaponCategory::Knife:
+				{
+					//SpawnItemClass = AZKnife::StaticClass();
+					break;
+				}
+				case EWeaponCategory::Grenade:
+				{
+					ZLOG(Error, TEXT("Buy Grenade."));
+					SpawnItemClass = GrenadeClass;
+					break;
+				}
+				default:
+				{
+					ZLOG(Error, TEXT("Invalid type."));
+					return;
+				}
+				}
+
 				break;
 			}
-			case EGunType::Shotgun:
+			case EItemType::Recovery:
 			{
-				SpawnItemClass = ShotgunClass;
+				SpawnItemClass = RecoveryClass;
 				break;
 			}
+			case EItemType::Doping:
+			{
+				SpawnItemClass = DopingClass;
+				break;
 			}
-
-			break;
+			case EItemType::Ammo:
+			{
+				SpawnItemClass = AmmoClass;
+				break;
+			}
+			default:
+			{
+				ZLOG(Error, TEXT("Invalid ItemType"));
+				return;
 		}
-		case EWeaponCategory::Knife:
-		{
-			//SpawnItemClass = AZKnife::StaticClass();
-			break;
-		}
-		case EWeaponCategory::Grenade:
-		{
-			ZLOG(Error, TEXT("Buy Grenade."));
-			SpawnItemClass = GrenadeClass;
-			break;
-		}
-		default:
-		{
-			ZLOG(Error, TEXT("Invalid type."));
-			return;
-		}
-		}
-
-		break;
-	}
-	case EItemType::Recovery:
-	{
-		SpawnItemClass = RecoveryClass;
-		break;
-	}
-	case EItemType::Doping:
-	{
-		SpawnItemClass = DopingClass;
-		break;
-	}
-	case EItemType::Ammo:
-	{
-		SpawnItemClass = AmmoClass;
-		break;
-	}
-	default:
-	{
-		ZLOG(Error, TEXT("Invalid ItemType"));
-		return;
-	}
 	}
 
 	int32 RemainQuantity = TotalQuantity;
-	while (RemainQuantity > ItemData->MaxQuantity)
+	while (RemainQuantity > 0)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = PC;
@@ -301,33 +301,21 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 			ZLOG(Error, TEXT("Invalid item data."));
 			return;
 		}
-		ZLOG(Error, TEXT("ItemName : %s, Owner : %s"), *ItemData->ItemName, *PC->GetName());
 		
+		ZLOG_S(Error);
+		if (RemainQuantity < ItemData->MaxQuantity)
+		{
+			NewItem->SetCurrentQuantityOfItem(RemainQuantity);
+		}
+		else
+		{
+			NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);
+		}
 		NewItem->InitItemData(ItemData);
-		NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);
-		/* 동기화 해야된다 */
 		ItemStatusComponent->AddItem(NewItem);
+
 		RemainQuantity -= ItemData->MaxQuantity;
 	}
-
-	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
-	if (nullptr == NewItem)
-	{
-		ZLOG(Error, TEXT("Failed to spawn item."));
-		return;
-	}
-
-	if (nullptr == ItemData)
-	{
-		ZLOG(Error, TEXT("Invalid item data."));
-		return;
-	}
-	ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
-
-	NewItem->InitItemData(ItemData);
-	NewItem->SetCurrentQuantityOfItem(RemainQuantity);
-	/* 동기화 해야된다. */
-	ItemStatusComponent->AddItem(NewItem);
 
 }
 

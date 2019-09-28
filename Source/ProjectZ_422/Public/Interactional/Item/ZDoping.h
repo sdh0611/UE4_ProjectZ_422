@@ -27,7 +27,10 @@ public:
 
 private:
 	/* From client to server RPC */
-	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerUseItem();
+	bool ServerUseItem_Validate();
+	void ServerUseItem_Implementation();
 	
 	
 	/* From client to server RPC */

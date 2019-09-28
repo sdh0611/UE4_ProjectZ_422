@@ -88,9 +88,7 @@ public:
 	/*
 		Item이 Player에 의해 Drop될 때 호출될 메소드.
 	*/
-	UFUNCTION(BlueprintCallable, Category = Item)
 	virtual void OnDropped();
-
 	virtual void OnDropped(int32 Quantity);
 	/*
 		Item이 제거될 경우 호출될 메소드.
@@ -151,7 +149,10 @@ protected:
 	
 	
 	/* From server to client RPC*/
-
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientOnItemRemoved();
+	bool ClientOnItemRemoved_Validate();
+	void ClientOnItemRemoved_Implementation();
 
 	/* Replicated using */
 	UFUNCTION()

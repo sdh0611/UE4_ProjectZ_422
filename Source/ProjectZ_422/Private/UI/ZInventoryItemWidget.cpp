@@ -104,9 +104,11 @@ FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeomet
 		return Result;
 	}
 
+	ZLOG_S(Error);
 	auto UsableItem = Cast<IZUsableItemInterface>(Item);
 	if (UsableItem)
 	{
+		ZLOG_S(Error);
 		UsableItem->OnUsed();
 	}
 

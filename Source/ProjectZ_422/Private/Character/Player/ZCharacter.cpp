@@ -15,7 +15,7 @@
 #include "ZCharacterAnimInstance.h"
 #include "ZPlayerAnimInstance.h"
 #include "ZPlayerController.h"
-#include "ZCharacterStatusComponent.h"
+#include "ZPlayerStatusComponent.h"
 #include "ZChangeFireModeInterface.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -51,9 +51,9 @@ AZCharacter::AZCharacter()
 
 	// Create item status component.
 	ItemStatusComponent = CreateDefaultSubobject<UZCharacterItemStatusComponent>(TEXT("ItemStatusComponent"));
-
-	//// Create character status component
-	//StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
+	
+	// Create character status component
+	StatusComponent = CreateDefaultSubobject<UZPlayerStatusComponent>(TEXT("StatusComponent"));
 
 	// Set Character Properties
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -318,6 +318,11 @@ AZInteractional * AZCharacter::GetInteractionalInView()
 UZCharacterItemStatusComponent * const AZCharacter::GetItemStatusComponent() const
 {
 	return ItemStatusComponent;
+}
+
+UZPlayerStatusComponent * const AZCharacter::GetPlayerStatusComponent() const
+{
+	return Cast<UZPlayerStatusComponent>(StatusComponent);
 }
 
 AZWeapon * const AZCharacter::GetCurrentWeapon()

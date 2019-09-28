@@ -4,6 +4,7 @@
 #include "ZBaseZombie.h"
 #include "ZZombieAIController.h"
 #include "ZCharacter.h"
+#include "ZCharacterStatusComponent.h"
 #include "ZZombieAnimInstance.h"
 #include "ZGameMode.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -13,7 +14,6 @@
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-
 
 
 AZBaseZombie::AZBaseZombie()
@@ -26,6 +26,9 @@ AZBaseZombie::AZBaseZombie()
 	Sense->SightRadius = 2000;
 	Sense->HearingThreshold = 600;
 	Sense->LOSHearingThreshold = 1200;
+
+	// Create character status component
+	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);

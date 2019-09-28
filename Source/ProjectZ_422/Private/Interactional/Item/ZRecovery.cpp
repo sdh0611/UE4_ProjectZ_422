@@ -44,15 +44,12 @@ void AZRecovery::InitItemData(const FZItemData * NewItemData)
 
 	RecoveryAmount = NewRecoveryData->RecoveryAmount;
 	RecoveryDelay = NewRecoveryData->RecoveryDelay;
-
 }
 
 void AZRecovery::OnUsed()
 {
-	if (!HasAuthority())
-	{
-		ServerUseItem();
-	}
+	ZLOG_S(Error);
+	ServerUseItem();
 }
 
 bool AZRecovery::ServerUseItem_Validate()
@@ -62,7 +59,12 @@ bool AZRecovery::ServerUseItem_Validate()
 
 void AZRecovery::ServerUseItem_Implementation()
 {
-	//ItemOwner->GetStatusComponent()->AdjustCurrentHP(RecoveryAmount);
+	if (ItemOwner->GetStatusComponent()->GetHPRatio() >= 1.f)
+	{
+		return;
+	}
+
+	ItemOwner->GetStatusComponent()->AdjustCurrentHP(RecoveryAmount);
 
 	AdjustQuantity(-1);
 }

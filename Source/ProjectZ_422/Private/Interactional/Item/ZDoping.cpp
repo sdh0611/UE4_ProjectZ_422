@@ -3,7 +3,7 @@
 
 #include "ZDoping.h"
 #include "ZCharacter.h"
-#include "ZCharacterStatusComponent.h"
+#include "ZPlayerStatusComponent.h"
 #include "ZGameInstance.h"
 
 AZDoping::AZDoping()
@@ -35,7 +35,22 @@ void AZDoping::InitItemData(const FZItemData * NewItemData)
 
 void AZDoping::OnUsed()
 {
-	ItemOwner->GetStatusComponent()->AdjustCurrentDopingGage(DopingAmount);
+	ServerUseItem();
+}
+
+bool AZDoping::ServerUseItem_Validate()
+{
+	return true;
+}
+
+void AZDoping::ServerUseItem_Implementation()
+{
+	if (ItemOwner->GetPlayerStatusComponent()->GetDopingGageRatio() >= 1.f)
+	{
+		return;
+	}
+
+	ItemOwner->GetPlayerStatusComponent()->AdjustCurrentDopingGage(DopingAmount);
 
 	AdjustQuantity(-1);
 }

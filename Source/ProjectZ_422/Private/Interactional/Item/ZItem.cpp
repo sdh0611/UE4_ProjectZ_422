@@ -126,10 +126,11 @@ void AZItem::OnDropped()
 
 	//// Set ItemOwner null
 	//SetItemOwner(nullptr);
-
-	OnItemRemoved.Broadcast();
-
 	SetActive(false);
+
+	ClientOnItemRemoved();
+	//OnItemRemoved.Broadcast();
+
 }
 
 void AZItem::OnDropped(int32 Quantity)
@@ -186,9 +187,11 @@ void AZItem::OnDropped(int32 Quantity)
 		// ItemStatusComponent에서 해당 Item제거
 		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
 
-		OnItemRemoved.Broadcast();
-
 		SetActive(false);
+
+		ClientOnItemRemoved();
+		//OnItemRemoved.Broadcast();
+
 	}
 	else
 	{
@@ -233,12 +236,16 @@ void AZItem::OnDropped(int32 Quantity)
 void AZItem::OnRemoved()
 {
 	ZLOG_S(Warning);
+	if (!HasAuthority())
+	{
+		return;
+	}
 
 	//SetItemOwner(nullptr);
 	SetCurrentQuantityOfItem(1);
 	SetInventoryIndex(-1);
 
-	OnItemRemoved.Broadcast();
+	ClientOnItemRemoved();
 
 	if (IsCanDestroy())
 	{
@@ -252,6 +259,11 @@ void AZItem::OnRemoved()
 
 void AZItem::InitItemData(const FZItemData * const NewItemData)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	/*
 		Data 유효성 체크
 	*/
@@ -305,9 +317,13 @@ void AZItem::SetCanDestroy(bool NewState)
 
 void AZItem::SetItemName(const FString & NewItemName)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
 	ItemName = NewItemName;
 
-	OnItemInfoChanged.Broadcast();
+	//OnItemInfoChanged.Broadcast();
 }
 
 void AZItem::SetMaxQuantityOfItem(int32 NewValue)
@@ -322,6 +338,11 @@ void AZItem::SetMaxQuantityOfItem(int32 NewValue)
 
 void AZItem::SetCurrentQuantityOfItem(int32 NewValue)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (!FMath::IsWithinInclusive<int32>(NewValue, 0, MaxQuantityOfItem))
 	{
 		return;
@@ -329,7 +350,7 @@ void AZItem::SetCurrentQuantityOfItem(int32 NewValue)
 
 	CurrentQuantityOfItem = NewValue;
 
-	OnItemInfoChanged.Broadcast();
+	//OnItemInfoChanged.Broadcast();
 }
 
 void AZItem::SetItemWeight(int32 NewWeight)
@@ -458,10 +479,25 @@ UAnimMontage * const AZItem::FindMontage(const FString & MontageName) const
 
 void AZItem::CheckItemExhausted()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (GetCurrentQuantityOfItem() < 1)
 	{
 		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex());
 	}
+}
+
+bool AZItem::ClientOnItemRemoved_Validate()
+{
+	return true;
+}
+
+void AZItem::ClientOnItemRemoved_Implementation()
+{
+	OnItemRemoved.Broadcast();
 }
 
 void AZItem::OnRep_ItemOwner()

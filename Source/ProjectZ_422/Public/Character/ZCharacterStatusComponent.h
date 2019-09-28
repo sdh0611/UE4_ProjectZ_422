@@ -28,45 +28,27 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
 	void AdjustCurrentHP(float Value);
-	void AdjustCurrentDopingGage(float Value);
-	void AddBuff(class UZBuff* NewBuff);
-	void UpdateBuff(float DeltaTime);
 
 public:
 	void SetCurrentHP(float NewCurrentHP);
 	void SetMaxHP(float NewMaxHP);
-	void SetCurrentDopingGage(float NewCurrentDopingGage);
-	void SetMaxDopingGage(float NewMaxDopingGage);
-	void SetSpeedIncrementWhiledoping(float NewIncrement);
 
 public:
 	bool IsDead() const;
 	float GetCurrentHP() const;
 	float GetMaxHP() const;
-	float GetCurrentDopingGage() const;
-	float GetMaxDopingGage() const;
-	float GetSpeedIncrementWhileDoping() const;
 
 	UFUNCTION(BlueprintCallable, Category = Status)
 	float GetHPRatio() const;
 
-	UFUNCTION(BlueprintCallable, Category = Status)
-	float GetTargetHPRatio() const;
-
-	UFUNCTION(BlueprintCallable, Category = Status)
-	float GetDopingGageRatio() const;
-
-	UFUNCTION(BlueprintCallable, Category = Status)
-	float GetTargetDopingGageRatio() const;
-
-
-private:
-	void DecreaseDopingGage();
-	void InterpGage(float DeltaTime);
-	void IncreaseHPWhileDoping();
+protected:
+	/* Replicated using */
+	UFUNCTION()
+	void OnRep_CurrentHP();
 
 public:
 	FOnStatusChanged OnStatusChanged;
@@ -74,54 +56,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = Stat)
 	bool bCanInterpGageValues;
 
-private:
-	UPROPERTY()
-	class AZCharacter* OwnerCharacter;
+protected:
+	FTimerHandle IncreaseHPTimer;
 
-private:
+	UPROPERTY(VisibleAnywhere)
+	class AZBaseCharacter* OwnerCharacter;
+
+protected:
 	/*
 		HP
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Transient, ReplicatedUsing = OnRep_CurrentHP)
 	float CurrentHP;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Transient, Replicated)
 	float MaxHP;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
-	float TargetHP;
-
-	/*
-		Doping
-	*/
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
-	float CurrentDopingGage;
-
-	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
-	float MaxDopingGage;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Transient, Meta = (AllowPrivateAccess = true))
-	float TargetDopingGage;
-
-	UPROPERTY(EditAnywhere, Category = Stat)
-	float DecreaseDopingDelay;
-
-	UPROPERTY(EditAnywhere, Category = Stat)
-	float DecreaseDopingGageValue;
-
-	UPROPERTY(EditAnywhere, Category = Stat)
-	float SpeedIncrementWhileDoping;
-
-	UPROPERTY()
-	FTimerHandle DopingTimer;
-
-	UPROPERTY()
-	FTimerHandle IncreaseHPTimer;
-
-	/*
-		Buff list
-	*/
-	UPROPERTY(VisibleAnywhere, Category = Stat)
-	TArray<class UZBuff*> BuffList;
 
 };
