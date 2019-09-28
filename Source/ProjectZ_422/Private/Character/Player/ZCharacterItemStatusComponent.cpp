@@ -139,11 +139,11 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 				OwnerPickup->SetItem(NewItem);
 			}
 
-			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
-			if (PlayerController)
-			{
-				PlayerController->ClientAddItemToInventoryWidget(NewItem);
-			}
+			//auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
+			//if (PlayerController)
+			//{
+			//	PlayerController->ClientAddItemToInventoryWidget(NewItem);
+			//}
 
 		}
 

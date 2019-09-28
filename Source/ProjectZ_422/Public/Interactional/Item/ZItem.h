@@ -83,6 +83,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/*
 		Item의 동작에 대한 메소드.
@@ -159,10 +160,10 @@ public:
 	TSubclassOf<class AZPickup> PickupClass;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	bool bCanDestroy;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	bool bIsActive;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
@@ -171,13 +172,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
 	int32 MaxQuantityOfItem;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, Replicated)
 	int32 CurrentQuantityOfItem;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
 	int32 ItemWeight;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, Replicated)
 	int32 InventoryIndex;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)

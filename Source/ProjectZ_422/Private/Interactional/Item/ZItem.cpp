@@ -8,7 +8,8 @@
 #include "ZGameInstance.h"
 #include "Engine/World.h"
 #include "ConstructorHelpers.h"
-
+#include "UnrealNetwork.h"
+#include "Components/SceneComponent.h"
 
 // Sets default values
 AZItem::AZItem()
@@ -17,6 +18,7 @@ AZItem::AZItem()
 	PrimaryActorTick.bCanEverTick = false;
 	
 	bReplicates = true;
+	bNetUseOwnerRelevancy = true;
 
 	bCanDestroy = true;
 	bIsActive = true;
@@ -28,6 +30,9 @@ AZItem::AZItem()
 	ItemOwner = nullptr;
 	ItemType = EItemType::Default;
 	Pickup = nullptr;
+
+	/* Relicate를 위한 더미 컴포넌트 */
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	static ConstructorHelpers::FClassFinder<AZPickup>
 		CLASS_PICKUP(TEXT("Blueprint'/Game/Blueprint/Interactional/Pickup/BP_ZPickup.BP_ZPickup_C'"));
@@ -50,6 +55,17 @@ void AZItem::BeginPlay()
 void AZItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZItem, bCanDestroy);
+	DOREPLIFETIME(AZItem, bIsActive);
+	DOREPLIFETIME(AZItem, CurrentQuantityOfItem);
+	DOREPLIFETIME(AZItem, InventoryIndex);
 
 }
 

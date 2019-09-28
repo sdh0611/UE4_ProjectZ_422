@@ -331,7 +331,7 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 	NewItem->InitItemData(ItemData);
 	NewItem->SetCurrentQuantityOfItem(RemainQuantity);
 	/* 동기화 해야된다. */
-	ItemStatusComponent->AddItem(NewItem);
+	//ItemStatusComponent->AddItem(NewItem);
 
 }
 
