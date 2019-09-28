@@ -289,7 +289,7 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = PC;
-		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
+		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass, SpawnParams);
 		if (nullptr == NewItem)
 		{
 			ZLOG(Error, TEXT("Failed to spawn item."));
@@ -301,7 +301,7 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 			ZLOG(Error, TEXT("Invalid item data."));
 			return;
 		}
-		ZLOG(Error, TEXT("Name : %s"), *ItemData->ItemName);
+		ZLOG(Error, TEXT("ItemName : %s, Owner : %s"), *ItemData->ItemName, *PC->GetName());
 		
 		NewItem->InitItemData(ItemData);
 		NewItem->SetCurrentQuantityOfItem(ItemData->MaxQuantity);

@@ -24,6 +24,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void OnUsed() override;
 
+
+private:
+	/* From client to server RPC */
+	
+	
+	
+	/* From client to server RPC */
+
+	
+
 private:
 	UPROPERTY(EditAnywhere, Category = Recovery)
 	float DopingAmount;

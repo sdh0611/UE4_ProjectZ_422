@@ -19,16 +19,31 @@ public:
 	AZRecovery();
 
 public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void InitItemData(const struct FZItemData* NewItemData) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnUsed() override;
 
 private:
-	UPROPERTY(EditAnywhere, Category = Recovery)
+	/* From client to server RPC */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerUseItem();
+	bool ServerUseItem_Validate();
+	void ServerUseItem_Implementation();
+	
+
+	/* From client to server RPC */
+
+
+
+
+private:
+	UPROPERTY(EditAnywhere, Category = Recovery, Replicated)
 	float RecoveryAmount;
 
-	UPROPERTY(EditAnywhere, Category = Recovery)
+	UPROPERTY(EditAnywhere, Category = Recovery, Replicated)
 	float RecoveryDelay;
 
 };

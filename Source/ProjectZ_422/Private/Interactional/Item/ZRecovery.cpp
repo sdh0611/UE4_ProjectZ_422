@@ -5,10 +5,11 @@
 #include "ZCharacter.h"
 #include "ZCharacterStatusComponent.h"
 #include "ZGameInstance.h"
+#include "UnrealNetwork.h"
+
 
 AZRecovery::AZRecovery()
 {
-
 	ItemType = EItemType::Recovery;
 
 	// Code to test
@@ -18,12 +19,21 @@ AZRecovery::AZRecovery()
 	RecoveryDelay = 1.f;
 }
 
+void AZRecovery::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZRecovery, RecoveryAmount);
+	DOREPLIFETIME(AZRecovery, RecoveryDelay);
+
+}
+
 void AZRecovery::InitItemData(const FZItemData * NewItemData)
 {
 	Super::InitItemData(NewItemData);
 
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	check(nullptr != MyGameInstance);
+	check(MyGameInstance);
 
 	auto NewRecoveryData = MyGameInstance->GetRecoveryDataByName(NewItemData->ItemName);
 	if (nullptr == NewRecoveryData)
@@ -39,7 +49,20 @@ void AZRecovery::InitItemData(const FZItemData * NewItemData)
 
 void AZRecovery::OnUsed()
 {
-	ItemOwner->GetStatusComponent()->AdjustCurrentHP(RecoveryAmount);
+	if (!HasAuthority())
+	{
+		ServerUseItem();
+	}
+}
+
+bool AZRecovery::ServerUseItem_Validate()
+{
+	return true;
+}
+
+void AZRecovery::ServerUseItem_Implementation()
+{
+	//ItemOwner->GetStatusComponent()->AdjustCurrentHP(RecoveryAmount);
 
 	AdjustQuantity(-1);
 }
