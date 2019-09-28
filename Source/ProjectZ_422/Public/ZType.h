@@ -85,10 +85,10 @@ public:
 
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponData)
 	FString Name;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = WeaponData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponData)
 	TSoftObjectPtr<class UTexture2D> ImagePath;
 
 };
@@ -101,7 +101,6 @@ public:
 USTRUCT(BlueprintType)
 struct PROJECTZ_422_API FZItemData : public FTableRowBase
 {
-
 	GENERATED_BODY()
 
 public:
@@ -110,17 +109,17 @@ public:
 	{
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	int32 ItemWeight;	
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	int32 MaxQuantity;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
-	FString ItemExplanation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
+	FText ItemExplanation;
 
 };
 
@@ -137,13 +136,13 @@ public:
 	{
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float Damage;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString WeaponCategory;
 
 };
@@ -165,28 +164,28 @@ public:
 	{
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float FireDelay;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	int32 MaxAmmo;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString UseAmmoName;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString GunType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float BulletSpeed;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float BulletSpread;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float SpreadDecrement;
 
 };
@@ -204,13 +203,13 @@ public:
 	{
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float ExplosionDelay;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float ExplosionRadius;
 
 };
@@ -228,13 +227,13 @@ public:
 	{
 	}
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float RecoveryAmount;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float RecoveryDelay;
 
 };
@@ -250,13 +249,13 @@ public:
 	{
 	}
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float DopingAmount;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	float DopingTime;
 
 };
@@ -276,19 +275,19 @@ public:
 	{
 
 	}
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	int32 ShopID;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	int32 ItemPrice;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString ItemType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = ItemData)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	bool bIsDealOnlyOne;
 
 };

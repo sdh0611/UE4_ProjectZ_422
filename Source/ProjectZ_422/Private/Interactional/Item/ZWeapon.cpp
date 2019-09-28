@@ -8,8 +8,8 @@
 #include "ZGameInstance.h"
 #include "ZPlayerAnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
+#include "UnrealNetwork.h"
 
 
 AZWeapon::AZWeapon()
@@ -50,6 +50,14 @@ void AZWeapon::BeginPlay()
 void AZWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void AZWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZWeapon, bIsEquipped);
 
 }
 

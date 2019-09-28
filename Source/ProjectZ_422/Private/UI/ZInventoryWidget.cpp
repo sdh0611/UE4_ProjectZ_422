@@ -34,6 +34,22 @@ void UZInventoryWidget::NativeConstruct()
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
+void UZInventoryWidget::AddItemToInventoryWidget(AZItem * const NewItem)
+{
+	if (NewItem)
+	{
+		if (EItemType::Weapon == NewItem->GetItemType())
+		{
+			AddItemToWeaponInventory(Cast<AZWeapon>(NewItem));
+		}
+		else
+		{
+			AddItemToInventory(NewItem);
+		}
+	}
+
+}
+
 void UZInventoryWidget::AddItemToInventory(AZItem * const NewItem)
 {
 	ZLOG_S(Warning);

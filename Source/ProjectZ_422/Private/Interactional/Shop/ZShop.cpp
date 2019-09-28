@@ -52,7 +52,6 @@ void AZShop::OpenShop(AZPlayerController* NewPC)
 		return;
 	}
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("ShopInteraction."));
 	if (NewPC)
 	{
 		//ConstructShopWidget(Cast<AZCharacter>(NewPC->GetPawn()));
@@ -72,7 +71,6 @@ void AZShop::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 void AZShop::Buy(APlayerController* PC, int32 BuyItemShopID, int32 Quantity)
 {
 	/* Server RPC */
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT(" Buy"));
 	ServerBuy(PC, BuyItemShopID, Quantity);
 }
 
@@ -156,7 +154,6 @@ bool AZShop::ServerBuy_Validate(APlayerController * PC, int32 BuyItemShopID, int
 
 void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopID, int32 Quantity)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Buy Item process."));
 	auto Player = Cast<AZCharacter>(PC->GetPawn());
 	if (nullptr == Player)
 	{
@@ -185,7 +182,6 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 		return;
 	}
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("In Buy Item process."));
 
 	/*
 		돈계산
@@ -331,7 +327,7 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 	NewItem->InitItemData(ItemData);
 	NewItem->SetCurrentQuantityOfItem(RemainQuantity);
 	/* 동기화 해야된다. */
-	//ItemStatusComponent->AddItem(NewItem);
+	ItemStatusComponent->AddItem(NewItem);
 
 }
 

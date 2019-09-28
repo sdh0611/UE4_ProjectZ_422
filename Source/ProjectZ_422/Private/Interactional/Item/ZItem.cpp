@@ -10,6 +10,9 @@
 #include "ConstructorHelpers.h"
 #include "UnrealNetwork.h"
 #include "Components/SceneComponent.h"
+#include "ZUserHUD.h"
+#include "ZPlayerController.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AZItem::AZItem()
@@ -66,6 +69,7 @@ void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	DOREPLIFETIME(AZItem, bIsActive);
 	DOREPLIFETIME(AZItem, CurrentQuantityOfItem);
 	DOREPLIFETIME(AZItem, InventoryIndex);
+	DOREPLIFETIME(AZItem, ItemOwner);
 
 }
 
@@ -196,7 +200,8 @@ void AZItem::OnDropped(int32 Quantity)
 		ZLOG(Error, TEXT("Drop %d"), Quantity);
 		/* 초기화에 사용할 ItemData 검색. */
 		auto MyGameInstance = GetGameInstance<UZGameInstance>();
-		check(nullptr != MyGameInstance);
+		check(MyGameInstance);
+
 		const FZItemData* ItemData = MyGameInstance->GetItemDataByName(GetItemName());
 		if (nullptr == ItemData)
 		{
@@ -264,7 +269,7 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 	ItemName = NewItemData->ItemName;
 	ItemWeight = NewItemData->ItemWeight;
 	MaxQuantityOfItem = NewItemData->MaxQuantity;
-	ItemExplanation = FText::FromString(NewItemData->ItemExplanation);
+	ItemExplanation = NewItemData->ItemExplanation;
 
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	check(MyGameInstance);
@@ -287,8 +292,11 @@ int32 AZItem::AdjustQuantity(int32 Value)
 		CurrentQuantityOfItem = FMath::Clamp<int32>(Quantity, 0, Quantity);
 	}
 
-	OnItemInfoChanged.Broadcast();
-
+	//OnItemInfoChanged.Broadcast();
+	if (HasAuthority())
+	{
+		OnRep_ItemInfoChanged();
+	}
 	// Item을 전부 소진했는지 검사.
 	CheckItemExhausted();
 
@@ -459,5 +467,28 @@ void AZItem::CheckItemExhausted()
 	{
 		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex());
 	}
+}
+
+void AZItem::OnRep_ItemOwner()
+{
+	if (ItemOwner)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_ItemOwner"));
+		auto MyPC = ItemOwner->GetController<AZPlayerController>();
+		if (MyPC)
+		{
+			MyPC->AddItemToInventoryWidget(this);
+			MyPC->AddItemToSellWidget(this);
+		}
+	}
+	else
+	{
+
+	}
+}
+
+void AZItem::OnRep_ItemInfoChanged()
+{
+	OnItemInfoChanged.Broadcast();
 }
 

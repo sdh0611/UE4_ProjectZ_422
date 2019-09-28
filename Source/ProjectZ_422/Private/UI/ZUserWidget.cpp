@@ -19,7 +19,7 @@ void UZUserWidget::OnRemoveScreen()
 		return;
 	}
 
-	SetVisibility(ESlateVisibility::Hidden);
+	SetVisibility(ESlateVisibility::Collapsed);
 
 }
 

@@ -75,6 +75,7 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRemoved() override;
 	virtual void OnDropped() override;
 	virtual void InitItemData(const struct FZItemData* const NewItemData);
@@ -101,14 +102,14 @@ public:
 	/*
 		현재 Player가 들고 있는 무기인지의 여부
 	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon, Replicated)
 	bool bIsEquipped;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	class USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon, Replicated)
 	int32 WeaponInventoryIndex;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
@@ -117,7 +118,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	float TraceDistance;
 
-	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly)
 	EWeaponCategory WeaponCategory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)

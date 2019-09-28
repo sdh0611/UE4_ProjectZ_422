@@ -8,8 +8,9 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMoneyInfoChange, int32);
 
-enum EWeaponSlot : uint8
+enum EWeaponSlot : int8
 {
+	Invalid = -1,
 	Main1 = 0,
 	Main2,
 	Grenade,

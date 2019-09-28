@@ -14,56 +14,132 @@ void UZShopSellWidget::NativeConstruct()
 	/*
 	   각 Tab별 아이템 목록을 관리하는 ScrollBox
 	*/
-	auto NewWeaponHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("WeaponItemHolder")));
-	check(nullptr != NewWeaponHolder);
-	WeaponHolder = NewWeaponHolder;
+	WeaponHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("WeaponItemHolder")));
+	check(WeaponHolder);
 
-	auto NewRecoveryHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("RecoveryItemHolder")));
-	check(nullptr != NewRecoveryHolder);
-	RecoveryHolder = NewRecoveryHolder;
+	RecoveryHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("RecoveryItemHolder")));
+	check(RecoveryHolder);
 
-	auto NewDopingHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("DopingItemHolder")));
-	check(nullptr != NewDopingHolder);
-	DopingHolder = NewDopingHolder;
+	DopingHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("DopingItemHolder")));
+	check(DopingHolder);
 
-	auto NewAmmoHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("AmmoItemHolder")));
-	check(nullptr != NewAmmoHolder);
-	AmmoHolder = NewAmmoHolder;
+	AmmoHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("AmmoItemHolder")));
+	check(AmmoHolder);
+
+	if (SellItemWidgetClass)
+	{
+		auto MyPC = GetOwningPlayer();
+		/* Weapon holder */
+		for (int32 i = 0; i < HolderSize; ++i)
+		{
+			auto SellItem = CreateWidget<UZShopSellItemWidget>(MyPC, SellItemWidgetClass);
+			if (SellItem)
+			{
+				WeaponHolder->AddChild(SellItem);
+				SellItem->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+
+		/* Recovery Holder */
+		for (int32 i = 0; i < HolderSize; ++i)
+		{
+			auto SellItem = CreateWidget<UZShopSellItemWidget>(MyPC, SellItemWidgetClass);
+			if (SellItem)
+			{
+				RecoveryHolder->AddChild(SellItem);
+				SellItem->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+
+		/* Doping Holder */
+		for (int32 i = 0; i < HolderSize; ++i)
+		{
+			auto SellItem = CreateWidget<UZShopSellItemWidget>(MyPC, SellItemWidgetClass);
+			if (SellItem)
+			{
+				DopingHolder->AddChild(SellItem);
+				SellItem->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+
+		/* Ammo Holder */
+		for (int32 i = 0; i < HolderSize; ++i)
+		{
+			auto SellItem = CreateWidget<UZShopSellItemWidget>(MyPC, SellItemWidgetClass);
+			if (SellItem)
+			{
+				AmmoHolder->AddChild(SellItem);
+				SellItem->SetVisibility(ESlateVisibility::Collapsed);
+			}
+		}
+
+	}
 
 }
 
-UZShopSellItemWidget* UZShopSellWidget::AddItem(AZItem* NewItem)
+void UZShopSellWidget::AddItem(AZItem* NewItem)
 {
-	check(nullptr != SellItemWidgetClass);
-	auto SellItemWidget = CreateWidget<UZShopSellItemWidget>(GetOwningPlayer(), SellItemWidgetClass);
-	if (nullptr == SellItemWidget)
-	{
-		ZLOG(Error, TEXT("Failed to create widget.."));
-		return nullptr;
-	}
-
-	SellItemWidget->SetPadding(5.f);
-
+	ZLOG(Error, TEXT("AddItem to sell widget."));
 	switch (NewItem->GetItemType())
 	{
 		case EItemType::Weapon:
 		{
-			WeaponHolder->AddChild(SellItemWidget);
+			ZLOG(Error, TEXT("Sell Weapon."));
+			auto Children = WeaponHolder->GetAllChildren();
+			for (const auto& Child : Children)
+			{
+				auto SellItem = Cast<UZShopSellItemWidget>(Child);
+				if (SellItem && SellItem->bIsEmpty)
+				{
+					SellItem->BindItem(NewItem);
+					return;
+				}
+			}
 			break;
 		}
 		case EItemType::Recovery:
 		{
-			RecoveryHolder->AddChild(SellItemWidget);
+			ZLOG(Error, TEXT("Sell Recovery."));
+				auto Children = RecoveryHolder->GetAllChildren();
+			for (const auto& Child : Children)
+			{
+				auto SellItem = Cast<UZShopSellItemWidget>(Child);
+				if (SellItem && SellItem->bIsEmpty)
+				{
+					SellItem->BindItem(NewItem);
+					return;
+				}
+			}
 			break;
 		}
 		case EItemType::Doping:
 		{
-			DopingHolder->AddChild(SellItemWidget);
+			ZLOG(Error, TEXT("Sell Doping."));
+			auto Children = DopingHolder->GetAllChildren();
+			for (const auto& Child : Children)
+			{
+				auto SellItem = Cast<UZShopSellItemWidget>(Child);
+				if (SellItem && SellItem->bIsEmpty)
+				{
+					SellItem->BindItem(NewItem);
+					return;
+				}
+			}
 			break;
 		}
 		case EItemType::Ammo:
 		{
-			AmmoHolder->AddChild(SellItemWidget);
+			ZLOG(Error, TEXT("Sell Ammo."));
+			auto Children = AmmoHolder->GetAllChildren();
+			for (const auto& Child : Children)
+			{
+				auto SellItem = Cast<UZShopSellItemWidget>(Child);
+				if (SellItem && SellItem->bIsEmpty)
+				{
+					SellItem->BindItem(NewItem);
+					return;
+				}
+			}
 			break;
 		}
 		default:
@@ -72,9 +148,6 @@ UZShopSellItemWidget* UZShopSellWidget::AddItem(AZItem* NewItem)
 		}
 	}
 
-	SellItemWidget->BindItem(NewItem);
-
-	return SellItemWidget;
 }
 
 void UZShopSellWidget::ClearWidget()

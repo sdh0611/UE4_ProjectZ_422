@@ -33,17 +33,15 @@ void UZTooltipWidget::BindItemInfo(const FString& NewItemName)
 
 	if (nullptr == ItemData)
 	{
-		//ClearWidget();
 		ItemImage->SetBrushFromTexture(nullptr);
 		NameText->SetText(FText::GetEmpty());
 		ExplanationText->SetText(FText::GetEmpty());
 	}
 	else 
 	{
-		//UpdateWidget();
 		ItemImage->SetBrushFromTexture(GetGameInstance<UZGameInstance>()->GetItemImage(NewItemName));
 		NameText->SetText(FText::FromString(ItemData->ItemName));
-		ExplanationText->SetText(FText::FromString(ItemData->ItemExplanation));
+		ExplanationText->SetText(ItemData->ItemExplanation);
 	}
 
 }

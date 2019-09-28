@@ -23,6 +23,8 @@ public:
 
 public:
 	void ConstructShopWidget();
+	void AddItemToInventoryWidget(class AZItem* const NewItem) ;
+	void AddItemToSellWidget(class AZItem* const NewItem);
 
 public:
 	/*
@@ -63,11 +65,6 @@ public:
 	void CloseShop();
 	bool CloseShop_Validate();
 	void CloseShop_Implementation();
-
-	UFUNCTION(Client, Reliable, WithValidation)
-	void ClientAddItemToInventoryWidget(class AZItem* NewItem);
-	bool ClientAddItemToInventoryWidget_Validate(class AZItem* NewItem);
-	void ClientAddItemToInventoryWidget_Implementation(class AZItem* NewItem);
 
 
 	/* Replicated using */

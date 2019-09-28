@@ -114,15 +114,18 @@ private:
 private:
 	/* Client to server call RPC */
 	UFUNCTION(Server, WithValidation, Reliable)
-	void ServerCheckInteractionalActor(class AZInteractional* Interactional);
-	bool ServerCheckInteractionalActor_Validate(class AZInteractional* Interactional);
-	void ServerCheckInteractionalActor_Implementation(class AZInteractional* Interactional);
-
+	void ServerEquipWeapon(class AZWeapon* NewWeapon);
+	bool ServerEquipWeapon_Validate(class AZWeapon* NewWeapon);
+	void ServerEquipWeapon_Implementation(class AZWeapon* NewWeapon);
 
 	/* Server to client call RPC */
+	//UFUNCTION(Client, Reliable)
 
 
 	/* Replicated using method */
+	UFUNCTION()
+	void OnRep_CurrentWeapon();
+
 
 protected:
 	/* Sockets */
@@ -166,11 +169,8 @@ protected:
 	UPROPERTY()
 	class AZPlayerController* PlayerController;
 
-	UPROPERTY(VisibleAnywhere, Category = Character, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, Category = Character, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
 	class AZWeapon* CurrentWeapon;
-
-	//UPROPERTY(VisibleAnywhere, Category = Character)
-	//class UZCharacterAnimInstance* AnimInstance;
 
 	FRotator Rotate;
 
@@ -183,8 +183,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
 	class UZCharacterItemStatusComponent* ItemStatusComponent;
-
-	//UPROPERTY(VisibleAnywhere, Category = ZCharacter)
-	//class UZCharacterStatusComponent* StatusComponent;
 
 };

@@ -30,4 +30,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Recovery)
 	float RecoveryDelay;
+
 };

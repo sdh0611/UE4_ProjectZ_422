@@ -34,6 +34,8 @@ private:
 public:
 	FOnSellItem OnSellItem;
 
+	bool bIsEmpty = true;
+
 private:
 	UPROPERTY(BlueprintReadOnly, Category = SellItemWidget, Meta = (AllowPrivateAccess = true))
 	TWeakObjectPtr<class AZItem> Item;
@@ -53,4 +55,5 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = SellItemWidget)
 	class UButton* SellButton;
+
 };

@@ -19,27 +19,24 @@ void UZShopSellItemWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	auto NewItemImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_Item")));
-	check(nullptr != NewItemImage);
-	ItemImage = NewItemImage;
+	ItemImage = Cast<UImage>(GetWidgetFromName(TEXT("IMG_Item")));
+	check(ItemImage);
 	//ItemImage->SetBrushFromMaterial(Material);
 
-	auto NewItemName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Name")));
-	check(nullptr != NewItemName);
-	ItemName = NewItemName;
+	ItemName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Name")));
+	check(ItemName);
 
-	auto NewItemQuantity = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Quantity")));
-	check(nullptr != NewItemQuantity);
-	ItemQuantity = NewItemQuantity;
+	ItemQuantity = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Quantity")));
+	check(ItemQuantity);
 
-	auto NewItemPrice = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Price")));
-	check(nullptr != NewItemPrice);
-	ItemPrice = NewItemPrice;
+	ItemPrice = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Price")));
+	check(ItemPrice);
 
-	auto NewSellButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Buy")));
-	check(nullptr != NewSellButton);
-	SellButton = NewSellButton;
+	SellButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Buy")));
+	check(SellButton);
 	SellButton->OnClicked.AddDynamic(this, &UZShopSellItemWidget::OnSellButtonClick);
+
+	SetPadding(5.f);
 }
 
 void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
@@ -54,57 +51,71 @@ void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
 	{
 		MyPC->Sell(Item->GetInventoryIndex(), NewNumber);
 	}
+
+	ClearWidget();
 	//OnSellItem.Execute(GetOwningPlayerPawn(), Item, NewNumber);
 }
 
 void UZShopSellItemWidget::BindItem(AZItem * NewItem)
 {
-	Item = NewItem;
+	/* nullptr가 들어오면 Widget clear. */
+	if (nullptr == NewItem)
+	{
+		ClearWidget();
+		return;
+	}
 
+	ZLOG(Error, TEXT("BindItem to sell widget."));
+	Item = NewItem;
 	/*
 		Widget property들 update
 	*/
-	if (nullptr == Item)
-	{
-		ZLOG(Error, TEXT("Item is null"));
-		return;
-	}
-
-	/*
-		델리게이트 바인딩
-	*/
+	/*	델리게이트 바인딩 */
+	Item->OnItemInfoChanged.AddUObject(this, &UZShopSellItemWidget::UpdateWidget);
 	Item->OnItemRemoved.AddUObject(this, &UZShopSellItemWidget::ClearWidget);
 
-	/*
-		Update item image
-	*/
-	ItemImage->SetBrushFromTexture(Item->GetItemImage());
-
-	/*
-		Update item name
-	*/
-	ItemName->SetText(FText::FromString(Item->GetItemName()));
-
-	/*
-		Update item quantity
-	*/
-	FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
-	ItemQuantity->SetText(FText::FromString(Quantity));
-
-	/*
-		Update item price
-	*/
-	auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
-	check(nullptr != ZGameInstance);
-	auto ShopItemData = ZGameInstance->GetShopItemDataByName(NewItem->GetItemName());
-	if (nullptr == ShopItemData)
+	/*	Update item image */
+	if (ItemImage)
 	{
-		ZLOG(Error, TEXT("Invalid value."));
-		return;
+		ItemImage->SetBrushFromTexture(Item->GetItemImage());
 	}
-	FString Price = FString::FromInt(ShopItemData->ItemPrice * 0.7f).Append("$");
-	ItemPrice->SetText(FText::FromString(Price));
-	
+	else
+	{
+		ZLOG_S(Error);
+	}
+
+	/*	Update item name */
+	if (ItemName)
+	{
+		ItemName->SetText(FText::FromString(Item->GetItemName()));
+	}
+
+	/*	Update item quantity */
+	if (ItemQuantity)
+	{
+		FString Quantity = FString::FromInt(Item->GetCurrentQuantityOfItem());
+		ItemQuantity->SetText(FText::FromString(Quantity));
+	}
+
+	/*	Update item price */
+	if (ItemPrice)
+	{
+		auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
+		check(ZGameInstance);
+
+		auto ShopItemData = ZGameInstance->GetShopItemDataByName(NewItem->GetItemName());
+		if (nullptr == ShopItemData)
+		{
+			ZLOG(Error, TEXT("Invalid value : %s"), *NewItem->GetItemName());
+			return;
+		}
+		
+		FString Price = FString::FromInt(ShopItemData->ItemPrice * 0.7f).Append("$");
+		ItemPrice->SetText(FText::FromString(Price));
+	}
+
+	bIsEmpty = false;
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void UZShopSellItemWidget::UpdateWidget()
@@ -121,9 +132,12 @@ void UZShopSellItemWidget::UpdateWidget()
 
 void UZShopSellItemWidget::ClearWidget()
 {
+	ZLOG(Error, TEXT("Clear  sell widget."));
 	Item = nullptr;
 
-	RemoveFromParent();
+	bIsEmpty = true;
+	SetVisibility(ESlateVisibility::Collapsed);
+	//RemoveFromParent();
 }
 
 void UZShopSellItemWidget::OnSellButtonClick()

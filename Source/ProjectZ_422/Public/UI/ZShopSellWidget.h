@@ -18,7 +18,7 @@ public:
 	virtual void NativeConstruct() override;
 
 public:
-	class UZShopSellItemWidget* AddItem(class AZItem* NewItem);
+	void AddItem(class AZItem* NewItem);
 	void ClearWidget();
 
 public:
@@ -30,6 +30,9 @@ public:
 
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 HolderSize = 10;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BuyWidget)
 	class UScrollBox* WeaponHolder;
 

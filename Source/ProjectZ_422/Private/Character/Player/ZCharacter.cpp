@@ -189,7 +189,7 @@ void AZCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-
+	DOREPLIFETIME(AZCharacter, CurrentWeapon);
 
 }
 
@@ -229,49 +229,35 @@ void AZCharacter::SetIsSwitchingWeapon(bool NewState)
 void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 {
 	ZLOG_S(Warning);
-	auto CharacterAnim = GetCharacterAnimInstance();
-	if (!::IsValid(CharacterAnim))
+	/* Client면 Server로 RPC */
+	if (!HasAuthority())
 	{
-		ZLOG(Error, TEXT("Invalid AnimInstance."));
-		return;
-	}
-
-	if (CurrentWeapon)
-	{
-		CurrentWeapon->SetIsEquipped(false);
-		/*
-			장착하고 있는 Weapon이 바뀔 때 마다 AnimInstance와 관련된 Delegate를 전부 비워줌.
-			RemoveAll의 코스트가 어느 정도인지 모르기때문에 가능하다면 바꾸는걸로
-		*/
-		/* AnimInstance 체크 */
-		//CurrentWeapon->OnWeaponFired.RemoveAll(CharacterAnim);
-	}
-
-	CurrentWeapon = NewWeapon;
-
-	if (NewWeapon)
-	{
-		NewWeapon->SetIsEquipped(true);
-		/*
-			WeaponCategory가 Gun인 경우에만 AnimInstance에 값 설정.
-		*/
-		if (EWeaponCategory::Gun == NewWeapon->GetWeaponCategory())
-		{
-			CharacterAnim->SetIsEquipGun(true);
-		}
-		//CharacterAnim->BindFireMontage(NewWeapon);
-
-		GetCharacterMovement()->bOrientRotationToMovement = false;
-		// CurrentWeaponInfo widget에 바인딩
-		PlayerController->GetUserHUD()->GetCurrentWeaponInfoWidget()->BindWeapon(CurrentWeapon);
+		ServerEquipWeapon(NewWeapon);
 	}
 	else
 	{
-		CharacterAnim->SetIsEquipGun(false);
-		//bUseControllerRotationYaw = false;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-		PlayerController->GetUserHUD()->GetCurrentWeaponInfoWidget()->ClearWidget();
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SetWeapon."));
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->SetIsEquipped(false);
+		}
+
+		if (NewWeapon)
+		{
+			NewWeapon->SetIsEquipped(true);
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+
+		}
+		else
+		{
+			GetCharacterMovement()->bOrientRotationToMovement = true;
+		}
+
+		CurrentWeapon = NewWeapon;
+
+		OnRep_CurrentWeapon();
 	}
+
 
 }
 
@@ -1126,13 +1112,57 @@ void AZCharacter::Ragdoll()
 	GetMesh()->SetSimulatePhysics(true);
 }
 
-bool AZCharacter::ServerCheckInteractionalActor_Validate(AZInteractional * Interactional)
+bool AZCharacter::ServerEquipWeapon_Validate(AZWeapon * NewWeapon)
 {
 	return true;
 }
 
-void AZCharacter::ServerCheckInteractionalActor_Implementation(AZInteractional * Interactional)
+void AZCharacter::ServerEquipWeapon_Implementation(AZWeapon * NewWeapon)
 {
+	SetCurrentWeapon(NewWeapon);
+}
 
+void AZCharacter::OnRep_CurrentWeapon()
+{
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_CurrentWeapon."));
+	auto CharacterAnim = GetCharacterAnimInstance();
+	if (!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid AnimInstance."));
+		return;
+	}
+
+	if (CurrentWeapon)
+	{
+		if (EWeaponCategory::Gun == CurrentWeapon->GetWeaponCategory())
+		{
+			CharacterAnim->SetIsEquipGun(true);
+		}
+
+		// CurrentWeaponInfo widget에 바인딩
+		auto MyPC = GetController<AZPlayerController>();
+		if (MyPC)
+		{
+			auto UserHUD = MyPC->GetUserHUD();
+			if (UserHUD)
+			{
+				UserHUD->GetCurrentWeaponInfoWidget()->BindWeapon(CurrentWeapon);
+			}
+		}
+	}
+	else
+	{
+		CharacterAnim->SetIsEquipGun(false);
+
+		auto MyPC = GetController<AZPlayerController>();
+		if (MyPC)
+		{
+			auto UserHUD = MyPC->GetUserHUD();
+			if (UserHUD)
+			{
+				UserHUD->GetCurrentWeaponInfoWidget()->ClearWidget();
+			}
+		}
+	}
 }
 

@@ -26,7 +26,7 @@ void UZInputNumberWidget::NativeConstruct()
 	OKButton->OnClicked.AddDynamic(this, &UZInputNumberWidget::OnOKButtonClicked);
 	CancelButton->OnClicked.AddDynamic(this, &UZInputNumberWidget::OnCancelButtonClicked);
 
-	SetVisibility(ESlateVisibility::Hidden);
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UZInputNumberWidget::OnDrawScreen()

@@ -23,10 +23,12 @@ public:
 	
 
 public:
+	void AddItemToInventoryWidget(class AZItem* const NewItem);
+
+private:
 	void AddItemToInventory(class AZItem* const NewItem);
 
 	void AddItemToWeaponInventory(class AZWeapon* const NewWeapon);
-
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)

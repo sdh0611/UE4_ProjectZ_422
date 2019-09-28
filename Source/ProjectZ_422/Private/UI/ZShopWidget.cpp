@@ -67,7 +67,7 @@ void UZShopWidget::OnRemoveScreen()
 	if (!bCanDestruct)
 	{
 		ShopBuyWidget->ClearWidget();
-		ShopSellWidget->ClearWidget();
+		//ShopSellWidget->ClearWidget();
 		//BindShop(nullptr);
 	}
 	else
@@ -110,7 +110,8 @@ void UZShopWidget::ConstructSellWidget(const TArray<class AZItem*>& ItemList)
 
 void UZShopWidget::AddItemToBuyWidget(FZShopItemData * const NewShopItemData)
 {
-	auto ShopItemWidget = ShopBuyWidget->AddItem(NewShopItemData);
+	ShopBuyWidget->AddItem(NewShopItemData);
+	//auto ShopItemWidget = ShopBuyWidget->AddItem(NewShopItemData);
 	//if (ShopItemWidget)
 	//{
 	//	ShopItemWidget->OnBuyShopItem.BindUObject(Shop, &AZShop::Buy);
@@ -131,12 +132,12 @@ void UZShopWidget::AddItemToSellWidget(AZItem* NewItem)
 	/*
 		SellWidget에 아이템 추가
 	*/
-	auto ShopSellItemWidget = ShopSellWidget->AddItem(NewItem);
-	if (nullptr == ShopSellItemWidget)
+	if (nullptr == ShopSellWidget)
 	{
-		ZLOG(Error, TEXT("Invalid widget."));
+		ZLOG(Error, TEXT("Sell widget null."));
 		return;
 	}
+	ShopSellWidget->AddItem(NewItem);
 	
 	//ShopSellItemWidget->OnSellItem.BindUObject(Shop, &AZShop::Sell);
 

@@ -151,6 +151,21 @@ private:
 	*/
 	void CheckItemExhausted();
 
+
+protected:
+	/* From client to server RPC*/
+	
+	
+	/* From server to client RPC*/
+
+
+	/* Replicated using */
+	UFUNCTION()
+	void OnRep_ItemOwner();
+
+	UFUNCTION()
+	void OnRep_ItemInfoChanged();
+
 public:
 	/* 주로 UI와 상호작용 하기 위한 델리게이트들. */
 	FOnItemInfoChanged OnItemInfoChanged;
@@ -172,7 +187,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
 	int32 MaxQuantityOfItem;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, ReplicatedUsing = OnRep_ItemInfoChanged)
 	int32 CurrentQuantityOfItem;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
@@ -187,7 +202,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
 	class UTexture2D* ItemImage;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, ReplicatedUsing = OnRep_ItemOwner)
 	class AZCharacter* ItemOwner;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
