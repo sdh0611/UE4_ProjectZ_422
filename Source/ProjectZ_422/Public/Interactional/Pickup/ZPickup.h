@@ -19,6 +19,7 @@ public:
 
 public:
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnInteraction(class AZCharacter* NewCharacter) override;
 	virtual void OnFocus() override;
 	virtual void OnFocusEnd() override;
@@ -36,6 +37,18 @@ public:
 	bool IsActive() const;
 
 protected:
+	/* From client to server RPC */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerOnInteraction(class AZCharacter* NewCharacter);
+	bool ServerOnInteraction_Validate(class AZCharacter* NewCharacter);
+	void ServerOnInteraction_Implementation(class AZCharacter* NewCharacter);
+
+	/* From server to client RPC */
+
+
+
+
+protected:
 	/*
 		Item을 생성하기 위한 클래스 정보를 담는 변수.
 		나중에 Pickup이 처음 생성되는 경우, BeginePlay() 메소드에서 
@@ -46,7 +59,7 @@ protected:
 	TSubclassOf<class AZItem> SpawnItemClass;
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Pickup)
+	UPROPERTY(VisibleAnywhere, Category = Pickup, Replicated)
 	bool bIsActive;
 
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
@@ -55,11 +68,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
 	class UStaticMeshComponent* Mesh;
 
-	UPROPERTY(VisibleAnywhere, Category = Pickup)
+	UPROPERTY(VisibleAnywhere, Category = Pickup, Replicated)
 	class AZItem* Item;
 
 	// Item Name
-	UPROPERTY(EditAnywhere, Category = Pickup)
+	UPROPERTY(EditAnywhere, Category = Pickup, Replicated)
 	FString Name;
 
 };

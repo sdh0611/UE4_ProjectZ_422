@@ -77,7 +77,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRemoved() override;
-	virtual void OnDropped() override;
+	virtual void OnDropped(int32 Quantity = 1) override;
 	virtual void InitItemData(const struct FZItemData* const NewItemData);
 	virtual void Fire();
 	virtual void FireEnd();

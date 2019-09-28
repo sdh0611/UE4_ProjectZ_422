@@ -10,11 +10,15 @@
 #include "Components/BoxComponent.h"
 #include "ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "UnrealNetwork.h"
+
 
 
 AZPickup::AZPickup()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	bReplicates = true;
 
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 	RootComponent = CollisionBox;
@@ -22,20 +26,6 @@ AZPickup::AZPickup()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	//RootComponent = Mesh;
 	Mesh->SetupAttachment(RootComponent);
-
-	//// Code to test 
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh>
-	//	SM_BODY(TEXT("StaticMesh'/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4.SM_AR4'"));
-	//if (SM_BODY.Succeeded())
-	//{
-	//	Mesh->SetStaticMesh(SM_BODY.Object);
-	//}
-	//else
-	//{
-	//	ZLOG(Error, TEXT("Fail to find pickup static mesh..."));
-	//}
-
-	//SetActorEnableCollision(ECollisionEnabled::QueryOnly);
 
 	Item = nullptr;
 	bIsActive = true;
@@ -49,9 +39,24 @@ void AZPickup::BeginPlay()
 
 }
 
+void AZPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZPickup, bIsActive);
+	DOREPLIFETIME(AZPickup, Item);
+	DOREPLIFETIME(AZPickup, Name);
+}
+
 void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 {
 	ZLOG(Warning, TEXT("Interaction pickup!"));
+	if (!HasAuthority())
+	{
+		ServerOnInteraction(NewCharacter);
+		return;
+	}
+
 
 	if (nullptr == Item)
 	{
@@ -69,7 +74,6 @@ void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 			check(nullptr != MyGameInstance);
 
 			NewItem->InitItemData(MyGameInstance->GetItemDataByName(Name));
-
 
 			// Add item in character's item status component.
 			NewCharacter->GetItemStatusComponent()->AddItem(NewItem, this);
@@ -166,4 +170,14 @@ AZItem * const AZPickup::GetItem() const
 bool AZPickup::IsActive() const
 {
 	return bIsActive;
+}
+
+bool AZPickup::ServerOnInteraction_Validate(class AZCharacter* NewCharacter)
+{
+	return true;
+}
+
+void AZPickup::ServerOnInteraction_Implementation(class AZCharacter* NewCharacter)
+{
+	OnInteraction(NewCharacter);
 }

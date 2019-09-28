@@ -88,8 +88,8 @@ public:
 	/*
 		Item이 Player에 의해 Drop될 때 호출될 메소드.
 	*/
-	virtual void OnDropped();
-	virtual void OnDropped(int32 Quantity);
+	//virtual void OnDropped();
+	virtual void OnDropped(int32 Quantity = 1);
 	/*
 		Item이 제거될 경우 호출될 메소드.
 		주로 외부에서 호출하게 될 것. (ItemStatusComponent, Shop, etc...)
@@ -146,7 +146,10 @@ private:
 
 protected:
 	/* From client to server RPC*/
-	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerOnDropItem(int32 Quantity);
+	bool ServerOnDropItem_Validate(int32 Quantity);
+	void ServerOnDropItem_Implementation(int32 Quantity);
 	
 	/* From server to client RPC*/
 	UFUNCTION(Client, Reliable, WithValidation)
@@ -203,7 +206,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
 	EItemType ItemType;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Replicated)
 	class AZPickup* Pickup;
 
 	UPROPERTY(EditAnywhere)

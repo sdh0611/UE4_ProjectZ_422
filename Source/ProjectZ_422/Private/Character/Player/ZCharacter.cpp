@@ -207,7 +207,13 @@ FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
 {
 	FVector CamLoc;
 	FRotator CamRot;
-	PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+	auto MyPC = GetController<AZPlayerController>();
+	if (nullptr == MyPC)
+	{
+		return FHitResult();
+	}
+
+	MyPC->GetPlayerViewPoint(CamLoc, CamRot);
 
 	const FVector Direction = CamRot.Vector();
 	const FVector TraceStart = GetActorLocation();

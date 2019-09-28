@@ -21,7 +21,6 @@ AZItem::AZItem()
 	PrimaryActorTick.bCanEverTick = false;
 	
 	bReplicates = true;
-	bNetUseOwnerRelevancy = true;
 
 	bCanDestroy = true;
 	bIsActive = true;
@@ -73,68 +72,79 @@ void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	DOREPLIFETIME(AZItem, InventoryIndex);
 	DOREPLIFETIME(AZItem, ItemExplanation);
 	DOREPLIFETIME(AZItem, ItemOwner);
-
+	DOREPLIFETIME(AZItem, Pickup);
 }
-
-void AZItem::OnDropped()
-{
-	ZLOG_S(Warning);
-
-	/*
-		Pickup Spawn지점 설정
-	*/
-	FVector SpawnLocation;
-	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
-	if (Hit.bBlockingHit)
-	{
-		SpawnLocation = Hit.ImpactPoint;
-	}
-	else
-	{
-		SpawnLocation = Hit.TraceEnd;
-	}
-	   	
-
-	if (Pickup)
-	{
-		/*
-			만약 Pickup에서 생성된 Item이라면
-		*/
-		// Pickup 활성화
-		ZLOG(Warning, TEXT("Spawn actor."));
-		Pickup->SetActive(true);
-		Pickup->SetActorLocation(SpawnLocation);
-		Pickup->WhenSpawnedByItem();
-	}
-	else
-	{
-		/*
-			만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
-		*/
-		// Pickup 생성
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-		check(nullptr != NewPickup);
-		NewPickup->SetItem(this);
-		NewPickup->WhenSpawnedByItem();
-
-	}
-
-	// ItemStatusComponent에서 해당 Item제거
-	ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
-
-	//// Set ItemOwner null
-	//SetItemOwner(nullptr);
-	SetActive(false);
-
-	ClientOnItemRemoved();
-	//OnItemRemoved.Broadcast();
-
-}
+//
+//void AZItem::OnDropped()
+//{
+//	ZLOG_S(Warning);
+//	if (!HasAuthority())
+//	{
+//		ServerOnDropItem();
+//		return;
+//	}
+//
+//	/*
+//		Pickup Spawn지점 설정
+//	*/
+//	FVector SpawnLocation;
+//	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
+//	if (Hit.bBlockingHit)
+//	{
+//		SpawnLocation = Hit.ImpactPoint;
+//	}
+//	else
+//	{
+//		SpawnLocation = Hit.TraceEnd;
+//	}
+//	
+//
+//	if (Pickup)
+//	{
+//		/*
+//			만약 Pickup에서 생성된 Item이라면
+//		*/
+//		// Pickup 활성화
+//		ZLOG(Warning, TEXT("Spawn actor."));
+//		Pickup->SetActive(true);
+//		Pickup->SetActorLocation(SpawnLocation);
+//		Pickup->WhenSpawnedByItem();
+//	}
+//	else
+//	{
+//		/*
+//			만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
+//		*/
+//		// Pickup 생성
+//		FActorSpawnParameters SpawnParams;
+//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+//		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+//		check(nullptr != NewPickup);
+//		NewPickup->SetItem(this);
+//		NewPickup->WhenSpawnedByItem();
+//
+//	}
+//
+//	// ItemStatusComponent에서 해당 Item제거
+//	ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
+//
+//	//// Set ItemOwner null
+//	//SetItemOwner(nullptr);
+//	SetActive(false);
+//
+//	ClientOnItemRemoved();
+//	//OnItemRemoved.Broadcast();
+//
+//}
 
 void AZItem::OnDropped(int32 Quantity)
 {
+	if (!HasAuthority())
+	{
+		ServerOnDropItem(Quantity);
+		return;
+	}
+
 	if (Quantity < 1)
 	{
 		return;
@@ -177,8 +187,15 @@ void AZItem::OnDropped(int32 Quantity)
 			// Pickup 생성
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			SpawnParams.Owner = GetOwner();
+			UKismetSystemLibrary::PrintString(GetWorld(), GetOwner()->GetName());
+
 			AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-			check(nullptr != NewPickup);
+			if (nullptr == NewPickup)
+			{
+				ZLOG(Error, TEXT("Failed to spawn pickup...."));
+				return;
+			}
 			NewPickup->SetItem(this);
 			NewPickup->WhenSpawnedByItem();
 
@@ -190,8 +207,10 @@ void AZItem::OnDropped(int32 Quantity)
 		SetActive(false);
 
 		ClientOnItemRemoved();
-		//OnItemRemoved.Broadcast();
-
+		if (HasAuthority())
+		{
+			OnItemRemoved.Broadcast();
+		}
 	}
 	else
 	{
@@ -210,6 +229,8 @@ void AZItem::OnDropped(int32 Quantity)
 		/* 새로운 Item spawn */
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.Owner = GetOwner();
+		UKismetSystemLibrary::PrintString(GetWorld(), GetOwner()->GetName());
 
 		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(GetClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 		if (nullptr == NewItem)
@@ -223,7 +244,12 @@ void AZItem::OnDropped(int32 Quantity)
 		NewItem->SetActive(false);
 
 		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-		check(nullptr != NewPickup);
+		if (nullptr == NewPickup)
+		{
+			ZLOG(Error, TEXT("Failed to spawn pickup.."));
+			return;
+		}
+
 		NewPickup->SetItem(NewItem);
 		NewPickup->WhenSpawnedByItem();
 
@@ -236,10 +262,6 @@ void AZItem::OnDropped(int32 Quantity)
 void AZItem::OnRemoved()
 {
 	ZLOG_S(Warning);
-	if (!HasAuthority())
-	{
-		return;
-	}
 
 	//SetItemOwner(nullptr);
 	SetCurrentQuantityOfItem(1);
@@ -287,6 +309,7 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 
 int32 AZItem::AdjustQuantity(int32 Value) 
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("AdjustQuantity"));
 	int32 Quantity = CurrentQuantityOfItem + Value;
 	int32 Remain = 0; // Item의 최대 보유개수를 초과한 양
 	if (Quantity > MaxQuantityOfItem)
@@ -490,6 +513,16 @@ void AZItem::CheckItemExhausted()
 	}
 }
 
+bool AZItem::ServerOnDropItem_Validate(int32 Quantity)
+{
+	return true;
+}
+
+void AZItem::ServerOnDropItem_Implementation(int32 Quantity)
+{
+	OnDropped(Quantity);
+}
+
 bool AZItem::ClientOnItemRemoved_Validate()
 {
 	return true;
@@ -520,6 +553,7 @@ void AZItem::OnRep_ItemOwner()
 
 void AZItem::OnRep_ItemInfoChanged()
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_ItemInfoChanged"));
 	OnItemInfoChanged.Broadcast();
 }
 

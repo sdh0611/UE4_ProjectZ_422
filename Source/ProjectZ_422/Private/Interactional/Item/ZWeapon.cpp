@@ -72,13 +72,13 @@ void AZWeapon::OnRemoved()
 	Super::OnRemoved();
 }
 
-void AZWeapon::OnDropped()
+void AZWeapon::OnDropped(int32 Quantity)
 {
 	ZLOG_S(Warning);
 	// Actor∑Œ∫Œ≈Õ ∂ºæÓ≥ø.
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
-	Super::OnDropped();
+	Super::OnDropped(Quantity);
 }
 
 void AZWeapon::InitItemData(const FZItemData * const NewItemData)
