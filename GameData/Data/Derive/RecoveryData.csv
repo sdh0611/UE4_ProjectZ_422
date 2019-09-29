@@ -1,3 +1,0 @@
-,ItemName,ItemWeight,MaxQuantity, ItemExplanation,RecoveryAmount,RecoveryDelay,ItemID
-1,Bandage,3,100,사용시 체력 10포인트 회복.,10,1,20
-2,FirstkitAid,20,10,사용시 체력 70포인트 회복.,70,4,21

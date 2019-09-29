@@ -1,5 +1,0 @@
-Name,ItemName,Damage,WeaponCategory,ItemID,ItemName,ItemWeight,MaxQuantity, ItemExplanation
-1,M4A1,10,Gun,10,M4A1,0,1,"연사속도가 빠르지만, 데미지가 낮다."
-2,AK-47,20,Gun,11,AK-47,0,1,"연사속도가 느리지만, 데미지가 높다."
-3,Shotgun,80,Gun,13,Grenade,2,20,"연사를 못하지만, 한방 데미지가 매우 강하다."
-4,Grenade,100,Grenade,12,Shotgun,0,1,세열 수류탄이다. 본인도 맞으니 조심할 것.
