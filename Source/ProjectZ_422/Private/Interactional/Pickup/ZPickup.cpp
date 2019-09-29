@@ -26,6 +26,7 @@ AZPickup::AZPickup()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	//RootComponent = Mesh;
 	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetIsReplicated(true);
 
 	bIsActive = true;
 
@@ -117,7 +118,7 @@ void AZPickup::SetItemInfo(const FZItemInfo & NewItemInfo)
 	}
 
 	Mesh->SetStaticMesh(ItemMesh);
-	
+	ClientSetStaticMesh(ItemMesh);
 }
 
 bool AZPickup::IsActive() const
@@ -129,4 +130,15 @@ const FZItemInfo & AZPickup::GetItemInfo() const
 {
 	// TODO: 여기에 반환 구문을 삽입합니다.
 	return ItemInfo;
+}
+
+bool AZPickup::ClientSetStaticMesh_Validate(UStaticMesh * NewMesh)
+{
+	return true;
+}
+
+void AZPickup::ClientSetStaticMesh_Implementation(UStaticMesh * NewMesh)
+{
+	Mesh->SetStaticMesh(NewMesh);
+
 }

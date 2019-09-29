@@ -39,13 +39,22 @@ public:
 public:
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
 
+	/* Server to client call RPC */
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientAttachWeapon(int32 NewWeaponIndex, FName SocketName);
+	bool ClientAttachWeapon_Validate(int32 NewWeaponIndex, FName SocketName);
+	void ClientAttachWeapon_Implementation(int32 NewWeaponIndex, FName SocketName);
+
+	/* Replicated using */
+	UFUNCTION()
+	void OnRep_IsAiming();
+
 public:
 	void SetIsAiming(bool NewState);
 	void SetIsSwitchingWeapon(bool NewState);
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
 	virtual void SetActive(bool bActive) override;
 
-public:
 	bool IsEquipWeapon();
 	bool IsAiming();
 	bool IsSwitchingWeapon();
@@ -61,7 +70,7 @@ public:
 	const FName& GetThirdWeaponSocketName() const;
 	const FName& GetKnifeSocketName() const;
 	const FName& GetGrenadeWeaponSocketName() const;
-
+	   
 private:
 	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead() override;
@@ -119,6 +128,11 @@ private:
 	bool ServerEquipWeapon_Validate(class AZWeapon* NewWeapon);
 	void ServerEquipWeapon_Implementation(class AZWeapon* NewWeapon);
 
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSwitchWeapon(int32 NewWeaponIndex);
+	bool ServerSwitchWeapon_Validate(int32 NewWeaponIndex);
+	void ServerSwitchWeapon_Implementation(int32 NewWeaponIndex);
+
 	/* Server to client call RPC */
 	//UFUNCTION(Client, Reliable)
 
@@ -149,7 +163,7 @@ protected:
 	FName GrenadeWeaponSocketName;
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, Replicated)
 	bool bIsAiming;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)

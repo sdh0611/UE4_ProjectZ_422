@@ -72,68 +72,6 @@ void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	DOREPLIFETIME(AZItem, ItemExplanation);
 	DOREPLIFETIME(AZItem, ItemOwner);
 }
-//
-//void AZItem::OnDropped()
-//{
-//	ZLOG_S(Warning);
-//	if (!HasAuthority())
-//	{
-//		ServerOnDropItem();
-//		return;
-//	}
-//
-//	/*
-//		Pickup Spawn지점 설정
-//	*/
-//	FVector SpawnLocation;
-//	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
-//	if (Hit.bBlockingHit)
-//	{
-//		SpawnLocation = Hit.ImpactPoint;
-//	}
-//	else
-//	{
-//		SpawnLocation = Hit.TraceEnd;
-//	}
-//	
-//
-//	if (Pickup)
-//	{
-//		/*
-//			만약 Pickup에서 생성된 Item이라면
-//		*/
-//		// Pickup 활성화
-//		ZLOG(Warning, TEXT("Spawn actor."));
-//		Pickup->SetActive(true);
-//		Pickup->SetActorLocation(SpawnLocation);
-//		Pickup->WhenSpawnedByItem();
-//	}
-//	else
-//	{
-//		/*
-//			만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
-//		*/
-//		// Pickup 생성
-//		FActorSpawnParameters SpawnParams;
-//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-//		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-//		check(nullptr != NewPickup);
-//		NewPickup->SetItem(this);
-//		NewPickup->WhenSpawnedByItem();
-//
-//	}
-//
-//	// ItemStatusComponent에서 해당 Item제거
-//	ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
-//
-//	//// Set ItemOwner null
-//	//SetItemOwner(nullptr);
-//	SetActive(false);
-//
-//	ClientOnItemRemoved();
-//	//OnItemRemoved.Broadcast();
-//
-//}
 
 void AZItem::OnDropped(int32 Quantity)
 {
@@ -143,6 +81,7 @@ void AZItem::OnDropped(int32 Quantity)
 		return;
 	}
 
+	ZLOG_S(Error);
 	if (Quantity < 1)
 	{
 		return;
@@ -189,15 +128,16 @@ void AZItem::OnDropped(int32 Quantity)
 		}
 
 		// ItemStatusComponent에서 해당 Item제거
-		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
 
-		SetActive(false);
+		//SetActive(false);
 
 		ClientOnItemRemoved();
 		if (HasAuthority())
 		{
 			OnItemRemoved.Broadcast();
 		}
+
+		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
 	}
 	else
 	{
@@ -235,10 +175,6 @@ void AZItem::OnRemoved()
 {
 	ZLOG_S(Warning);
 
-	//SetItemOwner(nullptr);
-	SetCurrentQuantityOfItem(1);
-	SetInventoryIndex(-1);
-
 	ClientOnItemRemoved();
 
 	if (IsCanDestroy())
@@ -247,6 +183,9 @@ void AZItem::OnRemoved()
 	}
 	else
 	{
+		//SetItemOwner(nullptr);
+		SetCurrentQuantityOfItem(1);
+		SetInventoryIndex(-1);
 		SetActive(false);
 	}
 }
@@ -462,7 +401,6 @@ FZItemInfo AZItem::CreateItemInfo()
 {
 	FZItemInfo ItemInfo;
 
-	ZLOG_S(Error);
 	InitItemInfo(ItemInfo);
 
 	return ItemInfo;
@@ -483,6 +421,12 @@ void AZItem::CheckItemExhausted()
 
 void AZItem::InitItemInfo(FZItemInfo & ItemInfo)
 {
+	/* 오직 Server에서만 실행되야하므로. */
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	ZLOG_S(Error);
 	ItemInfo.bCanDestroy = bCanDestroy;
 	ItemInfo.CurrentQuantityOfItem = CurrentQuantityOfItem;

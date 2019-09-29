@@ -36,6 +36,13 @@ public:
 	bool IsActive() const;
 	const FZItemInfo& GetItemInfo() const;
 
+private:
+	/* From server to client RPC*/
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientSetStaticMesh(class UStaticMesh* NewMesh);
+	bool ClientSetStaticMesh_Validate(class UStaticMesh* NewMesh);
+	void ClientSetStaticMesh_Implementation(class UStaticMesh* NewMesh);
+
 public:
 	/*
 		Item을 생성하기 위한 클래스 정보를 담는 변수.

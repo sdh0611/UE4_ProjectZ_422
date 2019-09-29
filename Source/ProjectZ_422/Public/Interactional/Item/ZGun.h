@@ -110,8 +110,8 @@ public:
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-public:
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
 	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
 	virtual void Fire() override;
@@ -181,10 +181,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	bool bIsFiring;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
 	int32 CurrentAmmo;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
 	int32 MaxAmmo;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
@@ -205,7 +205,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float SpreadDecrement;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
 	float CurrentSpread;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
@@ -214,7 +214,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	EGunType GunType;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
 	EFireMode FireMode;
 
 };

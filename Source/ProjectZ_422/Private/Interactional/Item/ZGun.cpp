@@ -13,6 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "UnrealNetwork.h"
 
 AZGun::AZGun()
 {
@@ -84,6 +85,17 @@ void AZGun::Tick(float DeltaTime)
 		}
 
 	}
+
+}
+
+void AZGun::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AZGun, CurrentAmmo, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AZGun, MaxAmmo, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AZGun, CurrentSpread, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AZGun, FireMode, COND_OwnerOnly);
 
 }
 
@@ -300,10 +312,8 @@ void AZGun::InitItemInfo(FZItemInfo & ItemInfo)
 {
 	Super::InitItemInfo(ItemInfo);
 
-	ZLOG_S(Error);
 	if (ItemInfo.IsOfType(FZGunInfo::TypeID))
 	{
-		ZLOG_S(Error);
 		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&ItemInfo);
 		GunInfo->CurrentAmmo = CurrentAmmo;
 		GunInfo->GunType = GunType;

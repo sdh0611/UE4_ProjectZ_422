@@ -23,6 +23,7 @@ AZWeapon::AZWeapon()
 
 	// Create  skeletal mesh component
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	WeaponMesh->SetIsReplicated(true);
 	RootComponent = WeaponMesh;
 
 	// -1 : Player에게 습득되지 않은 상태
@@ -57,8 +58,8 @@ void AZWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AZWeapon, bIsEquipped);
-	DOREPLIFETIME(AZWeapon, WeaponInventoryIndex);
+	DOREPLIFETIME_CONDITION(AZWeapon, bIsEquipped, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AZWeapon, WeaponInventoryIndex, COND_OwnerOnly);
 
 }
 
@@ -97,9 +98,17 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 
 	Damage = NewWeaponData->Damage;
 	auto SKMesh = MyGameInstance->GetSkeletalMesh(ItemName);
-	check(nullptr != SKMesh);
-	WeaponMesh->SetSkeletalMesh(SKMesh);
+	if (nullptr == SKMesh)
+	{
+		ZLOG(Error, TEXT("SKMesh null.."));
+		return;
+	}
 
+	WeaponMesh->SetSkeletalMesh(SKMesh);
+	if (HasAuthority())
+	{
+		ClientSetSkeletalMesh(SKMesh);
+	}
 }
 
 void AZWeapon::ApplyItemInfo(FZItemInfo NewItemInfo)
@@ -197,7 +206,6 @@ void AZWeapon::InitItemInfo(FZItemInfo & ItemInfo)
 {
 	Super::InitItemInfo(ItemInfo);
 
-	ZLOG_S(Error);
 	if (ItemInfo.IsOfType(FZWeaponInfo::TypeID))
 	{
 		ZLOG_S(Error);
@@ -205,6 +213,16 @@ void AZWeapon::InitItemInfo(FZItemInfo & ItemInfo)
 		WeaponInfo->WeaponCategory = WeaponCategory;
 	}
 	
+}
+
+bool AZWeapon::ClientSetSkeletalMesh_Validate(USkeletalMesh * NewMesh)
+{
+	return true;
+}
+
+void AZWeapon::ClientSetSkeletalMesh_Implementation(USkeletalMesh * NewMesh)
+{
+	WeaponMesh->SetSkeletalMesh(NewMesh);
 }
 
 void AZWeapon::Fire()

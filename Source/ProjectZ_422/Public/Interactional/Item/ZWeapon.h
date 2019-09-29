@@ -115,6 +115,13 @@ protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
 	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
 
+protected:
+	/*From server to client RPC*/
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientSetSkeletalMesh(class USkeletalMesh* NewMesh);
+	bool ClientSetSkeletalMesh_Validate(class USkeletalMesh* NewMesh);
+	void ClientSetSkeletalMesh_Implementation(class USkeletalMesh* NewMesh);
+
 public:
 	FOnWeaponFired OnWeaponFired;
 
@@ -137,7 +144,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	float TraceDistance;
 
-	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, Category = Weapon, BlueprintReadOnly)
 	EWeaponCategory WeaponCategory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
