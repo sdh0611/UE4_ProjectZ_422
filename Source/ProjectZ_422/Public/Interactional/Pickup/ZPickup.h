@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "ZInteractional.h"
+#include "ZItem.h"
 #include "ZPickup.generated.h"
 
 /**
@@ -30,32 +31,19 @@ public:
 
 public:
 	void SetActive(bool NewState);
-	void SetItem(class AZItem* NewItem);
+	void SetItemInfo(const FZItemInfo& NewItemInfo);
+
+	bool IsActive() const;
+	const FZItemInfo& GetItemInfo() const;
 
 public:
-	class AZItem* const GetItem() const;
-	bool IsActive() const;
-
-protected:
-	/* From client to server RPC */
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerOnInteraction(class AZCharacter* NewCharacter);
-	bool ServerOnInteraction_Validate(class AZCharacter* NewCharacter);
-	void ServerOnInteraction_Implementation(class AZCharacter* NewCharacter);
-
-	/* From server to client RPC */
-
-
-
-
-protected:
 	/*
 		Item을 생성하기 위한 클래스 정보를 담는 변수.
 		나중에 Pickup이 처음 생성되는 경우, BeginePlay() 메소드에서 
 		Game database로 부터 랜덤하게 Item 정보를 가져와 ItemClass변수를 초기화하도록 수정할 것.
 		현재는 Test를 위해 에디터에서 설정.
 	*/
-	UPROPERTY(EditAnywhere, Category = Pickup)
+	UPROPERTY(EditAnywhere, Category = Pickup, Replicated)
 	TSubclassOf<class AZItem> SpawnItemClass;
 
 protected:
@@ -69,7 +57,7 @@ protected:
 	class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, Category = Pickup, Replicated)
-	class AZItem* Item;
+	FZItemInfo ItemInfo;
 
 	// Item Name
 	UPROPERTY(EditAnywhere, Category = Pickup, Replicated)

@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "Components/ActorComponent.h"
+#include "ZItem.h"
 #include "ZCharacterItemStatusComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMoneyInfoChange, int32);
@@ -40,7 +41,8 @@ public:
 	/*
 		Item을 습득할 때 호출하게 될 메소드. -> 서버에서 동작할 로직.
 	*/
-	void AddItem(class AZItem* NewItem, class AZPickup* OwnerPickup = nullptr);
+	void AddItem(class AZItem* NewItem);
+	void AddItem(class AZPickup* NewPickup);
 
 	/*
 		Weapon을 장착할 때 호출하는 메소드.
@@ -102,7 +104,10 @@ private:
 
 private:
 	/* Client to server RPC */
-
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerAddItem(class AZPickup* NewPickup);
+	bool ServerAddItem_Validate(class AZPickup* NewPickup);
+	void ServerAddItem_Implementation(class AZPickup* NewPickup);
 
 
 	/* Server to client RPC */

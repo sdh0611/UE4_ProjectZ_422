@@ -112,6 +112,17 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 
 }
 
+void AZGun::ApplyItemInfo(FZItemInfo NewItemInfo)
+{
+	if (NewItemInfo.IsOfType(FZGunInfo::TypeID))
+	{
+		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&NewItemInfo);
+		CurrentAmmo = GunInfo->CurrentAmmo;
+	}
+
+	Super::ApplyItemInfo(NewItemInfo);
+}
+
 void AZGun::Reload()
 {
 	SetIsReloading(false);
@@ -221,6 +232,15 @@ UAnimMontage * const AZGun::GetFireAnimMontage() const
 	return Super::GetFireAnimMontage();
 }
 
+FZItemInfo AZGun::CreateItemInfo()
+{
+	FZGunInfo ItemInfo;
+
+	InitItemInfo(ItemInfo);
+
+	return ItemInfo;
+}
+
 void AZGun::Fire()
 {
 	bIsFiring = true;
@@ -273,5 +293,19 @@ void AZGun::PlayCameraShake()
 		{
 			MyPC->ClientPlayCameraShake(FireCameraShake);
 		}
+	}
+}
+
+void AZGun::InitItemInfo(FZItemInfo & ItemInfo)
+{
+	Super::InitItemInfo(ItemInfo);
+
+	ZLOG_S(Error);
+	if (ItemInfo.IsOfType(FZGunInfo::TypeID))
+	{
+		ZLOG_S(Error);
+		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&ItemInfo);
+		GunInfo->CurrentAmmo = CurrentAmmo;
+		GunInfo->GunType = GunType;
 	}
 }

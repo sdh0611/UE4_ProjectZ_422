@@ -65,6 +65,34 @@ static EItemType GetItemTypeFromString(const FString& ItemTypeName)
 	return EItemType::Invalid;
 }
 
+USTRUCT(BlueprintType)
+struct PROJECTZ_422_API FZItemInfo
+{
+	GENERATED_BODY()
+
+public:
+	virtual ~FZItemInfo() { };
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bCanDestroy = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString ItemName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 CurrentQuantityOfItem = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EItemType ItemType = EItemType::Default;
+
+	bool bInit = false;
+
+	static const int32 TypeID = 0;
+
+	virtual bool IsOfType(int32 NewID) const { return (NewID == FZItemInfo::TypeID); }
+
+};
 
 
 UCLASS()
@@ -101,6 +129,9 @@ public:
 		각 아이템 분류별로 오버라이딩.
 	*/
 	virtual void InitItemData(const struct FZItemData* const NewItemData);
+	
+	/* Pickup으로 부터 생성된 경우 호출. */
+	virtual void ApplyItemInfo(FZItemInfo NewItemInfo);
 
 public:
 	/*
@@ -117,7 +148,6 @@ public:
 	void SetItemWeight(int32 NewWeight);
 	void SetInventoryIndex(int32 NewIndex);
 	void SetItemOwner(class AZCharacter* NewItemOwner);
-	void SetPickup(class AZPickup* NewPickup);
 	void SetActive(bool NewState);
 
 public:
@@ -127,22 +157,21 @@ public:
 	int32 GetCurrentQuantityOfItem() const;
 	int32 GetItemWeight() const;
 	int32 GetInventoryIndex() const;
-	class UTexture2D* const GetItemImage() const;
 	const FText& GetItemExplanation() const;
 	class AZCharacter* const GetItemOwner() const;
 	bool IsItemQuantityMaximum() const;
 	EItemType GetItemType() const;
 	bool IsActive() const;
 	class UAnimMontage* const FindMontage(const FString& MontageName) const;
+	virtual FZItemInfo CreateItemInfo();
 
-
-private:
+protected:
 	/*
 		Item을 전부 소진했는지 체크하는 함수.
 		전부 소진했을 경우 ItemStatusComponent의 RemoveItem 호출.
 	*/
 	void CheckItemExhausted();
-
+	virtual void InitItemInfo(FZItemInfo& ItemInfo);
 
 protected:
 	/* From client to server RPC*/
@@ -197,17 +226,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, Replicated)
 	FText ItemExplanation;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient)
-	class UTexture2D* ItemImage;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Transient, ReplicatedUsing = OnRep_ItemOwner)
 	class AZCharacter* ItemOwner;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Item)
 	EItemType ItemType;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Item, Replicated)
-	class AZPickup* Pickup;
 
 	UPROPERTY(EditAnywhere)
 	TMap<FString, class UAnimMontage*> MontageTable;

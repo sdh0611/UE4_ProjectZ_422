@@ -27,7 +27,6 @@ AZPickup::AZPickup()
 	//RootComponent = Mesh;
 	Mesh->SetupAttachment(RootComponent);
 
-	Item = nullptr;
 	bIsActive = true;
 
 	Name = TEXT("Default");
@@ -44,53 +43,23 @@ void AZPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AZPickup, bIsActive);
-	DOREPLIFETIME(AZPickup, Item);
+	DOREPLIFETIME(AZPickup, ItemInfo);
 	DOREPLIFETIME(AZPickup, Name);
+	DOREPLIFETIME(AZPickup, SpawnItemClass);
 }
 
 void AZPickup::OnInteraction(AZCharacter * NewCharacter)
 {
 	ZLOG(Warning, TEXT("Interaction pickup!"));
-	if (!HasAuthority())
-	{
-		ServerOnInteraction(NewCharacter);
-		return;
-	}
 
-
-	if (nullptr == Item)
-	{
-		/*
-			Pickup이 Item을 생성한 적이 없는 경우.
-			새로운 Item을 생성함.
-		*/
-		// Code to test 
-		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(SpawnItemClass);
-		if (NewItem)
-		{
-			ZLOG(Warning, TEXT("Spawn item success!"));
-
-			auto MyGameInstance = GetGameInstance<UZGameInstance>();
-			check(nullptr != MyGameInstance);
-
-			NewItem->InitItemData(MyGameInstance->GetItemDataByName(Name));
-
-			// Add item in character's item status component.
-			NewCharacter->GetItemStatusComponent()->AddItem(NewItem, this);
-		}
-	}
-	else
-	{
-		/*
-			Pickup이 Item을 생성한 적이 있는 경우.(즉, 한번 이상 버려진 Item)
-		*/
-		Item->SetActive(true);
-		NewCharacter->GetItemStatusComponent()->AddItem(Item);
-	}
-
-	SetActive(false);
-
-	Super::OnInteraction(NewCharacter);
+	/*
+		Item list에 아이템 추가.
+		실질적인 아이템의 생성은 ItemStatusComponent에서 수행.
+		Pickup의 파괴 여부는 ItemStatusComponent에서 판단. -> Item 추가에 실패할 수도 있기 때문.
+	*/
+	NewCharacter->GetItemStatusComponent()->AddItem(this);
+	
+	//SetActive(false);
 }
 
 void AZPickup::OnFocus()
@@ -133,38 +102,22 @@ void AZPickup::SetActive(bool NewState)
 	bIsActive = NewState;
 }
 
-void AZPickup::SetItem(AZItem * NewItem)
+void AZPickup::SetItemInfo(const FZItemInfo & NewItemInfo)
 {
-	if (nullptr == Item)
+	ItemInfo = NewItemInfo;
+
+	auto MyGameInstance = Cast<UZGameInstance>(GetGameInstance());
+	check(MyGameInstance);
+
+	auto ItemMesh = MyGameInstance->GetStaticMesh(ItemInfo.ItemName);
+	if (nullptr == ItemMesh)
 	{
-		auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
-		check(nullptr != ZGameInstance);
-
-		auto ItemMesh = ZGameInstance->GetStaticMesh(NewItem->GetItemName());
-		check(nullptr != ItemMesh);
-
-		Mesh->SetStaticMesh(ItemMesh);
-	}
-	else
-	{
-		if (Item->GetItemName() != NewItem->GetItemName())
-		{
-			auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
-			check(nullptr != ZGameInstance);
-
-			auto ItemMesh = ZGameInstance->GetStaticMesh(NewItem->GetItemName());
-			check(nullptr != ItemMesh);
-
-			Mesh->SetStaticMesh(ItemMesh);
-		}
+		ZLOG(Error, TEXT("Item mesh not exsit.."));
+		return;
 	}
 
-	Item = NewItem;
-}
-
-AZItem * const AZPickup::GetItem() const
-{
-	return Item;
+	Mesh->SetStaticMesh(ItemMesh);
+	
 }
 
 bool AZPickup::IsActive() const
@@ -172,12 +125,8 @@ bool AZPickup::IsActive() const
 	return bIsActive;
 }
 
-bool AZPickup::ServerOnInteraction_Validate(class AZCharacter* NewCharacter)
+const FZItemInfo & AZPickup::GetItemInfo() const
 {
-	return true;
-}
-
-void AZPickup::ServerOnInteraction_Implementation(class AZCharacter* NewCharacter)
-{
-	OnInteraction(NewCharacter);
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return ItemInfo;
 }

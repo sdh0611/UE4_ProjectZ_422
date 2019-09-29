@@ -76,6 +76,26 @@ static EGunType GetGunTypeFromString(const FString& GunTypeName)
 	return EGunType::Invalid;
 }
 
+USTRUCT(BlueprintType)
+struct PROJECTZ_422_API FZGunInfo : public FZWeaponInfo
+{
+	GENERATED_BODY()
+
+public:
+	virtual ~FZGunInfo() { };
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EGunType GunType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 CurrentAmmo;
+
+	static const int32 TypeID = 2;
+
+	virtual bool IsOfType(int32 NewID) const override { return (NewID == FZGunInfo::TypeID) || FZWeaponInfo::IsOfType(NewID); }
+};
+
 /**
  * 
  */
@@ -93,6 +113,7 @@ public:
 
 public:
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
+	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
 	virtual void Fire() override;
 	virtual void FireEnd() override;
 
@@ -116,11 +137,13 @@ public:
 	EGunType GetGunType() const;
 	EFireMode GetFireMode() const;
 	virtual class UAnimMontage* const GetFireAnimMontage() const override;
+	virtual FZItemInfo CreateItemInfo();
 
 protected:
 	bool CheckNeedToReload();
 	void SpawnTrail(const FVector& EndPoint);
 	void PlayCameraShake();
+	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)

@@ -14,6 +14,7 @@
 #include "ZGun.h"
 #include "ZRecovery.h"
 #include "ZDoping.h"
+#include "ZGameInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "UnrealNetwork.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -24,7 +25,7 @@ UZCharacterItemStatusComponent::UZCharacterItemStatusComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-	
+
 	bReplicates = true;
 
 	// ...
@@ -71,7 +72,7 @@ void UZCharacterItemStatusComponent::GetLifetimeReplicatedProps(TArray<FLifetime
 
 }
 
-void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPickup)
+void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem)
 {
 	/*
 		TODO(5.19) : EquipWeapon의 OnDropped를 실행하는 부분에서 버그발생.
@@ -79,33 +80,6 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 	*/
 	UKismetSystemLibrary::PrintString(GetWorld(), NewItem->GetItemName());
 	ZLOG(Warning, TEXT("%s"), *NewItem->GetItemName());
-
-	switch (NewItem->GetItemType())
-	{
-		case EItemType::Weapon:
-		{
-			ZLOG(Warning, TEXT("Weapon!!"));
-
-			// Code to test
-			EquipWeapon(Cast<AZWeapon>(NewItem));
-			break;
-		}
-		case EItemType::Recovery:
-		{
-			ZLOG(Warning, TEXT("Recovery!!"));
-			break;
-		}
-		case EItemType::Doping:
-		{
-			ZLOG(Warning, TEXT("Doping!!"));
-			break;
-		}
-		default:
-		{
-			ZLOG(Warning, TEXT("No type!!"));
-			break;
-		}
-	}
 
 	auto Item = GetItemByName(NewItem->GetItemName());
 	if (nullptr == Item || Item->IsItemQuantityMaximum())
@@ -122,7 +96,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 				ItemList내에 빈 공간이 없는 경우.
 			*/
 			// 다시 Pickup Actor를 만들어 Drop시킴. -> 후일 Item Drop코드 기재할 것.
-
+			
 		}
 		else
 		{
@@ -133,11 +107,6 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 			ItemList[AllocatedIndex] = NewItem;
 			NewItem->SetInventoryIndex(AllocatedIndex);
 			NewItem->SetItemOwner(OwnerCharacter.Get());
-			if (OwnerPickup)
-			{
-				NewItem->SetPickup(OwnerPickup);
-				OwnerPickup->SetItem(NewItem);
-			}
 
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 			if (PlayerController && PlayerController->IsLocalPlayerController())
@@ -155,12 +124,6 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 		/*
 			같은 Item이 ItemList내에 있는 경우
 		*/
-		// OwnerPickup 제거
-		if (OwnerPickup)
-		{
-			OwnerPickup->Destroy();
-		}
-
 		// 해당 Item의 개수를 증가시켜줌.
 		int32 Remain = Item->AdjustQuantity(NewItem->GetCurrentQuantityOfItem());
 
@@ -179,7 +142,192 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem, AZPickup* OwnerPi
 
 	}
 
+	if (::IsValid(NewItem))
+	{
+		switch (NewItem->GetItemType())
+		{
+			case EItemType::Weapon:
+			{
+				ZLOG(Warning, TEXT("Weapon!!"));
 
+				// Code to test
+				EquipWeapon(Cast<AZWeapon>(NewItem));
+				break;
+			}
+			case EItemType::Recovery:
+			{
+				ZLOG(Warning, TEXT("Recovery!!"));
+				break;
+			}
+			case EItemType::Doping:
+			{
+				ZLOG(Warning, TEXT("Doping!!"));
+				break;
+			}
+			default:
+			{
+				ZLOG(Warning, TEXT("No type!!"));
+				break;
+			}
+		}
+	}
+}
+
+void UZCharacterItemStatusComponent::AddItem(class AZPickup* NewPickup)
+{
+	if (ROLE_Authority != GetOwnerRole())
+	{
+		ServerAddItem(NewPickup);
+		return;
+	}
+
+	/*
+	TODO(5.19) : EquipWeapon의 OnDropped를 실행하는 부분에서 버그발생.
+					-> ItemOwner가 null인데 ItemOwner를 불러서 생긴 현상. 이거 고치자
+	*/
+	if (nullptr == NewPickup)
+	{
+		return;
+	}
+
+	UKismetSystemLibrary::PrintString(GetWorld(), NewPickup->GetItemInfo().ItemName);
+	ZLOG(Warning, TEXT("Pickup item name : %s"), *NewPickup->GetItemInfo().ItemName);
+
+	auto Item = GetItemByName(NewPickup->GetItemInfo().ItemName);
+	if (nullptr == Item || Item->IsItemQuantityMaximum())
+	{
+		/*
+			Item이 ItemList내에 없는 경우
+			or 해당Item이 최대 개수까지 보유하고 있을 때
+		*/
+		// ItemList 내의 빈 공간에 넣어줌.
+		int32 AllocatedIndex = AllocateInventoryIndex();
+		if (AllocatedIndex == -1)
+		{
+			/*
+				ItemList내에 빈 공간이 없는 경우.
+				 -> 아무것도 수행하지 않고 끝냄.
+			*/
+			return;
+		}
+
+		/*
+			ItemList내에 할당할 수 있는 공간이 있는 경우
+		*/
+		// 해당 Index에 Item포인터 할당.
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = GetOwner();
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(NewPickup->SpawnItemClass, SpawnParams);
+		if (nullptr == NewItem)
+		{
+			ZLOG(Error, TEXT("Failed to spawn item.."));
+			return;
+		}
+		
+		auto ItemData = GetWorld()->GetGameInstance<UZGameInstance>()->GetItemDataByName(NewPickup->GetItemInfo().ItemName);
+		if (nullptr == ItemData)
+		{
+			ZLOG(Error, TEXT("Failed to find item data.."));
+			NewItem->Destroy();
+			return;
+		}
+
+		NewItem->InitItemData(ItemData);
+		NewItem->ApplyItemInfo(NewPickup->GetItemInfo());
+		NewItem->SetInventoryIndex(AllocatedIndex);
+		NewItem->SetItemOwner(OwnerCharacter.Get());
+
+		ItemList[AllocatedIndex] = NewItem;
+
+		if (EItemType::Weapon == NewItem->GetItemType())
+		{
+			EquipWeapon(Cast<AZWeapon>(NewItem));
+		}
+
+		auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
+		if (PlayerController && PlayerController->IsLocalPlayerController())
+		{
+			PlayerController->AddItemToInventoryWidget(NewItem);
+			PlayerController->AddItemToSellWidget(NewItem);
+		}
+
+	}
+	else
+	{
+		ZLOG(Warning, TEXT("Item already exist."));
+		/*
+			같은 Item이 ItemList내에 있는 경우
+		*/
+
+		// 해당 Item의 개수를 증가시켜줌.
+		int32 Remain = Item->AdjustQuantity(NewPickup->GetItemInfo().CurrentQuantityOfItem);
+		if (Remain > 0)
+		{
+			// 해당 Item의 최대 보유 개수를 초과했을 때
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = GetOwner();
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(NewPickup->SpawnItemClass, SpawnParams);
+			if (nullptr == NewItem)
+			{
+				ZLOG(Error, TEXT("Failed to spawn item.."));
+				return;
+			}
+			auto ItemData = GetWorld()->GetGameInstance<UZGameInstance>()->GetItemDataByName(NewPickup->GetItemInfo().ItemName);
+			if (nullptr == ItemData)
+			{
+				ZLOG(Error, TEXT("Failed to find item data.."));
+				NewItem->Destroy();
+				return;
+			}
+
+			NewItem->InitItemData(ItemData);
+			NewItem->SetCurrentQuantityOfItem(Remain);
+
+			if (EItemType::Weapon == NewItem->GetItemType())
+			{
+				EquipWeapon(Cast<AZWeapon>(NewItem));
+			}
+			// 해당 Item을 다시 넣어줌.
+			AddItem(NewItem);
+		}
+
+	}
+
+	/* Pickup 정리 */
+	NewPickup->Destroy();
+	//if (::IsValid(NewItem))
+	//{
+	//	switch (NewItem->GetItemType())
+	//	{
+	//	case EItemType::Weapon:
+	//	{
+	//		ZLOG(Warning, TEXT("Weapon!!"));
+
+	//		// Code to test
+	//		EquipWeapon(Cast<AZWeapon>(NewItem));
+	//		break;
+	//	}
+	//	case EItemType::Recovery:
+	//	{
+	//		ZLOG(Warning, TEXT("Recovery!!"));
+	//		break;
+	//	}
+	//	case EItemType::Doping:
+	//	{
+	//		ZLOG(Warning, TEXT("Doping!!"));
+	//		break;
+	//	}
+	//	default:
+	//	{
+	//		ZLOG(Warning, TEXT("No type!!"));
+	//		break;
+	//	}
+	//	}
+	//}
 
 }
 
@@ -196,139 +344,110 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 
 	switch (NewWeapon->GetWeaponCategory())
 	{
-		case EWeaponCategory::Gun:
+	case EWeaponCategory::Gun:
+	{
+		if (WeaponInventory[Main1])
 		{
-			if (WeaponInventory[Main1])
+			/*
+				주무기 슬롯(첫번째, 두번째) 중 첫번째 슬롯에 이미 주무기가 있는 경우.
+			*/
+
+			/*
+				TODO(5.18) : 이 부분에서 Inventory Widget의 갱신이 일어나지 않음.
+								Item에 OnDropped 델리게이트를 구현하던가 해야함
+								-> OnItemRemoved 델리게이트를 실행시킴.
+			*/
+
+			if (WeaponInventory[Main2])
 			{
 				/*
-					주무기 슬롯(첫번째, 두번째) 중 첫번째 슬롯에 이미 주무기가 있는 경우.
+					주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에도 무기가 있는 경우.
 				*/
 
-				/*
-					TODO(5.18) : 이 부분에서 Inventory Widget의 갱신이 일어나지 않음.
-									Item에 OnDropped 델리게이트를 구현하던가 해야함
-									-> OnItemRemoved 델리게이트를 실행시킴.
-				*/
-
-				if (WeaponInventory[Main2])
+				if (WeaponInventory[Main1]->IsEquipped())
 				{
 					/*
-						주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에도 무기가 있는 경우.
+						첫번째 슬롯 무기 교체
 					*/
-
-					if (WeaponInventory[Main1]->IsEquipped())
-					{
-						/*
-							첫번째 슬롯 무기 교체
-						*/
-						//Dropped 내부에서 Equip여부 해제
-						WeaponInventory[Main1]->OnDropped();
-						WeaponInventory[Main1] = NewWeapon;
-						NewWeapon->SetWeaponInventoryIndex(Main1);
-					}
-					else
-					{
-						/*
-							두번쨰 슬롯 무기 교체
-						*/
-						//Dropped 내부에서 Equip여부 해제
-						WeaponInventory[Main2]->OnDropped();
-						WeaponInventory[Main2] = NewWeapon;
-						NewWeapon->SetWeaponInventoryIndex(Main2);
-					}
-
-					// Weapon 장착여부 설정
-					OwnerCharacter->SetCurrentWeapon(NewWeapon);
-
-					// Main weapon socket에 부착
-					auto Gun = Cast<AZGun>(NewWeapon);
-					check(nullptr != Gun);
-
-					FName SocketName;
-					switch (Gun->GetGunType())
-					{
-						case EGunType::Shotgun:
-						{
-							SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
-							break;
-						}
-						default:
-						{
-							SocketName = OwnerCharacter->GetMainWeaponSocketName();
-							break;
-						}
-					}
-
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-						SocketName);
+					//Dropped 내부에서 Equip여부 해제
+					WeaponInventory[Main1]->OnDropped();
+					WeaponInventory[Main1] = NewWeapon;
+					NewWeapon->SetWeaponInventoryIndex(Main1);
 				}
 				else
 				{
 					/*
-						주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에 무기가 없는 경우.
+						두번쨰 슬롯 무기 교체
 					*/
-
-					// 2번째 슬롯에 Weapon 배정
+					//Dropped 내부에서 Equip여부 해제
+					WeaponInventory[Main2]->OnDropped();
 					WeaponInventory[Main2] = NewWeapon;
 					NewWeapon->SetWeaponInventoryIndex(Main2);
-					// Secondary Weapon 소켓에 Weapon 부착
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-						OwnerCharacter->GetThirdWeaponSocketName());
 				}
 
+				// Weapon 장착여부 설정
+				OwnerCharacter->SetCurrentWeapon(NewWeapon);
 
+				// Main weapon socket에 부착
+				auto Gun = Cast<AZGun>(NewWeapon);
+				check(nullptr != Gun);
+
+				FName SocketName;
+				switch (Gun->GetGunType())
+				{
+				case EGunType::Shotgun:
+				{
+					SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+					break;
+				}
+				default:
+				{
+					SocketName = OwnerCharacter->GetMainWeaponSocketName();
+					break;
+				}
+				}
+
+				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+					SocketName);
 			}
 			else
 			{
 				/*
-					주무기 슬롯(첫번째, 두번째) 중 첫번째 슬롯에 주무기가 없는 경우.
+					주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에 무기가 없는 경우.
 				*/
-				// 0번째 슬롯에 Weapon 배정
-				WeaponInventory[Main1] = NewWeapon;
-				NewWeapon->SetWeaponInventoryIndex(Main1);
 
-				if (WeaponInventory[Main2])
+				// 2번째 슬롯에 Weapon 배정
+				WeaponInventory[Main2] = NewWeapon;
+				NewWeapon->SetWeaponInventoryIndex(Main2);
+				// Secondary Weapon 소켓에 Weapon 부착
+				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+					OwnerCharacter->GetThirdWeaponSocketName());
+			}
+
+
+		}
+		else
+		{
+			/*
+				주무기 슬롯(첫번째, 두번째) 중 첫번째 슬롯에 주무기가 없는 경우.
+			*/
+			// 0번째 슬롯에 Weapon 배정
+			WeaponInventory[Main1] = NewWeapon;
+			NewWeapon->SetWeaponInventoryIndex(Main1);
+
+			if (WeaponInventory[Main2])
+			{
+				/*
+					주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에 무기가 있는 경우.
+				*/
+				if (OwnerCharacter->IsEquipWeapon())
 				{
-					/*
-						주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에 무기가 있는 경우.
-					*/
-					if (OwnerCharacter->IsEquipWeapon())
-					{
-						// Secondary Weapon 소켓에 Weapon 부착
-						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-							OwnerCharacter->GetSecondaryWeaponSocketName());
-					}
-					else
-					{
-						OwnerCharacter->SetCurrentWeapon(NewWeapon);
-						// Main Weapon 소켓에 Weapon 부착
-						auto Gun = Cast<AZGun>(NewWeapon);
-						check(nullptr != Gun);
-
-						FName SocketName;
-						switch (Gun->GetGunType())
-						{
-							case EGunType::Shotgun:
-							{
-								SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
-								break;
-							}
-							default:
-							{
-								SocketName = OwnerCharacter->GetMainWeaponSocketName();
-								break;
-							}
-						}
-						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-							SocketName);
-					}
-
+					// Secondary Weapon 소켓에 Weapon 부착
+					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+						OwnerCharacter->GetSecondaryWeaponSocketName());
 				}
 				else
 				{
-					/*
-						주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에도 무기가 없는 경우.
-					*/
 					OwnerCharacter->SetCurrentWeapon(NewWeapon);
 					// Main Weapon 소켓에 Weapon 부착
 					auto Gun = Cast<AZGun>(NewWeapon);
@@ -337,52 +456,81 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					FName SocketName;
 					switch (Gun->GetGunType())
 					{
-						case EGunType::Shotgun:
-						{
-							SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
-							break;
-						}
-						default:
-						{
-							SocketName = OwnerCharacter->GetMainWeaponSocketName();
-							break;
-						}
+					case EGunType::Shotgun:
+					{
+						SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+						break;
+					}
+					default:
+					{
+						SocketName = OwnerCharacter->GetMainWeaponSocketName();
+						break;
+					}
 					}
 					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 						SocketName);
 				}
 
 			}
-			break;
-		}
-		case EWeaponCategory::Knife:
-		{
-
-
-			break;
-		}
-		case EWeaponCategory::Grenade:
-		{
-			if (nullptr == WeaponInventory[Grenade])
+			else
 			{
 				/*
-					Grenade를 소지하지 않은 경우
+					주무기 슬롯(첫번째, 두번째) 중 두번째 슬롯에도 무기가 없는 경우.
 				*/
-				// Grenade 슬롯에 추가
-				WeaponInventory[Grenade] = NewWeapon;
-				NewWeapon->SetWeaponInventoryIndex(Grenade);
-				// Grenade socket에 mesh 부착.
+				OwnerCharacter->SetCurrentWeapon(NewWeapon);
+				// Main Weapon 소켓에 Weapon 부착
+				auto Gun = Cast<AZGun>(NewWeapon);
+				check(nullptr != Gun);
+
+				FName SocketName;
+				switch (Gun->GetGunType())
+				{
+				case EGunType::Shotgun:
+				{
+					SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+					break;
+				}
+				default:
+				{
+					SocketName = OwnerCharacter->GetMainWeaponSocketName();
+					break;
+				}
+				}
 				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-					OwnerCharacter->GetGrenadeWeaponSocketName());
+					SocketName);
 			}
 
-			break;
 		}
-		default:
+		break;
+	}
+	case EWeaponCategory::Knife:
+	{
+
+
+		break;
+	}
+	case EWeaponCategory::Grenade:
+	{
+		if (nullptr == WeaponInventory[Grenade])
 		{
-			ZLOG(Error, TEXT("Invalid category."));
-			return nullptr;
+			/*
+				Grenade를 소지하지 않은 경우
+			*/
+			// Grenade 슬롯에 추가
+			WeaponInventory[Grenade] = NewWeapon;
+			NewWeapon->SetWeaponInventoryIndex(Grenade);
+			// Grenade socket에 mesh 부착.
+			NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				OwnerCharacter->GetGrenadeWeaponSocketName());
 		}
+
+		break;
+	}
+	default:
+	{
+		ZLOG(Error, TEXT("Invalid category."));
+		return nullptr;
+	}
 
 	}
 
@@ -600,6 +748,16 @@ int32 UZCharacterItemStatusComponent::AllocateInventoryIndex()
 
 	// ItemList가 꽉찬 경우.
 	return -1;
+}
+
+bool UZCharacterItemStatusComponent::ServerAddItem_Validate(class AZPickup* NewPickup)
+{
+	return true;
+}
+
+void UZCharacterItemStatusComponent::ServerAddItem_Implementation(class AZPickup* NewPickup)
+{
+	AddItem(NewPickup);
 }
 
 

@@ -17,9 +17,9 @@
 // Sets default values
 AZItem::AZItem()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	bReplicates = true;
 
 	bCanDestroy = true;
@@ -31,7 +31,6 @@ AZItem::AZItem()
 	InventoryIndex = -1;
 	ItemOwner = nullptr;
 	ItemType = EItemType::Default;
-	Pickup = nullptr;
 
 	/* Relicate를 위한 더미 컴포넌트 */
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -40,7 +39,7 @@ AZItem::AZItem()
 		CLASS_PICKUP(TEXT("Blueprint'/Game/Blueprint/Interactional/Pickup/BP_ZPickup.BP_ZPickup_C'"));
 	if (CLASS_PICKUP.Succeeded())
 	{
-		PickupClass = CLASS_PICKUP.Class;	
+		PickupClass = CLASS_PICKUP.Class;
 	}
 
 	Tags.Add(TEXT("Item"));
@@ -50,7 +49,7 @@ AZItem::AZItem()
 void AZItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -72,7 +71,6 @@ void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	DOREPLIFETIME(AZItem, InventoryIndex);
 	DOREPLIFETIME(AZItem, ItemExplanation);
 	DOREPLIFETIME(AZItem, ItemOwner);
-	DOREPLIFETIME(AZItem, Pickup);
 }
 //
 //void AZItem::OnDropped()
@@ -168,18 +166,6 @@ void AZItem::OnDropped(int32 Quantity)
 	if (GetCurrentQuantityOfItem() <= Quantity)
 	{
 		ZLOG(Error, TEXT("Drop all"));
-		if (Pickup)
-		{
-			/*
-				만약 Pickup에서 생성된 Item이라면
-			*/
-			// Pickup 활성화
-			ZLOG(Warning, TEXT("Spawn actor."));
-			Pickup->SetActive(true);
-			Pickup->SetActorLocation(SpawnLocation);
-			Pickup->WhenSpawnedByItem();
-		}
-		else
 		{
 			/*
 				만약 Pickup에서 생성된 Item이 아니라면 ex) 상점에서 구입한 경우
@@ -196,7 +182,8 @@ void AZItem::OnDropped(int32 Quantity)
 				ZLOG(Error, TEXT("Failed to spawn pickup...."));
 				return;
 			}
-			NewPickup->SetItem(this);
+			NewPickup->SpawnItemClass = GetClass();
+			NewPickup->SetItemInfo(CreateItemInfo());
 			NewPickup->WhenSpawnedByItem();
 
 		}
@@ -219,29 +206,11 @@ void AZItem::OnDropped(int32 Quantity)
 		auto MyGameInstance = GetGameInstance<UZGameInstance>();
 		check(MyGameInstance);
 
-		const FZItemData* ItemData = MyGameInstance->GetItemDataByName(GetItemName());
-		if (nullptr == ItemData)
-		{
-			ZLOG(Error, TEXT("Failed to find item data.."));
-			return;
-		}
-
 		/* 새로운 Item spawn */
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		SpawnParams.Owner = GetOwner();
 		UKismetSystemLibrary::PrintString(GetWorld(), GetOwner()->GetName());
-
-		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(GetClass(), SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-		if (nullptr == NewItem)
-		{
-			ZLOG(Error, TEXT("Failed to Spawn item.."));
-			return;
-		}
-		
-		NewItem->InitItemData(ItemData);
-		NewItem->SetCurrentQuantityOfItem(Quantity);
-		NewItem->SetActive(false);
 
 		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 		if (nullptr == NewPickup)
@@ -249,8 +218,11 @@ void AZItem::OnDropped(int32 Quantity)
 			ZLOG(Error, TEXT("Failed to spawn pickup.."));
 			return;
 		}
+		auto ItemInfo = CreateItemInfo();
+		ItemInfo.CurrentQuantityOfItem = Quantity;
 
-		NewPickup->SetItem(NewItem);
+		NewPickup->SpawnItemClass = GetClass();
+		NewPickup->SetItemInfo(ItemInfo);
 		NewPickup->WhenSpawnedByItem();
 
 		AdjustQuantity(-Quantity);
@@ -300,14 +272,16 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 	MaxQuantityOfItem = NewItemData->MaxQuantity;
 	ItemExplanation = NewItemData->ItemExplanation;
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	check(MyGameInstance);
-	ItemImage = MyGameInstance->GetItemImage(ItemName);
+}
+
+void AZItem::ApplyItemInfo(FZItemInfo NewItemInfo)
+{
+	CurrentQuantityOfItem = NewItemInfo.CurrentQuantityOfItem;
 
 }
 
 
-int32 AZItem::AdjustQuantity(int32 Value) 
+int32 AZItem::AdjustQuantity(int32 Value)
 {
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("AdjustQuantity"));
 	int32 Quantity = CurrentQuantityOfItem + Value;
@@ -382,7 +356,7 @@ void AZItem::SetItemWeight(int32 NewWeight)
 	{
 		return;
 	}
-	
+
 	ItemWeight = NewWeight;
 }
 
@@ -401,15 +375,6 @@ void AZItem::SetItemOwner(AZCharacter * NewItemOwner)
 	ItemOwner = NewItemOwner;
 }
 
-void AZItem::SetPickup(AZPickup * NewPickup)
-{
-	if (nullptr == NewPickup)
-	{
-		ZLOG(Error, TEXT("Invalid value."));
-	}
-
-	Pickup = NewPickup;
-}
 
 void AZItem::SetActive(bool NewState)
 {
@@ -458,11 +423,6 @@ int32 AZItem::GetInventoryIndex() const
 	return InventoryIndex;
 }
 
-UTexture2D * const AZItem::GetItemImage() const
-{
-	return ItemImage;
-}
-
 const FText & AZItem::GetItemExplanation() const
 {
 	return ItemExplanation;
@@ -498,7 +458,15 @@ UAnimMontage * const AZItem::FindMontage(const FString & MontageName) const
 	return nullptr;
 }
 
+FZItemInfo AZItem::CreateItemInfo()
+{
+	FZItemInfo ItemInfo;
 
+	ZLOG_S(Error);
+	InitItemInfo(ItemInfo);
+
+	return ItemInfo;
+}
 
 void AZItem::CheckItemExhausted()
 {
@@ -511,6 +479,18 @@ void AZItem::CheckItemExhausted()
 	{
 		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex());
 	}
+}
+
+void AZItem::InitItemInfo(FZItemInfo & ItemInfo)
+{
+	ZLOG_S(Error);
+	ItemInfo.bCanDestroy = bCanDestroy;
+	ItemInfo.CurrentQuantityOfItem = CurrentQuantityOfItem;
+	ItemInfo.ItemName = ItemName;
+	ItemInfo.ItemType = ItemType;
+
+	ItemInfo.bInit = true;
+
 }
 
 bool AZItem::ServerOnDropItem_Validate(int32 Quantity)

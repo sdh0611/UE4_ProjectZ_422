@@ -1,0 +1,11 @@
+Name,ShopID,ItemName,ItemPrice,ItemType,bIsDealOnlyOne
+1,10,M4A1,200,Weapon,1
+2,11,AK-47,150,Weapon,1
+3,12,Shotgun,150,Weapon,1
+4,13,Grenade,30,Weapon,0
+5,20,Bandage,2,Recovery,0
+6,21,FirstkitAid,20,Recovery,0
+7,30,Doping,2,Doping,0
+8,40,5.56mm,4,Ammo,0
+9,41,7.62mm,4,Ammo,0
+10,42,12Gauge,3,Ammo,0

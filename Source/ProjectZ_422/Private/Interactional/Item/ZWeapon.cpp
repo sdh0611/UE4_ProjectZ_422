@@ -102,6 +102,18 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 
 }
 
+void AZWeapon::ApplyItemInfo(FZItemInfo NewItemInfo)
+{
+	if (NewItemInfo.IsOfType(FZWeaponInfo::TypeID))
+	{
+		FZWeaponInfo* WeaponInfo = static_cast<FZWeaponInfo*>(&NewItemInfo);
+		WeaponCategory = WeaponInfo->WeaponCategory;
+	}
+
+	Super::ApplyItemInfo(NewItemInfo);
+
+}
+
 void AZWeapon::SetWeaponInventoryIndex(int32 NewIndex)
 {
 	//	Weaponinventory 범위를 넘어선 경우.
@@ -144,6 +156,15 @@ UAnimMontage * const AZWeapon::GetFireAnimMontage() const
 	return FindMontage(TEXT("Fire"));
 }
 
+FZItemInfo AZWeapon::CreateItemInfo()
+{
+	FZWeaponInfo ItemInfo;
+
+	InitItemInfo(ItemInfo);
+
+	return ItemInfo;
+}
+
 
 FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 {
@@ -170,6 +191,20 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 	}
 
 	return Hit;
+}
+
+void AZWeapon::InitItemInfo(FZItemInfo & ItemInfo)
+{
+	Super::InitItemInfo(ItemInfo);
+
+	ZLOG_S(Error);
+	if (ItemInfo.IsOfType(FZWeaponInfo::TypeID))
+	{
+		ZLOG_S(Error);
+		FZWeaponInfo* WeaponInfo = static_cast<FZWeaponInfo*>(&ItemInfo);
+		WeaponInfo->WeaponCategory = WeaponCategory;
+	}
+	
 }
 
 void AZWeapon::Fire()

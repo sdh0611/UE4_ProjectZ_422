@@ -60,6 +60,22 @@ static EWeaponCategory GetWeaponCategoryFromString(const FString& WeaponCategory
 	return EWeaponCategory::Invalid;
 };
 
+USTRUCT(BlueprintType)
+struct PROJECTZ_422_API FZWeaponInfo : public FZItemInfo
+{
+	GENERATED_BODY()
+		
+public:
+	virtual ~FZWeaponInfo() { };
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EWeaponCategory WeaponCategory;
+
+	static const int32 TypeID = 1;
+
+	virtual bool IsOfType(int32 NewID) const override { return (NewID == FZWeaponInfo::TypeID) || FZItemInfo::IsOfType(NewID); }
+};
 
 /**
  * 
@@ -78,7 +94,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRemoved() override;
 	virtual void OnDropped(int32 Quantity = 1) override;
-	virtual void InitItemData(const struct FZItemData* const NewItemData);
+	virtual void InitItemData(const struct FZItemData* const NewItemData) override;
+	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
 	virtual void Fire();
 	virtual void FireEnd();
 
@@ -92,9 +109,11 @@ public:
 	bool IsEquipped() const;
 	EWeaponCategory GetWeaponCategory() const;
 	virtual class UAnimMontage* const GetFireAnimMontage() const;
+	virtual FZItemInfo CreateItemInfo();
 
 protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
+	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
 
 public:
 	FOnWeaponFired OnWeaponFired;
