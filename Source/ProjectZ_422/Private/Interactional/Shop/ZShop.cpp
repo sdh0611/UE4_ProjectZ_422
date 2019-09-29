@@ -344,9 +344,7 @@ void AZShop::ServerSell_Implementation(APlayerController* PC, int32 SellItemInve
 		ZLOG(Error, TEXT("Invalid quantity value."));
 		return;
 	}
-
-	int32 TotalQuantity = Quantity;
-
+	
 	auto ItemStatusComponent = Player->GetItemStatusComponent();
 	if (nullptr == ItemStatusComponent)
 	{
@@ -367,11 +365,13 @@ void AZShop::ServerSell_Implementation(APlayerController* PC, int32 SellItemInve
 		return;
 	}
 
+
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("In Sell Item process."));
 	/*
 		돈계산
 		-> 판매 가격은 상점 구매 가격의 7할로 통일.
 	*/
+	int32 TotalQuantity = Quantity;
 	int32 PurchaseMoney = ShopItemData->ItemPrice * 0.7f;
 	if (SellItem->GetCurrentQuantityOfItem() < TotalQuantity)
 	{
@@ -381,7 +381,7 @@ void AZShop::ServerSell_Implementation(APlayerController* PC, int32 SellItemInve
 		*/
 		TotalQuantity = SellItem->GetCurrentQuantityOfItem();
 	}
-
+	ZLOG(Error, TEXT("Sell : %d"), TotalQuantity);
 	PurchaseMoney *= TotalQuantity;
 
 	ItemStatusComponent->AdjustMoney(PurchaseMoney);

@@ -52,7 +52,7 @@ void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
 		MyPC->Sell(Item->GetInventoryIndex(), NewNumber);
 	}
 
-	ClearWidget();
+	//ClearWidget();
 	//OnSellItem.Execute(GetOwningPlayerPawn(), Item, NewNumber);
 }
 
