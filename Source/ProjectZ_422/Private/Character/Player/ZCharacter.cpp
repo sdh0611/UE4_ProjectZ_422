@@ -266,7 +266,7 @@ void AZCharacter::OnRep_IsAiming()
 {
 	if (bIsAiming)
 	{
-
+	
 	}
 }
 
@@ -1016,7 +1016,6 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 
 				// 기존 Weapon은 Secondary socket으로 옮김.
 				AttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
-				//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
 				MulticastAttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
 				break;
 			}
@@ -1034,7 +1033,6 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 
 				// 기존 Weapon은 Third socket으로 옮김.
 				AttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
-				//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
 				MulticastAttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
 				break;
 			}
@@ -1045,7 +1043,6 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 			case EWeaponSlot::Grenade:
 			{
 				AttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
-				//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
 				MulticastAttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
 				break;
 			}
@@ -1100,8 +1097,6 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	}
 
 	// 새 Weapon은 Main socket으로 옮김.
-	//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
-	ZLOG(Error, TEXT("Call Attach weapon."));
 	AttachWeapon(CurrentWeapon, SocketName);
 	MulticastAttachWeapon(CurrentWeapon, SocketName);
 

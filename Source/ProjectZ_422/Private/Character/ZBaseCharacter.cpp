@@ -162,14 +162,8 @@ void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
 		return;
 	}
 
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-	}
+	CurrentSpeed = NewSpeed;
+	ApplySpeed(NewSpeed);
 }
 
 void AZBaseCharacter::SetActive(bool bActive)
@@ -224,18 +218,18 @@ float AZBaseCharacter::GetSprintSpeed() const
 
 float AZBaseCharacter::GetCurrentSpeed() const
 {
-	float CurrentSpeed = 0.f;
+	float CharacterCurrentSpeed = 0.f;
 
 	if (GetCharacterMovement()->IsCrouching())
 	{
-		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
+		CharacterCurrentSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
 	}
 	else
 	{
-		CurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
+		CharacterCurrentSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	}
 
-	return CurrentSpeed;
+	return CharacterCurrentSpeed;
 }
 
 UZCharacterStatusComponent * const AZBaseCharacter::GetStatusComponent() const
@@ -255,6 +249,19 @@ UZCharacterAnimInstance * AZBaseCharacter::GetAnimInstance() const
 
 void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 {
+}
+
+void AZBaseCharacter::ApplySpeed(float NewSpeed)
+{
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	}
+
 }
 
 void AZBaseCharacter::OnDead()
@@ -328,5 +335,10 @@ void AZBaseCharacter::OnRep_IsSprinting()
 	{
 		SetCurrentSpeed(WalkSpeed);
 	}
+}
+
+void AZBaseCharacter::OnRep_CurrentSpeed()
+{
+	SetCurrentSpeed(CurrentSpeed);
 }
 

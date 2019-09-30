@@ -60,10 +60,6 @@ public:
 	bool MulticastAttachWeapon_Validate(class AZWeapon* Weapon, FName SocketName);
 	void MulticastAttachWeapon_Implementation(class AZWeapon* Weapon, FName SocketName);
 
-	/* Replicated using */
-	UFUNCTION()
-	void OnRep_IsAiming();
-
 public:
 	void SetIsAiming(bool NewState);
 	void SetIsSwitchingWeapon(bool NewState);
@@ -156,6 +152,8 @@ private:
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
 
+	UFUNCTION()
+	void OnRep_IsAiming();
 
 protected:
 	/* Sockets */
@@ -178,7 +176,7 @@ protected:
 	FName GrenadeWeaponSocketName;
 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsAiming)
 	bool bIsAiming;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
