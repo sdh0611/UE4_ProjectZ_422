@@ -151,8 +151,11 @@ void AZBaseCharacter::Revive()
 
 void AZBaseCharacter::SetIsSprinting(bool NewState)
 {
+	if (!HasAuthority())
+	{
+		ServerSetSprinting(NewState);
+	}
 	bIsSprinting = NewState;
-	ServerSetSprinting(NewState);
 }
 
 void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
@@ -320,7 +323,7 @@ bool AZBaseCharacter::ServerSetSprinting_Validate(bool bNewState)
 
 void AZBaseCharacter::ServerSetSprinting_Implementation(bool bNewState)
 {
-	bIsSprinting = bNewState;
+	SetIsSprinting(bNewState);
 
 	OnRep_IsSprinting();
 }

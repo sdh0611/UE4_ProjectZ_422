@@ -592,10 +592,10 @@ void AZCharacter::Sprint()
 		if (!IsSprinting())
 		{
 			// SprintSpeed로 값을 변경하고 Sprint 상태 변경
-			MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
+			//MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
 			SetIsSprinting(true);
 			auto CharacterAnim = GetCharacterAnimInstance();
-			check(nullptr != CharacterAnim);
+			check(CharacterAnim);
 			CharacterAnim->SetIsSprinting(true);
 			//bUseControllerRotationYaw = false
 		}
@@ -1180,6 +1180,24 @@ bool AZCharacter::ServerSwitchWeapon_Validate(int32 NewWeaponIndex)
 void AZCharacter::ServerSwitchWeapon_Implementation(int32 NewWeaponIndex)
 {
 	SwitchWeapon(NewWeaponIndex);
+}
+
+bool AZCharacter::ServerSetCrouch_Validate(bool bCrouch)
+{
+	return true;
+}
+
+void AZCharacter::ServerSetCrouch_Implementation(bool bCrouch)
+{
+	if (bCrouch)
+	{
+
+	}
+	else
+	{
+		
+	}
+
 }
 
 void AZCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)

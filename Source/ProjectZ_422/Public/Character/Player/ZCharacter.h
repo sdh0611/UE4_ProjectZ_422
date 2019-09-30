@@ -144,6 +144,10 @@ private:
 	bool ServerSwitchWeapon_Validate(int32 NewWeaponIndex);
 	void ServerSwitchWeapon_Implementation(int32 NewWeaponIndex);
 
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSetCrouch(bool bCrouch);
+	bool ServerSetCrouch_Validate(bool bCrouch);
+	void ServerSetCrouch_Implementation(bool bCrouch);
 	/* Server to client call RPC */
 	//UFUNCTION(Client, Reliable)
 
