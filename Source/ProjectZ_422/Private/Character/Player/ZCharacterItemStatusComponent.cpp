@@ -362,21 +362,20 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					FName SocketName;
 					switch (Gun->GetGunType())
 					{
-					case EGunType::Shotgun:
-					{
-						SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
-						break;
+						case EGunType::Shotgun:
+						{
+							SocketName = OwnerCharacter->GetMainWeaponShotgunSocketName();
+							break;
+						}
+						default:
+						{
+							SocketName = OwnerCharacter->GetMainWeaponSocketName();
+							break;
+						}
 					}
-					default:
-					{
-						SocketName = OwnerCharacter->GetMainWeaponSocketName();
-						break;
-					}
-					}
+					NewWeapon->AttachSocketName = SocketName;
+					OwnerCharacter->AttachWeapon(NewWeapon, NewWeapon->AttachSocketName);
 
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-						SocketName);
-					//OwnerCharacter->ClientAttachWeapon(NewWeapon->GetWeaponInventoryIndex(), SocketName);
 				}
 				else
 				{
@@ -389,9 +388,9 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					NewWeapon->SetWeaponInventoryIndex(Main2);
 
 					// Secondary Weapon 家南俊 Weapon 何馒
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-						OwnerCharacter->GetThirdWeaponSocketName());
-					//OwnerCharacter->ClientAttachWeapon(NewWeapon->GetWeaponInventoryIndex(), OwnerCharacter->GetThirdWeaponSocketName());
+					NewWeapon->AttachSocketName = OwnerCharacter->GetThirdWeaponSocketName();
+					OwnerCharacter->AttachWeapon(NewWeapon, NewWeapon->AttachSocketName);
+
 				}
 
 
@@ -413,9 +412,9 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 					if (OwnerCharacter->IsEquipWeapon())
 					{
 						// Secondary Weapon 家南俊 Weapon 何馒
-						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-							OwnerCharacter->GetSecondaryWeaponSocketName());
-						OwnerCharacter->ClientAttachWeapon(NewWeapon->GetWeaponInventoryIndex(), OwnerCharacter->GetSecondaryWeaponSocketName());
+						NewWeapon->AttachSocketName = OwnerCharacter->GetSecondaryWeaponSocketName();
+						OwnerCharacter->AttachWeapon(NewWeapon, NewWeapon->AttachSocketName);
+
 					}
 					else
 					{
@@ -438,9 +437,9 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 								break;
 							}
 						}
-						NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-							SocketName);
-						//OwnerCharacter->ClientAttachWeapon(NewWeapon->GetWeaponInventoryIndex(), SocketName);
+						NewWeapon->AttachSocketName = SocketName;
+						OwnerCharacter->AttachWeapon(NewWeapon, NewWeapon->AttachSocketName);
+
 					}
 
 				}
@@ -468,8 +467,8 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 							break;
 						}
 					}
-					NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-						SocketName);
+					NewWeapon->AttachSocketName = SocketName;
+					OwnerCharacter->AttachWeapon(NewWeapon, NewWeapon->AttachSocketName);
 
 				}
 
@@ -493,9 +492,8 @@ class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * New
 				WeaponInventory[Grenade] = NewWeapon;
 				NewWeapon->SetWeaponInventoryIndex(Grenade);
 				// Grenade socket俊 mesh 何馒.
-				NewWeapon->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-					OwnerCharacter->GetGrenadeWeaponSocketName());
-				OwnerCharacter->ClientAttachWeapon(NewWeapon->GetWeaponInventoryIndex(), OwnerCharacter->GetGrenadeWeaponSocketName());
+				NewWeapon->AttachSocketName = OwnerCharacter->GetGrenadeWeaponSocketName();
+				OwnerCharacter->AttachWeapon(NewWeapon, NewWeapon->AttachSocketName);
 			}
 
 			break;
@@ -604,7 +602,6 @@ void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
 	}
 
 	OnRep_CurrentMoney();
-	//PlayerController->GetZHUD()->GetUserHUD()->UpdateCurrentMoneyInfo(CurrentMoney);
 }
 
 void UZCharacterItemStatusComponent::SetMaxSizeOfItemList(int32 NewMaxSize)

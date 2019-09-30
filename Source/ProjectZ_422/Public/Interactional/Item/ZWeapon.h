@@ -111,6 +111,8 @@ public:
 	virtual class UAnimMontage* const GetFireAnimMontage() const;
 	virtual FZItemInfo CreateItemInfo();
 
+	virtual void RepItemOwner() override;
+
 protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
 	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
@@ -130,6 +132,9 @@ public:
 	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon, Replicated)
 	bool bIsEquipped;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon, Replicated)
+	FName AttachSocketName;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)

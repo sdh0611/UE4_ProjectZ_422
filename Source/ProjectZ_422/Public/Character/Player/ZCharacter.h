@@ -39,11 +39,26 @@ public:
 public:
 	FHitResult GetTraceHitFromActorCameraView(float Distance);
 
+	void AttachWeapon(class AZWeapon* Weapon, const FName& SocketName);
+	void DetachWeapon(int32 NewWeaponIndex);
+
 	/* Server to client call RPC */
-	UFUNCTION(Client, Reliable, WithValidation)
-	void ClientAttachWeapon(int32 NewWeaponIndex, FName SocketName);
-	bool ClientAttachWeapon_Validate(int32 NewWeaponIndex, FName SocketName);
-	void ClientAttachWeapon_Implementation(int32 NewWeaponIndex, FName SocketName);
+
+
+
+	/* Client to server call RPC */
+
+
+
+	/* Net multicast */
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayMontage(const FString& MontageName);
+	void MulticastPlayMontage_Implementation(const FString& MontageName);
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	void MulticastAttachWeapon(class AZWeapon* Weapon, FName SocketName);
+	bool MulticastAttachWeapon_Validate(class AZWeapon* Weapon, FName SocketName);
+	void MulticastAttachWeapon_Implementation(class AZWeapon* Weapon, FName SocketName);
 
 	/* Replicated using */
 	UFUNCTION()

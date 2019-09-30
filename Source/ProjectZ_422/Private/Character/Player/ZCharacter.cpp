@@ -222,6 +222,46 @@ FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
 	return GetTraceHit(TraceStart, TraceEnd);
 }
 
+void AZCharacter::AttachWeapon(class AZWeapon* Weapon, const FName & SocketName)
+{
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Weapon : %s"), *Weapon->GetItemName()));
+	if (nullptr == Weapon)
+	{
+		ZLOG(Error, TEXT("Invalid weapon.."));
+		return;
+	}
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+
+	auto CharacterAnim = GetCharacterAnimInstance();
+	if (!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid anim instance.."));
+		return;
+	}
+
+	if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
+	{
+		ZLOG_S(Warning);
+		/* OnGrenadeThrow에 바인딩. */
+		auto Grenade = Cast<AZGrenade>(CurrentWeapon);
+		check(Grenade);
+		ZLOG(Error, TEXT("Bind ThrowGrenade"));
+		CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
+	}
+}
+
+void AZCharacter::DetachWeapon(int32 NewWeaponIndex)
+{
+	auto Weapon = ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex);
+	if (nullptr == Weapon)
+	{
+		ZLOG(Error, TEXT("Invalid weapon.."));
+		return;
+	}
+
+	Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+}
+
 void AZCharacter::OnRep_IsAiming()
 {
 	if (bIsAiming)
@@ -931,13 +971,14 @@ void AZCharacter::DropWeapon()
 
 void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 {
+	ZLOG_S(Error);
 	/* Server에서 동작해야함. */
 	if (!HasAuthority())
 	{
 		ServerSwitchWeapon(NewWeaponIndex);
 		return;
 	}
-
+	ZLOG_S(Error);
 	// 해당 Slot에 Weapon이 없는 경우(null인 경우)
 	if (nullptr == ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex))
 	{
@@ -974,8 +1015,9 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 				}
 
 				// 기존 Weapon은 Secondary socket으로 옮김.
-				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
-				ClientAttachWeapon(CurrentWeapon->GetWeaponInventoryIndex(), SecondaryWeaponSocketName);
+				AttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
+				//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SecondaryWeaponSocketName);
+				MulticastAttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
 				break;
 			}
 			case EWeaponSlot::Main2:
@@ -991,8 +1033,9 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 				}
 
 				// 기존 Weapon은 Third socket으로 옮김.
-				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
-				ClientAttachWeapon(CurrentWeapon->GetWeaponInventoryIndex(), ThirdWeaponSocketName);
+				AttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
+				//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, ThirdWeaponSocketName);
+				MulticastAttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
 				break;
 			}
 			case EWeaponSlot::Knife:
@@ -1001,8 +1044,9 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 			}
 			case EWeaponSlot::Grenade:
 			{
-				CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
-				ClientAttachWeapon(CurrentWeapon->GetWeaponInventoryIndex(), GrenadeWeaponSocketName);
+				AttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
+				//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, GrenadeWeaponSocketName);
+				MulticastAttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
 				break;
 			}
 			default:
@@ -1056,22 +1100,27 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	}
 
 	// 새 Weapon은 Main socket으로 옮김.
-	CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
-	ClientAttachWeapon(CurrentWeapon->GetWeaponInventoryIndex(), SocketName);
+	//CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+	ZLOG(Error, TEXT("Call Attach weapon."));
+	AttachWeapon(CurrentWeapon, SocketName);
+	MulticastAttachWeapon(CurrentWeapon, SocketName);
 
 	SetIsSwitchingWeapon(true);
 
+	MulticastPlayMontage(TEXT("EquipRifle"));
 	CharacterAnim->PlayCharacterMontage(TEXT("EquipRifle"));
 
 }
 
 void AZCharacter::Slot1()
 {
+	ZLOG_S(Error);
 	SwitchWeapon(0);
 }
 
 void AZCharacter::Slot2()
 {
+	ZLOG_S(Error);
 	SwitchWeapon(1);
 }
 
@@ -1138,39 +1187,26 @@ void AZCharacter::ServerSwitchWeapon_Implementation(int32 NewWeaponIndex)
 	SwitchWeapon(NewWeaponIndex);
 }
 
-bool AZCharacter::ClientAttachWeapon_Validate(int32 NewWeaponIndex, FName SocketName)
+void AZCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)
+{
+	auto CharacterAnim = GetCharacterAnimInstance();
+	if (!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid AnimInstance."));
+		return;
+	}
+
+	CharacterAnim->PlayCharacterMontage(TEXT("EquipRifle"));
+}
+
+bool AZCharacter::MulticastAttachWeapon_Validate(AZWeapon* Weapon, FName SocketName)
 {
 	return true;
 }
 
-void AZCharacter::ClientAttachWeapon_Implementation(int32 NewWeaponIndex, FName SocketName)
+void AZCharacter::MulticastAttachWeapon_Implementation(AZWeapon* Weapon, FName SocketName)
 {
-	auto Weapon = ItemStatusComponent->GetWeaponFromWeaponInventory(NewWeaponIndex);
-	if (nullptr == Weapon)
-	{
-		ZLOG(Error, TEXT("Invalid weapon.."));
-		return;
-	}
-
-	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
-
-	auto CharacterAnim = GetCharacterAnimInstance();
-	if (!::IsValid(CharacterAnim))
-	{
-		ZLOG(Error, TEXT("Invalid anim instance.."));
-		return;
-	}
-	CharacterAnim->PlayCharacterMontage(TEXT("EquipRifle"));
-
-	if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
-	{
-		ZLOG_S(Warning);
-		/* OnGrenadeThrow에 바인딩. */
-		auto Grenade = Cast<AZGrenade>(CurrentWeapon);
-		check(Grenade);
-		ZLOG(Error, TEXT("Bind ThrowGrenade"));
-		CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
-	}
+	AttachWeapon(Weapon, SocketName);
 }
 
 void AZCharacter::OnRep_CurrentWeapon()

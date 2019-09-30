@@ -139,6 +139,8 @@ public:
 		@return : 은 해당 Item의 최대 보유 갯수를 초과한 만큼의 값.
 	*/
 	int32 AdjustQuantity(int32 Value);
+	virtual FZItemInfo CreateItemInfo();
+	virtual void RepItemOwner();
 
 public:
 	void SetCanDestroy(bool NewState);
@@ -150,7 +152,6 @@ public:
 	void SetItemOwner(class AZCharacter* NewItemOwner);
 	void SetActive(bool NewState);
 
-public:
 	bool IsCanDestroy() const;
 	const FString& GetItemName() const;
 	int32 GetMaxQuantityOfItem() const;
@@ -163,7 +164,7 @@ public:
 	EItemType GetItemType() const;
 	bool IsActive() const;
 	class UAnimMontage* const FindMontage(const FString& MontageName) const;
-	virtual FZItemInfo CreateItemInfo();
+
 
 protected:
 	/*
@@ -188,7 +189,7 @@ protected:
 
 	/* Replicated using */
 	UFUNCTION()
-	void OnRep_ItemOwner();
+	virtual void OnRep_ItemOwner();
 
 	UFUNCTION()
 	void OnRep_ItemInfoChanged();

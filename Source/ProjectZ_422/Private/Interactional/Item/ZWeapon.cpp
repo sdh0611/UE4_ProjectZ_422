@@ -10,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "UnrealNetwork.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 AZWeapon::AZWeapon()
@@ -23,7 +24,7 @@ AZWeapon::AZWeapon()
 
 	// Create  skeletal mesh component
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	WeaponMesh->SetIsReplicated(true);
+	//WeaponMesh->SetIsReplicated(true);
 	RootComponent = WeaponMesh;
 
 	// -1 : Player에게 습득되지 않은 상태
@@ -59,7 +60,8 @@ void AZWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(AZWeapon, bIsEquipped, COND_OwnerOnly);
-	DOREPLIFETIME_CONDITION(AZWeapon, WeaponInventoryIndex, COND_OwnerOnly);
+	DOREPLIFETIME(AZWeapon, WeaponInventoryIndex);
+	DOREPLIFETIME(AZWeapon, AttachSocketName);
 
 }
 
@@ -174,6 +176,32 @@ FZItemInfo AZWeapon::CreateItemInfo()
 	return ItemInfo;
 }
 
+void AZWeapon::RepItemOwner()
+{
+	Super::RepItemOwner();
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	check(nullptr != MyGameInstance);
+
+	auto SKMesh = MyGameInstance->GetSkeletalMesh(ItemName);
+	if (nullptr == SKMesh)
+	{
+		ZLOG(Error, TEXT("SKMesh null.."));
+		return;
+	}
+
+	WeaponMesh->SetSkeletalMesh(SKMesh);
+
+	if (ItemOwner)
+	{
+		ZLOG_S(Error);
+		//ItemOwner->MulticastAttachWeapon(this, AttachSocketName);
+		ItemOwner->AttachWeapon(this, AttachSocketName);
+		//DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	}
+	
+	//AttachToComponent(ItemOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, AttachSocketName);
+}
+
 
 FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 {
@@ -222,6 +250,7 @@ bool AZWeapon::ClientSetSkeletalMesh_Validate(USkeletalMesh * NewMesh)
 
 void AZWeapon::ClientSetSkeletalMesh_Implementation(USkeletalMesh * NewMesh)
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Set SKMesh."));
 	WeaponMesh->SetSkeletalMesh(NewMesh);
 }
 

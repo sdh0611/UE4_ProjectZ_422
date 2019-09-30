@@ -406,6 +406,21 @@ FZItemInfo AZItem::CreateItemInfo()
 	return ItemInfo;
 }
 
+void AZItem::RepItemOwner()
+{
+	if (ItemOwner)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_ItemOwner"));
+		auto MyPC = ItemOwner->GetController<AZPlayerController>();
+		if (MyPC)
+		{
+			MyPC->AddItemToInventoryWidget(this);
+			MyPC->AddItemToSellWidget(this);
+		}
+	}
+
+}
+
 void AZItem::CheckItemExhausted()
 {
 	if (!HasAuthority())
@@ -459,20 +474,7 @@ void AZItem::ClientOnItemRemoved_Implementation()
 
 void AZItem::OnRep_ItemOwner()
 {
-	if (ItemOwner)
-	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_ItemOwner"));
-		auto MyPC = ItemOwner->GetController<AZPlayerController>();
-		if (MyPC)
-		{
-			MyPC->AddItemToInventoryWidget(this);
-			MyPC->AddItemToSellWidget(this);
-		}
-	}
-	else
-	{
-
-	}
+	RepItemOwner();
 }
 
 void AZItem::OnRep_ItemInfoChanged()
