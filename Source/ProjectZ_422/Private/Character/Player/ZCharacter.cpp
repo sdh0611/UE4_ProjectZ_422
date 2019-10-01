@@ -179,6 +179,7 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 		{
 			ClientOnDead();
 		}
+
 		//auto MyHUD = MyPC->GetUserHUD();
 		//if (MyHUD)
 		//{
@@ -1278,13 +1279,6 @@ bool AZCharacter::ClientOnDead_Validate()
 
 void AZCharacter::ClientOnDead_Implementation()
 {
-	
-	//auto MyAnim = GetCharacterAnimInstance();
-	//if (::IsValid(MyAnim))
-	//{
-	//	MyAnim->bIsDead = true;
-	//}
-
 	auto MyPC = GetController<AZPlayerController>();
 	if (MyPC && MyPC->IsLocalPlayerController())
 	{
