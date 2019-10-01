@@ -19,10 +19,10 @@ public:
 	AZAR();
 
 public:
-	virtual void Fire() override;
 	virtual void ChangeFireMode() override;
 
 protected:
+	virtual void Fire() override;
 
 	
 };

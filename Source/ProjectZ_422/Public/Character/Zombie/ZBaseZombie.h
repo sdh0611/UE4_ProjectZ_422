@@ -32,7 +32,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 		class AController* EventInstigator, class AActor* DamageCauser) override;
-	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 public:
 	UFUNCTION()
 	void OnSeePlayer(APawn* Pawn);
@@ -83,7 +84,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
 	float AttackRadius;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Zombie, Replicated)
 	EZombieState ZombieState;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, BlueprintReadOnly)

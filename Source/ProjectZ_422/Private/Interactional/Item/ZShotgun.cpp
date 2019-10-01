@@ -93,7 +93,8 @@ void AZShotgun::Fire()
 		Projectile->SetBulletSpeed(BulletSpeed);
 		Projectile->SetBulletLifeSpan(BulletLifeSpan);
 
-		SpawnTrail(LaunchDirection);
+		MulticastSpawnTrail(EndPoint);
+
 	}
 
 	if (bSuccess)
@@ -103,15 +104,8 @@ void AZShotgun::Fire()
 			--CurrentAmmo;
 		}
 
-		if (FireEffect)
-		{
-			UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
-		}
+		MulticastSpawnFireEffectAndSound();
 
-		if (FireSound)
-		{
-			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
-		}
 	}
 
 	Super::Fire();

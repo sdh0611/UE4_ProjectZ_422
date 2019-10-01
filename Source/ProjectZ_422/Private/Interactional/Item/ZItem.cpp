@@ -12,6 +12,7 @@
 #include "Components/SceneComponent.h"
 #include "ZUserHUD.h"
 #include "ZPlayerController.h"
+#include "ZPlayerAnimInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values

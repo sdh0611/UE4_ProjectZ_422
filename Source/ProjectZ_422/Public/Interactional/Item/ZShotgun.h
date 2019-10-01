@@ -17,7 +17,7 @@ class PROJECTZ_422_API AZShotgun : public AZGun
 public:
 	AZShotgun();
 
-public:
+protected:
 	virtual void Fire() override;
 
 protected:

@@ -114,8 +114,7 @@ public:
 
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
 	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
-	virtual void Fire() override;
-	virtual void FireEnd() override;
+
 
 public:
 	void Reload();
@@ -144,6 +143,30 @@ protected:
 	void SpawnTrail(const FVector& EndPoint);
 	void PlayCameraShake();
 	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
+	virtual void Fire() override;
+	virtual void FireEnd() override;
+	
+
+protected:
+	/* From client to server RPC */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetFireMode(EFireMode NewMode);
+	bool ServerSetFireMode_Validate(EFireMode NewMode);
+	void ServerSetFireMode_Implementation(EFireMode NewMode);
+
+	/* NetMulticast */
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastSpawnFireEffectAndSound();
+	void MulticastSpawnFireEffectAndSound_Implementation();
+
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastSpawnTrail(const FVector& EndPoint);
+	void MulticastSpawnTrail_Implementation(const FVector& EndPoint);
+
+
+	/* Replicated using */
+	UFUNCTION()
+	void OnRep_FireMode();
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
@@ -190,7 +213,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float FireTimer;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
 	float FireDelay;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)
@@ -214,7 +237,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	EGunType GunType;
 
-	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
+	UPROPERTY(EditAnywhere, Category = Weapon, ReplicatedUsing = OnRep_FireMode)
 	EFireMode FireMode;
 
 };

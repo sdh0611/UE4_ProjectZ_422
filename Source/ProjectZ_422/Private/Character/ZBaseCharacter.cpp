@@ -97,16 +97,16 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	{
 		ZLOG(Warning, TEXT("Dead!!"));
 		
-		OnDead();
+		MulticastOnDead();
 	}
 	else
 	{
-		auto Anim = GetAnimInstance();
-		if (::IsValid(Anim))
-		{
-			Anim->bIsDamaged = true;
-			//Anim->PlayCharacterMontage(TEXT("Hit"));
-		}
+		MulticastSetIsDamaged(true);
+		//auto Anim = GetAnimInstance();
+		//if (::IsValid(Anim))
+		//{
+		//	Anim->bIsDamaged = true;
+		//}
 	}
 
 	return FinalDamage;
@@ -149,13 +149,16 @@ void AZBaseCharacter::Revive()
 	GetCharacterMovement()->SetComponentTickEnabled(true);
 }
 
-void AZBaseCharacter::SetIsSprinting(bool NewState)
+void AZBaseCharacter::SetIsSprinting(bool bNewState)
 {
 	if (!HasAuthority())
 	{
-		ServerSetSprinting(NewState);
+		ServerSetSprinting(bNewState);
+		return;
 	}
-	bIsSprinting = NewState;
+	bIsSprinting = bNewState;
+
+	OnRep_IsSprinting();
 }
 
 void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
@@ -328,6 +331,21 @@ void AZBaseCharacter::ServerSetSprinting_Implementation(bool bNewState)
 	OnRep_IsSprinting();
 }
 
+void AZBaseCharacter::MulticastSetIsDamaged_Implementation(bool bNewState)
+{
+	auto Anim = GetAnimInstance();
+	if (::IsValid(Anim))
+	{
+		Anim->bIsDamaged = bNewState;
+	}
+}
+
+void AZBaseCharacter::MulticastOnDead_Implementation()
+{
+	
+	OnDead();
+}
+
 void AZBaseCharacter::OnRep_IsSprinting()
 {
 	if (bIsSprinting)
@@ -338,6 +356,14 @@ void AZBaseCharacter::OnRep_IsSprinting()
 	{
 		SetCurrentSpeed(WalkSpeed);
 	}
+
+	auto CharacterAnim = GetAnimInstance();
+	if (!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid anim instance.."));
+		return;
+	}
+	CharacterAnim->SetIsSprinting(bIsSprinting);
 }
 
 void AZBaseCharacter::OnRep_CurrentSpeed()

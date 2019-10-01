@@ -69,17 +69,12 @@ void AZAR::Fire()
 		if (CurrentAmmo > 0)
 		{
 			--CurrentAmmo;
-			if (FireEffect)
-			{
-				UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
-			}
 
-			if (FireSound)
-			{
-				UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
-			}
-			
-			SpawnTrail(Hit.bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd);
+			MulticastSpawnFireEffectAndSound();
+
+			FVector EndPoint = Hit.bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd;
+			MulticastSpawnTrail(EndPoint);
+
 			PlayCameraShake();
 		}
 		else
@@ -87,11 +82,6 @@ void AZAR::Fire()
 			ZLOG(Warning, TEXT("Reload!"));
 		}
 	}
-
-	//if (EFireMode::SingleShot == FireMode)
-	//{
-	//	FireEnd();
-	//}
 
 	Super::Fire();
 }

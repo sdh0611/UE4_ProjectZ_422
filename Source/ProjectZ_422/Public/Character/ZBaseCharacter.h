@@ -82,7 +82,16 @@ protected:
 
 
 	/* Server to client call RPC */
+	
 
+	/* Net multicast */
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSetIsDamaged(bool bNewState);
+	void MulticastSetIsDamaged_Implementation(bool bNewState);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDead();
+	void MulticastOnDead_Implementation();
 
 	/* Replicated using method */
 	UFUNCTION()

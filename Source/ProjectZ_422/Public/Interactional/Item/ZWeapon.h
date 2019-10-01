@@ -96,15 +96,16 @@ public:
 	virtual void OnDropped(int32 Quantity = 1) override;
 	virtual void InitItemData(const struct FZItemData* const NewItemData) override;
 	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
-	virtual void Fire();
-	virtual void FireEnd();
+
+public:
+	void StartFire();
+	void StopFire();
 
 public:
 	void SetWeaponInventoryIndex(int32 NewIndex);
 	void SetIsEquipped(bool NewState);
 	void SetWeaponCategory(EWeaponCategory NewWeaponCategory);
 
-public:
 	int32 GetWeaponInventoryIndex() const;
 	bool IsEquipped() const;
 	EWeaponCategory GetWeaponCategory() const;
@@ -117,12 +118,24 @@ protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
 	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
 
+	/* 반드시 서버에서 실행되야 하는 로직. */
+	virtual void Fire();
+	virtual void FireEnd();
+
 protected:
+	/* From client to server RPC */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerFire(bool bFire);
+	bool ServerFire_Validate(bool bFire);
+	void ServerFire_Implementation(bool bFire);
+
 	/*From server to client RPC*/
 	UFUNCTION(Client, Reliable, WithValidation)
 	void ClientSetSkeletalMesh(class USkeletalMesh* NewMesh);
 	bool ClientSetSkeletalMesh_Validate(class USkeletalMesh* NewMesh);
 	void ClientSetSkeletalMesh_Implementation(class USkeletalMesh* NewMesh);
+
+
 
 public:
 	FOnWeaponFired OnWeaponFired;

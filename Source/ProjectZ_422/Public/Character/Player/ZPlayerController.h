@@ -25,6 +25,7 @@ public:
 	void ConstructShopWidget();
 	void AddItemToInventoryWidget(class AZItem* const NewItem) ;
 	void AddItemToSellWidget(class AZItem* const NewItem);
+	void FadeBloodSplatter();
 
 public:
 	/*
@@ -66,6 +67,10 @@ public:
 	bool CloseShop_Validate();
 	void CloseShop_Implementation();
 
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientBloodSplatter();
+	bool ClientBloodSplatter_Validate();
+	void ClientBloodSplatter_Implementation();
 
 	/* Replicated using */
 

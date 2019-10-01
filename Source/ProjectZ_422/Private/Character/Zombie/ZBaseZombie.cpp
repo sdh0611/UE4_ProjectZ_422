@@ -14,7 +14,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "UnrealNetwork.h"
 
 AZBaseZombie::AZBaseZombie()
 {
@@ -79,6 +79,14 @@ float AZBaseZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEv
 	return FinalDamage;
 }
 
+void AZBaseZombie::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZBaseZombie, ZombieState);
+
+}
+
 void AZBaseZombie::OnSeePlayer(APawn * Pawn)
 {
 	OnSensingPlayer(Pawn);
@@ -97,7 +105,10 @@ void AZBaseZombie::Attack()
 
 void AZBaseZombie::AttackEnd()
 {
-	OnAttackEnd.Execute();
+	if (HasAuthority())
+	{
+		OnAttackEnd.Execute();
+	}
 }
 
 void AZBaseZombie::Revive()

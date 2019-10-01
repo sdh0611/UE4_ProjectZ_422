@@ -29,10 +29,11 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		/*
 			AimOffset에 사용하기 위한 Yaw, Pitch 계산
 		*/
-		FRotator DeltaRot = Pawn->GetControlRotation() - Pawn->GetActorRotation();
-		FRotator CurrentRot = FMath::RInterpTo(FRotator(AimPitch, AimYaw, 0.f), DeltaRot, DeltaSeconds, 15.f);
-		AimYaw = FMath::ClampAngle(CurrentRot.Yaw, -90.f, 90.f);
-		AimPitch = FMath::ClampAngle(CurrentRot.Pitch, -90.f, 90.f);
+		//FRotator DeltaRot = Pawn->GetControlRotation() - Pawn->GetActorRotation();
+		//FRotator CurrentRot = FMath::RInterpTo(FRotator(AimPitch, AimYaw, 0.f), DeltaRot, DeltaSeconds, 15.f);
+		FRotator Offset = Pawn->GetAimOffset();
+		AimYaw = FMath::ClampAngle(Offset.Yaw, -90.f, 90.f);
+		AimPitch = FMath::ClampAngle(Offset.Pitch, -90.f, 90.f);
 
 		/*
 			무기 장착여부 체크

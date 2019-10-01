@@ -174,11 +174,16 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 	auto MyPC = GetController<AZPlayerController>();
 	if (MyPC)
 	{
-		auto MyHUD = MyPC->GetUserHUD();
-		if (MyHUD)
+		MyPC->ClientBloodSplatter();
+		if (IsDead())
 		{
-			MyHUD->CallFadeOutBloodSplatterAnim();
+			ClientOnDead();
 		}
+		//auto MyHUD = MyPC->GetUserHUD();
+		//if (MyHUD)
+		//{
+		//	MyHUD->CallFadeOutBloodSplatterAnim();
+		//}
 	}
 	//StatusComponent->AdjustCurrentHP(-FinalDamage);
 
@@ -190,7 +195,7 @@ void AZCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AZCharacter, CurrentWeapon);
-	DOREPLIFETIME_CONDITION(AZCharacter, bIsAiming, COND_OwnerOnly);
+	DOREPLIFETIME(AZCharacter, bIsAiming);
 }
 
 void AZCharacter::Revive()
@@ -224,7 +229,7 @@ FHitResult AZCharacter::GetTraceHitFromActorCameraView(float Distance)
 
 void AZCharacter::AttachWeapon(class AZWeapon* Weapon, const FName & SocketName)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Weapon : %s"), *Weapon->GetItemName()));
+	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Weapon : %s"), *Weapon->GetItemName()));
 	if (nullptr == Weapon)
 	{
 		ZLOG(Error, TEXT("Invalid weapon.."));
@@ -266,13 +271,44 @@ void AZCharacter::OnRep_IsAiming()
 {
 	if (bIsAiming)
 	{
-	
+		SetCurrentSpeed(AimingWalkSpeed);
 	}
+	else
+	{
+		SetCurrentSpeed(WalkSpeed);
+	}
+
+	auto CharacterAnim = GetCharacterAnimInstance();
+	if(!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid anim instance.."));
+		return;
+	}
+	CharacterAnim->SetIsAiming(bIsAiming);
 }
 
-void AZCharacter::SetIsAiming(bool NewState)
+void AZCharacter::SetIsAiming(bool bNewState)
 {
-	bIsAiming = NewState;
+	if (!HasAuthority())
+	{
+		ServerSetAiming(bNewState);
+		return;
+	}
+
+	/* 공중에선 조준못함. */
+	if (GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+
+	/* Sprint 해제 */
+	if (IsSprinting())
+	{
+		
+	}
+
+	bIsAiming = bNewState;
+	OnRep_IsAiming();
 }
 
 void AZCharacter::SetIsSwitchingWeapon(bool NewState)
@@ -339,6 +375,11 @@ bool AZCharacter::IsAiming()
 bool AZCharacter::IsSwitchingWeapon()
 {
 	return bIsSwitchingWeapon;
+}
+
+FRotator AZCharacter::GetAimOffset() const
+{
+	return ActorToWorld().InverseTransformVectorNoScale(GetBaseAimRotation().Vector()).Rotation();
 }
 
 AZInteractional * AZCharacter::GetInteractionalInView()
@@ -448,11 +489,12 @@ void AZCharacter::OnDead()
 	{
 		MyAnim->bIsDead = true;
 	}
-
-	if (PlayerController)
+	
+	auto MyPC = GetController<AZPlayerController>();
+	if (MyPC && MyPC->IsLocalPlayerController())
 	{
-		DisableInput(PlayerController);
-		PlayerController->GetUserHUD()->DrawEndGameMenuWidget();
+		//DisableInput(MyPC);
+		MyPC->GetUserHUD()->DrawEndGameMenuWidget();
 	}
 
 }
@@ -594,9 +636,9 @@ void AZCharacter::Sprint()
 			// SprintSpeed로 값을 변경하고 Sprint 상태 변경
 			//MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
 			SetIsSprinting(true);
-			auto CharacterAnim = GetCharacterAnimInstance();
-			check(CharacterAnim);
-			CharacterAnim->SetIsSprinting(true);
+			//auto CharacterAnim = GetCharacterAnimInstance();
+			//check(CharacterAnim);
+			//CharacterAnim->SetIsSprinting(true);
 			//bUseControllerRotationYaw = false
 		}
 
@@ -773,7 +815,7 @@ void AZCharacter::Attack()
 	}
 
 	//CurrentWeapon->SetWantsToFire(true);
-	CurrentWeapon->Fire();
+	CurrentWeapon->StartFire();
 	//GetCharacterAnimInstance()->PlayFireMontage(CurrentWeapon);
 }
 
@@ -787,7 +829,7 @@ void AZCharacter::AttackEnd()
 	if (EWeaponCategory::Gun == CurrentWeapon->GetWeaponCategory())
 	{
 		//CurrentWeapon->SetWantsToFire(false);
-		CurrentWeapon->FireEnd();
+		CurrentWeapon->StopFire();
 	}
 }
 
@@ -795,6 +837,7 @@ void AZCharacter::Aim()
 {
 	if (!IsEquipWeapon())
 	{
+		ZLOG(Error, TEXT("Not equip weapon."));
 		return;
 	}
 	else
@@ -808,6 +851,7 @@ void AZCharacter::Aim()
 			check(Gun != nullptr);
 			if (Gun->IsReloading())
 			{
+				ZLOG(Error, TEXT("Is reloading.."));
 				return;
 			}
 		}
@@ -824,52 +868,60 @@ void AZCharacter::Aim()
 
 	if (IsSwitchingWeapon())
 	{
+		ZLOG(Error, TEXT("Is switching.."));
 		return;
 	}
 
 	if (GetCharacterMovement()->IsFalling())
 	{
+		ZLOG(Error, TEXT("Is falling.."));
 		return;
 	}
 
-	if (IsSprinting())
-	{
-		SprintRelease();
-	}
+	//if (IsSprinting())
+	//{
+	//	SprintRelease();
+	//}
 
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		GetCharacterMovement()->MaxWalkSpeedCrouched = AimingWalkSpeedCrouched;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = AimingWalkSpeed;
-	}
+	//if (GetCharacterMovement()->IsCrouching())
+	//{
+	//	GetCharacterMovement()->MaxWalkSpeedCrouched = AimingWalkSpeedCrouched;
+	//}
+	//else
+	//{
+	//	GetCharacterMovement()->MaxWalkSpeed = AimingWalkSpeed;
+	//}
 
 	SetIsAiming(true);
-	auto CharacterAnim = GetCharacterAnimInstance();
-	check(nullptr != CharacterAnim);
-	CharacterAnim->SetIsAiming(true);
+	//auto CharacterAnim = GetCharacterAnimInstance();
+	//check(nullptr != CharacterAnim);
+	//CharacterAnim->SetIsAiming(true);
 }
 
 void AZCharacter::AimRelease()
 {
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	}
+	//if (GetCharacterMovement()->IsCrouching())
+	//{
+	//	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
+	//}
+	//else
+	//{
+	//	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	//}
 	SetIsAiming(false);
-	auto CharacterAnim = GetCharacterAnimInstance();
-	check(nullptr != CharacterAnim);
-	CharacterAnim->SetIsAiming(false);
+	//auto CharacterAnim = GetCharacterAnimInstance();
+	//check(nullptr != CharacterAnim);
+	//CharacterAnim->SetIsAiming(false);
 }
 
 void AZCharacter::Reload()
 {
+	if (!HasAuthority())
+	{
+		ServerReload();
+		return;
+	}
+
 	if (!IsEquipWeapon())
 	{
 		return;
@@ -920,14 +972,15 @@ void AZCharacter::Reload()
 		}
 
 		Weapon->SetIsReloading(true);
-		auto CharacterAnim = GetCharacterAnimInstance();
-		check(nullptr != CharacterAnim);
+		MulticastPlayItemMontage(TEXT("Reload"));
+		//auto CharacterAnim = GetCharacterAnimInstance();
+		//check(nullptr != CharacterAnim);
 
-		auto Montage = Weapon->FindMontage(TEXT("Reload"));
-		if (Montage)
-		{
-			CharacterAnim->Montage_Play(Montage);
-		}
+		//auto Montage = Weapon->FindMontage(TEXT("Reload"));
+		//if (Montage)
+		//{
+		//	CharacterAnim->Montage_Play(Montage);
+		//}
 
 	}
 
@@ -994,7 +1047,7 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 		/*
 			Fire상태인 경우 Fire상태 해제.
 		*/
-		CurrentWeapon->FireEnd();
+		CurrentWeapon->StopFire();
 
 		/*
 			Weapon slot에 따라 달라짐.
@@ -1109,13 +1162,11 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 
 void AZCharacter::Slot1()
 {
-	ZLOG_S(Error);
 	SwitchWeapon(0);
 }
 
 void AZCharacter::Slot2()
 {
-	ZLOG_S(Error);
 	SwitchWeapon(1);
 }
 
@@ -1182,6 +1233,16 @@ void AZCharacter::ServerSwitchWeapon_Implementation(int32 NewWeaponIndex)
 	SwitchWeapon(NewWeaponIndex);
 }
 
+bool AZCharacter::ServerReload_Validate()
+{
+	return true;
+}
+
+void AZCharacter::ServerReload_Implementation()
+{
+	Reload();
+}
+
 bool AZCharacter::ServerSetCrouch_Validate(bool bCrouch)
 {
 	return true;
@@ -1198,6 +1259,63 @@ void AZCharacter::ServerSetCrouch_Implementation(bool bCrouch)
 		
 	}
 
+}
+
+bool AZCharacter::ServerSetAiming_Validate(bool bAiming)
+{
+	return true;
+}
+
+void AZCharacter::ServerSetAiming_Implementation(bool bAiming)
+{
+	SetIsAiming(bAiming);
+}
+
+bool AZCharacter::ClientOnDead_Validate()
+{
+	return true;
+}
+
+void AZCharacter::ClientOnDead_Implementation()
+{
+	
+	//auto MyAnim = GetCharacterAnimInstance();
+	//if (::IsValid(MyAnim))
+	//{
+	//	MyAnim->bIsDead = true;
+	//}
+
+	auto MyPC = GetController<AZPlayerController>();
+	if (MyPC && MyPC->IsLocalPlayerController())
+	{
+		DisableInput(MyPC);
+		//MyPC->GetUserHUD()->DrawEndGameMenuWidget();
+	}
+}
+
+void AZCharacter::MulticastPlayItemMontage_Implementation(const FString & MontageName)
+{
+	if (!IsEquipWeapon())
+	{
+		ZLOG(Error, TEXT("Weapon not exis.."));
+		return;
+	}
+
+	auto Montage = CurrentWeapon->FindMontage(MontageName);
+	if (nullptr == Montage)
+	{
+		ZLOG(Error, TEXT("Montage not exist.."));
+		return;
+	}
+
+	auto PlayerAnim = GetCharacterAnimInstance();
+	if (!::IsValid(PlayerAnim))
+	{
+		ZLOG(Error, TEXT("PlayerAnim not valid."));
+		return;
+	}
+
+	PlayerAnim->Montage_Play(Montage);
 }
 
 void AZCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)

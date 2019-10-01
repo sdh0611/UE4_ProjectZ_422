@@ -47,13 +47,17 @@ public:
 
 
 	/* Client to server call RPC */
-
+	
 
 
 	/* Net multicast */
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayMontage(const FString& MontageName);
 	void MulticastPlayMontage_Implementation(const FString& MontageName);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayItemMontage(const FString& MontageName);
+	void MulticastPlayItemMontage_Implementation(const FString& MontageName);
 
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
 	void MulticastAttachWeapon(class AZWeapon* Weapon, FName SocketName);
@@ -69,6 +73,7 @@ public:
 	bool IsEquipWeapon();
 	bool IsAiming();
 	bool IsSwitchingWeapon();
+	FRotator GetAimOffset() const;
 	class AZInteractional* GetInteractionalInView();
 	class UZCharacterItemStatusComponent* const GetItemStatusComponent() const;
 	class UZPlayerStatusComponent* const GetPlayerStatusComponent() const;
@@ -86,7 +91,6 @@ private:
 	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead() override;
 	virtual void OnRemoved() override;
-	
 
 private:
 	/*
@@ -143,14 +147,32 @@ private:
 	void ServerSwitchWeapon(int32 NewWeaponIndex);
 	bool ServerSwitchWeapon_Validate(int32 NewWeaponIndex);
 	void ServerSwitchWeapon_Implementation(int32 NewWeaponIndex);
+	
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerReload();
+	bool ServerReload_Validate();
+	void ServerReload_Implementation();
 
 	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerSetCrouch(bool bCrouch);
 	bool ServerSetCrouch_Validate(bool bCrouch);
 	void ServerSetCrouch_Implementation(bool bCrouch);
-	/* Server to client call RPC */
-	//UFUNCTION(Client, Reliable)
 
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSetAiming(bool bAiming);
+	bool ServerSetAiming_Validate(bool bAiming);
+	void ServerSetAiming_Implementation(bool bAiming);
+
+	/* Server to client call RPC */
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientOnDead();
+	bool ClientOnDead_Validate();
+	void ClientOnDead_Implementation();
+
+	/* Net multicast */
+	//UFUNCTION(NetMulticast, Reliable)
+	//void MulticastOnDead();
+	//void MulticastOnDead_Implementation();
 
 	/* Replicated using method */
 	UFUNCTION()

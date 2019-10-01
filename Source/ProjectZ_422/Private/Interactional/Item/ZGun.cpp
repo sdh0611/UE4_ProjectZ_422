@@ -94,6 +94,7 @@ void AZGun::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 
 	DOREPLIFETIME_CONDITION(AZGun, CurrentAmmo, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, MaxAmmo, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AZGun, FireDelay, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, CurrentSpread, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, FireMode, COND_OwnerOnly);
 
@@ -190,6 +191,11 @@ void AZGun::SetWantsToFire(bool NewState)
 
 void AZGun::SetFireMode(EFireMode NewMode)
 {
+	if (!HasAuthority())
+	{
+		ServerSetFireMode(NewMode);
+		return;
+	}
 	FireMode = NewMode;
 	OnItemInfoChanged.Broadcast();
 }
@@ -273,6 +279,50 @@ void AZGun::FireEnd()
 	SetWantsToFire(false);
 }
 
+bool AZGun::ServerSetFireMode_Validate(EFireMode NewMode)
+{
+	return true;
+}
+
+void AZGun::ServerSetFireMode_Implementation(EFireMode NewMode)
+{
+	SetFireMode(NewMode);
+}
+
+void AZGun::MulticastSpawnFireEffectAndSound_Implementation()
+{
+	if (FireEffect)
+	{
+		UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
+	}
+
+	if (FireSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation(), GetActorRotation());
+	}
+}
+
+void AZGun::MulticastSpawnTrail_Implementation(const FVector & EndPoint)
+{
+	if (ProjectileTrail)
+	{
+		FVector MuzzleLoc = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+
+		UParticleSystemComponent* TrailPSC = UGameplayStatics::SpawnEmitterAtLocation(this, ProjectileTrail, MuzzleLoc);
+		if (TrailPSC)
+		{
+			TrailPSC->SetVectorParameter(TrailTargetParam, EndPoint);
+		}
+
+	}
+	//SpawnTrail(EndPoint);
+}
+
+void AZGun::OnRep_FireMode()
+{
+	OnItemInfoChanged.Broadcast();
+}
+
 bool AZGun::CheckNeedToReload()
 {
 	return CurrentAmmo < 1;
@@ -280,21 +330,26 @@ bool AZGun::CheckNeedToReload()
 
 void AZGun::SpawnTrail(const FVector & EndPoint)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
 	if (ProjectileTrail)
 	{
 		FVector MuzzleLoc = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
-		
+
 		UParticleSystemComponent* TrailPSC = UGameplayStatics::SpawnEmitterAtLocation(this, ProjectileTrail, MuzzleLoc);
 		if (TrailPSC)
 		{
 			TrailPSC->SetVectorParameter(TrailTargetParam, EndPoint);
 		}
 
-
 	}
 
 
 }
+
 
 void AZGun::PlayCameraShake()
 {

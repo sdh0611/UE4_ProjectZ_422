@@ -20,7 +20,6 @@ public:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
-	virtual void Fire() override;
 
 public:
 	/*
@@ -33,6 +32,9 @@ public:
 
 public:
 	bool IsThrown() const;
+
+protected:
+	virtual void Fire() override;
 
 protected:
 	// 사격시 생성되는 수류탄의 클래스.

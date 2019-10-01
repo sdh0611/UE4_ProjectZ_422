@@ -243,6 +243,23 @@ void AZWeapon::InitItemInfo(FZItemInfo & ItemInfo)
 	
 }
 
+bool AZWeapon::ServerFire_Validate(bool bFire)
+{
+	return true;
+}
+
+void AZWeapon::ServerFire_Implementation(bool bFire)
+{
+	if (bFire)
+	{
+		Fire();
+	}
+	else
+	{
+		FireEnd();
+	}
+}
+
 bool AZWeapon::ClientSetSkeletalMesh_Validate(USkeletalMesh * NewMesh)
 {
 	return true;
@@ -256,19 +273,38 @@ void AZWeapon::ClientSetSkeletalMesh_Implementation(USkeletalMesh * NewMesh)
 
 void AZWeapon::Fire()
 {
-	//ZLOG(Warning, TEXT("Weapon Fire!!"));
-
-	auto PlayerAnim = ItemOwner->GetCharacterAnimInstance();
-	if (!::IsValid(PlayerAnim))
+	if (!HasAuthority())
 	{
-		ZLOG(Error, TEXT("PlayerAnim not valid."));
 		return;
 	}
 
-	if (GetFireAnimMontage())
+	ZLOG(Warning, TEXT("Weapon Fire!!"));
+
+	if (!::IsValid(ItemOwner))
 	{
-		PlayerAnim->Montage_Play(GetFireAnimMontage());
+		ZLOG(Error, TEXT("Invalid item owner.."));
+		return;
 	}
+
+	if (ItemOwner->IsAiming())
+	{
+		ItemOwner->MulticastPlayItemMontage(TEXT("FireAim"));
+	}
+	else
+	{
+		ItemOwner->MulticastPlayItemMontage(TEXT("Fire"));
+	}
+	//auto PlayerAnim = ItemOwner->GetCharacterAnimInstance();
+	//if (!::IsValid(PlayerAnim))
+	//{
+	//	ZLOG(Error, TEXT("PlayerAnim not valid."));
+	//	return;
+	//}
+	//MulticastPlayItemMontage(TEXT("Fire"));
+	//if (GetFireAnimMontage())
+	//{
+	//	PlayerAnim->Montage_Play(GetFireAnimMontage());
+	//}
 
 	OnWeaponFired.Broadcast();
 	OnItemInfoChanged.Broadcast();
@@ -277,4 +313,14 @@ void AZWeapon::Fire()
 void AZWeapon::FireEnd()
 {
 
+}
+
+void AZWeapon::StartFire()
+{
+	ServerFire(true);
+}
+
+void AZWeapon::StopFire()
+{
+	ServerFire(false);
 }

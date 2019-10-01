@@ -183,6 +183,19 @@ void AZPlayerController::CloseShop_Implementation()
 	}
 }
 
+bool AZPlayerController::ClientBloodSplatter_Validate()
+{
+	return true;
+}
+
+void AZPlayerController::ClientBloodSplatter_Implementation()
+{
+	if (UserHUD)
+	{
+		UserHUD->CallFadeOutBloodSplatterAnim();
+	}
+}
+
 void AZPlayerController::ConstructShopWidget()
 {
 	ZLOG_S(Warning);
@@ -242,6 +255,16 @@ void AZPlayerController::AddItemToSellWidget(AZItem * const NewItem)
 			UserHUD->GetShopWidget()->AddItemToSellWidget(NewItem);
 		}
 	}
+}
+
+void AZPlayerController::FadeBloodSplatter()
+{
+	if (IsLocalPlayerController() && UserHUD)
+	{
+		UserHUD->CallFadeOutBloodSplatterAnim();
+	}
+
+
 }
 
 void AZPlayerController::ToggleInventory()
