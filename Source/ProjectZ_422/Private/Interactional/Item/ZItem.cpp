@@ -124,6 +124,7 @@ void AZItem::OnDropped(int32 Quantity)
 			}
 			NewPickup->SpawnItemClass = GetClass();
 			NewPickup->SetItemInfo(CreateItemInfo());
+			NewPickup->SetItem(this);
 			NewPickup->WhenSpawnedByItem();
 
 		}
@@ -136,9 +137,11 @@ void AZItem::OnDropped(int32 Quantity)
 		if (HasAuthority())
 		{
 			OnItemRemoved.Broadcast();
+			ClearDelegates();
 		}
-
+		
 		ItemOwner->GetItemStatusComponent()->RemoveItem(GetInventoryIndex(), true);
+		MulticastOnItemDropped();
 	}
 	else
 	{
@@ -159,11 +162,31 @@ void AZItem::OnDropped(int32 Quantity)
 			ZLOG(Error, TEXT("Failed to spawn pickup.."));
 			return;
 		}
-		auto ItemInfo = CreateItemInfo();
-		ItemInfo.CurrentQuantityOfItem = Quantity;
+		//auto ItemInfo = CreateItemInfo();
+		//ItemInfo.CurrentQuantityOfItem = Quantity;
+		//NewPickup->SpawnItemClass = GetClass();
+		//NewPickup->SetItemInfo(ItemInfo);
 
-		NewPickup->SpawnItemClass = GetClass();
-		NewPickup->SetItemInfo(ItemInfo);
+		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(GetClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+		if (nullptr == NewItem)
+		{
+			ZLOG(Error, TEXT("Failed to spawn new item.."));
+			NewPickup->Destroy();
+			return;
+		}
+
+		auto ItemData = MyGameInstance->GetItemDataByName(ItemName);
+		if (nullptr == ItemData)
+		{
+			ZLOG(Error, TEXT("Failed to find data : %s.."), *ItemName);
+			NewPickup->Destroy();
+			return;
+		}
+
+		NewItem->InitItemData(ItemData);
+		NewItem->SetCurrentQuantityOfItem(Quantity);
+
+		NewPickup->SetItem(NewItem);
 		NewPickup->WhenSpawnedByItem();
 
 		AdjustQuantity(-Quantity);
@@ -185,10 +208,19 @@ void AZItem::OnRemoved()
 	else
 	{
 		//SetItemOwner(nullptr);
+		ClearDelegates();
 		SetCurrentQuantityOfItem(1);
 		SetInventoryIndex(-1);
 		SetActive(false);
 	}
+}
+
+void AZItem::OnPicked()
+{
+}
+
+void AZItem::WhenDropped()
+{
 }
 
 void AZItem::InitItemData(const FZItemData * const NewItemData)
@@ -313,6 +345,22 @@ void AZItem::SetInventoryIndex(int32 NewIndex)
 
 void AZItem::SetItemOwner(AZCharacter * NewItemOwner)
 {
+	if (HasAuthority())
+	{
+		if (::IsValid(NewItemOwner))
+		{
+			auto MyPC = NewItemOwner->GetController<AZPlayerController>();
+			if (MyPC)
+			{
+				SetOwner(MyPC);
+			}
+		}
+		else
+		{
+			SetOwner(nullptr);
+		}
+	}
+
 	ItemOwner = NewItemOwner;
 }
 
@@ -436,6 +484,12 @@ void AZItem::CheckItemExhausted()
 	}
 }
 
+void AZItem::ClearDelegates()
+{
+	OnItemInfoChanged.Clear();
+	OnItemRemoved.Clear();
+}
+
 void AZItem::InitItemInfo(FZItemInfo & ItemInfo)
 {
 	/* 오직 Server에서만 실행되야하므로. */
@@ -472,6 +526,12 @@ bool AZItem::ClientOnItemRemoved_Validate()
 void AZItem::ClientOnItemRemoved_Implementation()
 {
 	OnItemRemoved.Broadcast();
+	ClearDelegates();
+}
+
+void AZItem::MulticastOnItemDropped_Implementation()
+{
+	WhenDropped();
 }
 
 void AZItem::OnRep_ItemOwner()

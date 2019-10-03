@@ -37,7 +37,7 @@ protected:
 
 private:
 	UPROPERTY()
-	class AZWeapon* Weapon;
+	TWeakObjectPtr<class AZWeapon> Weapon;
 
 	UPROPERTY()
 	class UTextBlock* WeaponName;

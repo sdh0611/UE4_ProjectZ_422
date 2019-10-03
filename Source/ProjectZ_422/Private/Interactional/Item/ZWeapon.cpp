@@ -78,10 +78,22 @@ void AZWeapon::OnRemoved()
 void AZWeapon::OnDropped(int32 Quantity)
 {
 	ZLOG_S(Warning);
-	// Actor·ÎºÎÅÍ ¶¼¾î³¿.
-	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
 	Super::OnDropped(Quantity);
+}
+
+void AZWeapon::OnPicked()
+{
+	Super::OnPicked();
+
+	WeaponMesh->SetVisibility(true);
+}
+
+void AZWeapon::WhenDropped()
+{
+	// Actor·ÎºÎÅÍ ¶¼¾î³¿.
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	WeaponMesh->SetVisibility(false);
 }
 
 void AZWeapon::InitItemData(const FZItemData * const NewItemData)
@@ -125,6 +137,13 @@ void AZWeapon::ApplyItemInfo(FZItemInfo& NewItemInfo)
 
 	Super::ApplyItemInfo(NewItemInfo);
 
+}
+
+void AZWeapon::ClearDelegates()
+{
+	Super::ClearDelegates();
+
+	OnWeaponFired.Clear();
 }
 
 void AZWeapon::SetWeaponInventoryIndex(int32 NewIndex)
@@ -296,17 +315,6 @@ void AZWeapon::Fire()
 	{
 		ItemOwner->MulticastPlayItemMontage(TEXT("Fire"));
 	}
-	//auto PlayerAnim = ItemOwner->GetCharacterAnimInstance();
-	//if (!::IsValid(PlayerAnim))
-	//{
-	//	ZLOG(Error, TEXT("PlayerAnim not valid."));
-	//	return;
-	//}
-	//MulticastPlayItemMontage(TEXT("Fire"));
-	//if (GetFireAnimMontage())
-	//{
-	//	PlayerAnim->Montage_Play(GetFireAnimMontage());
-	//}
 
 	OnWeaponFired.Broadcast();
 	OnItemInfoChanged.Broadcast();

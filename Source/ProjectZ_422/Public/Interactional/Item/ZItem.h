@@ -128,6 +128,9 @@ public:
 		주로 외부에서 호출하게 될 것. (ItemStatusComponent, Shop, etc...)
 	*/
 	virtual void OnRemoved();
+	virtual void OnPicked();
+
+	virtual void WhenDropped();
 
 	/*
 		Item생성 시 ItemData를 적용하기 위한 메소드.
@@ -146,6 +149,7 @@ public:
 	int32 AdjustQuantity(int32 Value);
 	virtual FZItemInfo CreateItemInfo();
 	virtual void RepItemOwner();
+	virtual void ClearDelegates();
 
 public:
 	void SetCanDestroy(bool NewState);
@@ -191,6 +195,12 @@ protected:
 	void ClientOnItemRemoved();
 	bool ClientOnItemRemoved_Validate();
 	void ClientOnItemRemoved_Implementation();
+
+	/* Net multicast */
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnItemDropped();
+	void MulticastOnItemDropped_Implementation();
+
 
 	/* Replicated using */
 	UFUNCTION()

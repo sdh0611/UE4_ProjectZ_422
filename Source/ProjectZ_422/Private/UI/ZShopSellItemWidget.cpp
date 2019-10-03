@@ -135,7 +135,9 @@ void UZShopSellItemWidget::UpdateWidget()
 
 void UZShopSellItemWidget::ClearWidget()
 {
-	Item = nullptr;
+	//Item->OnItemInfoChanged.RemoveAll(this);
+
+	Item.Reset();
 
 	bIsEmpty = true;
 	SetVisibility(ESlateVisibility::Collapsed);

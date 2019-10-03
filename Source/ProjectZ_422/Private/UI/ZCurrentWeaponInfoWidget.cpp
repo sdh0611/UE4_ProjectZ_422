@@ -7,7 +7,7 @@
 #include "ZGameInstance.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 
 void UZCurrentWeaponInfoWidget::NativeConstruct()
 {
@@ -129,6 +129,7 @@ void UZCurrentWeaponInfoWidget::UpdateWidget()
 {
 	if (nullptr == Weapon)
 	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Weapon null"));
 		ZLOG(Error, TEXT("Weapon null"));
 		return;
 	}
@@ -181,7 +182,11 @@ void UZCurrentWeaponInfoWidget::UpdateWidget()
 
 void UZCurrentWeaponInfoWidget::ClearWidget()
 {
-	Weapon = nullptr;
+	//Weapon->OnItemInfoChanged.RemoveAll(this);
+	//Weapon->OnItemRemoved.RemoveAll(this);
+	//Weapon->OnWeaponFired.RemoveAll(this);
+
+	Weapon.Reset();
 
 	WeaponIcon->SetVisibility(ESlateVisibility::Hidden);
 	WeaponIcon->SetBrushFromTexture(nullptr);

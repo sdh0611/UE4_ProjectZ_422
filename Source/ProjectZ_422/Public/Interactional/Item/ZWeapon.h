@@ -93,10 +93,16 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void OnRemoved() override;
 	virtual void OnDropped(int32 Quantity = 1) override;
+	virtual void OnPicked() override;
+	virtual void WhenDropped();
+
 	virtual void InitItemData(const struct FZItemData* const NewItemData) override;
 	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo) override;
+
+	virtual void ClearDelegates() override;
 
 public:
 	void StartFire();

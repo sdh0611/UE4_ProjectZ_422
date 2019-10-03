@@ -108,10 +108,33 @@ void AZPickup::SetItemInfo(const FZItemInfo & NewItemInfo)
 {
 	ItemInfo = NewItemInfo;
 
+	//auto MyGameInstance = Cast<UZGameInstance>(GetGameInstance());
+	//check(MyGameInstance);
+
+	//auto ItemMesh = MyGameInstance->GetStaticMesh(ItemInfo.ItemName);
+	//if (nullptr == ItemMesh)
+	//{
+	//	ZLOG(Error, TEXT("Item mesh not exsit.."));
+	//	return;
+	//}
+
+	//Mesh->SetStaticMesh(ItemMesh);
+	//ClientSetStaticMesh(ItemMesh);
+}
+
+void AZPickup::SetItem(AZItem * NewItem)
+{
+	Item = NewItem;
+	if (!::IsValid(Item))
+	{
+		ZLOG(Error, TEXT("Invalid item.."));
+		return;
+	}
+
 	auto MyGameInstance = Cast<UZGameInstance>(GetGameInstance());
 	check(MyGameInstance);
 
-	auto ItemMesh = MyGameInstance->GetStaticMesh(ItemInfo.ItemName);
+	auto ItemMesh = MyGameInstance->GetStaticMesh(Item->GetItemName());
 	if (nullptr == ItemMesh)
 	{
 		ZLOG(Error, TEXT("Item mesh not exsit.."));
@@ -119,12 +142,8 @@ void AZPickup::SetItemInfo(const FZItemInfo & NewItemInfo)
 	}
 
 	Mesh->SetStaticMesh(ItemMesh);
-	ClientSetStaticMesh(ItemMesh);
-}
+	MulticastSetStaticMesh(ItemMesh);
 
-void AZPickup::SetItem(AZItem * NewItem)
-{
-	Item = NewItem;
 }
 
 bool AZPickup::IsActive() const
@@ -143,12 +162,7 @@ AZItem * const AZPickup::GetItem() const
 	return Item;
 }
 
-bool AZPickup::ClientSetStaticMesh_Validate(UStaticMesh * NewMesh)
-{
-	return true;
-}
-
-void AZPickup::ClientSetStaticMesh_Implementation(UStaticMesh * NewMesh)
+void AZPickup::MulticastSetStaticMesh_Implementation(UStaticMesh * NewMesh)
 {
 	Mesh->SetStaticMesh(NewMesh);
 

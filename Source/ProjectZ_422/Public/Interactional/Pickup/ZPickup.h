@@ -40,10 +40,9 @@ public:
 
 private:
 	/* From server to client RPC*/
-	UFUNCTION(Client, Reliable, WithValidation)
-	void ClientSetStaticMesh(class UStaticMesh* NewMesh);
-	bool ClientSetStaticMesh_Validate(class UStaticMesh* NewMesh);
-	void ClientSetStaticMesh_Implementation(class UStaticMesh* NewMesh);
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSetStaticMesh(class UStaticMesh* NewMesh);
+	void MulticastSetStaticMesh_Implementation(class UStaticMesh* NewMesh);
 
 public:
 	/*
