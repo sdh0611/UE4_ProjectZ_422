@@ -31,11 +31,9 @@ public:
 
 public:
 	void SetActive(bool NewState);
-	void SetItemInfo(const FZItemInfo& NewItemInfo);
 	void SetItem(class AZItem* NewItem);
 
 	bool IsActive() const;
-	FZItemInfo GetItemInfo();
 	class AZItem* const GetItem() const;
 
 private:
@@ -66,9 +64,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Pickup)
 	class UStaticMeshComponent* Mesh;
-
-	UPROPERTY(VisibleAnywhere, Category = Pickup, Replicated)
-	FZItemInfo ItemInfo;
 
 	// Item Name
 	UPROPERTY(EditAnywhere, Category = Pickup, Replicated)

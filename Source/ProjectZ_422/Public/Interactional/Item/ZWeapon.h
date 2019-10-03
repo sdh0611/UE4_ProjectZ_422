@@ -60,23 +60,6 @@ static EWeaponCategory GetWeaponCategoryFromString(const FString& WeaponCategory
 	return EWeaponCategory::Invalid;
 };
 
-USTRUCT(BlueprintType)
-struct PROJECTZ_422_API FZWeaponInfo : public FZItemInfo
-{
-	GENERATED_BODY()
-		
-public:
-	FZWeaponInfo() { ID = TypeID; };
-	virtual ~FZWeaponInfo() { };
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EWeaponCategory WeaponCategory;
-
-	static const int32 TypeID = 1;
-
-	//virtual bool IsOfType(int32 NewID) const override { ZLOG(Error, TEXT("ID : %d"), TypeID); return (NewID == FZWeaponInfo::TypeID) || FZItemInfo::IsOfType(NewID); }
-};
 
 /**
  * 
@@ -100,7 +83,6 @@ public:
 	virtual void WhenDropped();
 
 	virtual void InitItemData(const struct FZItemData* const NewItemData) override;
-	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo) override;
 
 	virtual void ClearDelegates() override;
 
@@ -117,13 +99,11 @@ public:
 	bool IsEquipped() const;
 	EWeaponCategory GetWeaponCategory() const;
 	virtual class UAnimMontage* const GetFireAnimMontage() const;
-	virtual FZItemInfo CreateItemInfo();
 
 	virtual void RepItemOwner() override;
 
 protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
-	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
 
 	/* 반드시 서버에서 실행되야 하는 로직. */
 	virtual void Fire();
@@ -141,7 +121,6 @@ protected:
 	void ClientSetSkeletalMesh(class USkeletalMesh* NewMesh);
 	bool ClientSetSkeletalMesh_Validate(class USkeletalMesh* NewMesh);
 	void ClientSetSkeletalMesh_Implementation(class USkeletalMesh* NewMesh);
-
 
 
 public:

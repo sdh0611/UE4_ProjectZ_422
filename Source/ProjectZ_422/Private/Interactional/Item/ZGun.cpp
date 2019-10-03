@@ -95,6 +95,7 @@ void AZGun::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME_CONDITION(AZGun, CurrentAmmo, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, MaxAmmo, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, FireDelay, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(AZGun, BulletSpread, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, CurrentSpread, COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, FireMode, COND_OwnerOnly);
 
@@ -123,19 +124,6 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 	BulletSpread = NewGunData->BulletSpread;
 	SpreadDecrement = NewGunData->SpreadDecrement;
 
-}
-
-void AZGun::ApplyItemInfo(FZItemInfo& NewItemInfo)
-{
-	ZLOG_S(Error);
-	//if (NewItemInfo.IsOfType(FZGunInfo::TypeID))
-	//{
-		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&NewItemInfo);
-		ZLOG(Error, TEXT("Ammo : %d"), GunInfo->GunCurrentAmmo);
-		CurrentAmmo = GunInfo->GunCurrentAmmo;
-	//}
-
-	Super::ApplyItemInfo(NewItemInfo);
 }
 
 void AZGun::Reload()
@@ -252,15 +240,6 @@ UAnimMontage * const AZGun::GetFireAnimMontage() const
 	return Super::GetFireAnimMontage();
 }
 
-FZItemInfo AZGun::CreateItemInfo()
-{
-	FZGunInfo ItemInfo;
-
-	InitItemInfo(ItemInfo);
-
-	return ItemInfo;
-}
-
 void AZGun::Fire()
 {
 	bIsFiring = true;
@@ -270,8 +249,14 @@ void AZGun::Fire()
 
 	float SpreadYaw = FMath::RandRange(-CurrentSpread, CurrentSpread);
 
-	ItemOwner->AddControllerPitchInput(-CurrentSpread);
-	ItemOwner->AddControllerYawInput(SpreadYaw);
+	auto MyPC = ItemOwner->GetController<AZPlayerController>();
+	if (MyPC)
+	{
+		MyPC->ClientAddPitchAndYaw(-CurrentSpread, SpreadYaw);
+	}
+
+	//ItemOwner->AddControllerPitchInput(-CurrentSpread);
+	//ItemOwner->AddControllerYawInput(SpreadYaw);
 
 	Super::Fire();
 }
@@ -354,9 +339,7 @@ void AZGun::SpawnTrail(const FVector & EndPoint)
 
 	}
 
-
 }
-
 
 void AZGun::PlayCameraShake()
 {
@@ -367,18 +350,5 @@ void AZGun::PlayCameraShake()
 		{
 			MyPC->ClientPlayCameraShake(FireCameraShake);
 		}
-	}
-}
-
-void AZGun::InitItemInfo(FZItemInfo & ItemInfo)
-{
-	Super::InitItemInfo(ItemInfo);
-
-	if (ItemInfo.IsOfType(FZGunInfo::TypeID))
-	{
-		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&ItemInfo);
-		GunInfo->GunType = GunType;
-		GunInfo->GunCurrentAmmo = CurrentAmmo;
-		GunInfo->GunFireMode = FireMode;
 	}
 }

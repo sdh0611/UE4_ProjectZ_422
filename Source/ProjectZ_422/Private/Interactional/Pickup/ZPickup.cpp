@@ -45,7 +45,6 @@ void AZPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 	DOREPLIFETIME(AZPickup, Item);
 	DOREPLIFETIME(AZPickup, bIsActive);
-	DOREPLIFETIME(AZPickup, ItemInfo);
 	DOREPLIFETIME(AZPickup, Name);
 	DOREPLIFETIME(AZPickup, SpawnItemClass);
 }
@@ -104,24 +103,6 @@ void AZPickup::SetActive(bool NewState)
 	bIsActive = NewState;
 }
 
-void AZPickup::SetItemInfo(const FZItemInfo & NewItemInfo)
-{
-	ItemInfo = NewItemInfo;
-
-	//auto MyGameInstance = Cast<UZGameInstance>(GetGameInstance());
-	//check(MyGameInstance);
-
-	//auto ItemMesh = MyGameInstance->GetStaticMesh(ItemInfo.ItemName);
-	//if (nullptr == ItemMesh)
-	//{
-	//	ZLOG(Error, TEXT("Item mesh not exsit.."));
-	//	return;
-	//}
-
-	//Mesh->SetStaticMesh(ItemMesh);
-	//ClientSetStaticMesh(ItemMesh);
-}
-
 void AZPickup::SetItem(AZItem * NewItem)
 {
 	Item = NewItem;
@@ -149,12 +130,6 @@ void AZPickup::SetItem(AZItem * NewItem)
 bool AZPickup::IsActive() const
 {
 	return bIsActive;
-}
-
-FZItemInfo AZPickup::GetItemInfo() 
-{
-	// TODO: 여기에 반환 구문을 삽입합니다.
-	return ItemInfo;
 }
 
 AZItem * const AZPickup::GetItem() const

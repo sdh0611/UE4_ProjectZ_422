@@ -65,40 +65,6 @@ static EItemType GetItemTypeFromString(const FString& ItemTypeName)
 	return EItemType::Invalid;
 }
 
-USTRUCT(BlueprintType)
-struct PROJECTZ_422_API FZItemInfo
-{
-	GENERATED_BODY()
-
-public:
-	FZItemInfo() { ID = TypeID; };
-	virtual ~FZItemInfo() { };
-
-protected:
-	int32 ID;
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bCanDestroy = false;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FString ItemName;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int32 CurrentQuantityOfItem = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EItemType ItemType = EItemType::Default;
-
-	bool bInit = false;
-
-	static const int32 TypeID = 0;
-
-	virtual bool IsOfType(int32 NewID) const { return (NewID == ID); }
-	//virtual bool IsOfType(int32 NewID) const { ZLOG(Error, TEXT("ID : %d"), TypeID); return (NewID == FZItemInfo::TypeID); }
-
-};
-
 
 UCLASS()
 class PROJECTZ_422_API AZItem : public AActor
@@ -137,9 +103,6 @@ public:
 		각 아이템 분류별로 오버라이딩.
 	*/
 	virtual void InitItemData(const struct FZItemData* const NewItemData);
-	
-	/* Pickup으로 부터 생성된 경우 호출. */
-	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo);
 
 public:
 	/*
@@ -147,7 +110,6 @@ public:
 		@return : 은 해당 Item의 최대 보유 갯수를 초과한 만큼의 값.
 	*/
 	int32 AdjustQuantity(int32 Value);
-	virtual FZItemInfo CreateItemInfo();
 	virtual void RepItemOwner();
 	virtual void ClearDelegates();
 
@@ -174,6 +136,11 @@ public:
 	bool IsActive() const;
 	class UAnimMontage* const FindMontage(const FString& MontageName) const;
 
+public:
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnItemPicked();
+	void MulticastOnItemPicked_Implementation();
+
 
 protected:
 	/*
@@ -181,7 +148,6 @@ protected:
 		전부 소진했을 경우 ItemStatusComponent의 RemoveItem 호출.
 	*/
 	void CheckItemExhausted();
-	virtual void InitItemInfo(FZItemInfo& ItemInfo);
 
 protected:
 	/* From client to server RPC*/
@@ -200,7 +166,6 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnItemDropped();
 	void MulticastOnItemDropped_Implementation();
-
 
 	/* Replicated using */
 	UFUNCTION()

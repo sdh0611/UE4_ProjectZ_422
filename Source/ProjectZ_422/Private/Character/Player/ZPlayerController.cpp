@@ -196,6 +196,26 @@ void AZPlayerController::ClientBloodSplatter_Implementation()
 	}
 }
 
+bool AZPlayerController::ClientAddPitchAndYaw_Validate(float AddPitch, float AddYaw)
+{
+	return true;
+}
+
+void AZPlayerController::ClientAddPitchAndYaw_Implementation(float AddPitch, float AddYaw)
+{
+	//ZLOG(Error, TEXT("%.2f, %.2f"), AddPitch, AddYaw);
+
+	if (AddPitch != 0.f)
+	{
+		AddPitchInput(AddPitch);
+	}
+
+	if (AddYaw != 0.f)
+	{
+		AddYawInput(AddYaw);
+	}
+}
+
 void AZPlayerController::ConstructShopWidget()
 {
 	ZLOG_S(Warning);

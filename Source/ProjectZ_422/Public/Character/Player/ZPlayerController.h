@@ -72,6 +72,11 @@ public:
 	bool ClientBloodSplatter_Validate();
 	void ClientBloodSplatter_Implementation();
 
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientAddPitchAndYaw(float AddPitch, float AddYaw);
+	bool ClientAddPitchAndYaw_Validate(float AddPitch, float AddYaw);
+	void ClientAddPitchAndYaw_Implementation(float AddPitch, float AddYaw);
+
 	/* Replicated using */
 
 

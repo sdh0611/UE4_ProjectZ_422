@@ -29,13 +29,13 @@ public:
 private:
 	void TraceBullet();
 	
-	UFUNCTION(NetMulticast, UnReliable)
+	UFUNCTION(NetMulticast, Reliable)
 	void MulticastSpawnHitEffect(bool bHitCharacter, const FVector& ImpactPoint, const FVector& HitDir);
 	void MulticastSpawnHitEffect_Implementation(bool bHitCharacter, const FVector& ImpactPoint, const FVector& HitDir);
 
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector PreLocation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

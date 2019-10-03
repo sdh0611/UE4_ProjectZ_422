@@ -37,7 +37,7 @@ AZItem::AZItem()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	static ConstructorHelpers::FClassFinder<AZPickup>
-		CLASS_PICKUP(TEXT("Blueprint'/Game/Blueprint/Interactional/Pickup/BP_ZPickup.BP_ZPickup_C'"));
+		CLASS_PICKUP(TEXT("Blueprint'/Game/Blueprint/Game/Interactional/Pickup/BP_ZPickup.BP_ZPickup_C'"));
 	if (CLASS_PICKUP.Succeeded())
 	{
 		PickupClass = CLASS_PICKUP.Class;
@@ -92,14 +92,26 @@ void AZItem::OnDropped(int32 Quantity)
 		Pickup Spawn지점 설정
 	*/
 	FVector SpawnLocation;
-	FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
-	if (Hit.bBlockingHit)
+	if (::IsValid(ItemOwner) && ItemOwner->IsDead())
 	{
-		SpawnLocation = Hit.ImpactPoint;
+		ZLOG_S(Error);
+		SpawnLocation = ItemOwner->GetActorLocation();
+		SpawnLocation.Z += 30.f;
 	}
 	else
 	{
-		SpawnLocation = Hit.TraceEnd;
+		FHitResult Hit = ItemOwner->GetTraceHitFromActorCameraView(150.f);
+		if (Hit.bBlockingHit)
+		{
+			ZLOG_S(Error);
+			SpawnLocation = Hit.ImpactPoint;
+		}
+		else
+		{
+			ZLOG_S(Error);
+			SpawnLocation = Hit.TraceEnd;
+		}
+		ZLOG_S(Error);
 	}
 
 
@@ -114,7 +126,6 @@ void AZItem::OnDropped(int32 Quantity)
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			SpawnParams.Owner = GetOwner();
-			UKismetSystemLibrary::PrintString(GetWorld(), GetOwner()->GetName());
 
 			AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 			if (nullptr == NewPickup)
@@ -122,16 +133,13 @@ void AZItem::OnDropped(int32 Quantity)
 				ZLOG(Error, TEXT("Failed to spawn pickup...."));
 				return;
 			}
+			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%.2f %.2f %.2f"), SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z));
+
 			NewPickup->SpawnItemClass = GetClass();
-			NewPickup->SetItemInfo(CreateItemInfo());
 			NewPickup->SetItem(this);
 			NewPickup->WhenSpawnedByItem();
 
 		}
-
-		// ItemStatusComponent에서 해당 Item제거
-
-		//SetActive(false);
 
 		ClientOnItemRemoved();
 		if (HasAuthority())
@@ -162,10 +170,6 @@ void AZItem::OnDropped(int32 Quantity)
 			ZLOG(Error, TEXT("Failed to spawn pickup.."));
 			return;
 		}
-		//auto ItemInfo = CreateItemInfo();
-		//ItemInfo.CurrentQuantityOfItem = Quantity;
-		//NewPickup->SpawnItemClass = GetClass();
-		//NewPickup->SetItemInfo(ItemInfo);
 
 		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(GetClass(), FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 		if (nullptr == NewItem)
@@ -245,14 +249,6 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 	ItemExplanation = NewItemData->ItemExplanation;
 
 }
-
-void AZItem::ApplyItemInfo(FZItemInfo& NewItemInfo)
-{
-	ZLOG_S(Error);
-	CurrentQuantityOfItem = NewItemInfo.CurrentQuantityOfItem;
-
-}
-
 
 int32 AZItem::AdjustQuantity(int32 Value)
 {
@@ -447,15 +443,6 @@ UAnimMontage * const AZItem::FindMontage(const FString & MontageName) const
 	return nullptr;
 }
 
-FZItemInfo AZItem::CreateItemInfo()
-{
-	FZItemInfo ItemInfo;
-
-	InitItemInfo(ItemInfo);
-
-	return ItemInfo;
-}
-
 void AZItem::RepItemOwner()
 {
 	if (ItemOwner)
@@ -490,24 +477,6 @@ void AZItem::ClearDelegates()
 	OnItemRemoved.Clear();
 }
 
-void AZItem::InitItemInfo(FZItemInfo & ItemInfo)
-{
-	/* 오직 Server에서만 실행되야하므로. */
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	ZLOG_S(Error);
-	ItemInfo.bCanDestroy = bCanDestroy;
-	ItemInfo.CurrentQuantityOfItem = CurrentQuantityOfItem;
-	ItemInfo.ItemName = ItemName;
-	ItemInfo.ItemType = ItemType;
-
-	ItemInfo.bInit = true;
-
-}
-
 bool AZItem::ServerOnDropItem_Validate(int32 Quantity)
 {
 	return true;
@@ -532,6 +501,11 @@ void AZItem::ClientOnItemRemoved_Implementation()
 void AZItem::MulticastOnItemDropped_Implementation()
 {
 	WhenDropped();
+}
+
+void AZItem::MulticastOnItemPicked_Implementation()
+{
+	OnPicked();
 }
 
 void AZItem::OnRep_ItemOwner()

@@ -71,6 +71,8 @@ public:
 	*/
 	void AdjustMoney(int32 Value);
 
+	void RemoveAllItem();
+
 public:
 	void SetMaxSizeOfItemList(int32 NewMaxSize);
 	void SetCurrentSizeOfItemList(int32 NewCurrentSize);

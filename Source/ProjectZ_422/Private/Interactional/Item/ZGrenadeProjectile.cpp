@@ -23,7 +23,6 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 	//{
 	//	ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
 	//}
-	bReplicates = true;
 
 	ProjectileMesh->SetCollisionProfileName(TEXT("Projectile"));
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
@@ -85,8 +84,6 @@ void AZGrenadeProjectile::Explosion()
 
 void AZGrenadeProjectile::MulticastSpawnExplosion_Implementation()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SpawnExplosion."));
-
 	if (ExplosionParticle)
 	{
 		FVector SpawnLocation = GetActorLocation();

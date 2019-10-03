@@ -107,7 +107,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem)
 			ItemList[AllocatedIndex] = NewItem;
 			NewItem->SetInventoryIndex(AllocatedIndex);
 			NewItem->SetItemOwner(OwnerCharacter.Get());
-			NewItem->OnPicked();
+			NewItem->MulticastOnItemPicked();
 
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
 			if (PlayerController && PlayerController->IsLocalPlayerController())
@@ -187,8 +187,8 @@ void UZCharacterItemStatusComponent::AddItem(class AZPickup* NewPickup)
 		return;
 	}
 
-	UKismetSystemLibrary::PrintString(GetWorld(), NewPickup->GetItemInfo().ItemName);
-	ZLOG(Warning, TEXT("Pickup item name : %s"), *NewPickup->GetItemInfo().ItemName);
+	//UKismetSystemLibrary::PrintString(GetWorld(), NewPickup->GetItemInfo().ItemName);
+	//ZLOG(Warning, TEXT("Pickup item name : %s"), *NewPickup->GetItemInfo().ItemName);
 
 	if (::IsValid(NewPickup) && NewPickup->GetItem())
 	{
@@ -611,6 +611,14 @@ void UZCharacterItemStatusComponent::AdjustMoney(int32 Value)
 	}
 
 	OnRep_CurrentMoney();
+}
+
+void UZCharacterItemStatusComponent::RemoveAllItem()
+{
+	for (const auto& Item : ItemList)
+	{
+		Item->OnRemoved();
+	}
 }
 
 void UZCharacterItemStatusComponent::SetMaxSizeOfItemList(int32 NewMaxSize)

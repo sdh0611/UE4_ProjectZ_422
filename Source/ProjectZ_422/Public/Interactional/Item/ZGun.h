@@ -76,30 +76,6 @@ static EGunType GetGunTypeFromString(const FString& GunTypeName)
 	return EGunType::Invalid;
 }
 
-USTRUCT(BlueprintType)
-struct PROJECTZ_422_API FZGunInfo : public FZWeaponInfo
-{
-	GENERATED_BODY()
-
-public:
-	FZGunInfo() { ID = TypeID; }
-	virtual ~FZGunInfo() { };
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EGunType GunType;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 GunCurrentAmmo;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EFireMode GunFireMode;
-
-	static const int32 TypeID = 2;
-
-	//virtual bool IsOfType(int32 NewID) const override { ZLOG(Error, TEXT("ID : %d"), TypeID); return (NewID == FZGunInfo::TypeID) || FZWeaponInfo::IsOfType(NewID); }
-};
-
 /**
  * 
  */
@@ -117,8 +93,6 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
-	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo) override;
-
 
 public:
 	void Reload();
@@ -140,16 +114,13 @@ public:
 	EGunType GetGunType() const;
 	EFireMode GetFireMode() const;
 	virtual class UAnimMontage* const GetFireAnimMontage() const override;
-	virtual FZItemInfo CreateItemInfo();
 
 protected:
 	bool CheckNeedToReload();
 	void SpawnTrail(const FVector& EndPoint);
 	void PlayCameraShake();
-	virtual void InitItemInfo(FZItemInfo& ItemInfo) override;
 	virtual void Fire() override;
 	virtual void FireEnd() override;
-	
 
 protected:
 	/* From client to server RPC */
@@ -229,7 +200,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Weapon)
 	float BulletLifeSpan;
 
-	UPROPERTY(EditAnywhere, Category = Weapon)
+	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
 	float BulletSpread;
 
 	UPROPERTY(EditAnywhere, Category = Weapon)

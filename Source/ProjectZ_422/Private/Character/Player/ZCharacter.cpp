@@ -177,6 +177,10 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 		MyPC->ClientBloodSplatter();
 		if (IsDead())
 		{
+			if (CurrentWeapon)
+			{
+				CurrentWeapon->OnDropped();
+			}
 			ClientOnDead();
 		}
 

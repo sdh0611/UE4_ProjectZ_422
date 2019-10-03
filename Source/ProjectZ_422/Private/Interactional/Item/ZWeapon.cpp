@@ -125,20 +125,6 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 	}
 }
 
-void AZWeapon::ApplyItemInfo(FZItemInfo& NewItemInfo)
-{
-	ZLOG_S(Error);
-	//if (NewItemInfo.IsOfType(FZWeaponInfo::TypeID))
-	//{
-		ZLOG_S(Error);
-		FZWeaponInfo* WeaponInfo = static_cast<FZWeaponInfo*>(&NewItemInfo);
-		WeaponCategory = WeaponInfo->WeaponCategory;
-	//}
-
-	Super::ApplyItemInfo(NewItemInfo);
-
-}
-
 void AZWeapon::ClearDelegates()
 {
 	Super::ClearDelegates();
@@ -186,15 +172,6 @@ EWeaponCategory AZWeapon::GetWeaponCategory() const
 UAnimMontage * const AZWeapon::GetFireAnimMontage() const
 {
 	return FindMontage(TEXT("Fire"));
-}
-
-FZItemInfo AZWeapon::CreateItemInfo()
-{
-	FZWeaponInfo ItemInfo;
-
-	InitItemInfo(ItemInfo);
-
-	return ItemInfo;
 }
 
 void AZWeapon::RepItemOwner()
@@ -246,22 +223,10 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 	if (bDrawDebugLine)
 	{
 		DrawDebugLine(GetWorld(), StartLoc, EndLoc, FColor::Red, false, 1.f);
+		ZLOG(Error, TEXT("Block : %s"), *Hit.GetActor()->GetName());
 	}
 
 	return Hit;
-}
-
-void AZWeapon::InitItemInfo(FZItemInfo & ItemInfo)
-{
-	Super::InitItemInfo(ItemInfo);
-
-	if (ItemInfo.IsOfType(FZWeaponInfo::TypeID))
-	{
-		ZLOG_S(Error);
-		FZWeaponInfo* WeaponInfo = static_cast<FZWeaponInfo*>(&ItemInfo);
-		WeaponInfo->WeaponCategory = WeaponCategory;
-	}
-	
 }
 
 bool AZWeapon::ServerFire_Validate(bool bFire)
