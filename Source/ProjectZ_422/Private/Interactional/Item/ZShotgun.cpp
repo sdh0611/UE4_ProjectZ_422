@@ -47,14 +47,15 @@ void AZShotgun::Fire()
 
 	SetWantsToFire(false);
 
-	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+	//FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+	FVector MuzzleLocation = FVector::ZeroVector;
 	FVector LaunchDirection = FVector::ZeroVector;
 	FVector EndPoint = FVector::ZeroVector;
 
 	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
 	EndPoint = (Hit.bBlockingHit ? Hit.ImpactPoint : Hit.TraceEnd);
-	//EndPoint = Hit.TraceEnd;
-	
+	MuzzleLocation = Hit.TraceStart;
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = ItemOwner;

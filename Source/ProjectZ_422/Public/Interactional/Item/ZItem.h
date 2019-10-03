@@ -71,7 +71,11 @@ struct PROJECTZ_422_API FZItemInfo
 	GENERATED_BODY()
 
 public:
+	FZItemInfo() { ID = TypeID; };
 	virtual ~FZItemInfo() { };
+
+protected:
+	int32 ID;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -90,7 +94,8 @@ public:
 
 	static const int32 TypeID = 0;
 
-	virtual bool IsOfType(int32 NewID) const { return (NewID == FZItemInfo::TypeID); }
+	virtual bool IsOfType(int32 NewID) const { return (NewID == ID); }
+	//virtual bool IsOfType(int32 NewID) const { ZLOG(Error, TEXT("ID : %d"), TypeID); return (NewID == FZItemInfo::TypeID); }
 
 };
 
@@ -131,7 +136,7 @@ public:
 	virtual void InitItemData(const struct FZItemData* const NewItemData);
 	
 	/* Pickup으로 부터 생성된 경우 호출. */
-	virtual void ApplyItemInfo(FZItemInfo NewItemInfo);
+	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo);
 
 public:
 	/*

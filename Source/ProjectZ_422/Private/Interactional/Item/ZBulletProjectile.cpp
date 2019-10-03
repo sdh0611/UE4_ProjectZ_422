@@ -81,6 +81,7 @@ void AZBulletProjectile::TraceBullet()
 	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, PROJECTILE_TRACE, CollisionParams);
 	if (Hit.bBlockingHit)
 	{
+		bool bHitCharacter = false;
 		if (Hit.GetActor()->ActorHasTag(TEXT("Character")))
 		{
 			auto Character = Cast<AZBaseCharacter>(Hit.GetActor());
@@ -94,6 +95,8 @@ void AZBulletProjectile::TraceBullet()
 				return;
 			}
 			
+			bHitCharacter = true;
+
 			FPointDamageEvent DamageEvent;
 			DamageEvent.HitInfo = Hit;
 			/* 날아온 방향 */
@@ -104,13 +107,9 @@ void AZBulletProjectile::TraceBullet()
 		}
 		else
 		{
-			auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(5.f, 5.f, 5.f), Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
-			if (DecalComponent)
-			{
-				DecalComponent->SetFadeScreenSize(0.0005f);
-				DecalComponent->SetLifeSpan(4.f);
-			}
+			bHitCharacter = false;
 		}
+		MulticastSpawnHitEffect(bHitCharacter, Hit.ImpactPoint, Hit.ImpactNormal);
 		Destroy();
 
 	}
@@ -119,5 +118,33 @@ void AZBulletProjectile::TraceBullet()
 		PreLocation = GetActorLocation();
 	}
 	//ProjectileTrailParticle->SetVectorParameter(TEXT("EndPoint"), PreLocation);
+}
+
+void AZBulletProjectile::MulticastSpawnHitEffect_Implementation(bool bHitCharacter, const FVector & ImpactPoint, const FVector & HitDir)
+{
+	if (bHitCharacter)
+	{
+		if (PSHitCharacter)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PSHitCharacter, ImpactPoint + HitDir * 5.f, HitDir.Rotation());
+		}
+		
+	}
+	else
+	{
+		if (PSHitProps)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), PSHitProps, ImpactPoint + HitDir * 5.f, HitDir.Rotation());
+		}
+
+		auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), Decal, FVector(5.f, 5.f, 5.f), ImpactPoint, HitDir.Rotation());
+		if (DecalComponent)
+		{
+			DecalComponent->SetFadeScreenSize(0.0005f);
+			DecalComponent->SetLifeSpan(4.f);
+		}
+
+	}
+
 }
 

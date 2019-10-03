@@ -66,6 +66,7 @@ struct PROJECTZ_422_API FZWeaponInfo : public FZItemInfo
 	GENERATED_BODY()
 		
 public:
+	FZWeaponInfo() { ID = TypeID; };
 	virtual ~FZWeaponInfo() { };
 
 public:
@@ -74,7 +75,7 @@ public:
 
 	static const int32 TypeID = 1;
 
-	virtual bool IsOfType(int32 NewID) const override { return (NewID == FZWeaponInfo::TypeID) || FZItemInfo::IsOfType(NewID); }
+	//virtual bool IsOfType(int32 NewID) const override { ZLOG(Error, TEXT("ID : %d"), TypeID); return (NewID == FZWeaponInfo::TypeID) || FZItemInfo::IsOfType(NewID); }
 };
 
 /**
@@ -95,7 +96,7 @@ public:
 	virtual void OnRemoved() override;
 	virtual void OnDropped(int32 Quantity = 1) override;
 	virtual void InitItemData(const struct FZItemData* const NewItemData) override;
-	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
+	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo) override;
 
 public:
 	void StartFire();

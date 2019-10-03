@@ -23,6 +23,8 @@ AZGrenadeProjectile::AZGrenadeProjectile()
 	//{
 	//	ProjectileMesh->SetStaticMesh(SM_PROJECTILE.Object);
 	//}
+	bReplicates = true;
+
 	ProjectileMesh->SetCollisionProfileName(TEXT("Projectile"));
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	
 
@@ -43,6 +45,7 @@ void AZGrenadeProjectile::FireInDirection(const FVector & Direction)
 	Movement->Velocity = Direction * Movement->InitialSpeed;
 	//ZLOG(Error, TEXT("Dir : %.3f, %.3f, %.3f"), Direction.X, Direction.Y, Direction.Z);
 
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Set explosion timer."));
 	GetWorld()->GetTimerManager().SetTimer(ExplosionTimer, this, &AZGrenadeProjectile::Explosion, FireDelay, false);
 }
 
@@ -73,16 +76,26 @@ void AZGrenadeProjectile::Explosion()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 600.f, 32, FColor::Red, false, 1.5f);
 
 	RadialForce->FireImpulse();
+
+	MulticastSpawnExplosion();
+
+	//SetLifeSpan(3.f);
+	Destroy();
+}
+
+void AZGrenadeProjectile::MulticastSpawnExplosion_Implementation()
+{
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SpawnExplosion."));
+
 	if (ExplosionParticle)
 	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetActorTransform());
+		FVector SpawnLocation = GetActorLocation();
+		SpawnLocation.Z += 50.f;
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, SpawnLocation);
 	}
 
 	if (ExplosionSound)
 	{
-		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), GetActorRotation());
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
 	}
-
-	//SetLifeSpan(3.f);
-	Destroy();
 }

@@ -28,12 +28,23 @@ public:
 
 private:
 	void TraceBullet();
+	
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastSpawnHitEffect(bool bHitCharacter, const FVector& ImpactPoint, const FVector& HitDir);
+	void MulticastSpawnHitEffect_Implementation(bool bHitCharacter, const FVector& ImpactPoint, const FVector& HitDir);
+
 
 protected:
 	UPROPERTY(VisibleAnywhere)
 	FVector PreLocation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UParticleSystem* PSHitCharacter;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UParticleSystem* PSHitProps;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UMaterialInterface* Decal;
 
 };

@@ -74,7 +74,7 @@ void AZGrenade::ThrowGrenade()
 	//FVector LaunchDirection = DirRotation.Vector();
 	FVector LaunchDirection = FVector::ZeroVector;
 
-	FHitResult Hit = WeaponTrace(100000.f, true);
+	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
 	if (Hit.bBlockingHit)
 	{
 		LaunchDirection = Hit.ImpactPoint - HandLocation;

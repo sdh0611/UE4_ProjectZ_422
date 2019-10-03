@@ -86,8 +86,8 @@ protected:
 
 	/* Net multicast */
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastSetIsDamaged(bool bNewState);
-	void MulticastSetIsDamaged_Implementation(bool bNewState);
+	void MulticastOnHit();
+	void MulticastOnHit_Implementation();
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnDead();

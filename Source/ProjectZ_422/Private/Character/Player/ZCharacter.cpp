@@ -245,15 +245,15 @@ void AZCharacter::AttachWeapon(class AZWeapon* Weapon, const FName & SocketName)
 		return;
 	}
 
-	if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
-	{
-		ZLOG_S(Warning);
-		/* OnGrenadeThrow에 바인딩. */
-		auto Grenade = Cast<AZGrenade>(CurrentWeapon);
-		check(Grenade);
-		ZLOG(Error, TEXT("Bind ThrowGrenade"));
-		CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
-	}
+	//if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
+	//{
+	//	ZLOG_S(Warning);
+	//	/* OnGrenadeThrow에 바인딩. */
+	//	auto Grenade = Cast<AZGrenade>(CurrentWeapon);
+	//	check(Grenade);
+	//	ZLOG(Error, TEXT("Bind ThrowGrenade"));
+	//	CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
+	//}
 }
 
 void AZCharacter::DetachWeapon(int32 NewWeaponIndex)
@@ -280,7 +280,7 @@ void AZCharacter::OnRep_IsAiming()
 	}
 
 	auto CharacterAnim = GetCharacterAnimInstance();
-	if(!::IsValid(CharacterAnim))
+	if (!::IsValid(CharacterAnim))
 	{
 		ZLOG(Error, TEXT("Invalid anim instance.."));
 		return;
@@ -305,7 +305,7 @@ void AZCharacter::SetIsAiming(bool bNewState)
 	/* Sprint 해제 */
 	if (IsSprinting())
 	{
-		
+
 	}
 
 	bIsAiming = bNewState;
@@ -326,7 +326,7 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		ServerEquipWeapon(NewWeapon);
 		return;
 	}
-	
+
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SetWeapon."));
 	if (CurrentWeapon)
 	{
@@ -490,7 +490,7 @@ void AZCharacter::OnDead()
 	{
 		MyAnim->bIsDead = true;
 	}
-	
+
 	auto MyPC = GetController<AZPlayerController>();
 	if (MyPC && MyPC->IsLocalPlayerController())
 	{
@@ -1056,54 +1056,54 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 
 		switch (CurrentWeapon->GetWeaponInventoryIndex())
 		{
-			case EWeaponSlot::Main1:
+		case EWeaponSlot::Main1:
+		{
+			/*
+				장전중인 경우 장전 취소
+			*/
+			auto Gun = Cast<AZGun>(CurrentWeapon);
+			check(Gun != nullptr);
+			if (Gun->IsReloading())
 			{
-				/*
-					장전중인 경우 장전 취소
-				*/
-				auto Gun = Cast<AZGun>(CurrentWeapon);
-				check(Gun != nullptr);
-				if (Gun->IsReloading())
-				{
-					Gun->SetIsReloading(false);
-				}
+				Gun->SetIsReloading(false);
+			}
 
-				// 기존 Weapon은 Secondary socket으로 옮김.
-				AttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
-				MulticastAttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
-				break;
-			}
-			case EWeaponSlot::Main2:
+			// 기존 Weapon은 Secondary socket으로 옮김.
+			AttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
+			MulticastAttachWeapon(CurrentWeapon, SecondaryWeaponSocketName);
+			break;
+		}
+		case EWeaponSlot::Main2:
+		{
+			/*
+				장전중인 경우 장전 취소
+			*/
+			auto Gun = Cast<AZGun>(CurrentWeapon);
+			check(Gun != nullptr);
+			if (Gun->IsReloading())
 			{
-				/*
-					장전중인 경우 장전 취소
-				*/
-				auto Gun = Cast<AZGun>(CurrentWeapon);
-				check(Gun != nullptr);
-				if (Gun->IsReloading())
-				{
-					Gun->SetIsReloading(false);
-				}
+				Gun->SetIsReloading(false);
+			}
 
-				// 기존 Weapon은 Third socket으로 옮김.
-				AttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
-				MulticastAttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
-				break;
-			}
-			case EWeaponSlot::Knife:
-			{
-				break;
-			}
-			case EWeaponSlot::Grenade:
-			{
-				AttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
-				MulticastAttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
-				break;
-			}
-			default:
-			{
-				break;
-			}
+			// 기존 Weapon은 Third socket으로 옮김.
+			AttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
+			MulticastAttachWeapon(CurrentWeapon, ThirdWeaponSocketName);
+			break;
+		}
+		case EWeaponSlot::Knife:
+		{
+			break;
+		}
+		case EWeaponSlot::Grenade:
+		{
+			AttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
+			MulticastAttachWeapon(CurrentWeapon, GrenadeWeaponSocketName);
+			break;
+		}
+		default:
+		{
+			break;
+		}
 		}
 
 	}
@@ -1257,7 +1257,7 @@ void AZCharacter::ServerSetCrouch_Implementation(bool bCrouch)
 	}
 	else
 	{
-		
+
 	}
 
 }
@@ -1353,6 +1353,19 @@ void AZCharacter::OnRep_CurrentWeapon()
 		else
 		{
 			CharacterAnim->SetIsEquipGun(false);
+		}
+
+		if (HasAuthority())
+		{
+			if (EWeaponCategory::Grenade == CurrentWeapon->GetWeaponCategory())
+			{
+				ZLOG_S(Warning);
+				/* OnGrenadeThrow에 바인딩. */
+				auto Grenade = Cast<AZGrenade>(CurrentWeapon);
+				check(Grenade);
+				ZLOG(Error, TEXT("Bind ThrowGrenade"));
+				CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
+			}
 		}
 
 		// CurrentWeaponInfo widget에 바인딩

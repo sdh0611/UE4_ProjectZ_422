@@ -43,6 +43,7 @@ void AZPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AZPickup, Item);
 	DOREPLIFETIME(AZPickup, bIsActive);
 	DOREPLIFETIME(AZPickup, ItemInfo);
 	DOREPLIFETIME(AZPickup, Name);
@@ -121,15 +122,25 @@ void AZPickup::SetItemInfo(const FZItemInfo & NewItemInfo)
 	ClientSetStaticMesh(ItemMesh);
 }
 
+void AZPickup::SetItem(AZItem * NewItem)
+{
+	Item = NewItem;
+}
+
 bool AZPickup::IsActive() const
 {
 	return bIsActive;
 }
 
-const FZItemInfo & AZPickup::GetItemInfo() const
+FZItemInfo AZPickup::GetItemInfo() 
 {
 	// TODO: 여기에 반환 구문을 삽입합니다.
 	return ItemInfo;
+}
+
+AZItem * const AZPickup::GetItem() const
+{
+	return Item;
 }
 
 bool AZPickup::ClientSetStaticMesh_Validate(UStaticMesh * NewMesh)

@@ -32,9 +32,11 @@ public:
 public:
 	void SetActive(bool NewState);
 	void SetItemInfo(const FZItemInfo& NewItemInfo);
+	void SetItem(class AZItem* NewItem);
 
 	bool IsActive() const;
-	const FZItemInfo& GetItemInfo() const;
+	FZItemInfo GetItemInfo();
+	class AZItem* const GetItem() const;
 
 private:
 	/* From server to client RPC*/
@@ -54,6 +56,9 @@ public:
 	TSubclassOf<class AZItem> SpawnItemClass;
 
 protected:
+	UPROPERTY(VisibleAnywhere, Category = Pickup, Replicated)
+	class AZItem* Item;
+
 	UPROPERTY(VisibleAnywhere, Category = Pickup, Replicated)
 	bool bIsActive;
 

@@ -125,13 +125,15 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 
 }
 
-void AZGun::ApplyItemInfo(FZItemInfo NewItemInfo)
+void AZGun::ApplyItemInfo(FZItemInfo& NewItemInfo)
 {
-	if (NewItemInfo.IsOfType(FZGunInfo::TypeID))
-	{
+	ZLOG_S(Error);
+	//if (NewItemInfo.IsOfType(FZGunInfo::TypeID))
+	//{
 		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&NewItemInfo);
-		CurrentAmmo = GunInfo->CurrentAmmo;
-	}
+		ZLOG(Error, TEXT("Ammo : %d"), GunInfo->GunCurrentAmmo);
+		CurrentAmmo = GunInfo->GunCurrentAmmo;
+	//}
 
 	Super::ApplyItemInfo(NewItemInfo);
 }
@@ -323,6 +325,11 @@ void AZGun::OnRep_FireMode()
 	OnItemInfoChanged.Broadcast();
 }
 
+void AZGun::OnRep_CurrentAmmo()
+{
+	OnItemInfoChanged.Broadcast();
+}
+
 bool AZGun::CheckNeedToReload()
 {
 	return CurrentAmmo < 1;
@@ -370,7 +377,8 @@ void AZGun::InitItemInfo(FZItemInfo & ItemInfo)
 	if (ItemInfo.IsOfType(FZGunInfo::TypeID))
 	{
 		FZGunInfo* GunInfo = static_cast<FZGunInfo*>(&ItemInfo);
-		GunInfo->CurrentAmmo = CurrentAmmo;
 		GunInfo->GunType = GunType;
+		GunInfo->GunCurrentAmmo = CurrentAmmo;
+		GunInfo->GunFireMode = FireMode;
 	}
 }

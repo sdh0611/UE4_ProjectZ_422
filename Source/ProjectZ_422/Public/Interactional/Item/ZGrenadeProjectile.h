@@ -27,6 +27,10 @@ public:
 private:
 	void Explosion();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSpawnExplosion();
+	void MulticastSpawnExplosion_Implementation();
+
 private:
 	FTimerHandle ExplosionTimer;
 

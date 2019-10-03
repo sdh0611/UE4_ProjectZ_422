@@ -82,6 +82,7 @@ struct PROJECTZ_422_API FZGunInfo : public FZWeaponInfo
 	GENERATED_BODY()
 
 public:
+	FZGunInfo() { ID = TypeID; }
 	virtual ~FZGunInfo() { };
 
 public:
@@ -89,11 +90,14 @@ public:
 	EGunType GunType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 CurrentAmmo;
+	int32 GunCurrentAmmo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EFireMode GunFireMode;
 
 	static const int32 TypeID = 2;
 
-	virtual bool IsOfType(int32 NewID) const override { return (NewID == FZGunInfo::TypeID) || FZWeaponInfo::IsOfType(NewID); }
+	//virtual bool IsOfType(int32 NewID) const override { ZLOG(Error, TEXT("ID : %d"), TypeID); return (NewID == FZGunInfo::TypeID) || FZWeaponInfo::IsOfType(NewID); }
 };
 
 /**
@@ -113,7 +117,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
-	virtual void ApplyItemInfo(FZItemInfo NewItemInfo) override;
+	virtual void ApplyItemInfo(FZItemInfo& NewItemInfo) override;
 
 
 public:
@@ -168,6 +172,9 @@ protected:
 	UFUNCTION()
 	void OnRep_FireMode();
 
+	UFUNCTION()
+	void OnRep_CurrentAmmo();
+
 public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	bool bIsReloading;
@@ -204,7 +211,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	bool bIsFiring;
 
-	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)
+	UPROPERTY(EditAnywhere, Category = Weapon, ReplicatedUsing = OnRep_CurrentAmmo)
 	int32 CurrentAmmo;
 
 	UPROPERTY(EditAnywhere, Category = Weapon, Replicated)

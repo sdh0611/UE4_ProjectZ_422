@@ -113,13 +113,15 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 	}
 }
 
-void AZWeapon::ApplyItemInfo(FZItemInfo NewItemInfo)
+void AZWeapon::ApplyItemInfo(FZItemInfo& NewItemInfo)
 {
-	if (NewItemInfo.IsOfType(FZWeaponInfo::TypeID))
-	{
+	ZLOG_S(Error);
+	//if (NewItemInfo.IsOfType(FZWeaponInfo::TypeID))
+	//{
+		ZLOG_S(Error);
 		FZWeaponInfo* WeaponInfo = static_cast<FZWeaponInfo*>(&NewItemInfo);
 		WeaponCategory = WeaponInfo->WeaponCategory;
-	}
+	//}
 
 	Super::ApplyItemInfo(NewItemInfo);
 

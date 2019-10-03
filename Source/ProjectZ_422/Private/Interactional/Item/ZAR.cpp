@@ -43,7 +43,8 @@ void AZAR::Fire()
 		}
 	}
 
-	FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+	//FVector MuzzleLocation = WeaponMesh->GetSocketLocation(TEXT("muzzle"));
+	FVector MuzzleLocation = FVector::ZeroVector;
 	FVector LaunchDirection = FVector::ZeroVector;
 	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
 	if (Hit.bBlockingHit)
@@ -54,6 +55,8 @@ void AZAR::Fire()
 	{
 		LaunchDirection = Hit.TraceEnd - MuzzleLocation;
 	}
+
+	MuzzleLocation = Hit.TraceStart;
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;

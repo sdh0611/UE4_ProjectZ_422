@@ -214,8 +214,9 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 
 }
 
-void AZItem::ApplyItemInfo(FZItemInfo NewItemInfo)
+void AZItem::ApplyItemInfo(FZItemInfo& NewItemInfo)
 {
+	ZLOG_S(Error);
 	CurrentQuantityOfItem = NewItemInfo.CurrentQuantityOfItem;
 
 }

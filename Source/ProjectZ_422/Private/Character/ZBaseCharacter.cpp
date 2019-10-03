@@ -74,23 +74,6 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
-	{
-		FPointDamageEvent* PointDamage = (FPointDamageEvent*)(&DamageEvent);
-		if (HitEffect)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect,
-				PointDamage->HitInfo.ImpactPoint, PointDamage->HitInfo.ImpactNormal.Rotation());
-		}
-
-	}
-	
-	if (HitSound)
-	{
-		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
-			GetActorLocation(), GetActorRotation());
-	}
-
 	StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	if (IsDead())
@@ -101,7 +84,7 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	}
 	else
 	{
-		MulticastSetIsDamaged(true);
+		MulticastOnHit();
 		//auto Anim = GetAnimInstance();
 		//if (::IsValid(Anim))
 		//{
@@ -331,18 +314,24 @@ void AZBaseCharacter::ServerSetSprinting_Implementation(bool bNewState)
 	OnRep_IsSprinting();
 }
 
-void AZBaseCharacter::MulticastSetIsDamaged_Implementation(bool bNewState)
+void AZBaseCharacter::MulticastOnHit_Implementation()
 {
 	auto Anim = GetAnimInstance();
 	if (::IsValid(Anim))
 	{
-		Anim->bIsDamaged = bNewState;
+		Anim->bIsDamaged = true;
 	}
+
+	if (HitSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
+			GetActorLocation(), GetActorRotation());
+	}
+
 }
 
 void AZBaseCharacter::MulticastOnDead_Implementation()
 {
-	
 	OnDead();
 }
 

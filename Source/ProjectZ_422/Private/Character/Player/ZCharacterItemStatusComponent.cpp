@@ -231,6 +231,7 @@ void UZCharacterItemStatusComponent::AddItem(class AZPickup* NewPickup)
 		}
 
 		NewItem->InitItemData(ItemData);
+		ZLOG(Error, TEXT("Pickup"));
 		NewItem->ApplyItemInfo(NewPickup->GetItemInfo());
 		NewItem->SetInventoryIndex(AllocatedIndex);
 		NewItem->SetItemOwner(OwnerCharacter.Get());
