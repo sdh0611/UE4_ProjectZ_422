@@ -101,7 +101,7 @@ protected:
 	void OnRep_CurrentSpeed();
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsSprinting)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsSprinting)
 	bool bIsSprinting;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)

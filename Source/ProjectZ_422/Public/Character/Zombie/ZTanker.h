@@ -22,6 +22,7 @@ public:
 	virtual void ChangeZombieState(EZombieState NewState) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 		class AController* EventInstigator, class AActor* DamageCauser) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void SetActive(bool bActive) override;
 
 public:
@@ -38,17 +39,14 @@ protected:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 public:
+	bool IsRushing() const;
 	bool IsRushCooldown() const;
-
-public:
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	//bool bIsRushing;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bIsScreaming;
 
 protected:
 	FTimerHandle RushTimer;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	bool bIsRushing;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsRushCooldown;

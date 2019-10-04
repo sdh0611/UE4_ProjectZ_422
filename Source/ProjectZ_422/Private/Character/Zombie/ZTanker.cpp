@@ -12,13 +12,13 @@
 #include "GameFramework/Controller.h"
 #include "TimerManager.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
 
 AZTanker::AZTanker()
 {
-	//bIsRushing = false;
-	bIsScreaming = false;
+	bIsRushing = false;
 	bIsRushCooldown = true;
 	ImpulseStrength = 10000.f;
 	RushSpeed = 1000.f;
@@ -35,8 +35,10 @@ void AZTanker::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ImpulseSphere->OnComponentBeginOverlap.AddDynamic(this, &AZTanker::OnSphereOverlap);
-
+	if (HasAuthority())
+	{
+		ImpulseSphere->OnComponentBeginOverlap.AddDynamic(this, &AZTanker::OnSphereOverlap);
+	}
 }
 
 void AZTanker::ChangeZombieState(EZombieState NewState)
@@ -104,6 +106,13 @@ float AZTanker::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent,
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
+void AZTanker::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AZTanker, bIsRushing);
+}
+
 void AZTanker::SetActive(bool bActive)
 {
 	Super::SetActive(bActive);
@@ -165,12 +174,13 @@ void AZTanker::OnDead()
 void AZTanker::OnSensingPlayer(APawn * Pawn)
 {
 	Super::OnSensingPlayer(Pawn);
-	
+
 }
 
-void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, 
+void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor,
 	UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SphereOverlap"));
 	ZLOG_S(Error);
 	auto Character = Cast<AZBaseCharacter>(OtherActor);
 	if (nullptr == Character)
@@ -190,21 +200,14 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 
 	if (Character->ActorHasTag(TEXT("Player")))
 	{
-		//FTransform SpawnTransform;
-		//SpawnTransform.SetLocation(SweepResult.ImpactPoint);
-		//SpawnTransform.SetRotation(SweepResult.ImpactNormal.Rotation().Quaternion());
-		//SpawnTransform.SetScale3D(FVector(3.f, 3.f, 3.f));
-
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), RushExplosionParticle, SpawnTransform);
 		Character->TakeDamage(RushDamage * CurrentSpeedRatio, FDamageEvent(), GetController(), this);
-		auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
-		if (::IsValid(TankerAnim))
-		{
-			TankerAnim->bIsRushing = false;
-		}
-
 		ToggleRush(false);
 	}
+}
+
+bool AZTanker::IsRushing() const
+{
+	return bIsRushing;
 }
 
 bool AZTanker::IsRushCooldown() const
@@ -214,16 +217,21 @@ bool AZTanker::IsRushCooldown() const
 
 void AZTanker::ToggleRush(bool bInRush)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (bInRush)
 	{
 		ImpulseSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		SetCurrentSpeed(RushSpeed);
 		bIsRushCooldown = false;
-		auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
-		if (::IsValid(TankerAnim))
-		{
-			TankerAnim->bIsRushing = true;
-		}
+		//auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
+		//if (::IsValid(TankerAnim))
+		//{
+		//	TankerAnim->bIsRushing = true;
+		//}
 
 		auto RushCooldownLambda = [this]()
 		{
@@ -239,7 +247,8 @@ void AZTanker::ToggleRush(bool bInRush)
 
 	}
 
-	//bIsRushing = bInRush;
+	bIsRushing = bInRush;
+
 
 }
 

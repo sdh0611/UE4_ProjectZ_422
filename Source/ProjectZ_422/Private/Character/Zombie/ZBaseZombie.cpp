@@ -53,14 +53,22 @@ void AZBaseZombie::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Sense)
+	if (HasAuthority())
 	{
-		Sense->OnSeePawn.AddDynamic(this, &AZBaseZombie::OnSeePlayer);
-	}
+		if (Sense)
+		{
+			Sense->OnSeePawn.AddDynamic(this, &AZBaseZombie::OnSeePlayer);
+		}
 
-	auto ZombieAnim = GetZombieAnimInstance();
-	check(nullptr != ZombieAnim);
-	ZombieAnim->OnAttackCheck.BindUObject(this, &AZBaseZombie::AttackCheck);
+		auto ZombieAnim = GetZombieAnimInstance();
+		if (!::IsValid(ZombieAnim))
+		{
+			ZLOG(Error, TEXT("Invalid zombie anim.."));
+			return;
+		}
+
+		ZombieAnim->OnAttackCheck.BindUObject(this, &AZBaseZombie::AttackCheck);
+	}
 }
 
 float AZBaseZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)

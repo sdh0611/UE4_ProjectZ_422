@@ -10,16 +10,16 @@ void UZTankerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 	
-	//auto Tanker = Cast<AZTanker>(TryGetPawnOwner());
-	//if (Tanker)
-	//{
-	//	//bIsRushCooldown = Tanker->IsRushCooldown();
-	//	bIsRushing = Tanker->IsRushCooldown();
-	//	//if (bIsRushing)
-	//	//{
-	//	//	ZLOG_S(Error);
-	//	//}
-	//}
+	auto Tanker = Cast<AZTanker>(TryGetPawnOwner());
+	if (::IsValid(Tanker))
+	{
+		//bIsRushCooldown = Tanker->IsRushCooldown();
+		bIsRushing = Tanker->IsRushing();
+		//if (bIsRushing)
+		//{
+		//	ZLOG_S(Error);
+		//}
+	}
 }
 
 void UZTankerAnimInstance::AnimNotify_ScreamStart()

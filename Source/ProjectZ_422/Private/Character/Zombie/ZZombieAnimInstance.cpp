@@ -25,7 +25,10 @@ void UZZombieAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UZZombieAnimInstance::AnimNotify_ZombieAttackCheck()
 {
-	OnAttackCheck.Execute();
+	if (OnAttackCheck.IsBound())
+	{
+		OnAttackCheck.Execute();
+	}
 }
 
 void UZZombieAnimInstance::AnimNotify_ZombieAttackEndCheck()
