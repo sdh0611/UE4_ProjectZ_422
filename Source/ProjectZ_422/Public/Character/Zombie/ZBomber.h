@@ -41,6 +41,13 @@ protected:
 
 	virtual void OnDead() override;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastExplosion();
+	void MulticastExplosion_Implementation();
+
+protected:
+	FTimerHandle ExplosionTimer;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsTriggered;

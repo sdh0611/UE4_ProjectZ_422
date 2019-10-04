@@ -65,7 +65,7 @@ AZCharacter::AZCharacter()
 	ThirdWeaponSocketName = FName(TEXT("weapon_third"));
 	KnifeSocketName = FName(TEXT("weapon_knife"));
 	GrenadeWeaponSocketName = FName(TEXT("weapon_grenade"));
-
+	
 	bIsSprinting = false;
 	bIsAiming = false;
 	WalkSpeed = 500.f;

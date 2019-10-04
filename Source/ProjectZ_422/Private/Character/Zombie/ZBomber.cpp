@@ -30,7 +30,10 @@ void AZBomber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AZBomber::OnSphereOverlap);
+	if (HasAuthority())
+	{
+		CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AZBomber::OnSphereOverlap);
+	}
 	RadialForce->Radius = AttackRadius;
 	//CollisionSphere->OnComponentEndOverlap.AddDynamic(this, &AZBomber::OnSphereOverlapEnd);
 }
@@ -91,17 +94,7 @@ void AZBomber::Explosion()
 	
 	RadialForce->FireImpulse();
 
-	/* Sound 棺 Particle 利侩 */
-	if (ExplosionSound)
-	{
-		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), GetActorRotation());
-	}
-
-	if (ExplosionParticle)
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetActorLocation(), GetActorRotation(), 
-			FVector(4.f, 4.f, 4.f));
-	}
+	MulticastExplosion();
 
 	/* 气惯 饶 贸府规过 */
 	if (bIsPooling)
@@ -160,4 +153,19 @@ void AZBomber::OnDead()
 	ElapsedTime = 0.f;
 
 	Super::OnDead();	
+}
+
+void AZBomber::MulticastExplosion_Implementation()
+{
+	/* Sound 棺 Particle 利侩 */
+	if (ExplosionSound)
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), GetActorRotation());
+	}
+
+	if (ExplosionParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionParticle, GetActorLocation(), GetActorRotation(),
+			FVector(4.f, 4.f, 4.f));
+	}
 }

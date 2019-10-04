@@ -113,7 +113,7 @@ void AZZombie::AttackCheck()
 	FCollisionQueryParams CollisionParams(TEXT("EnemyAttackParam"), false, this);
 	CollisionParams.bReturnPhysicalMaterial = false;
 	CollisionParams.bTraceComplex = false;
-
+	
 	bool bResult = GetWorld()->SweepMultiByChannel(Hits, GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
 		FQuat::Identity, ENEMY_ATTACK, FCollisionShape::MakeSphere(AttackRadius), CollisionParams);

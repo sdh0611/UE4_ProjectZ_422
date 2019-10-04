@@ -6,6 +6,11 @@
 #include "GameFramework/PlayerController.h"
 #include "ZMenuPlayerController.generated.h"
 
+/*
+	NOTE(10.04) :
+		Æó±â.
+*/
+
 /**
  * 
  */
