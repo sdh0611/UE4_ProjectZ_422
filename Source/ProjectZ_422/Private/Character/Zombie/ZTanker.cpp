@@ -110,7 +110,7 @@ void AZTanker::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AZTanker, bIsRushing);
+	//DOREPLIFETIME(AZTanker, bIsRushing);
 }
 
 void AZTanker::SetActive(bool bActive)
@@ -205,10 +205,10 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 	}
 }
 
-bool AZTanker::IsRushing() const
-{
-	return bIsRushing;
-}
+//bool AZTanker::IsRushing() const
+//{
+//	return bIsRushing;
+//}
 
 bool AZTanker::IsRushCooldown() const
 {

@@ -39,7 +39,7 @@ protected:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 public:
-	bool IsRushing() const;
+	//bool IsRushing() const;
 	bool IsRushCooldown() const;
 
 protected:
