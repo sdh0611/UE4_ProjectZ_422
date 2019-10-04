@@ -63,6 +63,13 @@ public:
 
 	class UZCharacterAnimInstance* GetAnimInstance() const;
 
+public:
+	/* Net multicast */
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayMontage(const FString& MontageName);
+	void MulticastPlayMontage_Implementation(const FString& MontageName);
+
+
 protected:
 	void CheckCharacterRotation(float DeltaTime);
 	void ApplySpeed(float NewSpeed);

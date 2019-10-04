@@ -237,6 +237,18 @@ UZCharacterAnimInstance * AZBaseCharacter::GetAnimInstance() const
 	return AnimInstance;
 }
 
+void AZBaseCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)
+{
+	auto CharacterAnim = GetAnimInstance();
+	if (!::IsValid(CharacterAnim))
+	{
+		ZLOG(Error, TEXT("Invalid AnimInstance."));
+		return;
+	}
+
+	CharacterAnim->PlayCharacterMontage(MontageName);
+}
+
 void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 {
 }

@@ -18,7 +18,7 @@
 
 AZTanker::AZTanker()
 {
-	bIsRushing = false;
+	//bIsRushing = false;
 	bIsRushCooldown = true;
 	ImpulseStrength = 10000.f;
 	RushSpeed = 1000.f;
@@ -239,6 +239,8 @@ void AZTanker::ToggleRush(bool bInRush)
 		};
 
 		GetWorld()->GetTimerManager().SetTimer(RushTimer, RushCooldownLambda, RushDelay, false);
+
+		MulticastPlayMontage(TEXT("Scream"));
 	}
 	else
 	{
@@ -247,7 +249,7 @@ void AZTanker::ToggleRush(bool bInRush)
 
 	}
 
-	bIsRushing = bInRush;
+	//bIsRushing = bInRush;
 
 
 }

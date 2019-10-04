@@ -52,10 +52,6 @@ public:
 
 	/* Net multicast */
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastPlayMontage(const FString& MontageName);
-	void MulticastPlayMontage_Implementation(const FString& MontageName);
-
-	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayItemMontage(const FString& MontageName);
 	void MulticastPlayItemMontage_Implementation(const FString& MontageName);
 

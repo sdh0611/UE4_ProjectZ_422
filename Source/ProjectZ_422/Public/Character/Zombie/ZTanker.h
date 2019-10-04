@@ -45,8 +45,8 @@ public:
 protected:
 	FTimerHandle RushTimer;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
-	bool bIsRushing;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated)
+	//bool bIsRushing;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsRushCooldown;

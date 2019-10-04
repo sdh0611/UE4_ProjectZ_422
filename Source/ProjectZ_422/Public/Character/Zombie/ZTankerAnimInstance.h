@@ -28,8 +28,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsScreaming;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bIsRushing;
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	//bool bIsRushing;
 
 
 };

@@ -1316,18 +1316,6 @@ void AZCharacter::MulticastPlayItemMontage_Implementation(const FString & Montag
 	PlayerAnim->Montage_Play(Montage);
 }
 
-void AZCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)
-{
-	auto CharacterAnim = GetCharacterAnimInstance();
-	if (!::IsValid(CharacterAnim))
-	{
-		ZLOG(Error, TEXT("Invalid AnimInstance."));
-		return;
-	}
-
-	CharacterAnim->PlayCharacterMontage(TEXT("EquipRifle"));
-}
-
 bool AZCharacter::MulticastAttachWeapon_Validate(AZWeapon* Weapon, FName SocketName)
 {
 	return true;
