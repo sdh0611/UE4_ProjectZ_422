@@ -82,7 +82,6 @@ void AZBulletProjectile::TraceBullet()
 	GetWorld()->LineTraceSingleByChannel(Hit, PreLocation, CurLocation, PROJECTILE_TRACE, CollisionParams);
 	if (Hit.bBlockingHit)
 	{
-		ZLOG_S(Error);
 		bool bHitCharacter = false;
 		if (Hit.GetActor()->ActorHasTag(TEXT("Character")))
 		{

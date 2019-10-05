@@ -37,6 +37,7 @@ void AZTanker::BeginPlay()
 
 	if (HasAuthority())
 	{
+		ZLOG_S(Error);
 		ImpulseSphere->OnComponentBeginOverlap.AddDynamic(this, &AZTanker::OnSphereOverlap);
 	}
 }
@@ -142,9 +143,9 @@ void AZTanker::AttackCheck()
 	CollisionParams.bReturnPhysicalMaterial = false;
 	CollisionParams.bTraceComplex = false;
 
-	bool bResult = GetWorld()->SweepMultiByProfile(Hits, GetActorLocation(),
+	bool bResult = GetWorld()->SweepMultiByChannel(Hits, GetActorLocation(),
 		GetActorLocation() + GetActorForwardVector() * AttackRange,
-		FQuat::Identity, TEXT("EnemyAttack"), FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
+		FQuat::Identity, ENEMY_ATTACK, FCollisionShape::MakeSphere(AttackRadius), CollisionParams);
 
 	ZLOG(Error, TEXT("Hits : %d"), Hits.Num());
 	if (!bResult)
@@ -201,7 +202,16 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 	if (Character->ActorHasTag(TEXT("Player")))
 	{
 		Character->TakeDamage(RushDamage * CurrentSpeedRatio, FDamageEvent(), GetController(), this);
-		ToggleRush(false);
+		auto AI = GetController<AZZombieAIController>();
+		if (AI)
+		{
+			auto Target = AI->GetTargetPawn();
+			if (Target == Character)
+			{
+				ToggleRush(false);
+			}
+		}
+
 	}
 }
 

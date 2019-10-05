@@ -9,18 +9,23 @@ void AZTitlePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	bShowMouseCursor = true;
-	
-	if (TitleWidgetClass)
+	if (IsLocalPlayerController())
 	{
-		TitleWidget = CreateWidget<UUserWidget>(this, TitleWidgetClass);
-		check(nullptr != TitleWidget);
+		bShowMouseCursor = true;
 
-		TitleWidget->AddToViewport();
+		if (TitleWidgetClass)
+		{
+			TitleWidget = CreateWidget<UUserWidget>(this, TitleWidgetClass);
 
-		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(TitleWidget->GetCachedWidget());
-		SetInputMode(InputMode);
+			if (TitleWidget)
+			{
+				TitleWidget->AddToViewport();
+
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(TitleWidget->GetCachedWidget());
+				SetInputMode(InputMode);
+			}
+		}
 	}
 
 }
