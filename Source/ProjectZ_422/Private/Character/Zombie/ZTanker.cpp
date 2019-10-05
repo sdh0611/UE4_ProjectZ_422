@@ -27,6 +27,7 @@ AZTanker::AZTanker()
 
 	ImpulseSphere = CreateDefaultSubobject<USphereComponent>(TEXT("ImpulseSphere"));
 	ImpulseSphere->SetupAttachment(GetCapsuleComponent());
+	ImpulseSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	StatusComponent->SetMaxHP(1000.f);
 }
@@ -50,7 +51,7 @@ void AZTanker::ChangeZombieState(EZombieState NewState)
 	{
 		case EZombieState::Idle:
 		{
-			SetCurrentSpeed(WalkSpeed);
+			SetCharacterWalkSpeed(WalkSpeed);
 			break;
 		}
 		case EZombieState::Chase:
@@ -181,7 +182,6 @@ void AZTanker::OnSensingPlayer(APawn * Pawn)
 void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor,
 	UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SphereOverlap"));
 	ZLOG_S(Error);
 	auto Character = Cast<AZBaseCharacter>(OtherActor);
 	if (nullptr == Character)
@@ -196,8 +196,12 @@ void AZTanker::OnSphereOverlap(UPrimitiveComponent * OverlappedComponent, AActor
 	FVector ImpulseDir = (OtherActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	ImpulseDir *= (ImpulseStrength * CurrentSpeedRatio);
 
-	Character->GetController()->StopMovement();
-	Character->GetCharacterMovement()->AddImpulse(ImpulseDir, true);
+	auto CharacterPC = Character->GetController();
+	if (CharacterPC)
+	{
+		Character->GetController()->StopMovement();
+		Character->GetCharacterMovement()->AddImpulse(ImpulseDir, true);
+	}
 
 	if (Character->ActorHasTag(TEXT("Player")))
 	{
@@ -235,7 +239,7 @@ void AZTanker::ToggleRush(bool bInRush)
 	if (bInRush)
 	{
 		ImpulseSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		SetCurrentSpeed(RushSpeed);
+		SetCharacterWalkSpeed(RushSpeed);
 		bIsRushCooldown = false;
 		//auto TankerAnim = Cast<UZTankerAnimInstance>(GetAnimInstance());
 		//if (::IsValid(TankerAnim))
@@ -255,7 +259,7 @@ void AZTanker::ToggleRush(bool bInRush)
 	else
 	{
 		ImpulseSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SetCurrentSpeed(SprintSpeed);
+		SetCharacterWalkSpeed(SprintSpeed);
 
 	}
 

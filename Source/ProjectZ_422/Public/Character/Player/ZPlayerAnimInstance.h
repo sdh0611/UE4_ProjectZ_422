@@ -53,6 +53,9 @@ public:
 
 	//FOnKnifeAttack OnKnifeAttack;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter)
+	bool bIsCrouching;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter, Meta = (AllowPrivateAccess = true))
 	bool bIsDead;
 

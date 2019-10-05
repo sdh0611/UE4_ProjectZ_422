@@ -18,6 +18,9 @@ public:
 	virtual void NativeConstruct() override;
 
 public:
+	void SetIDInputWidgetErrorText(const FString& NewText);
+
+public:
 	bool IsVerified() const;
 
 private:

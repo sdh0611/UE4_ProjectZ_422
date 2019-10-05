@@ -16,6 +16,7 @@ UZPlayerAnimInstance::UZPlayerAnimInstance()
 	bIsEquipGun = false;
 	bIsAiming = false;
 	bIsDead = false;
+	bIsCrouching = false;
 
 }
 
@@ -47,7 +48,8 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//{
 		//	BindFireMontage(Weapon);
 		//}
-
+		
+		bIsCrouching = Pawn->bIsCrouched;
 
 
 	}

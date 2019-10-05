@@ -92,12 +92,14 @@ void AZGun::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(AZGun, CurrentAmmo, COND_OwnerOnly);
-	DOREPLIFETIME_CONDITION(AZGun, MaxAmmo, COND_OwnerOnly);
-	DOREPLIFETIME_CONDITION(AZGun, FireDelay, COND_OwnerOnly);
-	DOREPLIFETIME_CONDITION(AZGun, BulletSpread, COND_OwnerOnly);
+	DOREPLIFETIME(AZGun, CurrentAmmo);
+	DOREPLIFETIME(AZGun, MaxAmmo);
+	DOREPLIFETIME(AZGun, FireDelay);
+	DOREPLIFETIME(AZGun, BulletSpread);
+	DOREPLIFETIME(AZGun, FireMode);
+
+	DOREPLIFETIME_CONDITION(AZGun, bIsReloading,COND_OwnerOnly);
 	DOREPLIFETIME_CONDITION(AZGun, CurrentSpread, COND_OwnerOnly);
-	DOREPLIFETIME_CONDITION(AZGun, FireMode, COND_OwnerOnly);
 
 }
 

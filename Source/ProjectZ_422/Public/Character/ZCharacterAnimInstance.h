@@ -59,8 +59,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter )
 	bool bIsFalling;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ZCharacter )
-	bool bIsCrouching;
 
 	UPROPERTY()
 	class UAnimMontage* CurrentPlayMontage;

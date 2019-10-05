@@ -39,8 +39,8 @@ public:
 public:
 	void SetIsSprinting(bool NewState);
 
-	/* Player Character의 경우 여러 상태에 대한 속도값이 다르기 때문에 override해줌. */
-	void SetCurrentSpeed(float NewSpeed);
+	void SetCharacterWalkSpeed(float NewSpeed);
+	void SetCharacterCrouchWalkSpeed(float NewSpeed);
 
 	virtual void SetActive(bool bActive);
 
@@ -72,7 +72,6 @@ public:
 
 protected:
 	void CheckCharacterRotation(float DeltaTime);
-	void ApplySpeed(float NewSpeed);
 	virtual void OnDead();
 	/* 
 		게임 상에서 사라질 때 호출할 메소드. 
@@ -102,10 +101,8 @@ protected:
 
 	/* Replicated using method */
 	UFUNCTION()
-	void OnRep_IsSprinting();
+	virtual void OnRep_IsSprinting();
 
-	UFUNCTION()
-	void OnRep_CurrentSpeed();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsSprinting)
@@ -117,9 +114,6 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
 	bool bIsActive;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, ReplicatedUsing = OnRep_CurrentSpeed)
-	float CurrentSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	float WalkSpeed;

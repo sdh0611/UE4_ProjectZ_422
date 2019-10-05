@@ -65,7 +65,7 @@ AZCharacter::AZCharacter()
 	ThirdWeaponSocketName = FName(TEXT("weapon_third"));
 	KnifeSocketName = FName(TEXT("weapon_knife"));
 	GrenadeWeaponSocketName = FName(TEXT("weapon_grenade"));
-	
+
 	bIsSprinting = false;
 	bIsAiming = false;
 	WalkSpeed = 500.f;
@@ -155,13 +155,11 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Slot3"), IE_Pressed, this, &AZCharacter::Slot3);
 	PlayerInputComponent->BindAction(TEXT("Slot4"), IE_Pressed, this, &AZCharacter::Slot4);
 	PlayerInputComponent->BindAction(TEXT("ChangeFireMode"), IE_Pressed, this, &AZCharacter::ChangeFireMode);
-	//PlayerInputComponent->BindAction(TEXT("ToggleInGameMenu"), IE_Pressed, this, &AZCharacter::ToggleInGameMenu);
-	//PlayerInputComponent->BindAction(TEXT("RemoveWidgetFromTop"), IE_Pressed, this, &AZCharacter::RemoveWidgetFromTop);
 
-	// For debug
-	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
-	PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);
-	PlayerInputComponent->BindAction(TEXT("Ragdoll"), IE_Pressed, this, &AZCharacter::Ragdoll);
+	//// For debug
+	//PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
+	//PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);
+	//PlayerInputComponent->BindAction(TEXT("Ragdoll"), IE_Pressed, this, &AZCharacter::Ragdoll);
 
 
 
@@ -276,11 +274,26 @@ void AZCharacter::OnRep_IsAiming()
 {
 	if (bIsAiming)
 	{
-		SetCurrentSpeed(AimingWalkSpeed);
+		if (bIsCrouched)
+		{
+			SetCharacterCrouchWalkSpeed(AimingWalkSpeedCrouched);
+		}
+		else
+		{
+			SetCharacterWalkSpeed(AimingWalkSpeed);
+		}
+		//SetCurrentSpeed(AimingWalkSpeed);
 	}
 	else
 	{
-		SetCurrentSpeed(WalkSpeed);
+		if (bIsCrouched)
+		{
+			SetCharacterCrouchWalkSpeed(WalkSpeedCrouched);
+		}
+		else
+		{
+			SetCharacterWalkSpeed(WalkSpeed);
+		}
 	}
 
 	auto CharacterAnim = GetCharacterAnimInstance();
@@ -290,6 +303,20 @@ void AZCharacter::OnRep_IsAiming()
 		return;
 	}
 	CharacterAnim->SetIsAiming(bIsAiming);
+}
+
+void AZCharacter::OnRep_IsSprinting()
+{
+	Super::OnRep_IsSprinting();
+	//if (bIsSprinting)
+	//{
+	//	SetCharacterWalkSpeed(SprintSpeed);
+	//}
+	//else
+	//{
+	//	SetCharacterWalkSpeed(WalkSpeed);
+	//}
+
 }
 
 void AZCharacter::SetIsAiming(bool bNewState)
@@ -309,7 +336,7 @@ void AZCharacter::SetIsAiming(bool bNewState)
 	/* Sprint 해제 */
 	if (IsSprinting())
 	{
-
+		SetIsSprinting(false);
 	}
 
 	bIsAiming = bNewState;
@@ -331,7 +358,6 @@ void AZCharacter::SetCurrentWeapon(AZWeapon * NewWeapon)
 		return;
 	}
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("SetWeapon."));
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->SetIsEquipped(false);
@@ -365,6 +391,11 @@ void AZCharacter::SetActive(bool bActive)
 	}
 
 	Super::SetActive(bActive);
+}
+
+bool AZCharacter::IsCharacterCrouched() const
+{
+	return bIsCrouched;
 }
 
 bool AZCharacter::IsEquipWeapon()
@@ -520,10 +551,14 @@ void AZCharacter::OnRemoved()
 
 void AZCharacter::MoveForward(float NewAxisValue)
 {
+	if (NewAxisValue == 0.f)
+	{
+		return;
+	}
+
 	const FRotator Rotation = GetController()->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
 	if (NewAxisValue < 0)
 	{
 		SprintRelease();
@@ -535,6 +570,11 @@ void AZCharacter::MoveForward(float NewAxisValue)
 
 void AZCharacter::MoveRight(float NewAxisValue)
 {
+	if (NewAxisValue == 0.f)
+	{
+		return;
+	}
+
 	const FRotator Rotation = GetController()->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
@@ -555,6 +595,12 @@ void AZCharacter::LookRight(float NewAxisValue)
 
 void AZCharacter::ToggleCrouch()
 {
+	//if (!HasAuthority())
+	//{
+	//	ServerToggleCrouch();
+	//	return;
+	//}
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("ToggleCrouch"));
 	// Character가 공중에 떠있는지 체크
 	if (GetCharacterMovement()->IsFalling())
 	{
@@ -563,37 +609,77 @@ void AZCharacter::ToggleCrouch()
 	}
 
 	// 현재 Character가 앉은 상태인지 체크.
-	if (GetCharacterMovement()->IsCrouching())
+	//if (GetCharacterMovement()->IsCrouching())
+	if (bIsCrouched)
 	{
 		// 앉은 상태인 경우
 		ACharacter::UnCrouch();
-		if (IsAiming())
-		{
-			SetCurrentSpeed(AimingWalkSpeedCrouched);
-		}
-		else
-		{
-			SetCurrentSpeed(WalkSpeedCrouched);
-		}
+		//if (IsAiming())
+		//{
+		//	SetCurrentSpeed(AimingWalkSpeed);
+		//}
+		//else
+		//{
+		//	SetCurrentSpeed(WalkSpeed);
+		//}
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("UnCrouch"));
+
 	}
 	else
 	{
+		if (IsSprinting())
+		{
+			SprintRelease();
+		}
+
 		// 앉은 상태가 아닌 경우
 		ACharacter::Crouch();
-		if (IsAiming())
-		{
-			SetCurrentSpeed(AimingWalkSpeed);
-		}
-		else
-		{
-			SetCurrentSpeed(WalkSpeed);
-		}
+		//if (IsAiming())
+		//{
+		//	SetCurrentSpeed(AimingWalkSpeedCrouched);
+		//}
+		//else
+		//{
+		//	SetCurrentSpeed(WalkSpeedCrouched);
+		//}
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Crouch"));
+
 	}
+
+
+	//if (bIsCrouched)
+	//{
+	//	if (IsAiming())
+	//	{
+	//		SetCharacterCrouchWalkSpeed(AimingWalkSpeedCrouched);
+	//	}
+	//	else
+	//	{
+	//		SetCharacterWalkSpeed(WalkSpeedCrouched);
+	//	}
+	//}
+	//else
+	//{
+	//	if (IsAiming())
+	//	{
+	//		SetCharacterCrouchWalkSpeed(AimingWalkSpeed);
+	//	}
+	//	else
+	//	{
+	//		SetCharacterWalkSpeed(WalkSpeed);
+	//	}
+	//}
 
 }
 
 void AZCharacter::Sprint()
 {
+	if (!HasAuthority())
+	{
+		ServerSetSprint(true);
+		return;
+	}
+
 	if (IsAiming())
 	{
 		return;
@@ -631,7 +717,8 @@ void AZCharacter::Sprint()
 	if (MyCharacterMovement)
 	{
 		// Character가 공중에 있거나 앉은 상태라면 그대로 종료.
-		if (MyCharacterMovement->IsFalling() || MyCharacterMovement->IsCrouching())
+		//if (MyCharacterMovement->IsFalling() || MyCharacterMovement->IsCrouching())
+		if (MyCharacterMovement->IsFalling() || bIsCrouched)
 		{
 			return;
 		}
@@ -640,7 +727,9 @@ void AZCharacter::Sprint()
 		{
 			// SprintSpeed로 값을 변경하고 Sprint 상태 변경
 			//MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
+
 			SetIsSprinting(true);
+
 			//auto CharacterAnim = GetCharacterAnimInstance();
 			//check(CharacterAnim);
 			//CharacterAnim->SetIsSprinting(true);
@@ -653,6 +742,12 @@ void AZCharacter::Sprint()
 
 void AZCharacter::SprintRelease()
 {
+	if (!HasAuthority())
+	{
+		ServerSetSprint(false);
+		return;
+	}
+
 	auto MyCharacterMovement = GetCharacterMovement();
 	if (MyCharacterMovement)
 	{
@@ -660,16 +755,13 @@ void AZCharacter::SprintRelease()
 		if (IsSprinting())
 		{
 			// WalkSpeed로 값을 변경하고 Sprint 상태 변경
-			MyCharacterMovement->MaxWalkSpeed = WalkSpeed;
+			//MyCharacterMovement->MaxWalkSpeed = WalkSpeed;
 			SetIsSprinting(false);
 
-			auto CharacterAnim = GetCharacterAnimInstance();
-			check(nullptr != CharacterAnim);
-			CharacterAnim->SetIsSprinting(false);
-			//if (IsEquipWeapon())
-			//{
-			//	bUseControllerRotationYaw = true
-			//}
+			//auto CharacterAnim = GetCharacterAnimInstance();
+			//check(nullptr != CharacterAnim);
+			//CharacterAnim->SetIsSprinting(false);
+
 		}
 
 	}
@@ -677,6 +769,7 @@ void AZCharacter::SprintRelease()
 
 void AZCharacter::Jump()
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 	if (IsEquipWeapon())
 	{
 		switch (CurrentWeapon->GetWeaponCategory())
@@ -711,15 +804,19 @@ void AZCharacter::Jump()
 	}
 
 	// Character가 현재 앉은 상태인지 체크.
-	if (GetCharacterMovement()->IsCrouching())
+	//if (GetCharacterMovement()->IsCrouching())
+	if (bIsCrouched)
 	{
 		// 앉은 상태라면 UnCrouch() 메소드 실행
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 		ACharacter::UnCrouch();
+		ToggleCrouch();
 	}
 	else
 	{
 		Super::Jump();
 	}
+
 }
 
 void AZCharacter::Interaction()
@@ -759,7 +856,6 @@ void AZCharacter::Interaction()
 
 	if (InteractionActor)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Interact."));
 		//ServerOnInteract(InteractionActor);
 		InteractionActor->OnInteraction(this);
 	}
@@ -1248,23 +1344,7 @@ void AZCharacter::ServerReload_Implementation()
 	Reload();
 }
 
-bool AZCharacter::ServerSetCrouch_Validate(bool bCrouch)
-{
-	return true;
-}
 
-void AZCharacter::ServerSetCrouch_Implementation(bool bCrouch)
-{
-	if (bCrouch)
-	{
-
-	}
-	else
-	{
-
-	}
-
-}
 
 bool AZCharacter::ServerSetAiming_Validate(bool bAiming)
 {
@@ -1274,6 +1354,23 @@ bool AZCharacter::ServerSetAiming_Validate(bool bAiming)
 void AZCharacter::ServerSetAiming_Implementation(bool bAiming)
 {
 	SetIsAiming(bAiming);
+}
+
+bool AZCharacter::ServerSetSprint_Validate(bool bSprint)
+{
+	return true;
+}
+
+void AZCharacter::ServerSetSprint_Implementation(bool bSprint)
+{
+	if (bSprint)
+	{
+		Sprint();
+	}
+	else
+	{
+		SprintRelease();
+	}
 }
 
 bool AZCharacter::ClientOnDead_Validate()
@@ -1328,7 +1425,6 @@ void AZCharacter::MulticastAttachWeapon_Implementation(AZWeapon* Weapon, FName S
 
 void AZCharacter::OnRep_CurrentWeapon()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_CurrentWeapon."));
 	auto CharacterAnim = GetCharacterAnimInstance();
 	if (!::IsValid(CharacterAnim))
 	{
@@ -1385,5 +1481,34 @@ void AZCharacter::OnRep_CurrentWeapon()
 			}
 		}
 	}
+}
+
+void AZCharacter::OnRep_IsCrouched()
+{
+	Super::OnRep_IsCrouched();
+
+	if (bIsCrouched)
+	{
+		if (IsAiming())
+		{
+			SetCharacterCrouchWalkSpeed(AimingWalkSpeedCrouched);
+		}
+		else
+		{
+			SetCharacterCrouchWalkSpeed(WalkSpeedCrouched);
+		}
+	}
+	else
+	{
+		if (IsAiming())
+		{
+			SetCharacterWalkSpeed(AimingWalkSpeed);
+		}
+		else
+		{
+			SetCharacterWalkSpeed(WalkSpeed);
+		}
+	}
+
 }
 

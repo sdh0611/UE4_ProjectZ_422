@@ -120,10 +120,6 @@ void UZInventoryItemWidget::ClearWidget()
 {
 	if (Item.IsValid())
 	{
-		// Delegate ÇØÁ¦
-		Item->OnItemInfoChanged.RemoveAll(this);
-		Item->OnItemRemoved.RemoveAll(this);
-
 		Item = nullptr;
 	}
 

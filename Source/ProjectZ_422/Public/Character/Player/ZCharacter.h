@@ -66,6 +66,7 @@ public:
 	void SetCurrentWeapon(class AZWeapon* NewWeapon);
 	virtual void SetActive(bool bActive) override;
 
+	bool IsCharacterCrouched() const;
 	bool IsEquipWeapon();
 	bool IsAiming();
 	bool IsSwitchingWeapon();
@@ -150,14 +151,15 @@ private:
 	void ServerReload_Implementation();
 
 	UFUNCTION(Server, WithValidation, Reliable)
-	void ServerSetCrouch(bool bCrouch);
-	bool ServerSetCrouch_Validate(bool bCrouch);
-	void ServerSetCrouch_Implementation(bool bCrouch);
-
-	UFUNCTION(Server, WithValidation, Reliable)
 	void ServerSetAiming(bool bAiming);
 	bool ServerSetAiming_Validate(bool bAiming);
 	void ServerSetAiming_Implementation(bool bAiming);
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSetSprint(bool bSprint);
+	bool ServerSetSprint_Validate(bool bSprint);
+	void ServerSetSprint_Implementation(bool bSprint);
+
 
 	/* Server to client call RPC */
 	UFUNCTION(Client, Reliable, WithValidation)
@@ -176,6 +178,10 @@ private:
 
 	UFUNCTION()
 	void OnRep_IsAiming();
+
+	virtual void OnRep_IsCrouched() override;
+	   
+	virtual void OnRep_IsSprinting() override;
 
 protected:
 	/* Sockets */
@@ -196,7 +202,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName GrenadeWeaponSocketName;
-
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsAiming)
 	bool bIsAiming;

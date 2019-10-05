@@ -118,6 +118,8 @@ void AZWeapon::InitItemData(const FZItemData * const NewItemData)
 		return;
 	}
 
+
+
 	WeaponMesh->SetSkeletalMesh(SKMesh);
 	if (HasAuthority())
 	{
@@ -189,15 +191,14 @@ void AZWeapon::RepItemOwner()
 
 	WeaponMesh->SetSkeletalMesh(SKMesh);
 
+	//MyGameInstance->AssetLoader.RequestSyncLoad();
+
 	if (ItemOwner)
 	{
 		ZLOG_S(Error);
-		//ItemOwner->MulticastAttachWeapon(this, AttachSocketName);
 		ItemOwner->AttachWeapon(this, AttachSocketName);
-		//DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	}
 	
-	//AttachToComponent(ItemOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, AttachSocketName);
 }
 
 
@@ -253,7 +254,6 @@ bool AZWeapon::ClientSetSkeletalMesh_Validate(USkeletalMesh * NewMesh)
 
 void AZWeapon::ClientSetSkeletalMesh_Implementation(USkeletalMesh * NewMesh)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Set SKMesh."));
 	WeaponMesh->SetSkeletalMesh(NewMesh);
 }
 

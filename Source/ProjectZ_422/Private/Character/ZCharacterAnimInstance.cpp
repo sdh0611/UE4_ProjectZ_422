@@ -14,7 +14,7 @@ UZCharacterAnimInstance::UZCharacterAnimInstance()
 	CurrentPawnDirection = 0.f;
 
 	bIsFalling = false;
-	bIsCrouching = false;
+	//bIsCrouching = false;
 	bIsSprinting = false;
 	//bIsDead = false;
 	bIsDamaged = false;
@@ -44,7 +44,6 @@ void UZCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		if (Character)
 		{
 			bIsFalling = Character->GetCharacterMovement()->IsFalling();
-			bIsCrouching = Character->GetCharacterMovement()->IsCrouching();
 		}
 
 	}

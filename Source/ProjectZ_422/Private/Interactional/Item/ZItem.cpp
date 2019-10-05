@@ -133,7 +133,6 @@ void AZItem::OnDropped(int32 Quantity)
 				ZLOG(Error, TEXT("Failed to spawn pickup...."));
 				return;
 			}
-			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%.2f %.2f %.2f"), SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z));
 
 			NewPickup->SpawnItemClass = GetClass();
 			NewPickup->SetItem(this);
@@ -162,7 +161,6 @@ void AZItem::OnDropped(int32 Quantity)
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		SpawnParams.Owner = GetOwner();
-		UKismetSystemLibrary::PrintString(GetWorld(), GetOwner()->GetName());
 
 		AZPickup* NewPickup = GetWorld()->SpawnActor<AZPickup>(PickupClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 		if (nullptr == NewPickup)
@@ -252,7 +250,6 @@ void AZItem::InitItemData(const FZItemData * const NewItemData)
 
 int32 AZItem::AdjustQuantity(int32 Value)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("AdjustQuantity"));
 	int32 Quantity = CurrentQuantityOfItem + Value;
 	int32 Remain = 0; // Item의 최대 보유개수를 초과한 양
 	if (Quantity > MaxQuantityOfItem)
@@ -447,7 +444,6 @@ void AZItem::RepItemOwner()
 {
 	if (ItemOwner)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_ItemOwner"));
 		auto MyPC = ItemOwner->GetController<AZPlayerController>();
 		if (MyPC)
 		{
@@ -515,7 +511,6 @@ void AZItem::OnRep_ItemOwner()
 
 void AZItem::OnRep_ItemInfoChanged()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("OnRep_ItemInfoChanged"));
 	OnItemInfoChanged.Broadcast();
 }
 

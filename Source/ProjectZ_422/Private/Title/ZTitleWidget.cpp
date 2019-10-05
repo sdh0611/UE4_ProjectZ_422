@@ -22,6 +22,11 @@ void UZTitleWidget::NativeConstruct()
 
 }
 
+void UZTitleWidget::SetIDInputWidgetErrorText(const FString & NewText)
+{
+	InputIDWidget->SetErrorText(NewText);
+}
+
 bool UZTitleWidget::IsVerified() const
 {
 	return bIsVerified;

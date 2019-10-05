@@ -129,7 +129,6 @@ void UZCurrentWeaponInfoWidget::UpdateWidget()
 {
 	if (nullptr == Weapon)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Weapon null"));
 		ZLOG(Error, TEXT("Weapon null"));
 		return;
 	}

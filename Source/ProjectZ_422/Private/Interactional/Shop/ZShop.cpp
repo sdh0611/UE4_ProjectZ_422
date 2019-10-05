@@ -326,7 +326,6 @@ bool AZShop::ServerSell_Validate(APlayerController* PC, int32 SellItemInventoryI
 
 void AZShop::ServerSell_Implementation(APlayerController* PC, int32 SellItemInventoryIndex, int32 Quantity)
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Sell Item process."));
 	if (nullptr == PC)
 	{
 		return;
@@ -366,7 +365,6 @@ void AZShop::ServerSell_Implementation(APlayerController* PC, int32 SellItemInve
 	}
 
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("In Sell Item process."));
 	/*
 		돈계산
 		-> 판매 가격은 상점 구매 가격의 7할로 통일.

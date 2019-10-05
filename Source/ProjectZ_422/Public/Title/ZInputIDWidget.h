@@ -19,6 +19,8 @@ class PROJECTZ_422_API UZInputIDWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+public:
+	void SetErrorText(const FString& NewText);
 
 protected:
 	void CheckVerified() const;
@@ -34,6 +36,9 @@ public:
 	FOnIdentify OnIdentify;
 
 protected:
+	UPROPERTY()
+	class UTextBlock* ErrorText;
+
 	UPROPERTY()
 	class UEditableTextBox* InputID;
 

@@ -44,7 +44,6 @@ void AZGrenadeProjectile::FireInDirection(const FVector & Direction)
 	Movement->Velocity = Direction * Movement->InitialSpeed;
 	//ZLOG(Error, TEXT("Dir : %.3f, %.3f, %.3f"), Direction.X, Direction.Y, Direction.Z);
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Set explosion timer."));
 	GetWorld()->GetTimerManager().SetTimer(ExplosionTimer, this, &AZGrenadeProjectile::Explosion, FireDelay, false);
 }
 

@@ -86,11 +86,6 @@ float AZBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Damag
 	else
 	{
 		MulticastOnHit();
-		//auto Anim = GetAnimInstance();
-		//if (::IsValid(Anim))
-		//{
-		//	Anim->bIsDamaged = true;
-		//}
 	}
 
 	return FinalDamage;
@@ -140,20 +135,31 @@ void AZBaseCharacter::SetIsSprinting(bool bNewState)
 		ServerSetSprinting(bNewState);
 		return;
 	}
+
 	bIsSprinting = bNewState;
 
 	OnRep_IsSprinting();
 }
 
-void AZBaseCharacter::SetCurrentSpeed(float NewSpeed)
+void AZBaseCharacter::SetCharacterWalkSpeed(float NewSpeed)
+{
+	if (NewSpeed < 0.f)
+	{
+		return;
+	}
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Walk Speed : %.2f"), NewSpeed));
+	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+}
+
+void AZBaseCharacter::SetCharacterCrouchWalkSpeed(float NewSpeed)
 {
 	if (NewSpeed < 0.f)
 	{
 		return;
 	}
 
-	CurrentSpeed = NewSpeed;
-	ApplySpeed(NewSpeed);
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Crouch Speed : %.2f"), NewSpeed));
+	GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
 }
 
 void AZBaseCharacter::SetActive(bool bActive)
@@ -210,7 +216,7 @@ float AZBaseCharacter::GetCurrentSpeed() const
 {
 	float CharacterCurrentSpeed = 0.f;
 
-	if (GetCharacterMovement()->IsCrouching())
+	if (bIsCrouched)
 	{
 		CharacterCurrentSpeed = GetCharacterMovement()->MaxWalkSpeedCrouched;
 	}
@@ -251,19 +257,6 @@ void AZBaseCharacter::MulticastPlayMontage_Implementation(const FString & Montag
 
 void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 {
-}
-
-void AZBaseCharacter::ApplySpeed(float NewSpeed)
-{
-	if (GetCharacterMovement()->IsCrouching())
-	{
-		GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-	}
-
 }
 
 void AZBaseCharacter::OnDead()
@@ -352,11 +345,11 @@ void AZBaseCharacter::OnRep_IsSprinting()
 {
 	if (bIsSprinting)
 	{
-		SetCurrentSpeed(SprintSpeed);
+		SetCharacterWalkSpeed(SprintSpeed);
 	}
 	else
 	{
-		SetCurrentSpeed(WalkSpeed);
+		SetCharacterWalkSpeed(WalkSpeed);
 	}
 
 	auto CharacterAnim = GetAnimInstance();
@@ -367,9 +360,3 @@ void AZBaseCharacter::OnRep_IsSprinting()
 	}
 	CharacterAnim->SetIsSprinting(bIsSprinting);
 }
-
-void AZBaseCharacter::OnRep_CurrentSpeed()
-{
-	SetCurrentSpeed(CurrentSpeed);
-}
-

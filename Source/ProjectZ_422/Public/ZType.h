@@ -93,6 +93,26 @@ public:
 
 };
 
+USTRUCT(BlueprintType)
+struct PROJECTZ_422_API FZSoundData : public FTableRowBase
+{
+
+	GENERATED_BODY()
+
+public:
+	FZSoundData()
+		:Name(TEXT(""))
+	{
+
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponData)
+	FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WeaponData)
+	TSoftObjectPtr<class USoundBase> SoundPath;
+
+};
 
 /*
 	ItemData
@@ -145,6 +165,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
 	FString WeaponCategory;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemData)
+	//TSoftObjectPtr<class USoundBase> FireSound;
 };
 
 /* 

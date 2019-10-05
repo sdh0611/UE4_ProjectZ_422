@@ -147,7 +147,7 @@ protected:
 	void OnRep_CurrentAmmo();
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	UPROPERTY(VisibleAnywhere, Category = Weapon, Replicated)
 	bool bIsReloading;
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
