@@ -7,6 +7,8 @@
 #include "Engine/SkeletalMesh.h"
 #include "MoviePlayer.h"
 #include "ModuleManager.h"
+#include "ZBasePlayerController.h"
+
 
 UZGameInstance::UZGameInstance()
 {

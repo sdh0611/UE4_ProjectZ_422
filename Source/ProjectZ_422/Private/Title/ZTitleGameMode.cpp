@@ -2,12 +2,27 @@
 
 
 #include "ZTitleGameMode.h"
+#include "ZBasePlayerController.h"
+
 
 void AZTitleGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
 	Http = &FHttpModule::Get();
+
+}
+
+void AZTitleGameMode::Logout(AController * Exiting)
+{
+	Super::Logout(Exiting);
+
+	/* DB에 Logout 상태로 변경. */
+	//auto MyPC = Cast<AZBasePlayerController>(Exiting);
+	//if (MyPC)
+	//{
+	//	MyPC->ClientRequestLogout();
+	//}
 
 }
 

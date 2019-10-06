@@ -41,7 +41,7 @@ public:
 
 	void AttachWeapon(class AZWeapon* Weapon, const FName& SocketName);
 	void DetachWeapon(int32 NewWeaponIndex);
-
+	void SetUserName(const FString& Name);
 	/* Server to client call RPC */
 
 
@@ -59,6 +59,10 @@ public:
 	void MulticastAttachWeapon(class AZWeapon* Weapon, FName SocketName);
 	bool MulticastAttachWeapon_Validate(class AZWeapon* Weapon, FName SocketName);
 	void MulticastAttachWeapon_Implementation(class AZWeapon* Weapon, FName SocketName);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastUpdatePlayerName(const FString& NewName);
+	void MulticastUpdatePlayerName_Implementation(const FString& NewName);
 
 public:
 	void SetIsAiming(bool NewState);
@@ -158,6 +162,12 @@ private:
 	void ServerSetSprint(bool bSprint);
 	bool ServerSetSprint_Validate(bool bSprint);
 	void ServerSetSprint_Implementation(bool bSprint);
+
+	UFUNCTION(Server, WithValidation, Reliable)
+	void ServerSetUserName(const FString& NewUserName);
+	bool ServerSetUserName_Validate(const FString& NewUserName);
+	void ServerSetUserName_Implementation(const FString& NewUserName);
+
 
 
 	/* Server to client call RPC */

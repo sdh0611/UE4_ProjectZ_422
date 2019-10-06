@@ -5,18 +5,18 @@
 #include "ZInteractional.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "ZPlayerController.h"
-#include "ZHUD.h"
 #include "ZUserHUD.h"
 #include "ZCurrentWeaponInfoWidget.h"
-#include "ZWeapon.h"
 #include "ZGun.h"
 #include "ZGrenade.h"
 #include "ZProjectile.h"
+#include "ZGameInstance.h"
 #include "ZCharacterAnimInstance.h"
 #include "ZPlayerAnimInstance.h"
 #include "ZPlayerController.h"
 #include "ZPlayerStatusComponent.h"
 #include "ZChangeFireModeInterface.h"
+#include "UI/ZUserNameWidget.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -28,6 +28,7 @@
 #include "UnrealNetwork.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AZCharacter::AZCharacter()
@@ -270,6 +271,21 @@ void AZCharacter::DetachWeapon(int32 NewWeaponIndex)
 	Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 }
 
+void AZCharacter::SetUserName(const FString& Name)
+{
+	ZLOG_S(Error);
+	auto UserNameWidget = Cast<UZUserNameWidget>(NameComponent->GetUserWidgetObject());
+	if (UserNameWidget)
+	{
+		UserNameWidget->SetUserName(Name);
+	}
+	else
+	{
+		ZLOG_S(Error);
+	}
+
+}
+
 void AZCharacter::OnRep_IsAiming()
 {
 	if (bIsAiming)
@@ -317,6 +333,11 @@ void AZCharacter::OnRep_IsSprinting()
 	//	SetCharacterWalkSpeed(WalkSpeed);
 	//}
 
+}
+
+void AZCharacter::MulticastUpdatePlayerName_Implementation(const FString & NewName)
+{
+	SetUserName(NewName);
 }
 
 void AZCharacter::SetIsAiming(bool bNewState)
@@ -561,7 +582,7 @@ void AZCharacter::MoveRight(float NewAxisValue)
 	{
 		return;
 	}
-	
+
 	const FRotator Rotation = GetController()->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
@@ -1357,6 +1378,22 @@ void AZCharacter::ServerSetSprint_Implementation(bool bSprint)
 	else
 	{
 		SprintRelease();
+	}
+}
+
+bool AZCharacter::ServerSetUserName_Validate(const FString & NewUserName)
+{
+	return true;
+}
+
+void AZCharacter::ServerSetUserName_Implementation(const FString & NewUserName)
+{
+	auto UserNameWidget = Cast<UZUserNameWidget>(NameComponent->GetUserWidgetObject());
+	if (UserNameWidget)
+	{
+
+		UserNameWidget->SetUserName(NewUserName);
+
 	}
 }
 

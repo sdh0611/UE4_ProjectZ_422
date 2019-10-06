@@ -31,6 +31,17 @@ public:
 	bool ClientRequestLogout_Validate();
 	void ClientRequestLogout_Implementation();
 
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientReceiveSetUserName();
+	bool ClientReceiveSetUserName_Validate();
+	void ClientReceiveSetUserName_Implementation();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerReceiveSetUserName(const FString& NewName);
+	bool ServerReceiveSetUserName_Validate(const FString& NewName);
+	void ServerReceiveSetUserName_Implementation(const FString& NewName);
+
+
 private:
 	void OnLogoutResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 

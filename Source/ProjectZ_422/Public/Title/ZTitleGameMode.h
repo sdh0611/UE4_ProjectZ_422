@@ -4,6 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "ZBaseGameMode.h"
+
 #include "Http.h"
 #include "IHttpRequest.h"
 #include "IHttpResponse.h"
@@ -20,6 +21,10 @@ class PROJECTZ_422_API AZTitleGameMode : public AZBaseGameMode
 protected:
 	virtual void BeginPlay() override;
 	
+public:
+	virtual void Logout(AController* Exiting) override;
+
+
 public:
 	void HttpPost(const FString& URL, const FString& UserID, const FString& UserPW, FHttpRequestCompleteDelegate RequestDelegate);
 

@@ -18,9 +18,18 @@ public:
 	AZPlayerState();
 
 public:
+	virtual void SetPlayerName(const FString& S) override;
+
+	virtual void OnRep_PlayerName() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSetPlayerName(const FString& NewName);
+	void MulticastSetPlayerName_Implementation(const FString& NewName);
+
+public:
 	void AddKill();
 	void AdjustScore(int32 NewScore);
-	
+
 private:
 	int32 Kills;
 

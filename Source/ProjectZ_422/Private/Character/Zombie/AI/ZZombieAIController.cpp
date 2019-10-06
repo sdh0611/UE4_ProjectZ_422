@@ -68,10 +68,6 @@ void AZZombieAIController::OnUnPossess()
 
 bool AZZombieAIController::RunAI()
 {
-	//if (!UseBlackboard(ZombieBB, Blackboard))
-	//{
-	//	return false;
-	//}
 	auto Zombie = Cast<AZBaseZombie>(GetPawn());
 	if (nullptr == Zombie)
 	{
