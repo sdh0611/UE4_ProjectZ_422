@@ -3,14 +3,14 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "GameFramework/PlayerController.h"
+#include "ZBasePlayerController.h"
 #include "ZPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZPlayerController : public APlayerController
+class PROJECTZ_422_API AZPlayerController : public AZBasePlayerController
 {
 	GENERATED_BODY()
 	

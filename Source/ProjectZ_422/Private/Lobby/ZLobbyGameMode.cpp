@@ -12,7 +12,7 @@ void AZLobbyGameMode::PostLogin(APlayerController * NewPlayer)
 	Super::PostLogin(NewPlayer);
 
 	++ConnectNumber;
-
+	
 	auto MyGameState = GetGameState<AZLobbyGameState>();
 	if (MyGameState)
 	{

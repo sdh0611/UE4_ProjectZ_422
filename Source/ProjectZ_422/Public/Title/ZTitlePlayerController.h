@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "GameFramework/PlayerController.h"
+#include "ZBasePlayerController.h"
 #include "Http.h"
 #include "IHttpRequest.h"
 #include "IHttpResponse.h"
@@ -13,7 +13,7 @@
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZTitlePlayerController : public APlayerController
+class PROJECTZ_422_API AZTitlePlayerController : public AZBasePlayerController
 {
 	GENERATED_BODY()
 	

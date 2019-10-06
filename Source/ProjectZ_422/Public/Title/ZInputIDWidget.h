@@ -4,6 +4,11 @@
 
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
+
+#include "Http.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+
 #include "ZInputIDWidget.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnIdentify, bool);
@@ -23,7 +28,7 @@ public:
 	void SetErrorText(const FString& NewText);
 
 protected:
-	void CheckVerified() const;
+	void CheckVerified();
 
 	UFUNCTION()
 	void OnTextCommit(const FText& Text, ETextCommit::Type CommitMethod);
@@ -34,6 +39,11 @@ protected:
 
 public:
 	FOnIdentify OnIdentify;
+
+private:
+	void RequestLogin(const FString& URL, const FString& UserID, const FString& UserPW);
+	void OnLoginServerResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void ReceiveLoginResponse(bool bSuccess, const FString& ResultText);
 
 protected:
 	UPROPERTY()

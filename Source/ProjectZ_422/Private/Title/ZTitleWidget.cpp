@@ -5,7 +5,7 @@
 #include "..\..\Public\Title\ZTitleWidget.h"
 #include "Title/ZInputIDWidget.h"
 #include "Title/ZConnectServerWidget.h"
-
+#include "ZGameInstance.h"
 
 void UZTitleWidget::NativeConstruct()
 {
@@ -29,14 +29,20 @@ void UZTitleWidget::SetIDInputWidgetErrorText(const FString & NewText)
 
 bool UZTitleWidget::IsVerified() const
 {
-	return bIsVerified;
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (nullptr == MyGameInstance)
+	{
+		return false;
+	}
+
+	return MyGameInstance->bIsVerified;
 }
 
 void UZTitleWidget::SetIsVerified(bool bVerified)
 {
 	ZLOG_S(Error);
-	bIsVerified = bVerified;
-	if (bIsVerified)
+	//bIsVerified = bVerified;
+	if (bVerified)
 	{
 		InputIDWidget->SetVisibility(ESlateVisibility::Collapsed);
 		ConnectServerWidget->SetVisibility(ESlateVisibility::Visible);

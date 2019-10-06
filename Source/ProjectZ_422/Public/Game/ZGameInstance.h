@@ -6,7 +6,13 @@
 #include "Engine/GameInstance.h"
 #include "Engine/StreamableManager.h"
 #include "ZItem.h"
+
+#include "Http.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+
 #include "ZGameInstance.generated.h"
+
 
 /**
  * 
@@ -23,9 +29,15 @@ public:
 	virtual void Init() override;
 
 public:
+	void SetUserID(const FString& NewID);
 	void SetUserNickname(const FString& NewNickname);
 
 	const FString& GetUserNickname() const;
+
+public:
+	/* Login server 통신 관련. */
+	void HttpPostLogin(FString URL, const FString& NewUserID, const FString& NewUserPW, FHttpRequestCompleteDelegate RequestDelegate);
+	void HttpPostLogout(FString URL, FHttpRequestCompleteDelegate RequestDelegate);
 
 public:
 	/*
@@ -90,8 +102,19 @@ private:
 public:
 	FStreamableManager AssetLoader;
 
+	bool bIsVerified = false;
+
 private:
+	FString UserID;
+	
 	FString Nickname;
+
+
+protected:
+	class FHttpModule* Http;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString HostName = TEXT("127.0.0.1:8000");
 
 protected:
 	UPROPERTY(EditAnywhere, Category = MeshDataTable)

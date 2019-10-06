@@ -235,4 +235,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
 	class UZCharacterItemStatusComponent* ItemStatusComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)
+	class UWidgetComponent* NameComponent;
+
 };

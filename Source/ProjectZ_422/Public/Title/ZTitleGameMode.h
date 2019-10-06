@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "GameFramework/GameModeBase.h"
+#include "ZBaseGameMode.h"
 #include "Http.h"
 #include "IHttpRequest.h"
 #include "IHttpResponse.h"
@@ -13,7 +13,7 @@
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZTitleGameMode : public AGameModeBase
+class PROJECTZ_422_API AZTitleGameMode : public AZBaseGameMode
 {
 	GENERATED_BODY()
 	

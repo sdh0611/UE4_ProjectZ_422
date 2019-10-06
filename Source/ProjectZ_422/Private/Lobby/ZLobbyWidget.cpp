@@ -10,7 +10,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "ZGameInstance.h"
 
 void UZLobbyWidget::NativeConstruct()
 {
@@ -113,12 +113,19 @@ void UZLobbyWidget::OnInputChatCommit(const FText & Text, ETextCommit::Type Comm
 	{
 		case ETextCommit::OnEnter:
 		{
+			auto MyGameInstance = GetGameInstance<UZGameInstance>();
+			if (nullptr == MyGameInstance)
+			{
+				ZLOG(Error, TEXT("Invalid game instance.."));
+				return;
+			}
+
 			auto MyPC = Cast<AZLobbyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 			if (nullptr == MyPC)
 			{
 				return;
 			}
-			MyPC->ServerReceiveChat(TEXT("Text"), Text.ToString());
+			MyPC->ServerReceiveChat(MyGameInstance->GetUserNickname(), Text.ToString());
 
 			if (InputChat)
 			{
@@ -130,7 +137,6 @@ void UZLobbyWidget::OnInputChatCommit(const FText & Text, ETextCommit::Type Comm
 		{
 			break;
 		}
-
 
 
 	}

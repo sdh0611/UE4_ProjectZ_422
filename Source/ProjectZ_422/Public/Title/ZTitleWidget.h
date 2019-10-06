@@ -23,11 +23,12 @@ public:
 public:
 	void SetIsVerified(bool bVerified);
 
+	UFUNCTION(BlueprintPure)
 	bool IsVerified() const;
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsVerified = false;
+	//UPROPERTY(BlueprintReadOnly)
+	//bool bIsVerified = false;
 
 protected:	
 

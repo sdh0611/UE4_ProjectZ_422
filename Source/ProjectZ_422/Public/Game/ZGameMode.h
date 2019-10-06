@@ -3,7 +3,7 @@
 #pragma once
 
 #include "ProjectZ_422.h"
-#include "GameFramework/GameModeBase.h"
+#include "ZBaseGameMode.h"
 #include "ZGameMode.generated.h"
 
 
@@ -31,7 +31,7 @@ enum class EGamePhase: uint8
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZGameMode : public AGameModeBase
+class PROJECTZ_422_API AZGameMode : public AZBaseGameMode
 {
 	GENERATED_BODY()
 

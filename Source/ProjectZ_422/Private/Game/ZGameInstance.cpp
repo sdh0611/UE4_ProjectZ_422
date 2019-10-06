@@ -21,8 +21,15 @@ void UZGameInstance::Init()
 	LoadSkeletalMesh();
 	LoadImage();
 
+	Http = &FHttpModule::Get();
+
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
+}
+
+void UZGameInstance::SetUserID(const FString & NewID)
+{
+	UserID = NewID;
 }
 
 void UZGameInstance::SetUserNickname(const FString & NewNickname)
@@ -33,6 +40,46 @@ void UZGameInstance::SetUserNickname(const FString & NewNickname)
 const FString & UZGameInstance::GetUserNickname() const
 {
 	return Nickname;
+}
+
+void UZGameInstance::HttpPostLogin(FString URL, const FString & NewUserID, const FString & NewUserPW, FHttpRequestCompleteDelegate RequestDelegate)
+{
+	ZLOG_S(Error);
+	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
+
+	Request->OnProcessRequestComplete() = RequestDelegate;
+
+	FString PostParameters = FString::Printf(TEXT("id=%s&password=%s"), *NewUserID, *NewUserPW);
+	
+	Request->SetURL(URL.Append(TEXT("/login")));
+	Request->SetVerb("POST");
+	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+	Request->SetHeader("Content-Type", TEXT("application/x-www-form-urlencoded"));
+	Request->SetContentAsString(PostParameters);
+	Request->ProcessRequest();
+
+}
+
+void UZGameInstance::HttpPostLogout(FString URL, FHttpRequestCompleteDelegate RequestDelegate)
+{
+	ZLOG_S(Error);
+	if (!bIsVerified)
+	{
+		return ;
+	}
+
+	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
+
+	Request->OnProcessRequestComplete() = RequestDelegate;
+
+	FString PostParameters = FString::Printf(TEXT("id=%s"), *UserID);
+	
+	Request->SetURL(URL.Append(TEXT("/logout")));
+	Request->SetVerb("POST");
+	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+	Request->SetHeader("Content-Type", TEXT("application/x-www-form-urlencoded"));
+	Request->SetContentAsString(PostParameters);
+	Request->ProcessRequest();
 }
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)

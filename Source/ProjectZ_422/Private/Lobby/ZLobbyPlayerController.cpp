@@ -6,12 +6,27 @@
 #include "Lobby/ZLobbyWidget.h"
 #include "Lobby/ZLobbyGameMode.h"
 #include "Lobby/ZLobbyGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
 
 void AZLobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		int32 MyID = UGameplayStatics::GetPlayerControllerID(this);
+		if (MyID < 0)
+		{
+			ZLOG(Error, TEXT("Invalid controller id.."));
+		}
+		else
+		{
+			ZLOG(Error, TEXT("ID : %d"), MyID);
+		}
+
+	}
 
 	if (IsLocalPlayerController())
 	{

@@ -19,6 +19,7 @@
 #include "ZChangeFireModeInterface.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
@@ -54,6 +55,11 @@ AZCharacter::AZCharacter()
 
 	// Create character status component
 	StatusComponent = CreateDefaultSubobject<UZPlayerStatusComponent>(TEXT("StatusComponent"));
+
+	/* Create Widget component */
+	NameComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameComponent"));
+	NameComponent->bOwnerNoSee = true;
+	NameComponent->SetupAttachment(RootComponent);
 
 	// Set Character Properties
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -555,7 +561,7 @@ void AZCharacter::MoveRight(float NewAxisValue)
 	{
 		return;
 	}
-
+	
 	const FRotator Rotation = GetController()->GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
