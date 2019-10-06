@@ -85,7 +85,6 @@ public:
 	const FName& GetGrenadeWeaponSocketName() const;
 	   
 private:
-	void CheckCharacterRotation(float DeltaTime);
 	virtual void OnDead() override;
 	virtual void OnRemoved() override;
 
@@ -220,9 +219,6 @@ protected:
 
 	UPROPERTY()
 	class AZInteractional* InteractionActor;
-
-	UPROPERTY()
-	class AZPlayerController* PlayerController;
 
 	UPROPERTY(VisibleAnywhere, Category = Character, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
 	class AZWeapon* CurrentWeapon;

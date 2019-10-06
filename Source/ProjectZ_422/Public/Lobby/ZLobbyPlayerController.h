@@ -17,6 +17,12 @@ class PROJECTZ_422_API AZLobbyPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 
+public:
+	void UpdateConnectNumber(int32 NewNumber);
+	void UpdatePlayerName(int32 PlayerIndex, const FString & PlayerName);
+	
+
+public:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerReceiveChat(const FString& PlayerName, const FString& RecvChat);
 	bool ServerReceiveChat_Validate(const FString& PlayerName, const FString& RecvChat);

@@ -4,6 +4,8 @@
 #include "ZLobbyPlayerController.h"
 #include "..\..\Public\Lobby\ZLobbyPlayerController.h"
 #include "Lobby/ZLobbyWidget.h"
+#include "Lobby/ZLobbyGameMode.h"
+#include "Lobby/ZLobbyGameState.h"
 #include "Engine/World.h"
 
 
@@ -25,10 +27,40 @@ void AZLobbyPlayerController::BeginPlay()
 				{
 					UserHUD->PlayFadeInStartButtonAnim();
 				}
+
+				auto MyGameState= GetWorld()->GetGameState<AZLobbyGameState>();
+				if (MyGameState)
+				{
+					UpdateConnectNumber(MyGameState->GetConnectNumber());
+				}
 			}
 		}
 	}
 
+
+}
+
+void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)
+{
+	if (IsLocalPlayerController())
+	{
+		if (UserHUD)
+		{
+			UserHUD->UpdateConnectNumber(NewNumber);
+		}
+	}
+
+}
+
+void AZLobbyPlayerController::UpdatePlayerName(int32 PlayerIndex, const FString & PlayerName)
+{
+	if (IsLocalPlayerController())
+	{
+		if (UserHUD)
+		{
+			UserHUD->UpdatePlayerName(PlayerIndex, PlayerName);
+		}
+	}
 
 }
 

@@ -21,10 +21,9 @@ public:
 	void SetIDInputWidgetErrorText(const FString& NewText);
 
 public:
-	bool IsVerified() const;
-
-private:
 	void SetIsVerified(bool bVerified);
+
+	bool IsVerified() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

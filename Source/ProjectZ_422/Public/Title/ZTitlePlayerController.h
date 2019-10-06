@@ -31,11 +31,23 @@ protected:
 	void OnLoginServerResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 protected:
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientReceiveLoginSuccess(const FString& NewNickname);
+	bool ClientReceiveLoginSuccess_Validate(const FString& NewNickname);
+	void ClientReceiveLoginSuccess_Implementation(const FString& NewNickname);
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientRecevieLoginFail();
+	bool ClientRecevieLoginFail_Validate();
+	void ClientRecevieLoginFail_Implementation();
+
+
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UZTitleWidget> TitleWidgetClass;
 
 	UPROPERTY()
-	class UUserWidget* TitleWidget;
+	class UZTitleWidget* TitleWidget;
 
 
 };

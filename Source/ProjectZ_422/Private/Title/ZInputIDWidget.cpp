@@ -6,7 +6,8 @@
 #include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
-#include "Title/ZTitleWidget.h"
+#include "ZTitleWidget.h"
+#include "ZTitlePlayerController.h"
 
 void UZInputIDWidget::NativeConstruct()
 {
@@ -49,21 +50,49 @@ void UZInputIDWidget::CheckVerified() const
 		ZLOG(Error, TEXT("Parent fail."));
 	}
 
-	/* 일단 테스트용 */
-	bool bResult = true;
-	if (bResult)
+	   
+	auto MyPC = GetOwningPlayer<AZTitlePlayerController>();
+	if (nullptr == MyPC)
 	{
-		InputID->SetText(FText::GetEmpty());
-		InputPW->SetText(FText::GetEmpty());
+		ZLOG(Error, TEXT("Invalid player controller.."));
+		return;
+
 	}
 
-	OnIdentify.Execute(bResult);
+	if (InputID->GetText().IsEmpty())
+	{
+		return;
+	}
 
-	
+	if (InputPW->GetText().IsEmpty())
+	{
+		return;
+	}
+
+	FString ID = InputID->GetText().ToString();
+	FString PW = InputPW->GetText().ToString();
+
+	MyPC->ServerRequestLogin(TEXT("127.0.0.1:8000/login"), ID, PW);
+	/* 일단 테스트용 */
+	//bool bResult = true;
+	//if (bResult)
+	//{
+	//	InputID->SetText(FText::GetEmpty());
+	//	InputPW->SetText(FText::GetEmpty());
+	//}
+
+	//OnIdentify.Execute(bResult);
+
+	//
 }
 
 void UZInputIDWidget::OnTextCommit(const FText & Text, ETextCommit::Type CommitMethod)
 {
+	if (Text.IsEmpty())
+	{
+		return;
+	}
+
 	CheckVerified();
 
 }

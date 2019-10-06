@@ -23,6 +23,11 @@ public:
 	virtual void Init() override;
 
 public:
+	void SetUserNickname(const FString& NewNickname);
+
+	const FString& GetUserNickname() const;
+
+public:
 	/*
 		MeshTable ฐüทร
 	*/
@@ -84,6 +89,9 @@ private:
 
 public:
 	FStreamableManager AssetLoader;
+
+private:
+	FString Nickname;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = MeshDataTable)

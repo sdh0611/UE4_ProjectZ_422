@@ -15,7 +15,7 @@
 #include "ZInventoryWidget.h"
 #include "ZWeapon.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "GameFramework/SpectatorPawn.h"
 
 AZPlayerController::AZPlayerController()
 {
@@ -32,7 +32,7 @@ void AZPlayerController::BeginPlay()
 		ZLOG(Error, TEXT("UserHUDClass null."));
 		return;
 	}
-
+	
 	if (IsLocalPlayerController())
 	{
 		UserHUD = CreateWidget<UZUserHUD>(this, UserHUDClass);

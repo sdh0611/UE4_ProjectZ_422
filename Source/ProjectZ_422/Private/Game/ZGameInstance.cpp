@@ -25,6 +25,16 @@ void UZGameInstance::Init()
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 }
 
+void UZGameInstance::SetUserNickname(const FString & NewNickname)
+{
+	Nickname = NewNickname;
+}
+
+const FString & UZGameInstance::GetUserNickname() const
+{
+	return Nickname;
+}
+
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
 {
 	if (StaticMeshTable.Contains(Name))

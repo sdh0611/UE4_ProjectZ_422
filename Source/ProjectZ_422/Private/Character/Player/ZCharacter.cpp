@@ -73,6 +73,7 @@ AZCharacter::AZCharacter()
 	SprintSpeed = 800.f;
 	AimingWalkSpeed = 200.f;
 	AimingWalkSpeedCrouched = 150.f;
+
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
 
@@ -98,7 +99,6 @@ void AZCharacter::PossessedBy(AController * NewController)
 {
 	Super::PossessedBy(NewController);
 
-	PlayerController = Cast<AZPlayerController>(NewController);
 }
 
 // Called every frame
@@ -143,7 +143,6 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AZCharacter::Sprint);
 	PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AZCharacter::SprintRelease);
 	PlayerInputComponent->BindAction(TEXT("Interaction"), IE_Pressed, this, &AZCharacter::Interaction);
-	//PlayerInputComponent->BindAction(TEXT("ToggleInventory"), IE_Pressed, this, &AZCharacter::ToggleInventory);
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AZCharacter::Attack);
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Released, this, &AZCharacter::AttackEnd);
 	PlayerInputComponent->BindAction(TEXT("Aim"), IE_Pressed, this, &AZCharacter::Aim);
@@ -182,13 +181,7 @@ float AZCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEve
 			ClientOnDead();
 		}
 
-		//auto MyHUD = MyPC->GetUserHUD();
-		//if (MyHUD)
-		//{
-		//	MyHUD->CallFadeOutBloodSplatterAnim();
-		//}
 	}
-	//StatusComponent->AdjustCurrentHP(-FinalDamage);
 
 	return FinalDamage;
 }
@@ -205,9 +198,10 @@ void AZCharacter::Revive()
 {
 	Super::Revive();
 
-	if (PlayerController)
+	auto MyPC = GetController<AZPlayerController>();
+	if (MyPC)
 	{
-		EnableInput(PlayerController);
+		EnableInput(MyPC);
 	}
 }
 
@@ -502,20 +496,6 @@ const FName & AZCharacter::GetGrenadeWeaponSocketName() const
 	return GrenadeWeaponSocketName;
 }
 
-void AZCharacter::CheckCharacterRotation(float DeltaTime)
-{
-	const FRotator ActorRotation = GetActorRotation();
-	const FRotator ControlRotation = GetControlRotation();
-	if (FMath::Abs<float>(ActorRotation.Yaw - ControlRotation.Yaw) > 90.f)
-	{
-		//Rotate = ActorRotation.Yaw - ControlRotation.Yaw;
-		FRotator Rot = FMath::RInterpTo(ActorRotation, FRotator(0.f, ControlRotation.Yaw, 0.f), DeltaTime, 15.f);
-		AddActorLocalRotation(Rot);
-	}
-
-
-}
-
 void AZCharacter::OnDead()
 {
 	Super::OnDead();
@@ -531,6 +511,7 @@ void AZCharacter::OnDead()
 	{
 		//DisableInput(MyPC);
 		MyPC->GetUserHUD()->DrawEndGameMenuWidget();
+
 	}
 
 }
