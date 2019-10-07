@@ -42,7 +42,6 @@ public:
 
 private:
 	void RequestLogin(const FString& URL, const FString& UserID, const FString& UserPW);
-	void OnLoginServerResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	void ReceiveLoginResponse(bool bSuccess, const FString& ResultText);
 
 protected:

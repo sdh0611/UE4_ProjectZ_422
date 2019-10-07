@@ -27,11 +27,6 @@ protected:
 
 public:
 	UFUNCTION(Client, Reliable, WithValidation)
-	void ClientRequestLogout();
-	bool ClientRequestLogout_Validate();
-	void ClientRequestLogout_Implementation();
-
-	UFUNCTION(Client, Reliable, WithValidation)
 	void ClientReceiveSetUserName();
 	bool ClientReceiveSetUserName_Validate();
 	void ClientReceiveSetUserName_Implementation();
@@ -41,9 +36,6 @@ public:
 	bool ServerReceiveSetUserName_Validate(const FString& NewName);
 	void ServerReceiveSetUserName_Implementation(const FString& NewName);
 
-
-private:
-	void OnLogoutResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 
 };

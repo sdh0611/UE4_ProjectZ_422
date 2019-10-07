@@ -108,71 +108,15 @@ void UZInputIDWidget::RequestLogin(const FString & URL, const FString & UserID, 
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (nullptr == MyGameInstance)
 	{
-		ZLOG(Error, TEXT("Invalid gameinstance.."));
+		ZLOG(Error, TEXT("Invalid game instance.."));
 		return;
 	}
 
-	MyGameInstance->HttpPostLogin(URL, UserID, UserPW, 
-		FHttpRequestCompleteDelegate::CreateUObject(this, &UZInputIDWidget::OnLoginServerResponseReceived));
-
-	
-}
-
-void UZInputIDWidget::OnLoginServerResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
-{
-	bool bSuccess = false;
-	FString Result;
-
-	if (bWasSuccessful)
-	{
-		ZLOG_S(Error);
-		TSharedPtr<FJsonObject> JsonObject;
-		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
-
-		if (FJsonSerializer::Deserialize(Reader, JsonObject))
-		{
-			bool bResult = JsonObject->GetBoolField("result");
-			if (bResult)
-			{
-				FString NewUserID = JsonObject->GetStringField("id");
-				FString NewNickname = JsonObject->GetStringField("nickname");
-				ZLOG(Error, TEXT("Nickname : %s"), *NewNickname);	
-				
-				auto MyGameInstance = GetGameInstance<UZGameInstance>();
-				if (nullptr == MyGameInstance)
-				{
-					ZLOG(Error, TEXT("Invalid gameinstance.."));
-					return;
-				}
-				MyGameInstance->SetUserID(NewUserID);
-				MyGameInstance->SetUserNickname(NewNickname);
-				MyGameInstance->bIsVerified = true;
-
-				bSuccess = true;
-				Result = TEXT("로그인 성공!");
-			}
-			else
-			{
-				ZLOG(Error, TEXT("Result fail.."));
-				Result = TEXT("일치하는 정보가 없습니다...");
-			}
-		}
-		else
-		{
-			ZLOG(Error, TEXT("Deserialize fail.."));
-			Result = TEXT("데이터 수신 실패...");
-		}
-
-	}
-	else
-	{
-		Result = TEXT("서버 연결 실패...");
-	}
-
-	ReceiveLoginResponse(bSuccess, Result);
-
+	MyGameInstance->GetWebConnector().Login(UserID, UserPW, 
+		FOnLoginResponse::CreateUObject(this, &UZInputIDWidget::ReceiveLoginResponse));
 
 }
+
 
 void UZInputIDWidget::ReceiveLoginResponse(bool bSuccess, const FString & ResultText)
 {

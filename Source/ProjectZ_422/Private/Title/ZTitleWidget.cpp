@@ -35,7 +35,7 @@ bool UZTitleWidget::IsVerified() const
 		return false;
 	}
 
-	return MyGameInstance->bIsVerified;
+	return MyGameInstance->GetWebConnector().IsVerified();
 }
 
 void UZTitleWidget::SetIsVerified(bool bVerified)

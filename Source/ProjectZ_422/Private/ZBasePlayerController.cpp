@@ -22,25 +22,6 @@ void AZBasePlayerController::BeginPlay()
 
 }
 
-bool AZBasePlayerController::ClientRequestLogout_Validate()
-{
-	return true;
-}
-
-void AZBasePlayerController::ClientRequestLogout_Implementation()
-{
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (nullptr == MyGameInstance)
-	{
-		ZLOG(Error, TEXT("Invalid game instance.."));
-		return;
-	}
-	
-	MyGameInstance->HttpPostLogout(TEXT("127.0.0.1:8000"),
-		FHttpRequestCompleteDelegate::CreateUObject(this, &AZBasePlayerController::OnLogoutResponseReceived));
-
-}
-
 bool AZBasePlayerController::ClientReceiveSetUserName_Validate()
 {
 	return true;
@@ -52,8 +33,8 @@ void AZBasePlayerController::ClientReceiveSetUserName_Implementation()
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (MyGameInstance)
 	{
-		UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Nickname : %s"), *MyGameInstance->GetUserNickname()));
-		ServerReceiveSetUserName(MyGameInstance->GetUserNickname());
+		//UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Nickname : %s"), *MyGameInstance->GetUserNickname()));
+		//ServerReceiveSetUserName(MyGameInstance->GetUserNickname());
 	}
 
 }
@@ -78,41 +59,3 @@ void AZBasePlayerController::ServerReceiveSetUserName_Implementation(const FStri
 	//}
 
 }
-
-void AZBasePlayerController::OnLogoutResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
-{
-	if (bWasSuccessful)
-	{
-		ZLOG_S(Error);
-		TSharedPtr<FJsonObject> JsonObject;
-		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
-
-		if (FJsonSerializer::Deserialize(Reader, JsonObject))
-		{
-			bool bResult = JsonObject->GetBoolField("result");
-			if (!bResult)
-			{
-				ZLOG(Error, TEXT("Logout fail.."));
-				return;
-			}
-
-			auto MyGameInstance = GetGameInstance<UZGameInstance>();
-			if (nullptr == MyGameInstance)
-			{
-				ZLOG(Error, TEXT("Invalid game instance.."));
-				return;
-			}
-
-			MyGameInstance->SetUserID(TEXT(""));
-			MyGameInstance->SetUserNickname(TEXT(""));
-			MyGameInstance->bIsVerified = false;
-		}
-		else
-		{
-			ZLOG(Error, TEXT("Deserialize fail.."));
-		}
-
-	}
-
-}
-

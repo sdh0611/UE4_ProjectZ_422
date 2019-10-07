@@ -19,70 +19,30 @@ void UZGameInstance::Init()
 {
 	Super::Init();
 
+	WebConnector = NewObject<UZWebConnector>(this);
+
 	LoadStaticMesh();
 	LoadSkeletalMesh();
 	LoadImage();
-
-	Http = &FHttpModule::Get();
 
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 }
 
-void UZGameInstance::SetUserID(const FString & NewID)
-{
-	UserID = NewID;
-}
-
-void UZGameInstance::SetUserNickname(const FString & NewNickname)
-{
-	Nickname = NewNickname;
-}
-
-const FString & UZGameInstance::GetUserNickname() const
-{
-	return Nickname;
-}
-
-void UZGameInstance::HttpPostLogin(FString URL, const FString & NewUserID, const FString & NewUserPW, FHttpRequestCompleteDelegate RequestDelegate)
+void UZGameInstance::Shutdown()
 {
 	ZLOG_S(Error);
-	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
+	WebConnector->Logout();
 
-	Request->OnProcessRequestComplete() = RequestDelegate;
-
-	FString PostParameters = FString::Printf(TEXT("id=%s&password=%s"), *NewUserID, *NewUserPW);
-	
-	Request->SetURL(URL.Append(TEXT("/login")));
-	Request->SetVerb("POST");
-	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
-	Request->SetHeader("Content-Type", TEXT("application/x-www-form-urlencoded"));
-	Request->SetContentAsString(PostParameters);
-	Request->ProcessRequest();
-
+	Super::Shutdown();
 }
 
-void UZGameInstance::HttpPostLogout(FString URL, FHttpRequestCompleteDelegate RequestDelegate)
+UZWebConnector & UZGameInstance::GetWebConnector()
 {
-	ZLOG_S(Error);
-	if (!bIsVerified)
-	{
-		return ;
-	}
-
-	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
-
-	Request->OnProcessRequestComplete() = RequestDelegate;
-
-	FString PostParameters = FString::Printf(TEXT("id=%s"), *UserID);
-	
-	Request->SetURL(URL.Append(TEXT("/logout")));
-	Request->SetVerb("POST");
-	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
-	Request->SetHeader("Content-Type", TEXT("application/x-www-form-urlencoded"));
-	Request->SetContentAsString(PostParameters);
-	Request->ProcessRequest();
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return *WebConnector;
 }
+
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
 {

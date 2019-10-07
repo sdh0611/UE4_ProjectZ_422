@@ -125,7 +125,7 @@ void UZLobbyWidget::OnInputChatCommit(const FText & Text, ETextCommit::Type Comm
 			{
 				return;
 			}
-			MyPC->ServerReceiveChat(MyGameInstance->GetUserNickname(), Text.ToString());
+			MyPC->ServerReceiveChat(MyGameInstance->GetWebConnector().GetUserNickname(), Text.ToString());
 
 			if (InputChat)
 			{

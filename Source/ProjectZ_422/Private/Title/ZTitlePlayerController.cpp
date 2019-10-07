@@ -96,11 +96,11 @@ bool AZTitlePlayerController::ClientReceiveLoginSuccess_Validate(const FString& 
 
 void AZTitlePlayerController::ClientReceiveLoginSuccess_Implementation(const FString& NewNickname)
 {
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		MyGameInstance->SetUserNickname(NewNickname);
-	}
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	MyGameInstance->SetUserNickname(NewNickname);
+	//}
 
 	if (IsLocalPlayerController())
 	{
