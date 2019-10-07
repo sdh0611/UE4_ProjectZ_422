@@ -83,6 +83,11 @@ bool UZWebConnector::IsVerified() const
 	return bIsVerified;
 }
 
+const FString & UZWebConnector::GetWebURL() const
+{
+	return URL;
+}
+
 const FString & UZWebConnector::GetUserNickname() const
 {
 	return UserNickname;

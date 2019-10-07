@@ -4,23 +4,12 @@
 #include "ZPlayerState.h"
 #include "ZBasePlayerController.h"
 #include "ZCharacter.h"
+#include "UnrealNetwork.h"
 
 AZPlayerState::AZPlayerState()
 {
 	Kills = 0;
 
-}
-
-void AZPlayerState::MulticastSetPlayerName_Implementation(const FString & NewName)
-{
-	auto MyPawn = Cast<AZCharacter>(GetPawn());
-	if (nullptr == MyPawn)
-	{
-		ZLOG(Error, TEXT("Invalid pawn.."));
-		return;
-	}
-
-	MyPawn->SetUserName(NewName);
 }
 
 void AZPlayerState::AddKill()
@@ -33,25 +22,23 @@ void AZPlayerState::AdjustScore(int32 NewScore)
 	CurScore = FMath::Clamp<int32>(CurScore + NewScore, 0, CurScore + NewScore);
 }
 
+void AZPlayerState::SetPlayerIndex(int32 NewIndex)
+{
+	PlayerIndex = NewIndex;
+}
+
 void AZPlayerState::SetPlayerName(const FString & S)
 {
 	Super::SetPlayerName(S);
 
 	//MulticastSetPlayerName(S);
-	OnRep_PlayerName();
+	//OnRep_PlayerName();
 }
 
-void AZPlayerState::OnRep_PlayerName()
+void AZPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::OnRep_PlayerName();
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	auto MyPawn = Cast<AZCharacter>(GetPawn());
-	if (nullptr == MyPawn)
-	{
-		ZLOG(Error, TEXT("Invalid pawn.."));
-		return;
-	}
-
-	MyPawn->SetUserName(GetPlayerName());
+	DOREPLIFETIME(AZPlayerState, PlayerIndex);
 
 }

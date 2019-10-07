@@ -4,6 +4,11 @@
 
 #include "ProjectZ_422.h"
 #include "Interactional/ZInteractional.h"
+
+#include "Http.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+
 #include "ZShop.generated.h"
 
 /**
@@ -30,7 +35,9 @@ public:
 	struct FZShopItemData* const FindShopItemDataByID(int32 NewShopID) const;
 
 private:
-	//void ConstructShopWidget(class AZCharacter* EnterCharacter);
+	void RequestShopData(int32 BuyItemShopID, int32 Quantity);
+	void OnShopResponseReceive(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void BuyProcess(FZShopItemData ShopItemData, int32 Quantity);
 
 protected:
 	/* Client to server RPC */

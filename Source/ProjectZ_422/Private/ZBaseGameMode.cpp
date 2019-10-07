@@ -3,6 +3,7 @@
 
 #include "ZBaseGameMode.h"
 #include "ZBasePlayerController.h"
+#include "ZCharacter.h"
 #include "Engine/World.h"
 
 void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)
@@ -23,11 +24,22 @@ void AZBaseGameMode::Logout(AController * Exiting)
 {
 	Super::Logout(Exiting);
 
-	/* DB에 Logout 상태로 변경. */
-	//auto MyPC = Cast<AZBasePlayerController>(Exiting);
-	//if (MyPC)
-	//{
-	//	MyPC->ClientRequestLogout();
-	//}
+}
 
+void AZBaseGameMode::UpdatePlayersName()
+{
+	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	//{
+	//	auto Character = Cast<AZCharacter>(Iter->Get()->GetPawn());
+	//	if (::IsValid(Character))
+	//	{
+	//		Character->MulticastUpdatePlayerName();
+	//	}
+
+	//	//auto BasePC = Cast<AZBasePlayerController>(*Iter);
+	//	//if (BasePC)
+	//	//{
+	//	//	BasePC->ClientReceiveSetUserName();
+	//	//}
+	//}
 }

@@ -37,6 +37,7 @@ public:
 	void SetURL(const FString& NewURL);
 	
 	bool IsVerified() const;
+	const FString& GetWebURL() const;
 	const FString& GetUserNickname() const;
 
 private:

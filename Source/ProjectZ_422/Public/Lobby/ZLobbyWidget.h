@@ -19,8 +19,10 @@ public:
 
 public:
 	void UpdateConnectNumber(int32 NewNumber);
-	void UpdatePlayerName(int32 PlayerIndex, const FString& PlayerName);
+	void UpdatePlayerName(const FString& PlayerName);
 	void UpdateChatBox(const FString& PlayerName, const FString& NewChat);
+	void DeletePlayerName(const FString& PlayerName);
+
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)
@@ -52,6 +54,8 @@ protected:
 	UPROPERTY()
 	class UScrollBox* ChatBox;
 
-	
+	UPROPERTY()
+	class UScrollBox* JoinPlayerBox;
+
 
 };

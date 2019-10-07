@@ -17,6 +17,7 @@
 #include "ZPlayerStatusComponent.h"
 #include "ZChangeFireModeInterface.h"
 #include "UI/ZUserNameWidget.h"
+#include "ZPlayerState.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -100,6 +101,16 @@ void AZCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//auto MyPS = GetPlayerState();
+	//if (MyPS)
+	//{
+	//	SetUserName(MyPS->GetPlayerName());
+	//}
+	//else
+	//{
+	//	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("No PS"));
+	//}
+	
 }
 
 void AZCharacter::PossessedBy(AController * NewController)
@@ -277,12 +288,14 @@ void AZCharacter::SetUserName(const FString& Name)
 	auto UserNameWidget = Cast<UZUserNameWidget>(NameComponent->GetUserWidgetObject());
 	if (UserNameWidget)
 	{
+		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Name : %s"), *Name));
 		UserNameWidget->SetUserName(Name);
 	}
 	else
 	{
-		ZLOG_S(Error);
+		ZLOG(Error, TEXT("NameWidget not exist."));
 	}
+
 
 }
 
@@ -335,9 +348,21 @@ void AZCharacter::OnRep_IsSprinting()
 
 }
 
-void AZCharacter::MulticastUpdatePlayerName_Implementation(const FString & NewName)
+void AZCharacter::MulticastUpdatePlayerName_Implementation()
 {
-	SetUserName(NewName);
+	if (IsLocallyControlled())
+	{
+		return;
+	}
+
+	ZLOG(Error, TEXT("Update name"));
+	auto MyPS = GetPlayerState();
+	if (MyPS)
+	{
+		SetUserName(MyPS->GetPlayerName());
+
+	}
+
 }
 
 void AZCharacter::SetIsAiming(bool bNewState)

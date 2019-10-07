@@ -17,6 +17,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "UnrealNetwork.h"
+#include "Json.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -111,41 +112,71 @@ FZShopItemData * const AZShop::FindShopItemDataByID(int32 NewShopID) const
 	return nullptr;
 }
 
-//void AZShop::ConstructShopWidget(AZCharacter* EnterCharacter)
-//{
-//	ZLOG_S(Warning);
-//	if (nullptr == EnterCharacter)
-//	{
-//		return;
-//	}
-//
-//	/* 상점 전체 틀 그림. */
-//	auto PlayerController = Cast<AZPlayerController>(EnterCharacter->GetController());
-//	if (nullptr == PlayerController)
-//	{
-//		return;
-//	}
-//	PlayerController->GetUserHUD()->GetShopWidget()->BindShop(this);
-//	PlayerController->GetUserHUD()->DrawShopWidget();
-//	
-//	/* 상점 아이템들을 그리기 위한 준비. */
-//	auto ShopWidget = Cast<UZShopWidget>(PlayerController->GetUserHUD()->GetShopWidget());
-//	if (nullptr == ShopWidget)
-//	{
-//		return;
-//	}
-//
-//	auto ItemStatusComponent = EnterCharacter->GetItemStatusComponent();
-//	if (nullptr == ItemStatusComponent)
-//	{
-//		ZLOG(Error, TEXT("ItemStatusComponent not exist.."));
-//		return;
-//	}
-//
-//	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
-//	ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
-//
-//}
+void AZShop::RequestShopData(int32 BuyItemShopID, int32 Quantity)
+{
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (nullptr == MyGameInstance)
+	{
+		ZLOG(Error, TEXT("Invalid game instance.."));
+		return;
+	}
+
+	FString PostParameter = FString::Printf(TEXT("shopid=%d&quantity=%d"), BuyItemShopID, Quantity);
+
+	MyGameInstance->GetWebConnector().HttpPost(
+		MyGameInstance->GetWebConnector().GetWebURL(),
+		PostParameter,
+		FHttpRequestCompleteDelegate::CreateUObject(this, &AZShop::OnShopResponseReceive)
+	);
+
+}
+
+void AZShop::OnShopResponseReceive(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	ZLOG_S(Error);
+	if (bWasSuccessful)
+	{
+		ZLOG_S(Error);
+		TSharedPtr<FJsonObject> JsonObject;
+		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+
+		if (FJsonSerializer::Deserialize(Reader, JsonObject))
+		{
+			bool bResult = JsonObject->GetBoolField("result");
+			if (!bResult)
+			{
+				ZLOG(Error, TEXT("Failed to get shop data.."));
+				return;
+			}
+			
+			FZShopItemData ShopItemData;
+			ShopItemData.ShopID = JsonObject->GetIntegerField("shopid");
+			ShopItemData.ItemName = JsonObject->GetStringField("itemname");
+			ShopItemData.ItemPrice = JsonObject->GetIntegerField("itemprice");
+			ShopItemData.ItemType = JsonObject->GetStringField("itemtype");
+			ShopItemData.bIsDealOnlyOne = JsonObject->GetBoolField("isdealonlyone");
+
+			int32 Quantity = JsonObject->GetIntegerField("quantity");
+
+			BuyProcess(ShopItemData, Quantity);
+
+
+		}
+		else
+		{
+			ZLOG(Error, TEXT("Deserialize fail.."));
+		}
+
+	}
+
+}
+
+void AZShop::BuyProcess(FZShopItemData ShopItemData, int32 Quantity)
+{
+
+
+
+}
 
 bool AZShop::ServerBuy_Validate(APlayerController * PC, int32 BuyItemShopID, int32 Quantity)
 {
@@ -207,7 +238,7 @@ void AZShop::ServerBuy_Implementation(APlayerController * PC, int32 BuyItemShopI
 	*/
 	TSubclassOf<AZItem> SpawnItemClass = nullptr;
 
-	auto ZGameInstance = Cast<UZGameInstance>(GetGameInstance());
+	auto ZGameInstance = GetGameInstance<UZGameInstance>();
 	check(nullptr != ZGameInstance);
 
 	const FZItemData* ItemData = ZGameInstance->GetItemDataByName(BuyItemData->ItemName);

@@ -61,8 +61,8 @@ public:
 	void MulticastAttachWeapon_Implementation(class AZWeapon* Weapon, FName SocketName);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastUpdatePlayerName(const FString& NewName);
-	void MulticastUpdatePlayerName_Implementation(const FString& NewName);
+	void MulticastUpdatePlayerName();
+	void MulticastUpdatePlayerName_Implementation();
 
 public:
 	void SetIsAiming(bool NewState);

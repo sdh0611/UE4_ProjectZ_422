@@ -14,20 +14,6 @@ void AZLobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HasAuthority())
-	{
-		int32 MyID = UGameplayStatics::GetPlayerControllerID(this);
-		if (MyID < 0)
-		{
-			ZLOG(Error, TEXT("Invalid controller id.."));
-		}
-		else
-		{
-			ZLOG(Error, TEXT("ID : %d"), MyID);
-		}
-
-	}
-
 	if (IsLocalPlayerController())
 	{
 		if (UserHUDClass)
@@ -67,13 +53,13 @@ void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)
 
 }
 
-void AZLobbyPlayerController::UpdatePlayerName(int32 PlayerIndex, const FString & PlayerName)
+void AZLobbyPlayerController::UpdatePlayerName(const FString & PlayerName)
 {
 	if (IsLocalPlayerController())
 	{
 		if (UserHUD)
 		{
-			UserHUD->UpdatePlayerName(PlayerIndex, PlayerName);
+			UserHUD->UpdatePlayerName(PlayerName);
 		}
 	}
 
@@ -98,6 +84,17 @@ void AZLobbyPlayerController::ServerReceiveChat_Implementation(const FString & P
 
 }
 
+bool AZLobbyPlayerController::ServerReceiveSetUserName_Validate(const FString & NewName)
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ServerReceiveSetUserName_Implementation(const FString & NewName)
+{
+
+
+}
+
 bool AZLobbyPlayerController::ClientReceiveChat_Validate(const FString & PlayerName, const FString& RecvChat)
 {
 	return true;
@@ -113,4 +110,13 @@ void AZLobbyPlayerController::ClientReceiveChat_Implementation(const FString & P
 
 	UserHUD->UpdateChatBox(PlayerName, RecvChat);
 
+}
+
+bool AZLobbyPlayerController::ClientReceiveSetUserName_Validate()
+{
+	return false;
+}
+
+void AZLobbyPlayerController::ClientReceiveSetUserName_Implementation()
+{
 }

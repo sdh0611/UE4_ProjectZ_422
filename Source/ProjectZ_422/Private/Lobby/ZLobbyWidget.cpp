@@ -22,21 +22,6 @@ void UZLobbyWidget::NativeConstruct()
 	ConnectNumber = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ConnectNumber")));
 	check(ConnectNumber);
 
-	auto FirstPlayerName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_FirstPlayerName")));
-	check(FirstPlayerName);
-	PlayerNameList.Add(FirstPlayerName);
-
-	auto SecondPlayerName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_SecondPlayerName")));
-	check(SecondPlayerName);
-	PlayerNameList.Add(SecondPlayerName);
-
-	auto ThirdPlayerName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ThirdPlayerName")));
-	check(ThirdPlayerName);
-	PlayerNameList.Add(ThirdPlayerName);
-
-	auto ForthPlayerName = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ForthPlayerName")));
-	check(ForthPlayerName);
-	PlayerNameList.Add(ForthPlayerName);
 
 	InputChat = Cast<UEditableTextBox>(GetWidgetFromName(TEXT("ETB_InputChat")));
 	check(InputChat);
@@ -44,6 +29,9 @@ void UZLobbyWidget::NativeConstruct()
 
 	ChatBox = Cast<UScrollBox>(GetWidgetFromName(TEXT("ChatBox")));
 	check(ChatBox);
+
+	JoinPlayerBox = Cast<UScrollBox>(GetWidgetFromName(TEXT("JoinPlayerBox")));
+	check(JoinPlayerBox);
 
 	StartButton->OnClicked.AddDynamic(this, &UZLobbyWidget::OnStartButtonClick);	
 
@@ -65,15 +53,11 @@ void UZLobbyWidget::UpdateConnectNumber(int32 NewNumber)
 
 }
 
-void UZLobbyWidget::UpdatePlayerName(int32 PlayerIndex, const FString & PlayerName)
+void UZLobbyWidget::UpdatePlayerName(const FString & PlayerName)
 {
-	if (!IsValidPlayerIndex(PlayerIndex))
-	{
-		return;
-	}
-
-	PlayerNameList[PlayerIndex]->SetText(FText::FromString(PlayerName));
-
+	auto Text = NewObject<UTextBlock>(JoinPlayerBox);
+	Text->SetText(FText::FromString(PlayerName));
+	JoinPlayerBox->AddChild(Text);
 
 }
 
@@ -88,6 +72,23 @@ void UZLobbyWidget::UpdateChatBox(const FString& PlayerName, const FString& NewC
 	ChatBox->AddChild(NewText);
 	ChatBox->ScrollToEnd();
 	
+}
+
+void UZLobbyWidget::DeletePlayerName(const FString& PlayerName)
+{
+	auto Children = JoinPlayerBox->GetAllChildren();
+	for (const auto& Child : Children)
+	{
+		auto Text = Cast<UTextBlock>(Child);
+		if (Text)
+		{
+			if (Text->GetText().EqualTo(FText::FromString(PlayerName)))
+			{
+				Text->RemoveFromParent();
+			}
+		}
+	}
+
 }
 
 bool UZLobbyWidget::IsValidPlayerIndex(int32 PlayerIndex) const
