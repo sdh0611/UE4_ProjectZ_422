@@ -47,9 +47,23 @@ void AZGameMode::InitGame(const FString & MapName, const FString & Options, FStr
 	CurrentLevelName = *MapName;
 }
 
+void AZGameMode::PreLogin(const FString & Options, const FString & Address, const FUniqueNetIdRepl & UniqueId, FString & ErrorMessage)
+{
+	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
+
+	
+
+}
+
 void AZGameMode::PostLogin(APlayerController * NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+
+	//if (GameModeState != EGameModeState::ReadyToStart)
+	//{
+	//	ZLOG(Error, TEXT("Logout"));
+	//	Logout(NewPlayer);
+	//}
 
 }
 
@@ -84,6 +98,7 @@ void AZGameMode::BeginPlay()
 
 	}
 
+	GameModeState = EGameModeState::InProgress;
 	/* 처음은 HalfTime으로 시작 */
 	HandleGamePhase(EGamePhase::HalfTime);
 }
