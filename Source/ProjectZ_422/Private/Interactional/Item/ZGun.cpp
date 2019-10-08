@@ -130,6 +130,11 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 
 void AZGun::Reload()
 {
+	if (!::IsValid(ItemOwner))
+	{
+		return;
+	}
+
 	SetIsReloading(false);
 	if (CurrentAmmo >= MaxAmmo)
 	{

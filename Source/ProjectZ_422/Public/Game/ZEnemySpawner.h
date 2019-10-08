@@ -31,6 +31,9 @@ private:
 
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Spawner)
+	bool bIsPooling = false;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Spawner)
 	bool bIsActive;
 

@@ -30,6 +30,8 @@ AZBaseZombie::AZBaseZombie()
 	// Create character status component
 	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
 
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZEnemy"));
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 	GetCharacterMovement()->bUseRVOAvoidance = true;
@@ -211,6 +213,11 @@ void AZBaseZombie::OnDead()
 	}
 	ZombieAI->StopAI();
 
+	if (OnEnemyDead.IsBound())
+	{
+		OnEnemyDead.Execute();
+	}
+
 	//auto ZombieAnim = GetZombieAnimInstance();
 	//if (nullptr == ZombieAnim)
 	//{
@@ -277,4 +284,14 @@ void AZBaseZombie::OnSensingPlayer(APawn * Pawn)
 		}
 	}
 
+}
+
+bool AZBaseZombie::ClientSetLocationAndRotation_Validate(const FVector & Location, const FRotator Rotation)
+{
+	return true;
+}
+
+void AZBaseZombie::ClientSetLocationAndRotation_Implementation(const FVector & Location, const FRotator Rotation)
+{
+	SetActorLocationAndRotation(Location, Rotation);
 }

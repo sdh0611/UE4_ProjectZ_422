@@ -103,6 +103,9 @@ protected:
 	UFUNCTION()
 	virtual void OnRep_IsSprinting();
 
+	UFUNCTION()
+	void OnRep_IsActive();
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsSprinting)
@@ -112,7 +115,8 @@ public:
 	bool bIsPooling;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsActive)
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, Replicated)
 	bool bIsActive;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
@@ -132,8 +136,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat)
 	class USoundBase* DeadSound;
-
-	FRotator Rotate;
 
 	FTimerHandle InactiveTimer;
 

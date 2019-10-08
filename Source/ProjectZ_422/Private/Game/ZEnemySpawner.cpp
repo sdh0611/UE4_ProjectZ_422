@@ -39,21 +39,23 @@ void AZEnemySpawner::BeginPlay()
 	SpawnLocation = GetActorLocation();
 	SpawnRotation = GetActorRotation();
 
-	for (int i = 0; i < EnemyPoolSize; ++i)
+	if (bIsPooling)
 	{
-		/* 각각의 Enemy는 Spawn후 비활성화상태로 */
-		
-		//auto Enemy = GetWorld()->SpawnActor<AZZombie>(AZZombie::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
-		auto Enemy = GetWorld()->SpawnActor<AZBaseZombie>(SpawnEnemyClass, GetActorTransform(), SpawnParams);
-		if (nullptr != Enemy)
+		for (int i = 0; i < EnemyPoolSize; ++i)
 		{
-			Enemy->SetActive(false);
-			Enemy->bIsPooling = true;
-			EnemyPool.Add(Enemy);
+			/* 각각의 Enemy는 Spawn후 비활성화상태로 */
+
+			//auto Enemy = GetWorld()->SpawnActor<AZZombie>(AZZombie::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+			auto Enemy = GetWorld()->SpawnActor<AZBaseZombie>(SpawnEnemyClass, GetActorTransform(), SpawnParams);
+			if (nullptr != Enemy)
+			{
+				Enemy->SetActive(false);
+				Enemy->bIsPooling = true;
+				EnemyPool.Add(Enemy);
+			}
+
 		}
-
 	}
-
 
 }
 
@@ -80,45 +82,58 @@ void AZEnemySpawner::SetActive(bool bActive)
 
 void AZEnemySpawner::SpawnEnemy()
 {
-	/* SpawnMaximum에 맞춰서 활성화 */
-	for (const auto& Enemy : EnemyPool)
+	if (bIsPooling)
 	{
-		if (!Enemy->IsActive())
+		/* SpawnMaximum에 맞춰서 활성화 */
+		for (const auto& Enemy : EnemyPool)
 		{
-			/* 활성화 코드 */
-			Enemy->SetActorLocation(SpawnLocation);
-			Enemy->SetActorRotation(SpawnRotation);
-			
-			/* 
-				NOTE(7.24):
-					Enemy객체를 다시 활성화 시키는 코드 기재할 것 
-			*/
-			if (Enemy->IsDead())
+			if (!Enemy->IsActive())
 			{
-				Enemy->Revive();
-			}
-			else
-			{
-				Enemy->SetActive(true);
-			}
+				/* 활성화 코드 */
+				Enemy->SetActorLocationAndRotation(SpawnLocation, SpawnRotation);
+				Enemy->ClientSetLocationAndRotation(SpawnLocation, SpawnRotation);
 
-			//auto MyGameState = GetWorld()->GetGameState<AZGameState>();
-			//if (MyGameState)
-			//{
-			//	MyGameState->AdjustCurrentNumZombies(1);
-			//}
+				if (Enemy->IsDead())
+				{
+					Enemy->Revive();
+				}
+				else
+				{
+					Enemy->SetActive(true);
+				}
 
-			auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
-			if (MyGameMode)
-			{
-				MyGameMode->AdjustZombieNum(1);
+				auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+				if (MyGameMode)
+				{
+					MyGameMode->AdjustZombieNum(1);
+				}
+
+				break;
 			}
 
-			break;
+
 		}
-
 	}
+	else
+	{
+		if (CurrentAliveEnemies < SpawnMaximum)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+			SpawnParams.Owner = this;
 
+			auto Enemy = GetWorld()->SpawnActor<AZBaseZombie>(SpawnEnemyClass, GetActorTransform(), SpawnParams);
+			if (nullptr == Enemy)
+			{
+				ZLOG(Error, TEXT("Failed to spawn enemy"));
+			}
 
+			Enemy->OnEnemyDead.BindLambda([&]() {
+				--CurrentAliveEnemies;
+			});
+
+			++CurrentAliveEnemies;
+		}
+	}
 }
 

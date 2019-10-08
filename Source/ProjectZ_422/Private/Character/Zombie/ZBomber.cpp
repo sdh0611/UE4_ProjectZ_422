@@ -105,7 +105,8 @@ void AZBomber::Explosion()
 	}
 	else
 	{
-		Destroy();
+		OnDead();
+		//Destroy();
 	}
 
 	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();

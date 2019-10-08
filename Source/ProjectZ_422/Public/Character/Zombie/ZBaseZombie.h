@@ -7,6 +7,7 @@
 #include "ZBaseZombie.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
+DECLARE_DELEGATE(FOnEnemyDead);
 
 UENUM(BlueprintType)
 enum class EZombieState : uint8
@@ -62,9 +63,16 @@ protected:
 	virtual void OnRemoved() override;
 	virtual void OnSensingPlayer(APawn* Pawn);
 
+public:
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientSetLocationAndRotation(const FVector& Location, const FRotator Rotation);
+	bool ClientSetLocationAndRotation_Validate(const FVector& Location, const FRotator Rotation);
+	void ClientSetLocationAndRotation_Implementation(const FVector& Location, const FRotator Rotation);
+
 
 public:
 	FOnAttackEnd OnAttackEnd;
+	FOnEnemyDead OnEnemyDead;
 
 protected:
 	/* 해당 개체를 잡았을 경우 얻게되는 돈의 값 */

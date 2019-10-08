@@ -96,6 +96,7 @@ void AZBaseCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AZBaseCharacter, bIsSprinting);
+	DOREPLIFETIME(AZBaseCharacter, bIsActive);
 
 }
 
@@ -164,7 +165,8 @@ void AZBaseCharacter::SetCharacterCrouchWalkSpeed(float NewSpeed)
 
 void AZBaseCharacter::SetActive(bool bActive)
 {
-	SetActorHiddenInGame(!bActive);
+	//SetActorHiddenInGame(!bActive);
+	GetMesh()->SetVisibility(bActive);
 	SetActorEnableCollision(bActive);
 	SetActorTickEnabled(bActive);
 
@@ -359,4 +361,9 @@ void AZBaseCharacter::OnRep_IsSprinting()
 		return;
 	}
 	CharacterAnim->SetIsSprinting(bIsSprinting);
+}
+
+void AZBaseCharacter::OnRep_IsActive()
+{
+	SetActive(bIsActive);
 }
