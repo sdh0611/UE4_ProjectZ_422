@@ -96,8 +96,16 @@ void UZPlayerAnimInstance::AnimNotify_ReloadCheck()
 	if (::IsValid(Pawn))
 	{
 		auto Player = Cast<AZCharacter>(Pawn);
-		check(nullptr != Player);
-		Cast<AZGun>(Player->GetCurrentWeapon())->Reload();
+		if (::IsValid(Player))
+		{
+			auto Gun = Cast<AZGun>(Player->GetCurrentWeapon());
+			if (::IsValid(Gun))
+			{
+				Gun->Reload();
+			}
+
+		}
+		
 
 	}
 }

@@ -4,6 +4,11 @@
 
 #include "ProjectZ_422.h"
 #include "ZBaseGameMode.h"
+
+#include "Http.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+
 #include "ZLobbyGameMode.generated.h"
 
 /**

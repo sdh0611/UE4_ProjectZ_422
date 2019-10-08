@@ -57,9 +57,17 @@ void UZCharacterAnimInstance::PlayCharacterMontage(const FString & MontageName)
 		return;
 	}
 
-	CurrentPlayMontage = MontageTable[MontageName];
-	
-	Montage_Play(MontageTable[MontageName]);
+	PlayMontage(MontageTable[MontageName]);
+}
+
+void UZCharacterAnimInstance::PlayMontage(UAnimMontage * NewMontage)
+{
+	if (NewMontage)
+	{
+		CurrentPlayMontage = NewMontage;
+		Montage_Play(NewMontage);
+	}
+
 }
 
 void UZCharacterAnimInstance::StopCurrentMontage()
@@ -69,7 +77,10 @@ void UZCharacterAnimInstance::StopCurrentMontage()
 		return;
 	}
 
-	Montage_Stop(CurrentPlayMontage->BlendOut.GetBlendTime(), CurrentPlayMontage);
+	if (CurrentPlayMontage)
+	{
+		Montage_Stop(CurrentPlayMontage->BlendOut.GetBlendTime(), CurrentPlayMontage);
+	}
 }
 
 void UZCharacterAnimInstance::ResumeCurrentMontage()

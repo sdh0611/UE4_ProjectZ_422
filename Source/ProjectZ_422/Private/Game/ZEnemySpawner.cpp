@@ -133,6 +133,12 @@ void AZEnemySpawner::SpawnEnemy()
 			});
 
 			++CurrentAliveEnemies;
+
+			auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
+			if (MyGameMode)
+			{
+				MyGameMode->AdjustZombieNum(1);
+			}
 		}
 	}
 }

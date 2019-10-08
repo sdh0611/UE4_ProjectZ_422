@@ -340,6 +340,12 @@ void AZBaseCharacter::MulticastOnHit_Implementation()
 
 void AZBaseCharacter::MulticastOnDead_Implementation()
 {
+	auto Anim = GetAnimInstance();
+	if (::IsValid(Anim))
+	{
+		Anim->StopCurrentMontage();
+	}
+
 	OnDead();
 }
 

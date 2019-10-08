@@ -24,6 +24,7 @@ public:
 
 public:
 	void PlayCharacterMontage(const FString& MontageName);
+	void PlayMontage(class UAnimMontage* NewMontage);
 	void StopCurrentMontage();
 	void ResumeCurrentMontage();
 

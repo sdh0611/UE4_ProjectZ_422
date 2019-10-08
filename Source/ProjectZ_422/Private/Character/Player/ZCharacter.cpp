@@ -1426,7 +1426,8 @@ void AZCharacter::MulticastPlayItemMontage_Implementation(const FString & Montag
 		return;
 	}
 
-	PlayerAnim->Montage_Play(Montage);
+	//PlayerAnim->Montage_Play(Montage);
+	PlayerAnim->PlayMontage(Montage);
 }
 
 bool AZCharacter::MulticastAttachWeapon_Validate(AZWeapon* Weapon, FName SocketName)

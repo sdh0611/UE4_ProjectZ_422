@@ -8,6 +8,7 @@
 #include "ZGameInstance.h"
 #include "..\..\Public\Lobby\ZLobbyGameMode.h"
 #include "Engine/World.h"
+#include "Json.h"
 
 void AZLobbyGameMode::InitGame(const FString & MapName, const FString & Options, FString & ErrorMessage)
 {
