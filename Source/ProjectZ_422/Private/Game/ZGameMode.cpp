@@ -15,6 +15,7 @@
 #include "ZPlayerState.h"
 #include "ZShop.h"
 #include "ZShopSpawnPoint.h"
+#include "ZGameInstance.h"
 #include "EngineUtils.h"
 #include "TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -43,8 +44,23 @@ AZGameMode::AZGameMode()
 void AZGameMode::InitGame(const FString & MapName, const FString & Options, FString & ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
-
+	
 	CurrentLevelName = *MapName;
+
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+		
+		FString URL = MyGameInstance->GetWebConnector().GetWebURL();
+		URL.Append(TEXT("/start_game"));
+		
+		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+
+		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+
+	}
+
 }
 
 void AZGameMode::PreLogin(const FString & Options, const FString & Address, const FUniqueNetIdRepl & UniqueId, FString & ErrorMessage)
@@ -107,6 +123,26 @@ void AZGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+}
+
+void AZGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+
+		FString URL = MyGameInstance->GetWebConnector().GetWebURL();
+		URL.Append(TEXT("/delete_game"));
+
+		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+
+		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+
+	}
+	
+	Super::EndPlay(EndPlayReason);
 
 }
 

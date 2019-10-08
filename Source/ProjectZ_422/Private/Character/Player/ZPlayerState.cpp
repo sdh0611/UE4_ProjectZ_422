@@ -5,6 +5,8 @@
 #include "ZBasePlayerController.h"
 #include "ZCharacter.h"
 #include "UnrealNetwork.h"
+#include "ZLobbyPlayerController.h"
+#include "Engine/World.h"
 
 AZPlayerState::AZPlayerState()
 {
@@ -27,6 +29,24 @@ void AZPlayerState::SetPlayerIndex(int32 NewIndex)
 	PlayerIndex = NewIndex;
 }
 
+void AZPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//if (!HasAuthority())
+	//{
+	//	auto LobbyPC = Cast<AZLobbyPlayerController>(*(GetWorld()->GetPlayerControllerIterator()));
+	//	if (nullptr == LobbyPC)
+	//	{
+	//		ZLOG(Error, TEXT("Invalid PC.."));
+	//		return;
+	//	}
+
+	//	LobbyPC->UpdatePlayerName(GetPlayerName(), false);
+	//}
+
+}
+
 void AZPlayerState::SetPlayerName(const FString & S)
 {
 	Super::SetPlayerName(S);
@@ -40,5 +60,21 @@ void AZPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AZPlayerState, PlayerIndex);
+
+}
+
+void AZPlayerState::OnRep_PlayerName()
+{
+	Super::OnRep_PlayerName();
+
+	//auto LobbyPC = Cast<AZLobbyPlayerController>(*(GetWorld()->GetPlayerControllerIterator()));
+	//if (nullptr == LobbyPC)
+	//{
+	//	ZLOG(Error, TEXT("Invalid PC.."));
+	//	return;
+	//}
+
+	//LobbyPC->UpdatePlayerName(GetPlayerName(), false);
+
 
 }

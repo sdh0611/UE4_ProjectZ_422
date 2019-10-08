@@ -5,12 +5,14 @@
 #include "..\..\Public\Lobby\ZLobbyWidget.h"
 #include "Lobby/ZLobbyPlayerController.h"
 #include "Lobby/ZLobbyGameMode.h"
+#include "ZPlayerState.h"
 #include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h"
 #include "Components/ScrollBox.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "ZGameInstance.h"
+#include "EngineUtils.h"
 
 void UZLobbyWidget::NativeConstruct()
 {
@@ -22,7 +24,6 @@ void UZLobbyWidget::NativeConstruct()
 	ConnectNumber = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ConnectNumber")));
 	check(ConnectNumber);
 
-
 	InputChat = Cast<UEditableTextBox>(GetWidgetFromName(TEXT("ETB_InputChat")));
 	check(InputChat);
 	InputChat->OnTextCommitted.AddDynamic(this, &UZLobbyWidget::OnInputChatCommit);
@@ -33,7 +34,20 @@ void UZLobbyWidget::NativeConstruct()
 	JoinPlayerBox = Cast<UScrollBox>(GetWidgetFromName(TEXT("JoinPlayerBox")));
 	check(JoinPlayerBox);
 
-	StartButton->OnClicked.AddDynamic(this, &UZLobbyWidget::OnStartButtonClick);	
+	StartButton->OnClicked.AddDynamic(this, &UZLobbyWidget::OnStartButtonClick);
+
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		UpdatePlayerName(MyGameInstance->GetWebConnector().GetUserNickname());
+	}
+
+	auto LobbyPC = GetOwningPlayer<AZLobbyPlayerController>();
+	if (LobbyPC)
+	{
+		LobbyPC->ServerReceiveUpdateJoinPlayer();
+	}
+
 
 }
 
@@ -55,8 +69,16 @@ void UZLobbyWidget::UpdateConnectNumber(int32 NewNumber)
 
 void UZLobbyWidget::UpdatePlayerName(const FString & PlayerName)
 {
+	ZLOG(Error, TEXT("PlayerName : %s"), *PlayerName);
 	auto Text = NewObject<UTextBlock>(JoinPlayerBox);
+	if (nullptr == Text)
+	{
+		ZLOG(Error, TEXT("Failed to create text block.."));
+		return;
+	}
+
 	Text->SetText(FText::FromString(PlayerName));
+	
 	JoinPlayerBox->AddChild(Text);
 
 }
@@ -64,14 +86,14 @@ void UZLobbyWidget::UpdatePlayerName(const FString & PlayerName)
 void UZLobbyWidget::UpdateChatBox(const FString& PlayerName, const FString& NewChat)
 {
 	FString Chat = FString::Printf(TEXT("%s : %s"), *PlayerName, *NewChat);
-	
+
 	UTextBlock* NewText = NewObject<UTextBlock>(ChatBox);
 	NewText->SetText(FText::FromString(Chat));
 	NewText->SetAutoWrapText(true);
 
 	ChatBox->AddChild(NewText);
 	ChatBox->ScrollToEnd();
-	
+
 }
 
 void UZLobbyWidget::DeletePlayerName(const FString& PlayerName)
@@ -112,32 +134,32 @@ void UZLobbyWidget::OnInputChatCommit(const FText & Text, ETextCommit::Type Comm
 {
 	switch (CommitMethod)
 	{
-		case ETextCommit::OnEnter:
+	case ETextCommit::OnEnter:
+	{
+		auto MyGameInstance = GetGameInstance<UZGameInstance>();
+		if (nullptr == MyGameInstance)
 		{
-			auto MyGameInstance = GetGameInstance<UZGameInstance>();
-			if (nullptr == MyGameInstance)
-			{
-				ZLOG(Error, TEXT("Invalid game instance.."));
-				return;
-			}
-
-			auto MyPC = Cast<AZLobbyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-			if (nullptr == MyPC)
-			{
-				return;
-			}
-			MyPC->ServerReceiveChat(MyGameInstance->GetWebConnector().GetUserNickname(), Text.ToString());
-
-			if (InputChat)
-			{
-				InputChat->SetText(FText::GetEmpty());
-			}
-			break;
+			ZLOG(Error, TEXT("Invalid game instance.."));
+			return;
 		}
-		case ETextCommit::OnUserMovedFocus:
+
+		auto MyPC = Cast<AZLobbyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (nullptr == MyPC)
 		{
-			break;
+			return;
 		}
+		MyPC->ServerReceiveChat(MyGameInstance->GetWebConnector().GetUserNickname(), Text.ToString());
+
+		if (InputChat)
+		{
+			InputChat->SetText(FText::GetEmpty());
+		}
+		break;
+	}
+	case ETextCommit::OnUserMovedFocus:
+	{
+		break;
+	}
 
 
 	}

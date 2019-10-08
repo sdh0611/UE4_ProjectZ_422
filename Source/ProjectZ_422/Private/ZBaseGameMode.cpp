@@ -10,14 +10,12 @@ void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
-	//{
-	//	auto BasePC = Cast<AZBasePlayerController>(*Iter);
-	//	if (BasePC)
-	//	{
-	//		BasePC->ClientReceiveSetUserName();
-	//	}
-	//}
+	auto BasePC = Cast<AZBasePlayerController>(NewPlayer);
+	if (BasePC)
+	{
+		BasePC->ClientReceiveGetUserName();
+	}
+
 }
 
 void AZBaseGameMode::Logout(AController * Exiting)

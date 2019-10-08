@@ -28,6 +28,7 @@ public:
 
 public:
 	void HttpPost(FString NewURL, const FString& PostParameter, FHttpRequestCompleteDelegate RequestDelegate);
+	void HttpPost(FString NewURL, const FString& PostParameter);
 
 public:
 	void Login(const FString& NewUserID, const FString& NewUserPW, FOnLoginResponse LoginResponse);
@@ -39,6 +40,7 @@ public:
 	bool IsVerified() const;
 	const FString& GetWebURL() const;
 	const FString& GetUserNickname() const;
+	FString GetIP() const;
 
 private:
 	void OnLoginResponseReceive(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);

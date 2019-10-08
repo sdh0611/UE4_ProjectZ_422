@@ -4,6 +4,11 @@
 
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
+
+#include "Http.h"
+#include "IHttpRequest.h"
+#include "IHttpResponse.h"
+
 #include "ZConnectServerWidget.generated.h"
 
 /**
@@ -22,11 +27,16 @@ private:
 	void OnMakeServerButtonClick();
 
 	UFUNCTION()
-	void OnConnectServerButtonClick();
+	void OnConnectGameButtonClick();
+
+	void OnConnectGameResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 protected:
 	UPROPERTY()
 	class UEditableTextBox* InputIP;
+
+	UPROPERTY()
+	class UTextBlock* ErrorText;
 
 	UPROPERTY()
 	class UButton* MakeServerButton;

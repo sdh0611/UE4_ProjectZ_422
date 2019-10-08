@@ -12,7 +12,7 @@ public class ProjectZ_422 : ModuleRules
             "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProjectZLoadingScreen" ,
-            "Networking", "Http", "Json", "JsonUtilities" });
+            "Networking", "Http", "Json", "JsonUtilities", "Sockets" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

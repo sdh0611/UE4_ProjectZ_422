@@ -6,6 +6,8 @@
 #include "Lobby/ZLobbyWidget.h"
 #include "Lobby/ZLobbyGameMode.h"
 #include "Lobby/ZLobbyGameState.h"
+#include "ZPlayerState.h"
+#include "ZCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
@@ -29,7 +31,7 @@ void AZLobbyPlayerController::BeginPlay()
 					UserHUD->PlayFadeInStartButtonAnim();
 				}
 
-				auto MyGameState= GetWorld()->GetGameState<AZLobbyGameState>();
+				auto MyGameState = GetWorld()->GetGameState<AZLobbyGameState>();
 				if (MyGameState)
 				{
 					UpdateConnectNumber(MyGameState->GetConnectNumber());
@@ -53,13 +55,21 @@ void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)
 
 }
 
-void AZLobbyPlayerController::UpdatePlayerName(const FString & PlayerName)
+void AZLobbyPlayerController::UpdatePlayerName(const FString & PlayerName, bool bErase)
 {
 	if (IsLocalPlayerController())
 	{
 		if (UserHUD)
 		{
-			UserHUD->UpdatePlayerName(PlayerName);
+			if (bErase)
+			{
+				UserHUD->DeletePlayerName(PlayerName);
+			}
+			else
+			{
+				UserHUD->UpdatePlayerName(PlayerName);
+			}
+
 		}
 	}
 
@@ -84,17 +94,6 @@ void AZLobbyPlayerController::ServerReceiveChat_Implementation(const FString & P
 
 }
 
-bool AZLobbyPlayerController::ServerReceiveSetUserName_Validate(const FString & NewName)
-{
-	return true;
-}
-
-void AZLobbyPlayerController::ServerReceiveSetUserName_Implementation(const FString & NewName)
-{
-
-
-}
-
 bool AZLobbyPlayerController::ClientReceiveChat_Validate(const FString & PlayerName, const FString& RecvChat)
 {
 	return true;
@@ -112,11 +111,52 @@ void AZLobbyPlayerController::ClientReceiveChat_Implementation(const FString & P
 
 }
 
-bool AZLobbyPlayerController::ClientReceiveSetUserName_Validate()
+bool AZLobbyPlayerController::ClientUpdateJoinPlayer_Validate(const FString & JoinPlayer, bool bErase)
 {
-	return false;
+	return true;
 }
 
-void AZLobbyPlayerController::ClientReceiveSetUserName_Implementation()
+void AZLobbyPlayerController::ClientUpdateJoinPlayer_Implementation(const FString & JoinPlayer, bool bErase)
 {
+	UpdatePlayerName(JoinPlayer, bErase);
 }
+
+bool AZLobbyPlayerController::ServerReceiveUpdateJoinPlayer_Validate()
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ServerReceiveUpdateJoinPlayer_Implementation()
+{
+	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	{
+		if (Iter->Get() != this)
+		{
+			auto MyPS = Iter->Get()->GetPlayerState<AZPlayerState>();
+			if (MyPS)
+			{
+				ClientUpdateJoinPlayer(MyPS->GetPlayerName(), false);
+			}
+		}
+	}
+
+
+}
+
+void AZLobbyPlayerController::OnReceiveUserName(const FString & UserName)
+{
+	Super::OnReceiveUserName(UserName);
+
+	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	{
+		ZLOG_S(Error);
+		auto LobbyPC = Cast<AZLobbyPlayerController>(*Iter);
+		if (LobbyPC)
+		{
+			LobbyPC->ClientUpdateJoinPlayer(UserName, false);
+		}
+	}
+
+}
+
+

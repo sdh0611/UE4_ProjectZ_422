@@ -5,6 +5,7 @@
 #include "ZGameInstance.h"
 #include "Components/TextBlock.h"
 #include "ZBasePlayerController.h"
+#include "Lobby/ZLobbyPlayerController.h"
 #include "Engine/World.h"
 
 void UZUserNameWidget::NativeConstruct()

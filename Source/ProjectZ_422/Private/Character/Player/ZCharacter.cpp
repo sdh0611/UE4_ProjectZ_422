@@ -348,23 +348,6 @@ void AZCharacter::OnRep_IsSprinting()
 
 }
 
-void AZCharacter::MulticastUpdatePlayerName_Implementation()
-{
-	if (IsLocallyControlled())
-	{
-		return;
-	}
-
-	ZLOG(Error, TEXT("Update name"));
-	auto MyPS = GetPlayerState();
-	if (MyPS)
-	{
-		SetUserName(MyPS->GetPlayerName());
-
-	}
-
-}
-
 void AZCharacter::SetIsAiming(bool bNewState)
 {
 	if (!HasAuthority())
@@ -1403,22 +1386,6 @@ void AZCharacter::ServerSetSprint_Implementation(bool bSprint)
 	else
 	{
 		SprintRelease();
-	}
-}
-
-bool AZCharacter::ServerSetUserName_Validate(const FString & NewUserName)
-{
-	return true;
-}
-
-void AZCharacter::ServerSetUserName_Implementation(const FString & NewUserName)
-{
-	auto UserNameWidget = Cast<UZUserNameWidget>(NameComponent->GetUserWidgetObject());
-	if (UserNameWidget)
-	{
-
-		UserNameWidget->SetUserName(NewUserName);
-
 	}
 }
 

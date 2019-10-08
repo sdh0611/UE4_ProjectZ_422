@@ -46,6 +46,7 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	void AdjustKillScore(AController* Killer, AController* Victim, APawn* VictimPawn);
@@ -72,6 +73,8 @@ protected:
 	bool IsWaveEnd();
 	float GetCurrentRemainTime() const;
 
+private:
+	
 
 protected:
 	FTimerHandle PhaseTimer;

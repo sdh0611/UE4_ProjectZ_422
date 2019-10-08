@@ -17,14 +17,20 @@ class PROJECTZ_422_API AZPlayerState : public APlayerState
 public:
 	AZPlayerState();
 
+protected:
+	virtual void BeginPlay() override;
+
 public:
 	virtual void SetPlayerName(const FString& S) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void OnRep_PlayerName() override;
+
 
 public:
 	void AddKill();
 	void AdjustScore(int32 NewScore);
 	void SetPlayerIndex(int32 NewIndex);
+
 
 private:
 	UPROPERTY(Replicated)

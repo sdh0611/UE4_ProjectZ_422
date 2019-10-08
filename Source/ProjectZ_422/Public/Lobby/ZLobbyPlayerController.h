@@ -19,8 +19,7 @@ public:
 
 public:
 	void UpdateConnectNumber(int32 NewNumber);
-	void UpdatePlayerName(const FString & PlayerName);
-	
+	void UpdatePlayerName(const FString & PlayerName, bool bErase);
 
 public:
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -28,22 +27,23 @@ public:
 	bool ServerReceiveChat_Validate(const FString& PlayerName, const FString& RecvChat);
 	void ServerReceiveChat_Implementation(const FString& PlayerName, const FString& RecvChat);
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerReceiveSetUserName(const FString& NewName);
-	bool ServerReceiveSetUserName_Validate(const FString& NewName);
-	void ServerReceiveSetUserName_Implementation(const FString& NewName);
-
 	UFUNCTION(Client, Reliable, WithValidation)
 	void ClientReceiveChat(const FString& PlayerName, const FString& RecvChat);
 	bool ClientReceiveChat_Validate(const FString& PlayerName, const FString& RecvChat);
 	void ClientReceiveChat_Implementation(const FString& PlayerName, const FString& RecvChat);
-	
-	UFUNCTION(Client, Reliable, WithValidation)
-	void ClientReceiveSetUserName();
-	bool ClientReceiveSetUserName_Validate();
-	void ClientReceiveSetUserName_Implementation();
 
+	UFUNCTION(Client, Reliable, WIthValidation)
+	void ClientUpdateJoinPlayer(const FString& JoinPlayer, bool bErase);
+	bool ClientUpdateJoinPlayer_Validate(const FString& JoinPlayer, bool bErase);
+	void ClientUpdateJoinPlayer_Implementation(const FString& JoinPlayer, bool bErase);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerReceiveUpdateJoinPlayer();
+	bool ServerReceiveUpdateJoinPlayer_Validate();
+	void ServerReceiveUpdateJoinPlayer_Implementation();
+
+private:
+	virtual void OnReceiveUserName(const FString& UserName) override;
 
 
 protected:

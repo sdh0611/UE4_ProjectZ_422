@@ -4,6 +4,9 @@
 #include "ZWebConnector.h"
 #include "Json.h"
 #include "ZGameInstance.h"
+#include "IPAddress.h"
+#include "SocketSubsystem.h"
+
 
 void UZWebConnector::PostInitProperties()
 {
@@ -16,7 +19,7 @@ void UZWebConnector::HttpPost(FString NewURL, const FString& PostParameter, FHtt
 {
 	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
 
-	Request->OnProcessRequestComplete().BindUObject(this, &UZWebConnector::OnLoginResponseReceive);
+	Request->OnProcessRequestComplete() = RequestDelegate;
 
 	Request->SetURL(NewURL);
 	Request->SetVerb("POST");
@@ -25,6 +28,18 @@ void UZWebConnector::HttpPost(FString NewURL, const FString& PostParameter, FHtt
 	Request->SetContentAsString(PostParameter);
 	Request->ProcessRequest();
 
+}
+
+void UZWebConnector::HttpPost(FString NewURL, const FString & PostParameter)
+{
+	TSharedRef<IHttpRequest> Request = Http->CreateRequest();
+
+	Request->SetURL(NewURL);
+	Request->SetVerb("POST");
+	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+	Request->SetHeader("Content-Type", TEXT("application/x-www-form-urlencoded"));
+	Request->SetContentAsString(PostParameter);
+	Request->ProcessRequest();
 }
 
 void UZWebConnector::Login(const FString & NewUserID, const FString & NewUserPW, FOnLoginResponse LoginResponse)
@@ -93,6 +108,19 @@ const FString & UZWebConnector::GetUserNickname() const
 	return UserNickname;
 }
 
+FString UZWebConnector::GetIP() const
+{
+	FString IpAddr("NONE");
+	bool canBind = false;
+	TSharedRef<FInternetAddr> LocalIp = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLocalHostAddr(*GLog, canBind);
+	if (LocalIp->IsValid())
+	{
+		IpAddr = LocalIp->ToString(false);
+	}
+
+	return IpAddr;
+}
+
 void UZWebConnector::OnLoginResponseReceive(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
 	bool bSuccess = false;
@@ -123,7 +151,7 @@ void UZWebConnector::OnLoginResponseReceive(FHttpRequestPtr Request, FHttpRespon
 			else
 			{
 				ZLOG(Error, TEXT("Result fail.."));
-				Result = TEXT("일치하는 정보가 없습니다...");
+				Result = JsonObject->GetStringField(TEXT("reason"));
 			}
 		}
 		else
