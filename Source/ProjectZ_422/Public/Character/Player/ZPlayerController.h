@@ -24,6 +24,7 @@ public:
 public:
 	void ConstructShopWidget();
 	void AddItemToInventoryWidget(class AZItem* const NewItem) ;
+	void AddItemToWeaponInventoryWidget(class AZWeapon* const NewWeapon) ;
 	void AddItemToSellWidget(class AZItem* const NewItem);
 	void FadeBloodSplatter();
 

@@ -276,6 +276,20 @@ void AZPlayerController::AddItemToInventoryWidget(AZItem * const NewItem)
 	}
 }
 
+void AZPlayerController::AddItemToWeaponInventoryWidget(AZWeapon * const NewWeapon)
+{
+	if (IsLocalPlayerController())
+	{
+		if (::IsValid(NewWeapon))
+		{
+			if (UserHUD)
+			{
+				UserHUD->GetInventoryWidget()->AddItemToWeaponInventory(NewWeapon);
+			}
+		}
+	}
+}
+
 void AZPlayerController::AddItemToSellWidget(AZItem * const NewItem)
 {
 	if (IsLocalPlayerController())

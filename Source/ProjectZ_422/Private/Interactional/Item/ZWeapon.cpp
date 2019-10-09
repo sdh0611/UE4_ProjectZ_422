@@ -211,7 +211,10 @@ void AZWeapon::RepItemOwner()
 	if (ItemOwner)
 	{
 		ZLOG_S(Error);
-		ItemOwner->AttachWeapon(this, AttachSocketName);
+		if (WeaponInventoryIndex > -1)
+		{
+			ItemOwner->AttachWeapon(this, AttachSocketName);
+		}
 	}
 
 }

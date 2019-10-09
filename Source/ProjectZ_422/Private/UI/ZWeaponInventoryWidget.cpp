@@ -25,6 +25,7 @@ void UZWeaponInventoryWidget::NativeConstruct()
 
 void UZWeaponInventoryWidget::AddItemToWeaponInventory(class AZWeapon* NewWeapon)
 {
+	ZLOG_S(Error);
 	switch (NewWeapon->GetWeaponInventoryIndex())
 	{
 		case EWeaponSlot::Main1:

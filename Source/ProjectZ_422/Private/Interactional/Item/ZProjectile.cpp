@@ -64,3 +64,8 @@ void AZProjectile::FireInDirection(const FVector & Direction)
 {
 
 }
+
+void AZProjectile::FireInDirectionRotator(const FRotator & Direction)
+{
+	FireInDirection(Direction.Vector());
+}

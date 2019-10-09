@@ -26,6 +26,7 @@ public:
 public:
 	void SetDamage(float NewDamage);
 	virtual void FireInDirection(const FVector& Direction);
+	void FireInDirectionRotator(const FRotator& Direction);
 
 protected:
 	TSubclassOf<class UDamageType> DamageType;

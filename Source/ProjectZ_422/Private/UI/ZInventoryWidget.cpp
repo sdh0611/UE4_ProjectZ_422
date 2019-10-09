@@ -38,14 +38,13 @@ void UZInventoryWidget::AddItemToInventoryWidget(AZItem * const NewItem)
 			auto Weapon = Cast<AZWeapon>(NewItem);
 			if (::IsValid(Weapon))
 			{
-				if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
-				{
-					AddItemToInventory(NewItem);
-				}
-				else
-				{
-					AddItemToWeaponInventory(Weapon);
-				}
+				//if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
+				//{
+				//	AddItemToInventory(NewItem);
+				//}
+
+				AddItemToWeaponInventory(Weapon);
+
 			}
 		}
 		else
