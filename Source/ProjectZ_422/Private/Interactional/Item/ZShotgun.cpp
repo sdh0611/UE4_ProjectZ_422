@@ -16,11 +16,6 @@ AZShotgun::AZShotgun()
 	ShotRange = 4.f;
 
 	BulletLifeSpan = 0.1f;
-
-	for (int32 i = 0; i < ShotNumber; ++i)
-	{
-		DirList.Add(FVector::ZeroVector);
-	}
 }
 
 void AZShotgun::Fire()
@@ -66,19 +61,18 @@ void AZShotgun::Fire()
 	/* 
 		Shot spread logic부분. 
 	*/
+	float RandomShotRangeX = 0.f;
 	float RandomShotRangeY = 0.f;
 	float RandomShotRangeZ = 0.f;
 
 	/* 거리에 비례해서 펴져야하기 떄문에 HitDistance에 임의 상수를 곱해서 ShotRange에 더해줌. */
 	float NewShotRange = ShotRange + Hit.Distance * DistantConstant;
-
-	for (const auto& Dir : DirList)
+	for (int32 i = 0; i < ShotNumber; ++i)
 	{
+		RandomShotRangeX = FMath::RandRange(-NewShotRange, NewShotRange);
 		RandomShotRangeY = FMath::RandRange(-NewShotRange, NewShotRange);
 		RandomShotRangeZ = FMath::RandRange(-NewShotRange, NewShotRange);
-		LaunchDirection = (EndPoint + Dir + FVector(0.f, RandomShotRangeY, RandomShotRangeZ)) - MuzzleLocation;
-		//LaunchDirection = (EndPoint + Dir * Hit.Distance * DistantConstant) - MuzzleLocation;
-		//Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+		LaunchDirection = (EndPoint + FVector(RandomShotRangeX, RandomShotRangeY, RandomShotRangeZ)) - MuzzleLocation;
 		
 		AZBulletProjectile* Projectile = GetWorld()->SpawnActor<AZBulletProjectile>(BulletClass, MuzzleLocation, LaunchDirection.Rotation(), SpawnParams);
 		if (nullptr == Projectile)
@@ -89,10 +83,7 @@ void AZShotgun::Fire()
 			break;
 		}
 		
-		LaunchDirection.Normalize();
-		ZLOG(Error, TEXT("%.2f, %.2f, %.2f"), LaunchDirection.X, LaunchDirection.Y, LaunchDirection.Z);
-		//Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
-		Projectile->FireInDirection(LaunchDirection);
+		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
 		Projectile->SetDamage(Damage / ShotNumber);
 		Projectile->SetBulletSpeed(BulletSpeed);
 		Projectile->SetBulletLifeSpan(BulletLifeSpan);

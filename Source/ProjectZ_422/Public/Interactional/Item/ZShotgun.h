@@ -31,8 +31,4 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float DistantConstant = 0.025f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FVector> DirList;
-	
-
 };
