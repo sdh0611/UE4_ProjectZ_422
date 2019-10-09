@@ -49,7 +49,7 @@ void UZShopSellItemWidget::OnReceiveNumberInput(int32 NewNumber)
 	auto MyPC = GetOwningPlayer<AZPlayerController>();
 	if (MyPC)
 	{
-		MyPC->Sell(Item->GetInventoryIndex(), NewNumber);
+		MyPC->ServerSell(Item->GetInventoryIndex(), NewNumber);
 	}
 
 	//ClearWidget();

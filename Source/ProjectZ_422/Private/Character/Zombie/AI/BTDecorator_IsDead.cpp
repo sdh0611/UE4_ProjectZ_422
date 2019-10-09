@@ -12,9 +12,8 @@ bool UBTDecorator_IsDead::CalculateRawConditionValue(UBehaviorTreeComponent & Ow
 	bool bResult = Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
 	auto Target = Cast<AZBaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
-	if (nullptr == Target)
+	if (!::IsValid(Target))
 	{
-		ZLOG(Error, TEXT("Target invalid."));
 		return false;
 	}
 

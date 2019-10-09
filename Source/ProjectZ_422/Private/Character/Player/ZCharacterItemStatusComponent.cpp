@@ -78,7 +78,7 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem)
 		TODO(5.19) : EquipWeapon의 OnDropped를 실행하는 부분에서 버그발생.
 						-> ItemOwner가 null인데 ItemOwner를 불러서 생긴 현상. 이거 고치자
 	*/
-	UKismetSystemLibrary::PrintString(GetWorld(), NewItem->GetItemName());
+	//UKismetSystemLibrary::PrintString(GetWorld(), NewItem->GetItemName());
 	ZLOG(Warning, TEXT("%s"), *NewItem->GetItemName());
 
 	auto Item = GetItemByName(NewItem->GetItemName());
@@ -107,10 +107,10 @@ void UZCharacterItemStatusComponent::AddItem(AZItem * NewItem)
 			ItemList[AllocatedIndex] = NewItem;
 			NewItem->SetInventoryIndex(AllocatedIndex);
 			NewItem->SetItemOwner(OwnerCharacter.Get());
-			NewItem->MulticastOnItemPicked();
+			//NewItem->MulticastOnItemPicked();
 
 			auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
-			if (PlayerController && PlayerController->IsLocalPlayerController())
+			if (PlayerController)
 			{
 				PlayerController->AddItemToInventoryWidget(NewItem);
 				PlayerController->AddItemToSellWidget(NewItem);
@@ -182,131 +182,22 @@ void UZCharacterItemStatusComponent::AddItem(class AZPickup* NewPickup)
 		return;
 	}
 
-	if (nullptr == NewPickup)
-	{
-		return;
-	}
-
-	//UKismetSystemLibrary::PrintString(GetWorld(), NewPickup->GetItemInfo().ItemName);
-	//ZLOG(Warning, TEXT("Pickup item name : %s"), *NewPickup->GetItemInfo().ItemName);
-
 	if (::IsValid(NewPickup) && NewPickup->GetItem())
 	{
 		AddItem(NewPickup->GetItem());
+
+		/* Pickup 정리 */
+		NewPickup->Destroy();
 	}
-
-	//auto Item = GetItemByName(NewPickup->GetItem()->GetItemName());
-	//if (nullptr == Item || Item->IsItemQuantityMaximum())
-	//{
-	//	/*
-	//		Item이 ItemList내에 없는 경우
-	//		or 해당Item이 최대 개수까지 보유하고 있을 때
-	//	*/
-	//	// ItemList 내의 빈 공간에 넣어줌.
-	//	int32 AllocatedIndex = AllocateInventoryIndex();
-	//	if (AllocatedIndex == -1)
-	//	{
-	//		/*
-	//			ItemList내에 빈 공간이 없는 경우.
-	//			 -> 아무것도 수행하지 않고 끝냄.
-	//		*/
-	//		return;
-	//	}
-
-	//	/*
-	//		ItemList내에 할당할 수 있는 공간이 있는 경우
-	//	*/
-	//	// 해당 Index에 Item포인터 할당.
-	//	FActorSpawnParameters SpawnParams;
-	//	SpawnParams.Owner = GetOwner();
-	//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	//	AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(NewPickup->SpawnItemClass, SpawnParams);
-	//	if (nullptr == NewItem)
-	//	{
-	//		ZLOG(Error, TEXT("Failed to spawn item.."));
-	//		return;
-	//	}
-	//	
-	//	auto ItemData = GetWorld()->GetGameInstance<UZGameInstance>()->GetItemDataByName(NewPickup->GetItemInfo().ItemName);
-	//	if (nullptr == ItemData)
-	//	{
-	//		ZLOG(Error, TEXT("Failed to find item data.."));
-	//		NewItem->Destroy();
-	//		return;
-	//	}
-
-	//	NewItem->InitItemData(ItemData);
-	//	ZLOG(Error, TEXT("Pickup"));
-	//	NewItem->ApplyItemInfo(NewPickup->GetItemInfo());
-	//	NewItem->SetInventoryIndex(AllocatedIndex);
-	//	NewItem->SetItemOwner(OwnerCharacter.Get());
-
-	//	ItemList[AllocatedIndex] = NewItem;
-
-	//	if (EItemType::Weapon == NewItem->GetItemType())
-	//	{
-	//		EquipWeapon(Cast<AZWeapon>(NewItem));
-	//	}
-
-	//	auto PlayerController = Cast<AZPlayerController>(OwnerCharacter->GetController());
-	//	if (PlayerController && PlayerController->IsLocalPlayerController())
-	//	{
-	//		PlayerController->AddItemToInventoryWidget(NewItem);
-	//		PlayerController->AddItemToSellWidget(NewItem);
-	//	}
-
-	//}
-	//else
-	//{
-	//	ZLOG(Warning, TEXT("Item already exist."));
-	//	/*
-	//		같은 Item이 ItemList내에 있는 경우
-	//	*/
-
-	//	// 해당 Item의 개수를 증가시켜줌.
-	//	int32 Remain = Item->AdjustQuantity(NewPickup->GetItemInfo().CurrentQuantityOfItem);
-	//	if (Remain > 0)
-	//	{
-	//		// 해당 Item의 최대 보유 개수를 초과했을 때
-	//		FActorSpawnParameters SpawnParams;
-	//		SpawnParams.Owner = GetOwner();
-	//		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	//		AZItem* NewItem = GetWorld()->SpawnActor<AZItem>(NewPickup->SpawnItemClass, SpawnParams);
-	//		if (nullptr == NewItem)
-	//		{
-	//			ZLOG(Error, TEXT("Failed to spawn item.."));
-	//			return;
-	//		}
-	//		auto ItemData = GetWorld()->GetGameInstance<UZGameInstance>()->GetItemDataByName(NewPickup->GetItemInfo().ItemName);
-	//		if (nullptr == ItemData)
-	//		{
-	//			ZLOG(Error, TEXT("Failed to find item data.."));
-	//			NewItem->Destroy();
-	//			return;
-	//		}
-
-	//		NewItem->InitItemData(ItemData);
-	//		NewItem->SetCurrentQuantityOfItem(Remain);
-
-	//		if (EItemType::Weapon == NewItem->GetItemType())
-	//		{
-	//			EquipWeapon(Cast<AZWeapon>(NewItem));
-	//		}
-	//		// 해당 Item을 다시 넣어줌.
-	//		AddItem(NewItem);
-	//	}
-
-	//}
-
-	/* Pickup 정리 */
-	NewPickup->Destroy();
 
 }
 
 class AZWeapon* const UZCharacterItemStatusComponent::EquipWeapon(AZWeapon * NewWeapon)
 {
+	if (ROLE_Authority != GetOwnerRole())
+	{
+		ServerEquipWeapon(NewWeapon);
+	}
 	ZLOG_S(Warning);
 	/*
 		테스트를 위해 임시로 CurrentWeapon 변수의 역할을 WeaponInventory의 첫번째 인덱스에 부여함.
@@ -544,6 +435,7 @@ void UZCharacterItemStatusComponent::RemoveItem(int32 InventoryIndex, bool bIsDr
 		{
 			OwnerCharacter->SetCurrentWeapon(nullptr);
 		}
+
 		if (Weapon->GetWeaponInventoryIndex() != EWeaponSlot::Invalid)
 		{
 			WeaponInventory[Weapon->GetWeaponInventoryIndex()] = nullptr;
@@ -746,6 +638,16 @@ bool UZCharacterItemStatusComponent::ServerAddItem_Validate(class AZPickup* NewP
 void UZCharacterItemStatusComponent::ServerAddItem_Implementation(class AZPickup* NewPickup)
 {
 	AddItem(NewPickup);
+}
+
+bool UZCharacterItemStatusComponent::ServerEquipWeapon_Validate(AZWeapon * NewWeapon)
+{
+	return true;
+}
+
+void UZCharacterItemStatusComponent::ServerEquipWeapon_Implementation(AZWeapon * NewWeapon)
+{
+	EquipWeapon(NewWeapon);
 }
 
 

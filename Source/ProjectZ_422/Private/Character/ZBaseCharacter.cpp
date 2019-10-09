@@ -148,7 +148,8 @@ void AZBaseCharacter::SetCharacterWalkSpeed(float NewSpeed)
 	{
 		return;
 	}
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Walk Speed : %.2f"), NewSpeed));
+
+	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Walk Speed : %.2f"), NewSpeed));
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
@@ -159,7 +160,7 @@ void AZBaseCharacter::SetCharacterCrouchWalkSpeed(float NewSpeed)
 		return;
 	}
 
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Crouch Speed : %.2f"), NewSpeed));
+	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Crouch Speed : %.2f"), NewSpeed));
 	GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
 }
 
@@ -243,6 +244,27 @@ UZCharacterAnimInstance * AZBaseCharacter::GetAnimInstance() const
 	}
 
 	return AnimInstance;
+}
+
+bool AZBaseCharacter::ServerSetWalkSpeed_Validate(float NewSpeed)
+{
+	return true;
+}
+
+void AZBaseCharacter::ServerSetWalkSpeed_Implementation(float NewSpeed)
+{
+	SetCharacterWalkSpeed(NewSpeed);
+
+}
+
+bool AZBaseCharacter::ServerSetCrouchWalkSpeed_Validate(float NewSpeed)
+{
+	return true;
+}
+
+void AZBaseCharacter::ServerSetCrouchWalkSpeed_Implementation(float NewSpeed)
+{
+	SetCharacterCrouchWalkSpeed(NewSpeed);
 }
 
 void AZBaseCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)

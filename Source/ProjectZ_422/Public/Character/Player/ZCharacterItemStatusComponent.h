@@ -111,6 +111,10 @@ private:
 	bool ServerAddItem_Validate(class AZPickup* NewPickup);
 	void ServerAddItem_Implementation(class AZPickup* NewPickup);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerEquipWeapon(class AZWeapon* NewWeapon);
+	bool ServerEquipWeapon_Validate(class AZWeapon* NewWeapon);
+	void ServerEquipWeapon_Implementation(class AZWeapon* NewWeapon);
 
 	/* Server to client RPC */
 

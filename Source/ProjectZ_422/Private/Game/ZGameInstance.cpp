@@ -18,8 +18,8 @@ UZGameInstance::UZGameInstance()
 void UZGameInstance::Init()
 {
 	Super::Init();
-
 	WebConnector = NewObject<UZWebConnector>(this);
+	WebConnector->SetURL(WebURL);
 
 	LoadStaticMesh();
 	LoadSkeletalMesh();

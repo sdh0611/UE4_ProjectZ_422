@@ -100,12 +100,12 @@ void AZPlayerController::ServerCheckIsShopOpen_Implementation()
 
 }
 
-bool AZPlayerController::Buy_Validate(int32 BuyItemShopID, int32 Quantity)
+bool AZPlayerController::ServerBuy_Validate(int32 BuyItemShopID, int32 Quantity)
 {
 	return true;
 }
 
-void AZPlayerController::Buy_Implementation(int32 BuyItemShopID, int32 Quantity)
+void AZPlayerController::ServerBuy_Implementation(int32 BuyItemShopID, int32 Quantity)
 {
 	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
 	if (MyGameMode)
@@ -119,7 +119,7 @@ void AZPlayerController::Buy_Implementation(int32 BuyItemShopID, int32 Quantity)
 	}
 }
 
-bool AZPlayerController::Sell_Validate(int32 SellItemInventoryIndex, int32 Quantity)
+bool AZPlayerController::ServerSell_Validate(int32 SellItemInventoryIndex, int32 Quantity)
 {
 	if (SellItemInventoryIndex < 0)
 	{
@@ -129,7 +129,7 @@ bool AZPlayerController::Sell_Validate(int32 SellItemInventoryIndex, int32 Quant
 	return true;
 }
 
-void AZPlayerController::Sell_Implementation(int32 SellItemInventoryIndex, int32 Quantity)
+void AZPlayerController::ServerSell_Implementation(int32 SellItemInventoryIndex, int32 Quantity)
 {
 	auto MyGameMode = GetWorld()->GetAuthGameMode<AZGameMode>();
 	if (MyGameMode)
@@ -152,12 +152,17 @@ bool AZPlayerController::ClientOpenShop_Validate()
 void AZPlayerController::ClientOpenShop_Implementation()
 {
 	/* 로컬에서만 실행. */
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop."));
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop."));
+	if (!IsLocalPlayerController())
+	{
+		return;
+	}
+
 	if (UserHUD)
 	{
 		if (UserHUD->IsShopWidgetOnScreen())
 		{
-			UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop fail."));
+			//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC OpenShop fail."));
 			return;
 		}
 
@@ -174,10 +179,10 @@ bool AZPlayerController::CloseShop_Validate()
 
 void AZPlayerController::CloseShop_Implementation()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC CloseShop"));
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC CloseShop"));
 	if (UserHUD)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC RemoveShop"));
+		//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC RemoveShop"));
 		UserHUD->RemoveShopWidget();
 		//Shop->OpenShop(this);
 	}
@@ -218,6 +223,11 @@ void AZPlayerController::ClientAddPitchAndYaw_Implementation(float AddPitch, flo
 
 void AZPlayerController::ConstructShopWidget()
 {
+	if (!IsLocalPlayerController())
+	{
+		return;
+	}
+
 	ZLOG_S(Warning);
 	if(nullptr == UserHUD)
 	{
@@ -249,30 +259,33 @@ void AZPlayerController::ConstructShopWidget()
 
 	UDataTable* ShopItemDataTable = GetGameInstance<UZGameInstance>()->GetShopItemDataTable();
 	ShopWidget->ConstructBuyWidget(ShopItemDataTable);
-	//ShopWidget->ConstructSellWidget(ItemStatusComponent->GetItemList());
-
-
 
 }
 
 void AZPlayerController::AddItemToInventoryWidget(AZItem * const NewItem)
 {
-	if (NewItem)
+	if (IsLocalPlayerController())
 	{
-		if (UserHUD)
+		if (::IsValid(NewItem))
 		{
-			UserHUD->GetInventoryWidget()->AddItemToInventoryWidget(NewItem);
+			if (UserHUD)
+			{
+				UserHUD->GetInventoryWidget()->AddItemToInventoryWidget(NewItem);
+			}
 		}
 	}
 }
 
 void AZPlayerController::AddItemToSellWidget(AZItem * const NewItem)
 {
-	if (NewItem)
+	if (IsLocalPlayerController())
 	{
-		if (UserHUD)
+		if (::IsValid(NewItem))
 		{
-			UserHUD->GetShopWidget()->AddItemToSellWidget(NewItem);
+			if (UserHUD)
+			{
+				UserHUD->GetShopWidget()->AddItemToSellWidget(NewItem);
+			}
 		}
 	}
 }

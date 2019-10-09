@@ -47,14 +47,14 @@ public:
 	void ServerCheckIsShopOpen_Implementation();
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Buy(int32 BuyItemShopID, int32 Quantity);
-	bool Buy_Validate(int32 BuyItemShopID, int32 Quantity);
-	void Buy_Implementation(int32 BuyItemShopID, int32 Quantity);
+	void ServerBuy(int32 BuyItemShopID, int32 Quantity);
+	bool ServerBuy_Validate(int32 BuyItemShopID, int32 Quantity);
+	void ServerBuy_Implementation(int32 BuyItemShopID, int32 Quantity);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Sell(int32 SellItemInventoryIndex, int32 Quantity);
-	bool Sell_Validate(int32 SellItemInventoryIndex, int32 Quantity);
-	void Sell_Implementation(int32 SellItemInventoryIndex, int32 Quantity);
+	void ServerSell(int32 SellItemInventoryIndex, int32 Quantity);
+	bool ServerSell_Validate(int32 SellItemInventoryIndex, int32 Quantity);
+	void ServerSell_Implementation(int32 SellItemInventoryIndex, int32 Quantity);
 
 	/* From server to client */
 	UFUNCTION(Client, Reliable, WithValidation)

@@ -97,8 +97,12 @@ private:
 public:
 	FStreamableManager AssetLoader;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	UZWebConnector* WebConnector;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString WebURL = TEXT("25.43.176.172:8000");
 
 protected:
 	UPROPERTY(EditAnywhere, Category = MeshDataTable)

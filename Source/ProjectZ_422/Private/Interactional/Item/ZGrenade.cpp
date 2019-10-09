@@ -6,7 +6,7 @@
 #include "ZCharacter.h"
 #include "ZGameInstance.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "ConstructorHelpers.h"
+#include "ZCharacterItemStatusComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AZGrenade::AZGrenade()
@@ -42,6 +42,19 @@ void AZGrenade::InitItemData(const FZItemData * const NewItemData)
 
 	ExplosionRadius = NewGrenadeData->ExplosionRadius;
 	ExplosionDelay = NewGrenadeData->ExplosionDelay;
+
+}
+
+void AZGrenade::OnUsed()
+{
+	if (::IsValid(ItemOwner))
+	{
+		auto ItemStatusComponent = ItemOwner->GetItemStatusComponent();
+		if (::IsValid(ItemStatusComponent))
+		{
+			ItemStatusComponent->EquipWeapon(this);
+		}
+	}
 
 }
 

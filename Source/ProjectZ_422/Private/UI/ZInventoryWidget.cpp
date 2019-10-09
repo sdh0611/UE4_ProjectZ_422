@@ -26,21 +26,27 @@ void UZInventoryWidget::NativeConstruct()
 	WeaponInventoryWidget = Cast <UZWeaponInventoryWidget>(GetWidgetFromName(TEXT("UI_WeaponInventory")));
 	check(WeaponInventoryWidget);
 
-	//auto NewWeaponHolder = Cast<UScrollBox>(GetWidgetFromName(TEXT("WeaponHolder1")));
-	//check(nullptr != NewWeaponHolder);
-	//WeaponHolder = NewWeaponHolder;
-	
-
 	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UZInventoryWidget::AddItemToInventoryWidget(AZItem * const NewItem)
 {
-	if (NewItem)
+	if (::IsValid(NewItem))
 	{
 		if (EItemType::Weapon == NewItem->GetItemType())
 		{
-			AddItemToWeaponInventory(Cast<AZWeapon>(NewItem));
+			auto Weapon = Cast<AZWeapon>(NewItem);
+			if (::IsValid(Weapon))
+			{
+				if (EWeaponCategory::Grenade == Weapon->GetWeaponCategory())
+				{
+					AddItemToInventory(NewItem);
+				}
+				else
+				{
+					AddItemToWeaponInventory(Weapon);
+				}
+			}
 		}
 		else
 		{
@@ -76,7 +82,8 @@ void UZInventoryWidget::AddItemToWeaponInventory(AZWeapon * const NewWeapon)
 	//	ZLOG(Error, TEXT("Weapon Inventory widget not exist."));
 	//	return;
 	//}
-
-	WeaponInventoryWidget->AddItemToWeaponInventory(NewWeapon);
-
+	if (WeaponInventoryWidget)
+	{
+		WeaponInventoryWidget->AddItemToWeaponInventory(NewWeapon);
+	}
 }

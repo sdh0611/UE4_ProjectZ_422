@@ -24,7 +24,6 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	/* Attack */
 	bIsAttacking = true;
-	//Zombie->Attack();
 
 	Zombie->OnAttackEnd.BindLambda([this]() { bIsAttacking = false; });
 

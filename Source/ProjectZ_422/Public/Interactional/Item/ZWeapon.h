@@ -85,6 +85,8 @@ public:
 	virtual void InitItemData(const struct FZItemData* const NewItemData) override;
 
 	virtual void ClearDelegates() override;
+	virtual class UAnimMontage* const GetFireAnimMontage() const;
+	virtual void RepItemOwner() override;
 
 public:
 	void StartFire();
@@ -98,9 +100,11 @@ public:
 	int32 GetWeaponInventoryIndex() const;
 	bool IsEquipped() const;
 	EWeaponCategory GetWeaponCategory() const;
-	virtual class UAnimMontage* const GetFireAnimMontage() const;
 
-	virtual void RepItemOwner() override;
+
+public:
+	void PlayEquipSound();
+
 
 protected:
 	FHitResult WeaponTrace(float Distance, bool bDrawDebugLine = false);
@@ -139,6 +143,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
 	class USkeletalMeshComponent* WeaponMesh;
 
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon, Replicated)
 	int32 WeaponInventoryIndex;
 
@@ -153,6 +158,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
 	class USoundBase* FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon)
+	class USoundBase* EquipSound;
 
 	UPROPERTY(EditAnywhere)
 	bool bToggleDebug;

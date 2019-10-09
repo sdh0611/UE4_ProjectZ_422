@@ -70,7 +70,7 @@ void UZShopBuyItemWidget::OnReceiveNumberInput(int32 NewNumber)
 	auto MyPC = GetOwningPlayer<AZPlayerController>();
 	if (MyPC)
 	{
-		MyPC->Buy(ShopID, NewNumber);
+		MyPC->ServerBuy(ShopID, NewNumber);
 	}
 	//OnBuyShopItem.Execute(GetOwningPlayer(), ShopID, NewNumber);
 

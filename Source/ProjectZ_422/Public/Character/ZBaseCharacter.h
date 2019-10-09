@@ -64,11 +64,20 @@ public:
 	class UZCharacterAnimInstance* GetAnimInstance() const;
 
 public:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetWalkSpeed(float NewSpeed);
+	bool ServerSetWalkSpeed_Validate(float NewSpeed);
+	void ServerSetWalkSpeed_Implementation(float NewSpeed);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetCrouchWalkSpeed(float NewSpeed);
+	bool ServerSetCrouchWalkSpeed_Validate(float NewSpeed);
+	void ServerSetCrouchWalkSpeed_Implementation(float NewSpeed);
+
 	/* Net multicast */
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayMontage(const FString& MontageName);
 	void MulticastPlayMontage_Implementation(const FString& MontageName);
-
 
 protected:
 	void CheckCharacterRotation(float DeltaTime);

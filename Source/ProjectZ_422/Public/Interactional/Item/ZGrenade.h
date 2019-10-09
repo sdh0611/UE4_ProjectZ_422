@@ -4,13 +4,14 @@
 
 #include "ProjectZ_422.h"
 #include "Interactional/Item/ZWeapon.h"
+#include "ZUsableItemInterface.h"
 #include "ZGrenade.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZGrenade : public AZWeapon
+class PROJECTZ_422_API AZGrenade : public AZWeapon, public IZUsableItemInterface
 {
 	GENERATED_BODY()
 	
@@ -20,6 +21,9 @@ public:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void InitItemData(const FZItemData* const NewItemData) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void OnUsed() override;
 
 public:
 	/*

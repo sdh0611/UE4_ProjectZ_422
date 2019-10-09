@@ -10,7 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "UnrealNetwork.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AZWeapon::AZWeapon()
@@ -46,7 +46,7 @@ AZWeapon::AZWeapon()
 void AZWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void AZWeapon::Tick(float DeltaTime)
@@ -143,12 +143,19 @@ void AZWeapon::SetWeaponInventoryIndex(int32 NewIndex)
 		return;
 	}
 
+	MulticastOnItemPicked();
+
 	WeaponInventoryIndex = NewIndex;
 }
 
 void AZWeapon::SetIsEquipped(bool NewState)
 {
 	bIsEquipped = NewState;
+	//if (bIsEquipped && EquipSound)
+	//{
+	//	UGameplayStatics::SpawnSoundAttached(EquipSound, RootComponent);
+	//}
+
 }
 
 void AZWeapon::SetWeaponCategory(EWeaponCategory NewWeaponCategory)
@@ -169,6 +176,14 @@ bool AZWeapon::IsEquipped() const
 EWeaponCategory AZWeapon::GetWeaponCategory() const
 {
 	return WeaponCategory;
+}
+
+void AZWeapon::PlayEquipSound()
+{
+	if (EquipSound)
+	{
+		UGameplayStatics::SpawnSoundAttached(EquipSound, RootComponent);
+	}
 }
 
 UAnimMontage * const AZWeapon::GetFireAnimMontage() const
@@ -198,7 +213,7 @@ void AZWeapon::RepItemOwner()
 		ZLOG_S(Error);
 		ItemOwner->AttachWeapon(this, AttachSocketName);
 	}
-	
+
 }
 
 
@@ -220,7 +235,7 @@ FHitResult AZWeapon::WeaponTrace(float Distance, bool bDrawDebugLine)
 
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByChannel(Hit, StartLoc, EndLoc, WEAPON_TRACE, TraceParams);
-	
+
 	if (bDrawDebugLine)
 	{
 		DrawDebugLine(GetWorld(), StartLoc, EndLoc, FColor::Red, false, 1.f);

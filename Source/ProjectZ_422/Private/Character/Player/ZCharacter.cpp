@@ -101,16 +101,6 @@ void AZCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//auto MyPS = GetPlayerState();
-	//if (MyPS)
-	//{
-	//	SetUserName(MyPS->GetPlayerName());
-	//}
-	//else
-	//{
-	//	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("No PS"));
-	//}
-	
 }
 
 void AZCharacter::PossessedBy(AController * NewController)
@@ -173,9 +163,9 @@ void AZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction(TEXT("Slot4"), IE_Pressed, this, &AZCharacter::Slot4);
 	PlayerInputComponent->BindAction(TEXT("ChangeFireMode"), IE_Pressed, this, &AZCharacter::ChangeFireMode);
 
-	//// For debug
-	//PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
-	//PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);
+	// For debug
+	PlayerInputComponent->BindAction(TEXT("AddMoney"), IE_Pressed, this, &AZCharacter::AddMoney);
+	PlayerInputComponent->BindAction(TEXT("DamageSelf"), IE_Pressed, this, &AZCharacter::DamageSelf);
 	//PlayerInputComponent->BindAction(TEXT("Ragdoll"), IE_Pressed, this, &AZCharacter::Ragdoll);
 
 
@@ -288,7 +278,7 @@ void AZCharacter::SetUserName(const FString& Name)
 	auto UserNameWidget = Cast<UZUserNameWidget>(NameComponent->GetUserWidgetObject());
 	if (UserNameWidget)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Name : %s"), *Name));
+		//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Name : %s"), *Name));
 		UserNameWidget->SetUserName(Name);
 	}
 	else
@@ -611,12 +601,6 @@ void AZCharacter::LookRight(float NewAxisValue)
 
 void AZCharacter::ToggleCrouch()
 {
-	//if (!HasAuthority())
-	//{
-	//	ServerToggleCrouch();
-	//	return;
-	//}
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("ToggleCrouch"));
 	// Character가 공중에 떠있는지 체크
 	if (GetCharacterMovement()->IsFalling())
 	{
@@ -625,20 +609,20 @@ void AZCharacter::ToggleCrouch()
 	}
 
 	// 현재 Character가 앉은 상태인지 체크.
-	//if (GetCharacterMovement()->IsCrouching())
 	if (bIsCrouched)
 	{
 		// 앉은 상태인 경우
 		ACharacter::UnCrouch();
-		//if (IsAiming())
-		//{
-		//	SetCurrentSpeed(AimingWalkSpeed);
-		//}
-		//else
-		//{
-		//	SetCurrentSpeed(WalkSpeed);
-		//}
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("UnCrouch"));
+		if (IsAiming())
+		{
+			ServerSetWalkSpeed(AimingWalkSpeed);
+			SetCharacterWalkSpeed(AimingWalkSpeed);
+		}
+		else
+		{
+			ServerSetWalkSpeed(WalkSpeed);
+			SetCharacterWalkSpeed(WalkSpeed);
+		}
 
 	}
 	else
@@ -650,41 +634,18 @@ void AZCharacter::ToggleCrouch()
 
 		// 앉은 상태가 아닌 경우
 		ACharacter::Crouch();
-		//if (IsAiming())
-		//{
-		//	SetCurrentSpeed(AimingWalkSpeedCrouched);
-		//}
-		//else
-		//{
-		//	SetCurrentSpeed(WalkSpeedCrouched);
-		//}
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Crouch"));
+		if (IsAiming())
+		{
+			ServerSetCrouchWalkSpeed(AimingWalkSpeedCrouched);
+			SetCharacterCrouchWalkSpeed(AimingWalkSpeedCrouched);
+		}
+		else
+		{
+			ServerSetCrouchWalkSpeed(WalkSpeedCrouched);
+			SetCharacterCrouchWalkSpeed(WalkSpeedCrouched);
+		}
 
 	}
-
-
-	//if (bIsCrouched)
-	//{
-	//	if (IsAiming())
-	//	{
-	//		SetCharacterCrouchWalkSpeed(AimingWalkSpeedCrouched);
-	//	}
-	//	else
-	//	{
-	//		SetCharacterWalkSpeed(WalkSpeedCrouched);
-	//	}
-	//}
-	//else
-	//{
-	//	if (IsAiming())
-	//	{
-	//		SetCharacterCrouchWalkSpeed(AimingWalkSpeed);
-	//	}
-	//	else
-	//	{
-	//		SetCharacterWalkSpeed(WalkSpeed);
-	//	}
-	//}
 
 }
 
@@ -785,7 +746,7 @@ void AZCharacter::SprintRelease()
 
 void AZCharacter::Jump()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 	if (IsEquipWeapon())
 	{
 		switch (CurrentWeapon->GetWeaponCategory())
@@ -824,7 +785,7 @@ void AZCharacter::Jump()
 	if (bIsCrouched)
 	{
 		// 앉은 상태라면 UnCrouch() 메소드 실행
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
+		//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 		ACharacter::UnCrouch();
 		ToggleCrouch();
 	}
@@ -1400,7 +1361,6 @@ void AZCharacter::ClientOnDead_Implementation()
 	if (MyPC && MyPC->IsLocalPlayerController())
 	{
 		DisableInput(MyPC);
-		//MyPC->GetUserHUD()->DrawEndGameMenuWidget();
 	}
 }
 
@@ -1425,8 +1385,6 @@ void AZCharacter::MulticastPlayItemMontage_Implementation(const FString & Montag
 		ZLOG(Error, TEXT("PlayerAnim not valid."));
 		return;
 	}
-
-	//PlayerAnim->Montage_Play(Montage);
 	PlayerAnim->PlayMontage(Montage);
 }
 
