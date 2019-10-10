@@ -56,12 +56,6 @@ void UZConnectServerWidget::OnConnectGameButtonClick()
 			FHttpRequestCompleteDelegate::CreateUObject(this, &UZConnectServerWidget::OnConnectGameResponse));
 	}
 
-	//if (GetWorld()->ServerTravel(IP.ToString()))
-	//{
-	//	ZLOG(Error, TEXT("Invalid server ip.."));
-	//	return;
-	//}
-
 }
 
 void UZConnectServerWidget::OnConnectGameResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)

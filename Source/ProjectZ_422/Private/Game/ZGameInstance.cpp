@@ -31,7 +31,6 @@ void UZGameInstance::Init()
 
 void UZGameInstance::Shutdown()
 {
-	ZLOG_S(Error);
 	WebConnector->Logout();
 
 	Super::Shutdown();
@@ -239,20 +238,6 @@ void UZGameInstance::LoadStaticMesh()
 		return;
 	}
 
-	//TArray<FName> Names = StaticMeshDataTable->GetRowNames();
-	//for (const auto& Name : Names)
-	//{
-	//	auto Data = StaticMeshDataTable->FindRow<FZStaticMeshData>(Name, TEXT(""));
-
-	//	FSoftObjectPath ObjectPath(Data->StaticMeshPath);
-	//	AssetLoader.RequestSyncLoad(ObjectPath);
-
-	//	TSoftObjectPtr<UStaticMesh> StaticMesh(Data->StaticMeshPath);
-	//	if (StaticMesh.IsValid())
-	//	{
-	//		StaticMeshTable.Add(Data->Name, StaticMesh.Get());
-	//	}
-	//}
 
 	TArray<FName> Names = StaticMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
@@ -273,21 +258,7 @@ void UZGameInstance::LoadSkeletalMesh()
 		ZLOG(Error, TEXT("SkeletalMeshDataTable not exist.."));
 		return;
 	}
-	
-	//TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
-	//for (const auto& Name : Names)
-	//{
-	//	auto Data = SkeletalMeshDataTable->FindRow<FZSkeletalMeshData>(Name, TEXT(""));
 
-	//	FSoftObjectPath ObjectPath(Data->SkeletalMeshPath);
-	//	AssetLoader.RequestSyncLoad(ObjectPath);
-
-	//	TSoftObjectPtr<USkeletalMesh> SkeletalMesh(Data->SkeletalMeshPath);
-	//	if (SkeletalMesh.IsValid())
-	//	{
-	//		SkeletalMeshTable.Add(Data->Name, SkeletalMesh.Get());
-	//	}
-	//}
 
 	TArray<FName> Names = SkeletalMeshDataTable->GetRowNames();
 	for (const auto& Name : Names)
@@ -308,21 +279,6 @@ void UZGameInstance::LoadImage()
 		return;
 	}
 
-	//TArray<FName> Names = ItemImageDataTable->GetRowNames();
-	//for (const auto& Name : Names)
-	//{
-	//	auto Data = ItemImageDataTable->FindRow<FZImageData>(Name, TEXT(""));
-
-	//	FSoftObjectPath ObjectPath(Data->ImagePath);
-	//	AssetLoader.RequestSyncLoad(ObjectPath);
-
-	//	TSoftObjectPtr<UTexture2D> Image(Data->ImagePath);
-	//	if (Image.IsValid())
-	//	{
-	//		ItemImageTable.Add(Data->Name, Image.Get());
-	//	}
-
-	//}
 
 	TArray<FName> Names = ItemImageDataTable->GetRowNames();
 	for (const auto& Name : Names)
@@ -348,16 +304,6 @@ void UZGameInstance::OnPreLoadMap(const FString & MapName)
 	{
 		LoadingScreenModule->StartInGameLoadingScreen();
 	}
-	//if (!IsRunningDedicatedServer())
-	//{
-	//	
-	//	FLoadingScreenAttributes LoadingScreen;
-	//	LoadingScreen.bAutoCompleteWhenLoadingCompletes = false;
-	//	LoadingScreen.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
-	//	//LoadingScreen.WidgetLoadingScreen = LoadingScreenWidget->GetCachedWidget();
-	//
-	//	GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
-	//}
 
 }
 

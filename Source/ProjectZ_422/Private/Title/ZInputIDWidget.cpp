@@ -43,14 +43,6 @@ void UZInputIDWidget::CheckVerified()
 {
 	/* 서버로 ID, PW보내서 결과 받아옴. */
 
-	//auto MyPC = GetOwningPlayer<AZTitlePlayerController>();
-	//if (nullptr == MyPC)
-	//{
-	//	ZLOG(Error, TEXT("Invalid player controller.."));
-	//	return;
-
-	//}
-	   
 	if (InputID->GetText().IsEmpty())
 	{
 		return;
@@ -66,19 +58,6 @@ void UZInputIDWidget::CheckVerified()
 
 	RequestLogin(TEXT("127.0.0.1:8000"), ID, PW);
 
-	//MyPC->ServerRequestLogin(TEXT("127.0.0.1:8000/login"), ID, PW);
-
-	/* 일단 테스트용 */
-	//bool bResult = true;
-	//if (bResult)
-	//{
-	//	InputID->SetText(FText::GetEmpty());
-	//	InputPW->SetText(FText::GetEmpty());
-	//}
-
-	//OnIdentify.Execute(bResult);
-
-	//
 }
 
 void UZInputIDWidget::OnTextCommit(const FText & Text, ETextCommit::Type CommitMethod)
@@ -120,7 +99,6 @@ void UZInputIDWidget::RequestLogin(const FString & URL, const FString & UserID, 
 
 void UZInputIDWidget::ReceiveLoginResponse(bool bSuccess, const FString & ResultText)
 {
-	ZLOG_S(Error);
 	SetErrorText(ResultText);
 
 	OnIdentify.Execute(bSuccess);

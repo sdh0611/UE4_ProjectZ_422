@@ -67,6 +67,10 @@ void UZCharacterStatusComponent::AdjustCurrentHP(float Value)
 
 	CurrentHP = FMath::Clamp<float>(CurrentHP + Value, 0.f, MaxHP);
 	ZLOG(Warning, TEXT("CurrentHP : %.3f"), CurrentHP);
+	//if (CurrentHP <= 0.f)
+	//{
+	//	OwnerCharacter->bIsDead = true;
+	//}
 
 	OnStatusChanged.Broadcast();
 }

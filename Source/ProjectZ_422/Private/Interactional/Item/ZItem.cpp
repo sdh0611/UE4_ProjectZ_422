@@ -74,6 +74,15 @@ void AZItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	DOREPLIFETIME(AZItem, ItemOwner);
 }
 
+void AZItem::Destroyed()
+{
+	ZLOG_S(Error);
+	OnItemRemoved.Broadcast();
+	ClearDelegates();
+	
+	Super::Destroyed();
+}
+
 void AZItem::OnDropped(int32 Quantity)
 {
 	if (!HasAuthority())
@@ -201,7 +210,7 @@ void AZItem::OnRemoved()
 {
 	ZLOG_S(Warning);
 
-	ClientOnItemRemoved();
+	//ClientOnItemRemoved();
 
 	if (IsCanDestroy())
 	{
@@ -490,6 +499,7 @@ bool AZItem::ClientOnItemRemoved_Validate()
 
 void AZItem::ClientOnItemRemoved_Implementation()
 {
+	ZLOG_S(Error);
 	OnItemRemoved.Broadcast();
 	ClearDelegates();
 }

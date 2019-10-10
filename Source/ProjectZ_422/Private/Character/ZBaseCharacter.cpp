@@ -119,11 +119,8 @@ FHitResult AZBaseCharacter::GetTraceHit(const FVector & TraceStart, const FVecto
 
 void AZBaseCharacter::Revive()
 {
-	//GetAnimInstance()->SetIsDead(false);
 	StatusComponent->SetCurrentHP(StatusComponent->GetMaxHP());
-	//FVector Location = GetActorLocation();
-	//Location.Z -= 88.f;
-	//GetMesh()->SetWorldLocation(Location);
+
 	SetActive(true);
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetCharacterMovement()->SetComponentTickEnabled(true);
@@ -149,7 +146,6 @@ void AZBaseCharacter::SetCharacterWalkSpeed(float NewSpeed)
 		return;
 	}
 
-	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Walk Speed : %.2f"), NewSpeed));
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
@@ -160,32 +156,14 @@ void AZBaseCharacter::SetCharacterCrouchWalkSpeed(float NewSpeed)
 		return;
 	}
 
-	//UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Set Crouch Speed : %.2f"), NewSpeed));
 	GetCharacterMovement()->MaxWalkSpeedCrouched = NewSpeed;
 }
 
 void AZBaseCharacter::SetActive(bool bActive)
 {
-	//SetActorHiddenInGame(!bActive);
 	GetMesh()->SetVisibility(bActive);
 	SetActorEnableCollision(bActive);
 	SetActorTickEnabled(bActive);
-
-	//if (bActive)
-	//{
-	//	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	//	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	//	SetActorHiddenInGame(false);
-	//	SetActorEnableCollision(true);
-	//	SetActorTickEnabled(false);
-	//}
-	//else
-	//{
-	//	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//	SetActorHiddenInGame(true);
-	//	SetActorEnableCollision(false);
-	//}
 
 	bIsActive = bActive;
 }
@@ -285,35 +263,16 @@ void AZBaseCharacter::CheckCharacterRotation(float DeltaTime)
 
 void AZBaseCharacter::OnDead()
 {
-	//GetAnimInstance()->SetIsDead(true);
-
 	SetActorEnableCollision(false);
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
-	GetCharacterMovement()->SetComponentTickEnabled(false);
-	//SetActorTickEnabled(false);
-	//GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//
-	//GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	//GetMesh()->SetSimulatePhysics(true);
-	//
+
 	if (DeadSound)
 	{
 		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DeadSound, GetActorLocation(), GetActorRotation());
 	}
 
-	//FTimerDelegate InactiveDelegate;
-	//InactiveDelegate.BindLambda([this]() {
-	//	if (bIsPooling)
-	//	{
-	//		SetActive(false);
-	//		GetAnimInstance()->SetIsDead(false);
-	//	}
-	//	else
-	//	{
-	//		Destroy();
-	//	}
-	//});
+
 
 	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, this, &AZBaseCharacter::OnRemoved, DisappearTime, false);
 
@@ -323,7 +282,6 @@ void AZBaseCharacter::OnRemoved()
 {
 	if (bIsPooling)
 	{
-		//GetAnimInstance()->SetIsDead(false);
 		SetActive(false);
 	}
 	else

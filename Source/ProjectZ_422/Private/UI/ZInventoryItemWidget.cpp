@@ -12,6 +12,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 UZInventoryItemWidget::UZInventoryItemWidget(const FObjectInitializer& ObjectInitializer)
@@ -47,7 +48,10 @@ void UZInventoryItemWidget::OnReceiveNumberInput(int32 NewNumber)
 		return;
 	}
 
-	Item->OnDropped(NewNumber);
+	if (Item.IsValid())
+	{
+		Item->OnDropped(NewNumber);
+	}
 }
 
 void UZInventoryItemWidget::BindItem(AZItem * NewItem)
@@ -99,16 +103,14 @@ FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeomet
 		return Result;
 	}
 
-	if (nullptr == Item)
+	if (!Item.IsValid())
 	{
 		return Result;
 	}
 
-	ZLOG_S(Error);
 	auto UsableItem = Cast<IZUsableItemInterface>(Item);
 	if (UsableItem)
 	{
-		ZLOG_S(Error);
 		UsableItem->OnUsed();
 	}
 
@@ -118,11 +120,9 @@ FReply UZInventoryItemWidget::NativeOnMouseButtonDown(const FGeometry & InGeomet
 
 void UZInventoryItemWidget::ClearWidget()
 {
-	if (Item.IsValid())
-	{
-		Item = nullptr;
-	}
-
+	Item = nullptr;
+	
+	ZLOG_S(Error);
 	bIsEmpty = true;
 
 	RemoveFromParent();

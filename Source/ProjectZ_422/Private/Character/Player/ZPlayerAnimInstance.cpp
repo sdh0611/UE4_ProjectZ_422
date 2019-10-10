@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ConstructorHelpers.h"
 #include "Animation/AnimMontage.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UZPlayerAnimInstance::UZPlayerAnimInstance()
 {
@@ -48,7 +49,6 @@ void UZPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//{
 		//	BindFireMontage(Weapon);
 		//}
-		
 		bIsCrouching = Pawn->bIsCrouched;
 
 

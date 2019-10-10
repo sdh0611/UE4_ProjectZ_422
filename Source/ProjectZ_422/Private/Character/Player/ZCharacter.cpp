@@ -45,7 +45,6 @@ AZCharacter::AZCharacter()
 	MainCameraSpringArm->bInheritPitch = true;
 	MainCameraSpringArm->bInheritYaw = true;
 	MainCameraSpringArm->bInheritRoll = true;
-	//MainCameraSpringArm->bDoCollisionTest = false;
 	MainCameraSpringArm->SetupAttachment(GetCapsuleComponent());
 	// Create main camera & attach to main camera spring arm.
 	MainCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
@@ -86,7 +85,6 @@ AZCharacter::AZCharacter()
 	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	bUseControllerRotationYaw = true;
@@ -534,7 +532,6 @@ void AZCharacter::OnDead()
 	auto MyPC = GetController<AZPlayerController>();
 	if (MyPC && MyPC->IsLocalPlayerController())
 	{
-		//DisableInput(MyPC);
 		MyPC->GetUserHUD()->DrawEndGameMenuWidget();
 
 	}
@@ -694,7 +691,6 @@ void AZCharacter::Sprint()
 	if (MyCharacterMovement)
 	{
 		// Character가 공중에 있거나 앉은 상태라면 그대로 종료.
-		//if (MyCharacterMovement->IsFalling() || MyCharacterMovement->IsCrouching())
 		if (MyCharacterMovement->IsFalling() || bIsCrouched)
 		{
 			return;
@@ -702,15 +698,8 @@ void AZCharacter::Sprint()
 
 		if (!IsSprinting())
 		{
-			// SprintSpeed로 값을 변경하고 Sprint 상태 변경
-			//MyCharacterMovement->MaxWalkSpeed = SprintSpeed;
-
 			SetIsSprinting(true);
 
-			//auto CharacterAnim = GetCharacterAnimInstance();
-			//check(CharacterAnim);
-			//CharacterAnim->SetIsSprinting(true);
-			//bUseControllerRotationYaw = false
 		}
 
 	}
@@ -731,14 +720,7 @@ void AZCharacter::SprintRelease()
 		// 뛰고있는 상태라면
 		if (IsSprinting())
 		{
-			// WalkSpeed로 값을 변경하고 Sprint 상태 변경
-			//MyCharacterMovement->MaxWalkSpeed = WalkSpeed;
 			SetIsSprinting(false);
-
-			//auto CharacterAnim = GetCharacterAnimInstance();
-			//check(nullptr != CharacterAnim);
-			//CharacterAnim->SetIsSprinting(false);
-
 		}
 
 	}
@@ -781,11 +763,9 @@ void AZCharacter::Jump()
 	}
 
 	// Character가 현재 앉은 상태인지 체크.
-	//if (GetCharacterMovement()->IsCrouching())
 	if (bIsCrouched)
 	{
 		// 앉은 상태라면 UnCrouch() 메소드 실행
-		//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 		ACharacter::UnCrouch();
 		ToggleCrouch();
 	}
@@ -833,25 +813,12 @@ void AZCharacter::Interaction()
 
 	if (InteractionActor)
 	{
-		//ServerOnInteract(InteractionActor);
 		InteractionActor->OnInteraction(this);
 	}
 }
 
-//void AZCharacter::ToggleInventory()
-//{
-//	auto UserHUDWidget = PlayerController->GetUserHUD();
-//	if (UserHUDWidget)
-//	{
-//		UserHUDWidget->ToggleInventoryWidget();
-//	}
-//
-//}
-
 void AZCharacter::Attack()
 {
-	//AnimInstance->PlayMontage(TEXT("EquipRifle"));
-
 	if (!IsEquipWeapon())
 	{
 		return;
@@ -892,9 +859,7 @@ void AZCharacter::Attack()
 		SprintRelease();
 	}
 
-	//CurrentWeapon->SetWantsToFire(true);
 	CurrentWeapon->StartFire();
-	//GetCharacterAnimInstance()->PlayFireMontage(CurrentWeapon);
 }
 
 void AZCharacter::AttackEnd()
@@ -906,7 +871,6 @@ void AZCharacter::AttackEnd()
 
 	if (EWeaponCategory::Gun == CurrentWeapon->GetWeaponCategory())
 	{
-		//CurrentWeapon->SetWantsToFire(false);
 		CurrentWeapon->StopFire();
 	}
 }
@@ -956,40 +920,12 @@ void AZCharacter::Aim()
 		return;
 	}
 
-	//if (IsSprinting())
-	//{
-	//	SprintRelease();
-	//}
-
-	//if (GetCharacterMovement()->IsCrouching())
-	//{
-	//	GetCharacterMovement()->MaxWalkSpeedCrouched = AimingWalkSpeedCrouched;
-	//}
-	//else
-	//{
-	//	GetCharacterMovement()->MaxWalkSpeed = AimingWalkSpeed;
-	//}
-
 	SetIsAiming(true);
-	//auto CharacterAnim = GetCharacterAnimInstance();
-	//check(nullptr != CharacterAnim);
-	//CharacterAnim->SetIsAiming(true);
 }
 
 void AZCharacter::AimRelease()
 {
-	//if (GetCharacterMovement()->IsCrouching())
-	//{
-	//	GetCharacterMovement()->MaxWalkSpeedCrouched = WalkSpeedCrouched;
-	//}
-	//else
-	//{
-	//	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	//}
 	SetIsAiming(false);
-	//auto CharacterAnim = GetCharacterAnimInstance();
-	//check(nullptr != CharacterAnim);
-	//CharacterAnim->SetIsAiming(false);
 }
 
 void AZCharacter::Reload()
@@ -1051,14 +987,6 @@ void AZCharacter::Reload()
 
 		Weapon->SetIsReloading(true);
 		MulticastPlayItemMontage(TEXT("Reload"));
-		//auto CharacterAnim = GetCharacterAnimInstance();
-		//check(nullptr != CharacterAnim);
-
-		//auto Montage = Weapon->FindMontage(TEXT("Reload"));
-		//if (Montage)
-		//{
-		//	CharacterAnim->Montage_Play(Montage);
-		//}
 
 	}
 
@@ -1196,35 +1124,19 @@ void AZCharacter::SwitchWeapon(int32 NewWeaponIndex)
 	FName SocketName = GetMainWeaponSocketName();
 	switch (CurrentWeapon->GetWeaponCategory())
 	{
-	case EWeaponCategory::Gun:
-	{
-		// Gun이므로 true 셋팅
-		CharacterAnim->SetIsEquipGun(true);
-		auto Gun = Cast<AZGun>(CurrentWeapon);
-		check(Gun != nullptr);
-		if (EGunType::Shotgun == Gun->GetGunType())
+		case EWeaponCategory::Gun:
 		{
-			SocketName = GetMainWeaponShotgunSocketName();
+			// Gun이므로 true 셋팅
+			CharacterAnim->SetIsEquipGun(true);
+			auto Gun = Cast<AZGun>(CurrentWeapon);
+			check(Gun != nullptr);
+			if (EGunType::Shotgun == Gun->GetGunType())
+			{
+				SocketName = GetMainWeaponShotgunSocketName();
+			}
+
+			break;
 		}
-
-		break;
-	}
-	//case EWeaponCategory::Grenade:
-	//{
-	//	/*
-	//		수류탄을 깐 상황이면 return
-	//	*/
-	//	ZLOG_S(Warning);
-	//	// Gun이 아니므로 false 셋팅
-	//	CharacterAnim->SetIsEquipGun(false);
-	//	// OnGrenadeThrow에 바인딩.
-	//	auto Grenade = Cast<AZGrenade>(CurrentWeapon);
-	//	check(nullptr != Grenade);
-	//	ZLOG(Error, TEXT("Bind ThrowGrenade"));
-	//	CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
-
-	//	break;
-	//}
 	}
 
 	// 새 Weapon은 Main socket으로 옮김.
@@ -1260,7 +1172,7 @@ void AZCharacter::Slot4()
 
 void AZCharacter::ChangeFireMode()
 {
-	if (nullptr == CurrentWeapon)
+	if (!::IsValid(CurrentWeapon))
 	{
 		return;
 	}

@@ -42,12 +42,6 @@ public:
 	void AttachWeapon(class AZWeapon* Weapon, const FName& SocketName);
 	void DetachWeapon(int32 NewWeaponIndex);
 	void SetUserName(const FString& Name);
-	/* Server to client call RPC */
-
-
-	/* Client to server call RPC */
-	
-
 
 	/* Net multicast */
 	UFUNCTION(NetMulticast, Reliable)
@@ -107,7 +101,6 @@ private:
 		Item 관련 동작들
 	*/
 	void Interaction();
-	//void ToggleInventory();
 	void Attack();
 	void AttackEnd();
 	void Aim();
@@ -120,8 +113,6 @@ private:
 	void Slot3();
 	void Slot4();
 	void ChangeFireMode();
-	//void ToggleInGameMenu();
-	//void RemoveWidgetFromTop();
 
 	/*
 		디버깅용
@@ -163,11 +154,6 @@ private:
 	void ClientOnDead();
 	bool ClientOnDead_Validate();
 	void ClientOnDead_Implementation();
-
-	/* Net multicast */
-	//UFUNCTION(NetMulticast, Reliable)
-	//void MulticastOnDead();
-	//void MulticastOnDead_Implementation();
 
 	/* Replicated using method */
 	UFUNCTION()

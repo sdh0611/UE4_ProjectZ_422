@@ -123,6 +123,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Zombie)
 	bool bIsPooling;
 
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, ReplicatedUsing = OnRep_IsActive)
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = State, Replicated)
