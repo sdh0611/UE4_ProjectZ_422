@@ -31,6 +31,7 @@ AZBaseZombie::AZBaseZombie()
 	StatusComponent = CreateDefaultSubobject<UZCharacterStatusComponent>(TEXT("StatusComponent"));
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZEnemy"));
+	GetMesh()->SetCollisionProfileName(TEXT("ZEnemyMesh"));
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
