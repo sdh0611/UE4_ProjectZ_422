@@ -111,6 +111,15 @@ void AZLobbyGameMode::StartGame()
 		return;
 	}
 
+	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	{
+		auto PC = Cast < AZBasePlayerController>(*Iter);
+		if (PC)
+		{
+			PC->ClientRemoveAllWidget();
+		}
+	}
+
 }
 
 int32 AZLobbyGameMode::GetConnectNumber() const

@@ -42,6 +42,8 @@ public:
 	bool ServerReceiveUpdateJoinPlayer_Validate();
 	void ServerReceiveUpdateJoinPlayer_Implementation();
 
+	
+
 private:
 	virtual void OnReceiveUserName(const FString& UserName) override;
 

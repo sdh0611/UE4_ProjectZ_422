@@ -21,10 +21,6 @@ public:
 	virtual void BeginPlay() override;
 
 public:
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerRequestLogin(const FString& URL, const FString& UserID, const FString& UserPW);
-	bool ServerRequestLogin_Validate(const FString& URL, const FString& UserID, const FString& UserPW);
-	void ServerRequestLogin_Implementation(const FString& URL, const FString& UserID, const FString& UserPW);
 
 
 protected:

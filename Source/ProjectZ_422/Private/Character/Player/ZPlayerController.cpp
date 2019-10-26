@@ -14,8 +14,10 @@
 #include "ZGameInstance.h"
 #include "ZInventoryWidget.h"
 #include "ZWeapon.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "GameFramework/SpectatorPawn.h"
+
 
 AZPlayerController::AZPlayerController()
 {
@@ -26,6 +28,8 @@ AZPlayerController::AZPlayerController()
 void AZPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//UWidgetBlueprintLibrary::GetAllWidgetsOfClass();
 
 	if (nullptr == UserHUDClass)
 	{

@@ -20,19 +20,6 @@ class PROJECTZ_422_API AZTitleGameMode : public AGameModeBase
 	
 protected:
 	virtual void BeginPlay() override;
-	
-public:
-	virtual void Logout(AController* Exiting) override;
 
-
-public:
-	void HttpPost(const FString& URL, const FString& UserID, const FString& UserPW, FHttpRequestCompleteDelegate RequestDelegate);
-
-
-protected:
-	class FHttpModule* Http;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString HostName = TEXT("127.0.0.1:8000");
 
 };

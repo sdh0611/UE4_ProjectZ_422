@@ -24,6 +24,21 @@ void AZBaseGameMode::Logout(AController * Exiting)
 
 }
 
+void AZBaseGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	//{
+	//	auto PC = Cast < AZBasePlayerController>(*Iter);
+	//	if (PC)
+	//	{
+	//		PC->ClientRemoveAllWidget();
+	//	}
+	//}
+	
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void AZBaseGameMode::UpdatePlayersName()
 {
 	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)

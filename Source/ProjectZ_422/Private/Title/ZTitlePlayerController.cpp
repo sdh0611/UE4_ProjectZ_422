@@ -33,25 +33,7 @@ void AZTitlePlayerController::BeginPlay()
 
 }
 
-bool AZTitlePlayerController::ServerRequestLogin_Validate(const FString & URL, const FString & UserID, const FString & UserPW)
-{
-	return true;
-}
 
-void AZTitlePlayerController::ServerRequestLogin_Implementation(const FString & URL, const FString & UserID, const FString & UserPW)
-{
-	auto MyGameMode = GetWorld()->GetAuthGameMode<AZTitleGameMode>();
-	if (nullptr == MyGameMode)
-	{
-		ZLOG(Error, TEXT("Failed to get game mode.."));
-		return;
-	}
-
-	MyGameMode->HttpPost(URL, UserID, UserPW, 
-		FHttpRequestCompleteDelegate::CreateUObject(this, &AZTitlePlayerController::OnLoginServerResponseReceived));
-
-
-}
 
 void AZTitlePlayerController::OnLoginServerResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
