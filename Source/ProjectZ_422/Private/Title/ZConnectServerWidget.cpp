@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "ZGameInstance.h"
+#include "ZBasePlayerController.h"
 #include "Json.h"
 
 void UZConnectServerWidget::NativeConstruct()
@@ -33,7 +34,9 @@ void UZConnectServerWidget::NativeConstruct()
 
 void UZConnectServerWidget::OnMakeServerButtonClick()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
+	//GetWorld()->ServerTravel(TEXT("/Game/Maps/Lobby/Lobby?listen"));
+	GetWorld()->ServerTravel(TEXT("Lobby?Listen"));
+	//UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
 }
 
 void UZConnectServerWidget::OnConnectGameButtonClick()
@@ -70,8 +73,22 @@ void UZConnectServerWidget::OnConnectGameResponse(FHttpRequestPtr Request, FHttp
 			bool bResult = JsonObject->GetBoolField(TEXT("result"));
 			if (bResult)
 			{
+
 				FString ConnectIP = JsonObject->GetStringField(TEXT("ip"));
-				UGameplayStatics::OpenLevel(GetWorld(), *ConnectIP);
+				//if (!GetWorld()->ServerTravel(ConnectIP))
+				//{
+				//	UKismetSystemLibrary::QuitGame(GetWorld(), GetOwningPlayer(), EQuitPreference::Quit, false);
+				//	//ErrorText->SetText(FText::FromString(TEXT("게임에 참가할 수 없습니다.")));
+				//}
+
+				auto PC = GetOwningPlayer<AZBasePlayerController>();
+				if (PC && PC->IsLocalPlayerController())
+				{
+					PC->RemoveAllWidget();
+					PC->ClientTravel(ConnectIP, TRAVEL_Relative, true);
+				}
+
+				//UGameplayStatics::OpenLevel(GetWorld(), *ConnectIP);
 			}
 			else
 			{

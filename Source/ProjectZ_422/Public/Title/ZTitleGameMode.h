@@ -18,8 +18,12 @@ class PROJECTZ_422_API AZTitleGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	void ToLobby(const FString& URL);
+
 protected:
 	virtual void BeginPlay() override;
+	
 
 
 };
