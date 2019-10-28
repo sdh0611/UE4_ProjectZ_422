@@ -51,18 +51,20 @@ private:
 	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnFindSessionsComplete(bool bWasSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-
+	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
 
 private:
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
 	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
 	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
 	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
+	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate;
 
 	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
 	FDelegateHandle OnStartSessionCompleteDelegateHandle;
 	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
+	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
 
 	/* Session Search 옵션 세팅용. */
 	TSharedPtr<class FOnlineSessionSettings> SessionSettings;

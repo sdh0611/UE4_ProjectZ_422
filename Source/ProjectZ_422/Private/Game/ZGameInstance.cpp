@@ -261,6 +261,24 @@ void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionComp
 
 }
 
+void UZGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s, %d"), *SessionName.ToString(), static_cast<int32>(Result)));
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			OnlineSession->ClearOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegateHandle);
+			if (bWasSuccessful)
+			{
+				GetWorld()->ServerTravel(TEXT("StartMenu"));
+			}
+		}
+	}
+}
+
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
 {
