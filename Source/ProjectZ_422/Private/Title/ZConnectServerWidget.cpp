@@ -86,6 +86,7 @@ void UZConnectServerWidget::OnConnectGameResponse(FHttpRequestPtr Request, FHttp
 				{
 					PC->RemoveAllWidget();
 					PC->ClientTravel(ConnectIP, TRAVEL_Relative, true);
+					//GetWorld()->ServerTravel(ConnectIP);
 				}
 
 				//UGameplayStatics::OpenLevel(GetWorld(), *ConnectIP);

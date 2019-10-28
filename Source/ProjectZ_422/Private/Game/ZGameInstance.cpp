@@ -2,14 +2,18 @@
 
 
 #include "ZGameInstance.h"
+#include "ZLobbyGameMode.h"
 #include "ProjectZLoadingScreen.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/SkeletalMesh.h"
 #include "MoviePlayer.h"
 #include "ModuleManager.h"
 #include "ZBasePlayerController.h"
+#include "OnlineSessionSettings.h"
+#include "OnlineSubsystemTypes.h"
+#include "Engine/Engine.h"
 
-
+static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
 UZGameInstance::UZGameInstance()
 {
@@ -28,6 +32,25 @@ void UZGameInstance::Init()
 
 	//FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	//FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
+
+	OnCreateSessionCompleteDelegate.BindUObject(this, UZGameInstance::OnCreateSessionComplete);
+	OnStartSessionCompleteDelegate.BindUObject(this, UZGameInstance::OnStartSessionComplete);
+	OnFindSessionsCompleteDelegate.BindUObject(this, UZGameInstance::OnFindSessionsComplete);
+	OnJoinSessionCompleteDelegate.BindUObject(this, UZGameInstance::OnJoinSessionComplete);
+
+	//IOnlineSubsystem* OnlineSubSystem = IOnlineSubsystem::Get();
+	//if (OnlineSubSystem)
+	//{
+	//	SessionInterface = OnlineSubSystem->GetSessionInterface();
+	//	if (SessionInterface.IsValid())
+	//	{
+
+	//		
+
+	//	}
+
+	//}
+
 }
 
 void UZGameInstance::Shutdown()
@@ -41,6 +64,201 @@ UZWebConnector & UZGameInstance::GetWebConnector()
 {
 	// TODO: 여기에 반환 구문을 삽입합니다.
 	return *WebConnector;
+}
+
+bool UZGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers)
+{
+	IOnlineSubsystem* const OnlineSubSystem = IOnlineSubsystem::Get();
+	if (OnlineSubSystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubSystem->GetSessionInterface();
+		if (OnlineSession.IsValid() && UserId.IsValid())
+		{
+			SessionSettings = MakeShareable(new FOnlineSessionSettings());
+			SessionSettings->bIsLANMatch = bIsLAN;
+			SessionSettings->bUsesPresence = bIsPresence;
+			SessionSettings->NumPublicConnections = MaxNumPlayers;
+			SessionSettings->NumPrivateConnections = 0;
+			SessionSettings->bAllowInvites = true;
+			SessionSettings->bAllowJoinInProgress = false;
+			SessionSettings->bShouldAdvertise = true;
+			SessionSettings->bAllowJoinViaPresence = true;
+			SessionSettings->bAllowJoinViaPresenceFriendsOnly = false;
+
+			SessionSettings->Set(SETTING_MAPNAME, FString("Lobby"), EOnlineDataAdvertisementType::ViaOnlineService);
+
+			OnCreateSessionCompleteDelegateHandle = OnlineSession->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
+
+			return OnlineSession->CreateSession(*UserId, SessionName, *SessionSettings);
+		}
+
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("No OnlineSubsystem found!"));
+	}
+
+	/* Session 생성 실패 */
+	return false;
+	
+}
+
+void UZGameInstance::FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence)
+{
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			SessionSearch = MakeShareable(new FOnlineSessionSearch());
+
+			SessionSearch->bIsLanQuery = bIsLAN;
+			SessionSearch->MaxSearchResults = 20;
+			SessionSearch->PingBucketSize = 50;
+
+			if (bIsPresence)
+			{
+				SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, bIsPresence, EOnlineComparisonOp::Equals);
+			}
+
+			TSharedRef<FOnlineSessionSearch> SearchSettingRef = SessionSearch.ToSharedRef();
+
+			OnFindSessionsCompleteDelegateHandle = OnlineSession->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
+
+			OnlineSession->FindSessions(*UserId, SearchSettingRef);
+		}
+	}
+	else
+	{
+		OnFindSessionsComplete(false);
+	}
+
+}
+
+bool UZGameInstance::JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult & SearchResult)
+{
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			OnJoinSessionCompleteDelegateHandle = OnlineSession->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
+
+			return OnlineSession->JoinSession(*UserId, SessionName, SearchResult);
+		}
+
+	}
+
+	return false;
+}
+
+void UZGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnCreateSession : %s, %d"), *SessionName.ToString(), bWasSuccessful));
+
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			OnlineSession->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
+			if (bWasSuccessful)
+			{
+				OnStartSessionCompleteDelegateHandle = OnlineSession->AddOnStartSessionCompleteDelegate_Handle(OnStartSessionCompleteDelegate);
+
+				OnlineSession->StartSession(SessionName);
+			}
+		}
+	}
+
+}
+
+void UZGameInstance::OnStartSessionComplete(FName SessionName, bool bWasSuccessful)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnStartSession : %s, %d"), *SessionName.ToString(), bWasSuccessful));
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			OnlineSession->ClearOnStartSessionCompleteDelegate_Handle(OnStartSessionCompleteDelegateHandle);
+		}
+
+	}
+
+	if (bWasSuccessful)
+	{
+		auto LobbyGameMode = GetWorld()->GetAuthGameMode<AZLobbyGameMode>();
+		if (LobbyGameMode)
+		{
+			LobbyGameMode->StartGame();
+		}
+
+		//GetWorld()->ServerTravel("Stage1");
+	}
+
+
+
+
+}
+
+void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnFindSession : %d"), bWasSuccessful));
+
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			OnlineSession->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnFindSession : %d"), SessionSearch->SearchResults.Num()));
+
+			if (SessionSearch->SearchResults.Num() > 0)
+			{
+				for (const auto& SearchSession : SessionSearch->SearchResults)
+				{
+					/* Session 리스트 갱신 */
+
+				}
+
+			}
+
+		}
+	}
+
+
+}
+
+void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s, %d"), *SessionName.ToString(), static_cast<int32>(Result)));
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	if (OnlineSubsystem)
+	{
+		IOnlineSessionPtr OnlineSession = OnlineSubsystem->GetSessionInterface();
+		if (OnlineSession.IsValid())
+		{
+			OnlineSession->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
+
+			APlayerController* const PC = GetFirstLocalPlayerController();
+
+			FString TravelURL;
+			if (PC && OnlineSession->GetResolvedConnectString(SessionName, TravelURL))
+			{
+				/* Seamless Travel 옵션 */
+				PC->ClientTravel(TravelURL, ETravelType::TRAVEL_Relative, true);
+			}
+
+		}
+
+	}
+
 }
 
 
@@ -292,16 +510,16 @@ void UZGameInstance::LoadImage()
 		}
 
 	}
-	
+
 
 }
 
 void UZGameInstance::OnPreLoadMap(const FString & MapName)
 {
 	ZLOG_S(Error);
-	
+
 	IProjectZLoadingScreenModule* const LoadingScreenModule = FModuleManager::LoadModulePtr<IProjectZLoadingScreenModule>(TEXT("ProjectZLoadingScreen"));;
-	if (LoadingScreenModule) 
+	if (LoadingScreenModule)
 	{
 		LoadingScreenModule->StartInGameLoadingScreen();
 	}

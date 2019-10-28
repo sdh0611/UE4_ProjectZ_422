@@ -12,6 +12,9 @@
 #include "IHttpResponse.h"
 #include "ZWebConnector.h"
 
+#include "OnlineSubsystem.h"
+#include "OnlineSessionInterface.h"
+
 #include "ZGameInstance.generated.h"
 
 
@@ -34,12 +37,40 @@ public:
 	/* Login server 통신 관련. */
 	UZWebConnector& GetWebConnector();
 
-
 public:
 	/* Session 관련 */
-	//void CreateSession();
+	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, 
+		bool bIsPresence, int32 MaxNumPlayers);
+	void FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
+	bool JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
 	//void JoinSession();
 	//void DestroySession();
+
+private:
+	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
+	void OnFindSessionsComplete(bool bWasSuccessful);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
+
+private:
+	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
+	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
+	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
+
+	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
+	FDelegateHandle OnStartSessionCompleteDelegateHandle;
+	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
+	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
+
+	/* Session Search 옵션 세팅용. */
+	TSharedPtr<class FOnlineSessionSettings> SessionSettings;
+	/* Session Search 결과를 저장하기 위한 변수. */
+	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+
+	IOnlineSessionPtr SessionInterface;
 
 public:
 	/*

@@ -171,15 +171,15 @@ void UZLobbyWidget::OnStartButtonClick()
 {
 	ZLOG_S(Error);
 
-	auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
-	if (MyGameMode)
-	{
-		MyGameMode->StartGame();
-	}
-	else
-	{
-		ZLOG(Error, TEXT("No game mode.."));
-	}
+	//auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
+	//if (MyGameMode)
+	//{
+	//	MyGameMode->StartGame();
+	//}
+	//else
+	//{
+	//	ZLOG(Error, TEXT("No game mode.."));
+	//}
 
 
 }
