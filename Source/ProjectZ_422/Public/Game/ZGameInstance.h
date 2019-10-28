@@ -34,6 +34,13 @@ public:
 	/* Login server 통신 관련. */
 	UZWebConnector& GetWebConnector();
 
+
+public:
+	/* Session 관련 */
+	//void CreateSession();
+	//void JoinSession();
+	//void DestroySession();
+
 public:
 	/*
 		MeshTable 관련
