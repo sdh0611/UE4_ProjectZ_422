@@ -5,6 +5,7 @@
 #include "..\..\Public\Title\ZTitleWidget.h"
 #include "Title/ZInputIDWidget.h"
 #include "Title/ZConnectServerWidget.h"
+#include "ZSessionListWidget.h"
 #include "ZGameInstance.h"
 
 void UZTitleWidget::NativeConstruct()
@@ -17,8 +18,10 @@ void UZTitleWidget::NativeConstruct()
 	ConnectServerWidget = Cast<UZConnectServerWidget>(GetWidgetFromName(TEXT("UI_ZConnectServerWidget")));
 	check(ConnectServerWidget);
 
-	InputIDWidget->OnIdentify.BindUObject(this, &UZTitleWidget::SetIsVerified);
+	SessionListWidget = Cast<UZSessionListWidget>(GetWidgetFromName(TEXT("UI_ZSessionList")));
+	check(SessionListWidget);
 
+	InputIDWidget->OnIdentify.BindUObject(this, &UZTitleWidget::SetIsVerified);
 
 }
 
@@ -45,7 +48,8 @@ void UZTitleWidget::SetIsVerified(bool bVerified)
 	if (bVerified)
 	{
 		InputIDWidget->SetVisibility(ESlateVisibility::Collapsed);
-		ConnectServerWidget->SetVisibility(ESlateVisibility::Visible);
+		//ConnectServerWidget->SetVisibility(ESlateVisibility::Visible);
+		SessionListWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 
 }

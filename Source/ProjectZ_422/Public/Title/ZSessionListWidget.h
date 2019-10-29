@@ -26,6 +26,11 @@ private:
 
 	void UpdateSessionList(const TArray<struct FZSessionInfo>& SessionsInfo);
 
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UZSessionListItemWidget> SessionListItemWidgetClass;
+
 protected:
 	UPROPERTY()
 	class UScrollBox* SessionList;

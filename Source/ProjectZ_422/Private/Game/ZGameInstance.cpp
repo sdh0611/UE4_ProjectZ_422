@@ -165,6 +165,16 @@ bool UZGameInstance::SessionJoin(TSharedPtr<const FUniqueNetId> UserId, FName Se
 	return false;
 }
 
+bool UZGameInstance::SessionJoinByIndex(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, int32 SessionIndex)
+{
+	if (SessionSearch->SearchResults.IsValidIndex(SessionIndex))
+	{
+		return false;
+	}
+
+	return SessionJoin(UserId, SessionName, SessionSearch->SearchResults[SessionIndex]);
+}
+
 void UZGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnCreateSession : %s, %d"), *SessionName.ToString(), bWasSuccessful));

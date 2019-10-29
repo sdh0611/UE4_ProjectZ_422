@@ -4,6 +4,7 @@
 #include "ZSessionListWidget.h"
 #include "ZGameInstance.h"
 #include "ZMakeGameWidget.h"
+#include "ZSessionListItemWidget.h"
 #include "ZTitlePlayerController.h"
 #include "ZPlayerState.h"
 #include "Components/ScrollBox.h"
@@ -37,7 +38,12 @@ void UZSessionListWidget::OnMakeGameButtonClick()
 	{
 		MakeGameWidget->SetVisibility(ESlateVisibility::Visible);
 	}
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
 
+	}
 }
 
 void UZSessionListWidget::OnRefreshButtonClick()
@@ -60,4 +66,23 @@ void UZSessionListWidget::OnRefreshButtonClick()
 
 void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& SessionsInfo)
 {
+	auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (nullptr == PC)
+	{
+		return;
+	}
+
+	/* 일단은 풀링방식으로 안하기로 */
+	SessionList->ClearChildren();
+
+	for (const auto& SessionInfo : SessionsInfo)
+	{
+		auto SessionListItem = CreateWidget<UZSessionListItemWidget>(PC, SessionListItemWidgetClass);
+		if (SessionListItem)
+		{
+			SessionListItem->UpdateWidget(SessionInfo);
+			SessionList->AddChild(SessionListItem);
+		}
+	}
+
 }

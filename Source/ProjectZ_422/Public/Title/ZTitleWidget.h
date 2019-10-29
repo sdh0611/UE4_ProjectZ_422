@@ -31,11 +31,14 @@ protected:
 	//bool bIsVerified = false;
 
 protected:	
-
 	UPROPERTY()
 	class UZInputIDWidget* InputIDWidget;
 
+	/* Æó±â ¿¹Á¤. */
 	UPROPERTY()
 	class UZConnectServerWidget* ConnectServerWidget;
+
+	UPROPERTY()
+	class UZSessionListWidget* SessionListWidget;
 
 };
