@@ -34,8 +34,14 @@ void UZConnectServerWidget::NativeConstruct()
 
 void UZConnectServerWidget::OnMakeServerButtonClick()
 {
-	//GetWorld()->ServerTravel(TEXT("/Game/Maps/Lobby/Lobby?listen"));
-	GetWorld()->ServerTravel(TEXT("Lobby?Listen"));
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		//MyGameInstance->HostSession();
+	}
+
+	//GetWorld()->ServerTravel(TEXT("Lobby?Listen"));
+
 	//UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
 }
 

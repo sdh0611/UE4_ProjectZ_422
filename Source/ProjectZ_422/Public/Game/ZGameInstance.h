@@ -17,6 +17,25 @@
 
 #include "ZGameInstance.generated.h"
 
+DECLARE_DELEGATE_OneParam(FOnFindSessionsSuccess, const TArray<FZSessionInfo>&);
+
+
+USTRUCT(BlueprintType)
+struct PROJECTZ_422_API FZSessionInfo
+{
+	GENERATED_BODY()
+
+public:
+	int32 SessionIndex = -1;
+
+	FString SessionName;
+
+	FString HostName;
+
+	int32 MaxConnection = 4;
+
+	int32 CurrentConnection = 0;
+};
 
 /**
  * 
@@ -42,7 +61,7 @@ public:
 	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, 
 		bool bIsPresence, int32 MaxNumPlayers);
 	void FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
-	bool JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
+	bool SessionJoin(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
 	//void JoinSession();
 	//void DestroySession();
 
@@ -52,6 +71,9 @@ private:
 	void OnFindSessionsComplete(bool bWasSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
+
+public:
+	FOnFindSessionsSuccess OnFindSessionsSuccess;
 
 private:
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
@@ -66,11 +88,10 @@ private:
 	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
 
-	/* Session Search 옵션 세팅용. */
+	/* Session 옵션 세팅용. */
 	TSharedPtr<class FOnlineSessionSettings> SessionSettings;
 	/* Session Search 결과를 저장하기 위한 변수. */
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
-
 
 	IOnlineSessionPtr SessionInterface;
 
