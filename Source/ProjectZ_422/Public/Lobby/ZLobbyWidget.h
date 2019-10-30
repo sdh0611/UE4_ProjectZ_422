@@ -38,9 +38,15 @@ private:
 	UFUNCTION()
 	void OnStartButtonClick();
 
+	UFUNCTION()
+	void OnExitButtonClick();
+
 protected:
 	UPROPERTY()
 	class UButton* StartButton;
+
+	UPROPERTY()
+	class UButton* ExitButton;
 
 	UPROPERTY()
 	class UTextBlock* ConnectNumber;

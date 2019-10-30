@@ -12,9 +12,10 @@ public class ProjectZ_422 : ModuleRules
             "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProjectZLoadingScreen" ,
-            "Networking", "Http", "Json", "JsonUtilities", "Sockets", "OnlineSubsystem", "OnlineSubsystemUtils" });
+            "Networking", "Http", "Json", "JsonUtilities", "Sockets",
+            "OnlineSubsystem", "OnlineSubsystemNull"});
 
-        DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
+        //DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

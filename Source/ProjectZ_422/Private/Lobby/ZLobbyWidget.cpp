@@ -21,6 +21,9 @@ void UZLobbyWidget::NativeConstruct()
 	StartButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Start")));
 	check(StartButton);
 
+	ExitButton = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Exit")));
+	check(ExitButton);
+
 	ConnectNumber = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_ConnectNumber")));
 	check(ConnectNumber);
 
@@ -35,6 +38,7 @@ void UZLobbyWidget::NativeConstruct()
 	check(JoinPlayerBox);
 
 	StartButton->OnClicked.AddDynamic(this, &UZLobbyWidget::OnStartButtonClick);
+	ExitButton->OnClicked.AddDynamic(this, &UZLobbyWidget::OnExitButtonClick);
 
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (MyGameInstance)
@@ -48,6 +52,7 @@ void UZLobbyWidget::NativeConstruct()
 		LobbyPC->ServerReceiveUpdateJoinPlayer();
 	}
 
+	
 
 }
 
@@ -170,16 +175,36 @@ void UZLobbyWidget::OnInputChatCommit(const FText & Text, ETextCommit::Type Comm
 void UZLobbyWidget::OnStartButtonClick()
 {
 	ZLOG_S(Error);
+	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	if (MyGameInstnace)
+	{
+		MyGameInstnace->DestroySession();
+	}
 
-	//auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
-	//if (MyGameMode)
-	//{
-	//	MyGameMode->StartGame();
-	//}
-	//else
-	//{
-	//	ZLOG(Error, TEXT("No game mode.."));
-	//}
+	auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
+	if (MyGameMode)
+	{
+		MyGameMode->StartGame();
+	}
+	else
+	{
+		ZLOG(Error, TEXT("No game mode.."));
+	}
 
 
+}
+
+void UZLobbyWidget::OnExitButtonClick()
+{
+	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	if (MyGameInstnace)
+	{
+		MyGameInstnace->DestroySession();
+	}
+
+	auto PC = GetOwningPlayer<AZBasePlayerController>();
+	if (PC && PC->IsLocalPlayerController())
+	{
+		PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+	}
 }

@@ -58,13 +58,14 @@ public:
 
 public:
 	/* Session ฐüทร */
-	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, 
+	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, const FString& SessionName, bool bIsLAN, 
 		bool bIsPresence, int32 MaxNumPlayers);
 	void FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
 	bool SessionJoin(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
 	bool SessionJoinByIndex(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, int32 SessionIndex);
-	//void JoinSession();
-	//void DestroySession();
+
+	UFUNCTION(BlueprintCallable)
+	bool DestroySession();
 
 private:
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);

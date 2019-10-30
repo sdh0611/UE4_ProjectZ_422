@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
-
+#include "Engine/Engine.h"
 
 void UZMakeGameWidget::NativeConstruct()
 {
@@ -70,10 +70,10 @@ void UZMakeGameWidget::OnCreateGameButtonClick()
 			auto PS = PC->GetPlayerState<APlayerState>();
 			if (PS)
 			{
-				if (!MyGameInstance->HostSession(PS->UniqueId.GetUniqueNetId(), *Name, true, false, FCString::Atoi(*Num)))
+				if (!MyGameInstance->HostSession(PS->UniqueId.GetUniqueNetId(), *Name, true, true, FCString::Atoi(*Num)))
 				{
 					/* ErrorText */
-					
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed to host session!"));
 				}
 
 			}

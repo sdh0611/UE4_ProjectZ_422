@@ -10,6 +10,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/Engine.h"
 
 void UZSessionListWidget::NativeConstruct()
 {
@@ -30,6 +31,11 @@ void UZSessionListWidget::NativeConstruct()
 	MakeGame->OnClicked.AddDynamic(this, &UZSessionListWidget::OnMakeGameButtonClick);
 	RefreshList->OnClicked.AddDynamic(this, &UZSessionListWidget::OnRefreshButtonClick);
 
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
+	}
 }
 
 void UZSessionListWidget::OnMakeGameButtonClick()
@@ -38,12 +44,7 @@ void UZSessionListWidget::OnMakeGameButtonClick()
 	{
 		MakeGameWidget->SetVisibility(ESlateVisibility::Visible);
 	}
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
 
-	}
 }
 
 void UZSessionListWidget::OnRefreshButtonClick()
@@ -57,7 +58,7 @@ void UZSessionListWidget::OnRefreshButtonClick()
 			auto PS = PC->GetPlayerState<APlayerState>();
 			if (PS)
 			{
-				MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, false);
+				MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, true);
 			}
 		}
 	}
@@ -66,11 +67,13 @@ void UZSessionListWidget::OnRefreshButtonClick()
 
 void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& SessionsInfo)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("UpdagteSessionList!"));
 	auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (nullptr == PC)
 	{
 		return;
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In UpdagteSessionList!"));
 
 	/* 일단은 풀링방식으로 안하기로 */
 	SessionList->ClearChildren();
@@ -80,8 +83,8 @@ void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& 
 		auto SessionListItem = CreateWidget<UZSessionListItemWidget>(PC, SessionListItemWidgetClass);
 		if (SessionListItem)
 		{
-			SessionListItem->UpdateWidget(SessionInfo);
 			SessionList->AddChild(SessionListItem);
+			SessionListItem->UpdateWidget(SessionInfo);
 		}
 	}
 
