@@ -17,6 +17,7 @@ class PROJECTZ_422_API AZLobbyPlayerController : public AZBasePlayerController
 public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel) override;
 
 public:
 	void UpdateConnectNumber(int32 NewNumber);

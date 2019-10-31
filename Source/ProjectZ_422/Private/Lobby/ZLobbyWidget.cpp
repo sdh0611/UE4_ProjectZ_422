@@ -200,7 +200,7 @@ void UZLobbyWidget::OnExitButtonClick()
 	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
 	if (MyGameInstnace)
 	{
-		if (MyGameInstnace->DestroySession())
+		//if (MyGameInstnace->DestroySession())
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("DestroySession success")));
 			auto PC = GetOwningPlayer<AZBasePlayerController>();

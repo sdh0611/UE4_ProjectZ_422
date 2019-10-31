@@ -47,21 +47,33 @@ void AZLobbyPlayerController::BeginPlay()
 
 void AZLobbyPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
-	if (MyGameInstnace)
-	{
-		if (MyGameInstnace->DestroySession())
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
-			//if (IsLocalPlayerController())
-			//{
-			//	//PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
-			//	//GetWorld()->ServerTravel(TEXT("StartMenu"));
-			//}
-		}
-	}
+	//auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstnace)
+	//{
+	//	if (MyGameInstnace->DestroySession())
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
+	//		//if (IsLocalPlayerController())
+	//		//{
+	//		//	//PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+	//		//	//GetWorld()->ServerTravel(TEXT("StartMenu"));
+	//		//}
+	//	}
+	//}
 
 	Super::EndPlay(EndPlayReason);
+}
+
+void AZLobbyPlayerController::PreClientTravel(const FString & PendingURL, ETravelType TravelType, bool bIsSeamlessTravel)
+{
+	Super::PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel);
+
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
+		MyGameInstance->DestroySession();
+	}
 }
 
 void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)
