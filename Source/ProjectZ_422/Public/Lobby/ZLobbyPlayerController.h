@@ -16,6 +16,7 @@ class PROJECTZ_422_API AZLobbyPlayerController : public AZBasePlayerController
 	
 public:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	void UpdateConnectNumber(int32 NewNumber);

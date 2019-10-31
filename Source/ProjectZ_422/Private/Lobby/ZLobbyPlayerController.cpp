@@ -8,8 +8,10 @@
 #include "Lobby/ZLobbyGameState.h"
 #include "ZPlayerState.h"
 #include "ZCharacter.h"
+#include "ZGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "Engine/Engine.h"
 
 
 void AZLobbyPlayerController::BeginPlay()
@@ -41,6 +43,25 @@ void AZLobbyPlayerController::BeginPlay()
 	}
 
 
+}
+
+void AZLobbyPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	if (MyGameInstnace)
+	{
+		if (MyGameInstnace->DestroySession())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
+			//if (IsLocalPlayerController())
+			//{
+			//	//PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+			//	//GetWorld()->ServerTravel(TEXT("StartMenu"));
+			//}
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)

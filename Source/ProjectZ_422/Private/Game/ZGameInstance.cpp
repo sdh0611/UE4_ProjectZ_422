@@ -38,8 +38,8 @@ void UZGameInstance::Init()
 	LoadSkeletalMesh();
 	LoadImage();
 
-	//FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
-	//FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
+	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 
 	OnCreateSessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnCreateSessionComplete);
 	OnStartSessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnStartSessionComplete);
@@ -273,6 +273,8 @@ void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 		return;
 	}
 
+	OnFindSessionsEnd.Execute();
+
 	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
 	{
@@ -332,7 +334,6 @@ void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionComp
 			FString TravelURL;
 			if (PC && Session->GetResolvedConnectString(SessionName, TravelURL))
 			{
-				/* Seamless Travel ¿É¼Ç */
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s"), *TravelURL));
 				PC->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
 			}

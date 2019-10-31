@@ -18,6 +18,7 @@
 #include "ZGameInstance.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnFindSessionsSuccess, const TArray<FZSessionInfo>&);
+DECLARE_DELEGATE(FOnFindSessionsEnd);
 
 
 USTRUCT(BlueprintType)
@@ -76,6 +77,7 @@ private:
 
 public:
 	FOnFindSessionsSuccess OnFindSessionsSuccess;
+	FOnFindSessionsEnd OnFindSessionsEnd;
 
 private:
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;

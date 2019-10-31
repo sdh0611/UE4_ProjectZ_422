@@ -14,7 +14,7 @@
  * 
  */
 UCLASS()
-class PROJECTZ_422_API AZTitleGameMode : public AGameModeBase
+class PROJECTZ_422_API AZTitleGameMode : public AZBaseGameMode
 {
 	GENERATED_BODY()
 	

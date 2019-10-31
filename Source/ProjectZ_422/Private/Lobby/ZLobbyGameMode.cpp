@@ -8,6 +8,7 @@
 #include "ZGameInstance.h"
 #include "..\..\Public\Lobby\ZLobbyGameMode.h"
 #include "Engine/World.h"
+#include "Engine/Engine.h"
 #include "Json.h"
 
 void AZLobbyGameMode::InitGame(const FString & MapName, const FString & Options, FString & ErrorMessage)
@@ -82,6 +83,16 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 
 void AZLobbyGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
+	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	{
+		auto PC = Cast <AZBasePlayerController>(*Iter);
+		if (PC)
+		{
+			PC->ClientDestroySession();
+		}
+	}
+
 	if (EndPlayReason != EEndPlayReason::LevelTransition)
 	{
 		auto MyGameInstance = GetGameInstance<UZGameInstance>();

@@ -9,6 +9,7 @@
 #include "ZPlayerState.h"
 #include "Components/ScrollBox.h"
 #include "Components/Button.h"
+#include "Components/HorizontalBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
@@ -25,6 +26,9 @@ void UZSessionListWidget::NativeConstruct()
 	RefreshList = Cast<UButton>(GetWidgetFromName(TEXT("BTN_RefreshList")));
 	check(RefreshList);
 
+	LoadingWidget = Cast<UHorizontalBox>(GetWidgetFromName(TEXT("LoadingWidget")));
+	check(LoadingWidget);
+
 	MakeGameWidget = Cast<UZMakeGameWidget>(GetWidgetFromName(TEXT("UI_ZMakeGame")));
 	check(MakeGameWidget);
 
@@ -35,7 +39,16 @@ void UZSessionListWidget::NativeConstruct()
 	if (MyGameInstance)
 	{
 		MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
+		MyGameInstance->OnFindSessionsEnd.BindLambda([this]() {
+			LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+		});
 	}
+}
+
+void UZSessionListWidget::ShowSessionList()
+{
+	SetVisibility(ESlateVisibility::Visible);
+	OnRefreshButtonClick();
 }
 
 void UZSessionListWidget::OnMakeGameButtonClick()
@@ -58,6 +71,9 @@ void UZSessionListWidget::OnRefreshButtonClick()
 			auto PS = PC->GetPlayerState<APlayerState>();
 			if (PS)
 			{
+				/* 일단은 풀링방식으로 안하기로 */
+				SessionList->ClearChildren();
+				LoadingWidget->SetVisibility(ESlateVisibility::Visible);
 				MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, true);
 			}
 		}
@@ -67,6 +83,8 @@ void UZSessionListWidget::OnRefreshButtonClick()
 
 void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& SessionsInfo)
 {
+	LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("UpdagteSessionList!"));
 	auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (nullptr == PC)
@@ -75,8 +93,6 @@ void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& 
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In UpdagteSessionList!"));
 
-	/* 일단은 풀링방식으로 안하기로 */
-	SessionList->ClearChildren();
 
 	for (const auto& SessionInfo : SessionsInfo)
 	{

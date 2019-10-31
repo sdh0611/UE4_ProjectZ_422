@@ -10,11 +10,31 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Engine/World.h"
-
+#include "Engine/Engine.h"
 
 void AZBasePlayerController::OnPossess(APawn * InPawn)
 {
 	Super::OnPossess(InPawn);
+
+}
+
+void AZBasePlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstnace)
+	//{
+	//	if (MyGameInstnace->DestroySession())
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("DestroySession success")));
+	//		//if (IsLocalPlayerController())
+	//		//{
+	//		//	//PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+	//		//	//GetWorld()->ServerTravel(TEXT("StartMenu"));
+	//		//}
+	//	}
+	//}
+
+	Super::EndPlay(EndPlayReason);
 
 }
 
@@ -59,6 +79,21 @@ void AZBasePlayerController::ClientRemoveAllWidget_Implementation()
 	RemoveAllWidget();
 }
 
+bool AZBasePlayerController::ClientDestroySession_Validate()
+{
+	return true;
+}
+
+void AZBasePlayerController::ClientDestroySession_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		MyGameInstance->DestroySession();
+	}
+}
+
 bool AZBasePlayerController::ServerReceiveUserName_Validate(const FString & UserName)
 {
 	return true;
@@ -67,7 +102,7 @@ bool AZBasePlayerController::ServerReceiveUserName_Validate(const FString & User
 void AZBasePlayerController::ServerReceiveUserName_Implementation(const FString & UserName)
 {
 	OnReceiveUserName(UserName);
-	
+
 }
 
 void AZBasePlayerController::OnReceiveUserName(const FString & UserName)

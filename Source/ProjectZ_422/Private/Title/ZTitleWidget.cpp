@@ -49,7 +49,8 @@ void UZTitleWidget::SetIsVerified(bool bVerified)
 	{
 		InputIDWidget->SetVisibility(ESlateVisibility::Collapsed);
 		//ConnectServerWidget->SetVisibility(ESlateVisibility::Visible);
-		SessionListWidget->SetVisibility(ESlateVisibility::Visible);
+		//SessionListWidget->SetVisibility(ESlateVisibility::Visible);
+		SessionListWidget->ShowSessionList();
 	}
 
 }

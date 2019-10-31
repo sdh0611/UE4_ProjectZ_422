@@ -28,10 +28,10 @@ void AZBaseGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
 	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
 	//{
-	//	auto PC = Cast < AZBasePlayerController>(*Iter);
+	//	auto PC = Cast <AZBasePlayerController>(*Iter);
 	//	if (PC)
 	//	{
-	//		PC->ClientRemoveAllWidget();
+	//		PC->ClientDestroySession();
 	//	}
 	//}
 	

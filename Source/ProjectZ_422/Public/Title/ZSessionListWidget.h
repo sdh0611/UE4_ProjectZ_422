@@ -17,6 +17,10 @@ class PROJECTZ_422_API UZSessionListWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void ShowSessionList();
+
 private:
 	UFUNCTION()
 	void OnMakeGameButtonClick();
@@ -40,6 +44,9 @@ protected:
 
 	UPROPERTY()
 	class UButton* RefreshList;
+
+	UPROPERTY()
+	class UHorizontalBox* LoadingWidget;
 
 	UPROPERTY()
 	class UZMakeGameWidget* MakeGameWidget;

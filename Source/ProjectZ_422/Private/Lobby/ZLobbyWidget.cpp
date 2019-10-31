@@ -207,6 +207,7 @@ void UZLobbyWidget::OnExitButtonClick()
 			if (PC && PC->IsLocalPlayerController())
 			{
 				PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+				//GetWorld()->ServerTravel(TEXT("StartMenu"));
 			}
 		}
 	}

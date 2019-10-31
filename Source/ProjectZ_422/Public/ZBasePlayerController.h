@@ -21,6 +21,7 @@ class PROJECTZ_422_API AZBasePlayerController : public APlayerController
 	
 public:
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	void RemoveAllWidget();
@@ -35,6 +36,11 @@ public:
 	void ClientRemoveAllWidget();
 	bool ClientRemoveAllWidget_Validate();
 	void ClientRemoveAllWidget_Implementation();
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientDestroySession();
+	bool ClientDestroySession_Validate();
+	void ClientDestroySession_Implementation();
 
 
 	UFUNCTION(Server, Reliable, WithValidation)
