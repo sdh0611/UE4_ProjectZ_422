@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ZGameInstance.h"
 #include "EngineUtils.h"
+#include "Engine/Engine.h"
 
 void UZLobbyWidget::NativeConstruct()
 {
@@ -199,12 +200,15 @@ void UZLobbyWidget::OnExitButtonClick()
 	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
 	if (MyGameInstnace)
 	{
-		MyGameInstnace->DestroySession();
+		if (MyGameInstnace->DestroySession())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("DestroySession success")));
+			auto PC = GetOwningPlayer<AZBasePlayerController>();
+			if (PC && PC->IsLocalPlayerController())
+			{
+				PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+			}
+		}
 	}
 
-	auto PC = GetOwningPlayer<AZBasePlayerController>();
-	if (PC && PC->IsLocalPlayerController())
-	{
-		PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
-	}
 }

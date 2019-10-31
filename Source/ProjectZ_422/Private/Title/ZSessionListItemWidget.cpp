@@ -26,7 +26,7 @@ void UZSessionListItemWidget::NativeConstruct()
 void UZSessionListItemWidget::UpdateWidget(const FZSessionInfo & NewSessionInfo)
 {
 	SessionInfo = NewSessionInfo;
-	UpdateSessionName(NewSessionInfo.SessionName);
+	UpdateSessionName(NewSessionInfo.ServerName);
 	UpdateCurrentConnection(NewSessionInfo.CurrentConnection);
 	UpdateMaxConnection(NewSessionInfo.MaxConnection);
 }
@@ -73,7 +73,7 @@ FReply UZSessionListItemWidget::NativeOnMouseButtonDoubleClick(const FGeometry &
 			if (PS)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In double click3!"));
-				MyGameInstance->SessionJoinByIndex(PS->UniqueId.GetUniqueNetId(), *SessionInfo.SessionName, SessionInfo.SessionIndex);
+				MyGameInstance->SessionJoinByIndex(PS->UniqueId.GetUniqueNetId(), NAME_GameSession, SessionInfo.SessionIndex);
 			}
 		}
 	}

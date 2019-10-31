@@ -28,7 +28,7 @@ struct PROJECTZ_422_API FZSessionInfo
 public:
 	int32 SessionIndex = -1;
 
-	FString SessionName;
+	FString ServerName;
 
 	FString HostName;
 
@@ -58,7 +58,7 @@ public:
 
 public:
 	/* Session ฐüทร */
-	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, const FString& SessionName, bool bIsLAN, 
+	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, const FString& ServerName, bool bIsLAN,
 		bool bIsPresence, int32 MaxNumPlayers);
 	void FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
 	bool SessionJoin(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
