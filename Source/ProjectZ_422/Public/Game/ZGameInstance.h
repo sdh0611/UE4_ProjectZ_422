@@ -97,7 +97,16 @@ private:
 	/* Session Search 결과를 저장하기 위한 변수. */
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
 
-	IOnlineSessionPtr SessionInterface;
+public:
+	void ShowLoadingScreen();
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UUserWidget> LoadingWidgetClass;
+
+	UPROPERTY()
+	class UUserWidget* LoadingWidget;
+
 
 public:
 	/*

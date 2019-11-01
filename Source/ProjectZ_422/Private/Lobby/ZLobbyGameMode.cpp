@@ -83,32 +83,33 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 
 void AZLobbyGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
-	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
-	{
-		auto PC = Cast <AZBasePlayerController>(*Iter);
-		if (PC)
-		{
-			PC->ClientDestroySession();
-		}
-	}
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
+	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	//{
+	//	auto PC = Cast <AZBasePlayerController>(*Iter);
+	//	if (PC)
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySession~~"));
+	//		PC->ClientDestroySession();
+	//	}
+	//}
 
-	if (EndPlayReason != EEndPlayReason::LevelTransition)
-	{
-		auto MyGameInstance = GetGameInstance<UZGameInstance>();
-		if (MyGameInstance)
-		{
-			ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+	//if (EndPlayReason != EEndPlayReason::LevelTransition)
+	//{
+	//	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//	if (MyGameInstance)
+	//	{
+	//		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
 
-			FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
-			URL.Append(TEXT("/delete_game"));
+	//		FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
+	//		URL.Append(TEXT("/delete_game"));
 
-			FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+	//		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
 
-			MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+	//		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
 
-		}
-	}
+	//	}
+	//}
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -116,19 +117,45 @@ void AZLobbyGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 void AZLobbyGameMode::StartGame()
 {
 	ZLOG_S(Error);
+	
+	DestroyClientsSession();
+
 	if (!GetWorld()->ServerTravel(TEXT("Stage1")))
 	{
 		ZLOG(Error, TEXT("Server travel fail."));
 		return;
 	}
 
+
+	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	//{
+	//	auto PC = Cast < AZBasePlayerController>(*Iter);
+	//	if (PC)
+	//	{
+	//		PC->ClientRemoveAllWidget();
+	//	}
+	//}
+
+}
+
+void AZLobbyGameMode::DestroyClientsSession()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
+
 	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
 	{
-		auto PC = Cast < AZBasePlayerController>(*Iter);
+		auto PC = Cast <AZBasePlayerController>(*Iter);
 		if (PC)
 		{
-			PC->ClientRemoveAllWidget();
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySession~~"));
+			PC->ClientDestroySession();
 		}
+	}
+
+	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	if (MyGameInstance)
+	{
+		MyGameInstance->DestroySession();
 	}
 
 }

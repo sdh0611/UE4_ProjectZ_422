@@ -25,6 +25,9 @@ void UZSessionListWidget::NativeConstruct()
 
 	RefreshList = Cast<UButton>(GetWidgetFromName(TEXT("BTN_RefreshList")));
 	check(RefreshList);
+	
+	Cancel = Cast<UButton>(GetWidgetFromName(TEXT("BTN_Cancel")));
+	check(Cancel);
 
 	LoadingWidget = Cast<UHorizontalBox>(GetWidgetFromName(TEXT("LoadingWidget")));
 	check(LoadingWidget);
@@ -34,14 +37,16 @@ void UZSessionListWidget::NativeConstruct()
 
 	MakeGame->OnClicked.AddDynamic(this, &UZSessionListWidget::OnMakeGameButtonClick);
 	RefreshList->OnClicked.AddDynamic(this, &UZSessionListWidget::OnRefreshButtonClick);
+	Cancel->OnClicked.AddDynamic(this, &UZSessionListWidget::OnExitButtonClick);
 
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (MyGameInstance)
 	{
 		MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
-		MyGameInstance->OnFindSessionsEnd.BindLambda([this]() {
-			LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
-		});
+		MyGameInstance->OnFindSessionsEnd.BindUObject(this, &UZSessionListWidget::OnRefreshEnd);
+		//MyGameInstance->OnFindSessionsEnd.BindLambda([this]() {
+		//	LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+		//});
 	}
 }
 
@@ -49,6 +54,16 @@ void UZSessionListWidget::ShowSessionList()
 {
 	SetVisibility(ESlateVisibility::Visible);
 	OnRefreshButtonClick();
+}
+
+void UZSessionListWidget::OnRefreshEnd()
+{
+	LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+
+	MakeGame->SetIsEnabled(true);
+	RefreshList->SetIsEnabled(true);
+	Cancel->SetIsEnabled(true);
+
 }
 
 void UZSessionListWidget::OnMakeGameButtonClick()
@@ -62,6 +77,11 @@ void UZSessionListWidget::OnMakeGameButtonClick()
 
 void UZSessionListWidget::OnRefreshButtonClick()
 {
+	if (MakeGameWidget)
+	{
+		MakeGameWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (MyGameInstance)
 	{
@@ -72,7 +92,11 @@ void UZSessionListWidget::OnRefreshButtonClick()
 			if (PS)
 			{
 				/* 일단은 풀링방식으로 안하기로 */
+				MakeGame->SetIsEnabled(false);
+				RefreshList->SetIsEnabled(false);
+				Cancel->SetIsEnabled(false);
 				SessionList->ClearChildren();
+
 				LoadingWidget->SetVisibility(ESlateVisibility::Visible);
 				MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, true);
 			}
@@ -81,9 +105,15 @@ void UZSessionListWidget::OnRefreshButtonClick()
 
 }
 
+void UZSessionListWidget::OnExitButtonClick()
+{
+	SetVisibility(ESlateVisibility::Collapsed);
+}
+
 void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& SessionsInfo)
 {
 	LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+
 
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("UpdagteSessionList!"));
 	auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);

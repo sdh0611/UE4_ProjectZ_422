@@ -21,12 +21,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShowSessionList();
 
+protected:
+	UFUNCTION(BlueprintCallable)
+	void OnRefreshEnd();
+
 private:
 	UFUNCTION()
 	void OnMakeGameButtonClick();
 
 	UFUNCTION()
 	void OnRefreshButtonClick();
+
+	UFUNCTION()
+	void OnExitButtonClick();
 
 	void UpdateSessionList(const TArray<struct FZSessionInfo>& SessionsInfo);
 
@@ -44,6 +51,9 @@ protected:
 
 	UPROPERTY()
 	class UButton* RefreshList;
+
+	UPROPERTY()
+	class UButton* Cancel;
 
 	UPROPERTY()
 	class UHorizontalBox* LoadingWidget;

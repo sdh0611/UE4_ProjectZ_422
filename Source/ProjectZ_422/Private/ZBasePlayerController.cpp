@@ -11,6 +11,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
+#include "UI/ZGameViewportClient.h"
 
 void AZBasePlayerController::OnPossess(APawn * InPawn)
 {
@@ -40,21 +41,56 @@ void AZBasePlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AZBasePlayerController::PreClientTravel(const FString & PendingURL, ETravelType TravelType, bool bIsSeamlessTravel)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("PreClientTravel.")));
+	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	if (MyGameInstnace)
+	{
+		MyGameInstnace->ShowLoadingScreen();
+	}
+
+	//auto MyGameViewport = Cast<UZGameViewportClient>(GetWorld()->GetGameViewport());
+	//if (MyGameViewport)
+	//{
+	//	MyGameViewport->ShowLoadingScreen();
+	//}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("PreClientTravel.")));
+	//if (IsLocalPlayerController() && LoadingWidget)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("ShowLoadingScreen.")));
+	//	LoadingWidget->AddToViewport();
+	//}
+
 	Super::PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel);
 
 }
 
-void AZBasePlayerController::RemoveAllWidget()
+//void AZBasePlayerController::RemoveAllWidget()
+//{
+//	if (IsLocalPlayerController())
+//	{
+//		TArray<UUserWidget*> Widgets;
+//		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), Widgets, UUserWidget::StaticClass());
+//		for (auto& Widget : Widgets)
+//		{
+//			Widget->RemoveFromParent();
+//		}
+//	}
+//}
+
+void AZBasePlayerController::ShowLoadingWidget(bool bShow)
 {
-	if (IsLocalPlayerController())
+	if (!IsLocalPlayerController())
 	{
-		TArray<UUserWidget*> Widgets;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), Widgets, UUserWidget::StaticClass());
-		for (auto& Widget : Widgets)
-		{
-			Widget->RemoveFromParent();
-		}
+		return;
 	}
+
+	if (LoadingWidget)
+	{
+		ESlateVisibility Visibility = (bShow ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+		LoadingWidget->SetVisibility(Visibility);
+	}
+
 }
 
 bool AZBasePlayerController::ClientReceiveGetUserName_Validate()
@@ -82,7 +118,7 @@ bool AZBasePlayerController::ClientRemoveAllWidget_Validate()
 
 void AZBasePlayerController::ClientRemoveAllWidget_Implementation()
 {
-	RemoveAllWidget();
+	//RemoveAllWidget();
 }
 
 bool AZBasePlayerController::ClientDestroySession_Validate()
@@ -93,10 +129,13 @@ bool AZBasePlayerController::ClientDestroySession_Validate()
 void AZBasePlayerController::ClientDestroySession_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
+	if (IsLocalPlayerController())
 	{
-		MyGameInstance->DestroySession();
+		auto MyGameInstance = GetGameInstance<UZGameInstance>();
+		if (MyGameInstance)
+		{
+			MyGameInstance->DestroySession();
+		}
 	}
 }
 
@@ -130,12 +169,18 @@ void AZBasePlayerController::BeginPlay()
 
 	if (IsLocalPlayerController())
 	{
-		TArray<UUserWidget*> Widgets;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), Widgets, UUserWidget::StaticClass());
-		for (auto& Widget : Widgets)
-		{
-			Widget->RemoveFromParent();
-		}
+		LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
+		check(LoadingWidget);
 	}
+
+	//if (IsLocalPlayerController())
+	//{
+	//	TArray<UUserWidget*> Widgets;
+	//	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), Widgets, UUserWidget::StaticClass());
+	//	for (auto& Widget : Widgets)
+	//	{
+	//		Widget->RemoveFromParent();
+	//	}
+	//}
 
 }

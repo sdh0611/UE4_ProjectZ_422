@@ -66,14 +66,16 @@ void AZLobbyPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AZLobbyPlayerController::PreClientTravel(const FString & PendingURL, ETravelType TravelType, bool bIsSeamlessTravel)
 {
-	Super::PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel);
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC Travel")));
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
-		MyGameInstance->DestroySession();
-	}
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
+	//	MyGameInstance->DestroySession();
+	//}
+
+	Super::PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel);
 }
 
 void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)
@@ -153,6 +155,25 @@ void AZLobbyPlayerController::ClientUpdateJoinPlayer_Implementation(const FStrin
 {
 	UpdatePlayerName(JoinPlayer, bErase);
 }
+
+//bool AZLobbyPlayerController::ClientDestroySession_Validate()
+//{
+//	return true;
+//}
+//
+//void AZLobbyPlayerController::ClientDestroySession_Implementation()
+//{
+//	if (IsLocalPlayerController())
+//	{
+//		auto MyGameInstance = GetGameInstance<UZGameInstance>();
+//		if (MyGameInstance)
+//		{
+//			MyGameInstance->DestroySession();
+//		}
+//	}
+//
+//
+//}
 
 bool AZLobbyPlayerController::ServerReceiveUpdateJoinPlayer_Validate()
 {

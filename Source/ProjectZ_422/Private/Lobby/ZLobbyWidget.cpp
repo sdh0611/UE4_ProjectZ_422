@@ -176,11 +176,11 @@ void UZLobbyWidget::OnInputChatCommit(const FText & Text, ETextCommit::Type Comm
 void UZLobbyWidget::OnStartButtonClick()
 {
 	ZLOG_S(Error);
-	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
-	if (MyGameInstnace)
-	{
-		MyGameInstnace->DestroySession();
-	}
+	//auto MyGameInstnace = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstnace)
+	//{
+	//	MyGameInstnace->DestroySession();
+	//}
 
 	auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
 	if (MyGameMode)
@@ -197,19 +197,38 @@ void UZLobbyWidget::OnStartButtonClick()
 
 void UZLobbyWidget::OnExitButtonClick()
 {
-	auto MyGameInstnace = GetGameInstance<UZGameInstance>();
-	if (MyGameInstnace)
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("DestroySession success")));
+	auto PC = GetOwningPlayer<AZBasePlayerController>();
+	if (PC && PC->IsLocalPlayerController())
 	{
-		//if (MyGameInstnace->DestroySession())
+		auto MyGameInstance = GetGameInstance<UZGameInstance>();
+		if (MyGameInstance)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("DestroySession success")));
-			auto PC = GetOwningPlayer<AZBasePlayerController>();
-			if (PC && PC->IsLocalPlayerController())
+			if (PC->GetNetMode() == ENetMode::NM_ListenServer)
 			{
-				PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
-				//GetWorld()->ServerTravel(TEXT("StartMenu"));
+				ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+
+				FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
+				URL.Append(TEXT("/delete_game"));
+
+				FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+				MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+
+
+				auto LobbyGameMode = GetWorld()->GetAuthGameMode<AZLobbyGameMode>();
+				if (LobbyGameMode)
+				{
+					LobbyGameMode->DestroyClientsSession();
+				}
 			}
+
+			//MyGameInstance->DestroySession();
 		}
+		PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
+		//UGameplayStatics::OpenLevel(GetWorld(), TEXT("StartMenu"));
+		//GetWorld()->ServerTravel(TEXT("StartMenu"));
 	}
+
+
 
 }

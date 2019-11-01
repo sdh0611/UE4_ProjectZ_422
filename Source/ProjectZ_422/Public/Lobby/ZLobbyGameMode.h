@@ -28,6 +28,7 @@ public:
 
 public:
 	void StartGame();
+	void DestroyClientsSession();
 
 public:
 	int32 GetConnectNumber() const;

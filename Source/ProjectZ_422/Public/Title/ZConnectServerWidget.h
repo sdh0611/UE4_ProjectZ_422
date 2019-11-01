@@ -11,6 +11,10 @@
 
 #include "ZConnectServerWidget.generated.h"
 
+/* 
+	NOTE(11.01) : Æó±â¿¹Á¤ 
+*/
+
 /**
  * 
  */

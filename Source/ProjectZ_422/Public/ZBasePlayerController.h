@@ -25,7 +25,8 @@ public:
 	virtual void PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel) override;
 
 public:
-	void RemoveAllWidget();
+	//void RemoveAllWidget();
+	void ShowLoadingWidget(bool bShow);
 
 public:
 	UFUNCTION(Client, Reliable, WithValidation)
@@ -57,8 +58,9 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 
-protected:
-	TSubclassOf<UUserWidget> LoadingWidgetClass;
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(AllowPrivateAccess=true))
+	TSubclassOf<class UUserWidget> LoadingWidgetClass;
 	
 	UPROPERTY()
 	class UUserWidget* LoadingWidget;

@@ -15,9 +15,9 @@
 #include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "Kismet/GameplayStatics.h"
-#include "OnlineSubsystemUtils/Classes/FindSessionsCallbackProxy.h"
-#include "OnlineSubsystemUtils/Classes/CreateSessionCallbackProxy.h"
-#include "OnlineSubsystemUtils/Classes/DestroySessionCallbackProxy.h"
+#include "GameFramework/GameUserSettings.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/ZGameViewportClient.h"
 
 static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
@@ -38,6 +38,8 @@ void UZGameInstance::Init()
 	LoadSkeletalMesh();
 	LoadImage();
 
+	GEngine->GetGameUserSettings()->RequestResolutionChange(1600, 900, EWindowMode::Windowed);
+	
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 
@@ -47,18 +49,6 @@ void UZGameInstance::Init()
 	OnJoinSessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnJoinSessionComplete);
 	OnDestroySessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnDestroySessionComplete);
 
-	//IOnlineSubsystem* OnlineSubSystem = IOnlineSubsystem::Get();
-	//if (OnlineSubSystem)
-	//{
-	//	SessionInterface = OnlineSubSystem->GetSessionInterface();
-	//	if (SessionInterface.IsValid())
-	//	{
-
-	//		
-
-	//	}
-
-	//}
 
 }
 
@@ -272,9 +262,8 @@ void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 	{
 		return;
 	}
-
 	OnFindSessionsEnd.Execute();
-
+	
 	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
 	{
@@ -358,6 +347,25 @@ void UZGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSucces
 	}
 }
 
+
+void UZGameInstance::ShowLoadingScreen()
+{
+	if (LoadingWidget)
+	{
+		LoadingWidget->AddToViewport();
+	}
+	else
+	{
+		if (LoadingWidgetClass)
+		{
+			LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
+			if (LoadingWidget)
+			{
+				LoadingWidget->AddToViewport();
+			}
+		}
+	}
+}
 
 UStaticMesh * const UZGameInstance::GetStaticMesh(const FString & Name)
 {
@@ -614,12 +622,17 @@ void UZGameInstance::LoadImage()
 void UZGameInstance::OnPreLoadMap(const FString & MapName)
 {
 	ZLOG_S(Error);
+	//IProjectZLoadingScreenModule* const LoadingScreenModule = FModuleManager::LoadModulePtr<IProjectZLoadingScreenModule>(TEXT("ProjectZLoadingScreen"));;
+	//if (LoadingScreenModule)
+	//{
+	//	LoadingScreenModule->StartInGameLoadingScreen();
+	//}
 
-	IProjectZLoadingScreenModule* const LoadingScreenModule = FModuleManager::LoadModulePtr<IProjectZLoadingScreenModule>(TEXT("ProjectZLoadingScreen"));;
-	if (LoadingScreenModule)
-	{
-		LoadingScreenModule->StartInGameLoadingScreen();
-	}
+	//auto MyGameViewport = Cast<UZGameViewportClient>(GetGameViewportClient());
+	//if (MyGameViewport)
+	//{
+	//	MyGameViewport->ShowLoadingScreen();
+	//}
 
 }
 
@@ -627,6 +640,10 @@ void UZGameInstance::OnPostLoadMap(UWorld * NewWorld)
 {
 	ZLOG_S(Error);
 
-
+	//auto MyGameViewport = Cast<UZGameViewportClient>(GetGameViewportClient());
+	//if (MyGameViewport)
+	//{
+	//	MyGameViewport->HideLoadingScreen();
+	//}
 
 }

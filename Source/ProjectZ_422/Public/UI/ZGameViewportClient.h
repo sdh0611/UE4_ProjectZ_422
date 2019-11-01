@@ -14,4 +14,22 @@ class PROJECTZ_422_API UZGameViewportClient : public UGameViewportClient
 {
 	GENERATED_BODY()
 	
+public:
+	UZGameViewportClient();
+
+public:
+	virtual void Init(struct FWorldContext& WorldContext, UGameInstance* OwningGameInstance, bool bCreateNewAudioDevice = true) override;
+
+public:
+	void ShowLoadingScreen();
+	void HideLoadingScreen();
+
+private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UUserWidget> LoadingWidgetClass;
+
+	UPROPERTY()
+	class UUserWidget* LoadingWidget;
+
+
 };

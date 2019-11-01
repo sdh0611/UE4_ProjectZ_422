@@ -90,9 +90,9 @@ void UZConnectServerWidget::OnConnectGameResponse(FHttpRequestPtr Request, FHttp
 				auto PC = GetOwningPlayer<AZBasePlayerController>();
 				if (PC && PC->IsLocalPlayerController())
 				{
-					PC->RemoveAllWidget();
-					PC->ClientTravel(ConnectIP, TRAVEL_Relative, true);
-					//GetWorld()->ServerTravel(ConnectIP);
+					//PC->RemoveAllWidget();
+					//PC->ClientTravel(ConnectIP, TRAVEL_Relative, true);
+					GetWorld()->ServerTravel(ConnectIP);
 				}
 
 				//UGameplayStatics::OpenLevel(GetWorld(), *ConnectIP);

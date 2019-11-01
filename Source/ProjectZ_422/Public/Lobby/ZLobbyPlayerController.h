@@ -39,6 +39,11 @@ public:
 	bool ClientUpdateJoinPlayer_Validate(const FString& JoinPlayer, bool bErase);
 	void ClientUpdateJoinPlayer_Implementation(const FString& JoinPlayer, bool bErase);
 
+	//UFUNCTION(Client, Reliable, WIthValidation)
+	//void ClientDestroySession();
+	//bool ClientDestroySession_Validate();
+	//void ClientDestroySession_Implementation();
+
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerReceiveUpdateJoinPlayer();
 	bool ServerReceiveUpdateJoinPlayer_Validate();
