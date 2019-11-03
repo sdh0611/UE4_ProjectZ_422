@@ -38,8 +38,10 @@ void UZGameInstance::Init()
 	LoadSkeletalMesh();
 	LoadImage();
 
-	GEngine->GetGameUserSettings()->RequestResolutionChange(1600, 900, EWindowMode::Windowed);
-	
+	//GEngine->GetGameUserSettings()->LoadSettings();
+	//GEngine->GetGameUserSettings()->ApplySettings(true);
+	//GEngine->GetGameUserSettings()->RequestResolutionChange(1600, 900, EWindowMode::Windowed);
+
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 
@@ -306,7 +308,7 @@ void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionComp
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s, %d"), *SessionName.ToString(), static_cast<int32>(Result)));
 	if (Result != EOnJoinSessionCompleteResult::Success)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("JoinSession Fail.")));
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("JoinSession Fail."));
 		return;
 	}
 
@@ -317,6 +319,10 @@ void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionComp
 		if (Session.IsValid())
 		{
 			Session->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
+			if (nullptr == Session->GetNamedSession(SessionName))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("JoinSession Fail."));
+			}
 
 			APlayerController* const PC = GetFirstLocalPlayerController();
 

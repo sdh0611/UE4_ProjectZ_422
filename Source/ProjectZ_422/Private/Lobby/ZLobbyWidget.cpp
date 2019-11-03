@@ -197,7 +197,6 @@ void UZLobbyWidget::OnStartButtonClick()
 
 void UZLobbyWidget::OnExitButtonClick()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("DestroySession success")));
 	auto PC = GetOwningPlayer<AZBasePlayerController>();
 	if (PC && PC->IsLocalPlayerController())
 	{
@@ -221,9 +220,15 @@ void UZLobbyWidget::OnExitButtonClick()
 					LobbyGameMode->DestroyClientsSession();
 				}
 			}
-
-			//MyGameInstance->DestroySession();
+			else
+			{
+				if (MyGameInstance->DestroySession())
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Client DestroySession success")));
+				}
+			}
 		}
+		
 		PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
 		//UGameplayStatics::OpenLevel(GetWorld(), TEXT("StartMenu"));
 		//GetWorld()->ServerTravel(TEXT("StartMenu"));
