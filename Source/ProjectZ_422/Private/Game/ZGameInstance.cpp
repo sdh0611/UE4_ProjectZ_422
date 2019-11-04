@@ -10,14 +10,16 @@
 #include "MoviePlayer.h"
 #include "ModuleManager.h"
 #include "ZBasePlayerController.h"
-#include "OnlineSessionSettings.h"
-#include "OnlineSubsystemTypes.h"
 #include "Engine/Engine.h"
 #include "Engine/LocalPlayer.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/ZGameViewportClient.h"
+
+#include "OnlineSessionSettings.h"
+#include "OnlineSubsystemTypes.h"
+#include "OnlineSubsystemClasses.h"
 
 static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
@@ -265,7 +267,7 @@ void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 		return;
 	}
 	OnFindSessionsEnd.Execute();
-	
+
 	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
 	{
@@ -296,7 +298,7 @@ void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 					OnFindSessionsSuccess.Execute(SessionsInfo);
 				}
 			}
-			
+
 		}
 	}
 
@@ -324,9 +326,34 @@ void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionComp
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("JoinSession Fail."));
 			}
 
-			APlayerController* const PC = GetFirstLocalPlayerController();
+			/* Debug code. */
+			FNamedOnlineSession* MySession = Session->GetNamedSession(SessionName);
+			if (NULL == MySession)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("MySession Null."));
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("MySession Exist."));
+				if (false == MySession->SessionInfo.IsValid())
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Invalid SessionInfo."));
 
+				}
+				else
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Valid SessionInfo."));
+				}
+			}
+
+
+			APlayerController* const PC = GetFirstLocalPlayerController();
 			FString TravelURL;
+			if(!Session->GetResolvedConnectString(SessionName, TravelURL)) 
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Resolve connection fail. : %s"), *SessionName.ToString()));
+			}
+
 			if (PC && Session->GetResolvedConnectString(SessionName, TravelURL))
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s"), *TravelURL));
