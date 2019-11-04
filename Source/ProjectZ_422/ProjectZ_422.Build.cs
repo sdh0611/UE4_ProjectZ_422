@@ -13,9 +13,9 @@ public class ProjectZ_422 : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProjectZLoadingScreen" ,
             "Networking", "Http", "Json", "JsonUtilities", "Sockets",
-            "OnlineSubsystem", "OnlineSubsystemNull"});
+            "OnlineSubsystem", "OnlineSubsystemUtils"});
 
-        //DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
+        DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

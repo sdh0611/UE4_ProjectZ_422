@@ -19,7 +19,7 @@
 
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemTypes.h"
-#include "OnlineSubsystemClasses.h"
+
 
 static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
@@ -73,7 +73,7 @@ bool UZGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, const FS
 {
 	//GetFirstLocalPlayerController()->GetPlayerState<APlayerState>()->UniqueId.GetUniqueNetId();
 
-	IOnlineSubsystem* const OnlineSubSystem = IOnlineSubsystem::Get();
+	IOnlineSubsystem* const OnlineSubSystem = IOnlineSubsystem::Get(TEXT("Steam"));
 	if (OnlineSubSystem)
 	{
 		IOnlineSessionPtr Session = OnlineSubSystem->GetSessionInterface();
@@ -262,11 +262,12 @@ void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnFindSession : %d"), bWasSuccessful));
 
-	if (!bWasSuccessful)
-	{
-		return;
-	}
 	OnFindSessionsEnd.Execute();
+
+	//if (!bWasSuccessful)
+	//{
+	//	return;
+	//}
 
 	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
