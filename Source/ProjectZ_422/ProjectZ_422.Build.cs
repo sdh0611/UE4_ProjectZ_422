@@ -9,13 +9,13 @@ public class ProjectZ_422 : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG",
-            "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer" });
+            "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer",
+        "OnlineSubsystem", "OnlineSubsystemUtils", "OnlineSubsystemSteam"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProjectZLoadingScreen" ,
-            "Networking", "Http", "Json", "JsonUtilities", "Sockets",
-            "OnlineSubsystem", "OnlineSubsystemUtils"});
+            "Networking", "Http", "Json", "JsonUtilities", "Sockets"});
 
-        DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
+        //DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

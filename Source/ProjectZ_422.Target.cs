@@ -8,6 +8,7 @@ public class ProjectZ_422Target : TargetRules
 	public ProjectZ_422Target(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
+        bUsesSteam = true;
 
 		ExtraModuleNames.AddRange( new string[] { "ProjectZ_422", "ProjectZLoadingScreen" } );
 	}
