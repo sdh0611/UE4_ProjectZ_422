@@ -34,15 +34,15 @@ void UZConnectServerWidget::NativeConstruct()
 
 void UZConnectServerWidget::OnMakeServerButtonClick()
 {
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		//MyGameInstance->HostSession();
-	}
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	//MyGameInstance->HostSession();
+	//}
 
 	//GetWorld()->ServerTravel(TEXT("Lobby?Listen"));
 
-	//UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
 }
 
 void UZConnectServerWidget::OnConnectGameButtonClick()
@@ -87,15 +87,15 @@ void UZConnectServerWidget::OnConnectGameResponse(FHttpRequestPtr Request, FHttp
 				//	//ErrorText->SetText(FText::FromString(TEXT("게임에 참가할 수 없습니다.")));
 				//}
 
-				auto PC = GetOwningPlayer<AZBasePlayerController>();
-				if (PC && PC->IsLocalPlayerController())
-				{
-					//PC->RemoveAllWidget();
-					//PC->ClientTravel(ConnectIP, TRAVEL_Relative, true);
-					GetWorld()->ServerTravel(ConnectIP);
-				}
+				//auto PC = GetOwningPlayer<AZBasePlayerController>();
+				//if (PC && PC->IsLocalPlayerController())
+				//{
+				//	//PC->RemoveAllWidget();
+				//	//PC->ClientTravel(ConnectIP, TRAVEL_Relative, true);
+				//	GetWorld()->ServerTravel(ConnectIP);
+				//}
 
-				//UGameplayStatics::OpenLevel(GetWorld(), *ConnectIP);
+				UGameplayStatics::OpenLevel(GetWorld(), *ConnectIP);
 			}
 			else
 			{

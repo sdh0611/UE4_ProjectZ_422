@@ -5,6 +5,7 @@
 #include "ZBasePlayerController.h"
 #include "ZCharacter.h"
 #include "Engine/World.h"
+#include "GameLiftServerSDK.h"
 
 void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)
 {

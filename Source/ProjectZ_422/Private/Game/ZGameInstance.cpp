@@ -20,6 +20,8 @@
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemTypes.h"
 
+//#include "GameLiftServerSDK.h"
+
 
 static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
