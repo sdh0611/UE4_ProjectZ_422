@@ -6,11 +6,14 @@ public class ProjectZ_422 : ModuleRules
 {
 	public ProjectZ_422(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+        bEnableExceptions = true;
+
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG",
             "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer",
-        "OnlineSubsystem", "OnlineSubsystemUtils", "OnlineSubsystemSteam", "GameLiftServerSDK" });
+        "OnlineSubsystem", "OnlineSubsystemUtils", "OnlineSubsystemSteam",
+            "GameLiftServerSDK", "GameLiftClientSDK" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProjectZLoadingScreen" ,
             "Networking", "Http", "Json", "JsonUtilities", "Sockets"});

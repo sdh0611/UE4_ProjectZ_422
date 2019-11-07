@@ -26,7 +26,7 @@ public:
 
 public:
 	//void RemoveAllWidget();
-	void ShowLoadingWidget(bool bShow);
+	//void ShowLoadingWidget(bool bShow);
 
 public:
 	UFUNCTION(Client, Reliable, WithValidation)
@@ -58,11 +58,11 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 
-private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(AllowPrivateAccess=true))
-	TSubclassOf<class UUserWidget> LoadingWidgetClass;
-	
-	UPROPERTY()
-	class UUserWidget* LoadingWidget;
-
+//private:
+//	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(AllowPrivateAccess=true))
+//	TSubclassOf<class UUserWidget> LoadingWidgetClass;
+//	
+//	UPROPERTY()
+//	class UUserWidget* LoadingWidget;
+//
 };

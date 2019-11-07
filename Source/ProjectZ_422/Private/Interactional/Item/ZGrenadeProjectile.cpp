@@ -83,6 +83,11 @@ void AZGrenadeProjectile::Explosion()
 
 void AZGrenadeProjectile::MulticastSpawnExplosion_Implementation()
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	if (ExplosionParticle)
 	{
 		FVector SpawnLocation = GetActorLocation();

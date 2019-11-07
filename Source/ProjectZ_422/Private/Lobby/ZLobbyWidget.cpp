@@ -200,40 +200,10 @@ void UZLobbyWidget::OnExitButtonClick()
 	auto PC = GetOwningPlayer<AZBasePlayerController>();
 	if (PC && PC->IsLocalPlayerController())
 	{
-		auto MyGameInstance = GetGameInstance<UZGameInstance>();
-		if (MyGameInstance)
-		{
-			if (PC->GetNetMode() == ENetMode::NM_ListenServer)
-			{
-				ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
-
-				FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
-				URL.Append(TEXT("/delete_game"));
-
-				FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
-				MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
-
-
-				auto LobbyGameMode = GetWorld()->GetAuthGameMode<AZLobbyGameMode>();
-				if (LobbyGameMode)
-				{
-					LobbyGameMode->DestroyClientsSession();
-				}
-			}
-			else
-			{
-				if (MyGameInstance->DestroySession())
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Client DestroySession success")));
-				}
-			}
-		}
-		
 		PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
 		//UGameplayStatics::OpenLevel(GetWorld(), TEXT("StartMenu"));
 		//GetWorld()->ServerTravel(TEXT("StartMenu"));
 	}
-
 
 
 }

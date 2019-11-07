@@ -31,6 +31,11 @@ void AZPlayerController::BeginPlay()
 
 	//UWidgetBlueprintLibrary::GetAllWidgetsOfClass();
 
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	if (nullptr == UserHUDClass)
 	{
 		ZLOG(Error, TEXT("UserHUDClass null."));

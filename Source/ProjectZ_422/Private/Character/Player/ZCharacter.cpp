@@ -1278,6 +1278,11 @@ void AZCharacter::ClientOnDead_Implementation()
 
 void AZCharacter::MulticastPlayItemMontage_Implementation(const FString & MontageName)
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	if (!IsEquipWeapon())
 	{
 		ZLOG(Error, TEXT("Weapon not exis.."));
@@ -1307,6 +1312,11 @@ bool AZCharacter::MulticastAttachWeapon_Validate(AZWeapon* Weapon, FName SocketN
 
 void AZCharacter::MulticastAttachWeapon_Implementation(AZWeapon* Weapon, FName SocketName)
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	AttachWeapon(Weapon, SocketName);
 }
 

@@ -18,6 +18,12 @@ void AZLobbyPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
+
 	if (IsLocalPlayerController())
 	{
 		if (UserHUDClass)

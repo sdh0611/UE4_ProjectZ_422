@@ -78,20 +78,20 @@ void AZBasePlayerController::PreClientTravel(const FString & PendingURL, ETravel
 //	}
 //}
 
-void AZBasePlayerController::ShowLoadingWidget(bool bShow)
-{
-	if (!IsLocalPlayerController())
-	{
-		return;
-	}
-
-	if (LoadingWidget)
-	{
-		ESlateVisibility Visibility = (bShow ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-		LoadingWidget->SetVisibility(Visibility);
-	}
-
-}
+//void AZBasePlayerController::ShowLoadingWidget(bool bShow)
+//{
+//	if (!IsLocalPlayerController())
+//	{
+//		return;
+//	}
+//
+//	if (LoadingWidget)
+//	{
+//		ESlateVisibility Visibility = (bShow ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+//		LoadingWidget->SetVisibility(Visibility);
+//	}
+//
+//}
 
 bool AZBasePlayerController::ClientReceiveGetUserName_Validate()
 {
@@ -167,11 +167,11 @@ void AZBasePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsLocalPlayerController())
-	{
-		LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
-		check(LoadingWidget);
-	}
+	//if (IsLocalPlayerController())
+	//{
+	//	LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
+	//	check(LoadingWidget);
+	//}
 
 	//if (IsLocalPlayerController())
 	//{

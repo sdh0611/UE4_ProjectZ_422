@@ -30,10 +30,10 @@ public:
 	void StartGame();
 	void DestroyClientsSession();
 
-public:
-	int32 GetConnectNumber() const;
-
-private:
-	int32 ConnectNumber = 0;
+//public:
+//	int32 GetConnectNumber() const;
+//
+//private:
+//	int32 ConnectNumber = 0;
 
 };

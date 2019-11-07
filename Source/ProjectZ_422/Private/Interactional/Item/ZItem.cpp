@@ -511,6 +511,11 @@ void AZItem::MulticastOnItemDropped_Implementation()
 
 void AZItem::MulticastOnItemPicked_Implementation()
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	OnPicked();
 }
 

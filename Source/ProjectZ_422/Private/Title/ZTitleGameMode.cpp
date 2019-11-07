@@ -5,11 +5,6 @@
 #include "ZBasePlayerController.h"
 #include "Engine/World.h"
 
-void AZTitleGameMode::ToLobby(const FString & URL)
-{
-	GetWorld()->ServerTravel(URL);
-
-}
 
 void AZTitleGameMode::BeginPlay()
 {

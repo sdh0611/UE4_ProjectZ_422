@@ -285,6 +285,11 @@ void AZGun::ServerSetFireMode_Implementation(EFireMode NewMode)
 
 void AZGun::MulticastSpawnFireEffectAndSound_Implementation()
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	if (FireEffect)
 	{
 		UGameplayStatics::SpawnEmitterAttached(FireEffect, WeaponMesh, EffectAttachSocketName);
@@ -298,6 +303,11 @@ void AZGun::MulticastSpawnFireEffectAndSound_Implementation()
 
 void AZGun::MulticastSpawnTrail_Implementation(const FVector & EndPoint)
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	if (ProjectileTrail)
 	{
 		FVector MuzzleLoc = WeaponMesh->GetSocketLocation(TEXT("muzzle"));

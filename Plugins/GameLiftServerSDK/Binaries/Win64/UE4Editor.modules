@@ -1,7 +1,7 @@
 {
-	"BuildId": "7374b2bf-7bd9-4a82-86de-46d6a4d6e305",
+	"BuildId": "85dd067e-bd57-4fe3-ab7e-8c0401117fc1",
 	"Modules": 
 	{
-		"GameLiftServerSDK": "UE4Editor-GameLiftServerSDK-0001.dll"
+		"GameLiftServerSDK": "UE4Editor-GameLiftServerSDK.dll"
 	}
 }

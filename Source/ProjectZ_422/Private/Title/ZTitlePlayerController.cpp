@@ -12,6 +12,11 @@ void AZTitlePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	if (IsLocalPlayerController())
 	{
 		bShowMouseCursor = true;

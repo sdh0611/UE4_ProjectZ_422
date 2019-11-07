@@ -247,6 +247,11 @@ void AZBaseCharacter::ServerSetCrouchWalkSpeed_Implementation(float NewSpeed)
 
 void AZBaseCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	auto CharacterAnim = GetAnimInstance();
 	if (!::IsValid(CharacterAnim))
 	{
@@ -304,6 +309,11 @@ void AZBaseCharacter::ServerSetSprinting_Implementation(bool bNewState)
 
 void AZBaseCharacter::MulticastOnHit_Implementation()
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	auto Anim = GetAnimInstance();
 	if (::IsValid(Anim))
 	{
@@ -320,6 +330,11 @@ void AZBaseCharacter::MulticastOnHit_Implementation()
 
 void AZBaseCharacter::MulticastOnDead_Implementation()
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	auto Anim = GetAnimInstance();
 	if (::IsValid(Anim))
 	{

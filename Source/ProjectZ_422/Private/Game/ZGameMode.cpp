@@ -47,19 +47,19 @@ void AZGameMode::InitGame(const FString & MapName, const FString & Options, FStr
 	
 	CurrentLevelName = *MapName;
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
-		
-		FString URL = MyGameInstance->GetWebConnector().GetWebURL();
-		URL.Append(TEXT("/start_game"));
-		
-		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+	//	
+	//	FString URL = MyGameInstance->GetWebConnector().GetWebURL();
+	//	URL.Append(TEXT("/start_game"));
+	//	
+	//	FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
 
-		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+	//	MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
 
-	}
+	//}
 
 }
 
@@ -128,19 +128,19 @@ void AZGameMode::Tick(float DeltaTime)
 
 void AZGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
 
-		FString URL = MyGameInstance->GetWebConnector().GetWebURL();
-		URL.Append(TEXT("/delete_game"));
+	//	FString URL = MyGameInstance->GetWebConnector().GetWebURL();
+	//	URL.Append(TEXT("/delete_game"));
 
-		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+	//	FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
 
-		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+	//	MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
 
-	}
+	//}
 	
 	Super::EndPlay(EndPlayReason);
 

@@ -5,7 +5,34 @@
 #include "ZBasePlayerController.h"
 #include "ZCharacter.h"
 #include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameLiftServerSDK.h"
+
+AZBaseGameMode::AZBaseGameMode()
+{
+	FGameLiftServerSDKModule* GameLiftSDKModule = 
+		&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
+
+	GameLiftSDKModule->InitSDK();
+
+	auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
+	{
+		GameLiftSDKModule->ActivateGameSession();
+	};
+
+	FProcessParameters* Params = new FProcessParameters();
+	Params->OnStartGameSession.BindLambda(OnGameSession);
+	Params->OnTerminate.BindLambda([=]() {
+		GameLiftSDKModule->ProcessEnding();
+	});
+
+	Params->OnHealthCheck.BindLambda([]() { return true; });
+
+	Params->port = 7777;
+
+	GameLiftSDKModule->ProcessReady(*Params);
+	
+}
 
 void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)
 {
@@ -15,6 +42,7 @@ void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)
 	if (BasePC)
 	{
 		BasePC->ClientReceiveGetUserName();
+		++ConnectNumber;
 	}
 
 }
@@ -23,6 +51,11 @@ void AZBaseGameMode::Logout(AController * Exiting)
 {
 	Super::Logout(Exiting);
 
+	--ConnectNumber;
+	//if (ConnectNumber < 1)
+	//{
+	//	UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	//}
 }
 
 void AZBaseGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -35,7 +68,6 @@ void AZBaseGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 	//		PC->ClientDestroySession();
 	//	}
 	//}
-	
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -56,4 +88,9 @@ void AZBaseGameMode::UpdatePlayersName()
 	//	//	BasePC->ClientReceiveSetUserName();
 	//	//}
 	//}
+}
+
+int32 AZBaseGameMode::GetConnectNumber() const
+{
+	return ConnectNumber;
 }

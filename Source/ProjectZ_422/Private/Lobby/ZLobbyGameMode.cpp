@@ -36,7 +36,7 @@ void AZLobbyGameMode::PostLogin(APlayerController * NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	++ConnectNumber;
+	//++ConnectNumber;
 	
 	auto MyGameState = GetGameState<AZLobbyGameState>();
 	if (MyGameState)
@@ -50,10 +50,10 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 {
 	Super::Logout(Exiting);
 
-	if (ConnectNumber > 0)
-	{
-		--ConnectNumber;
-	}
+	//if (ConnectNumber > 0)
+	//{
+	//	--ConnectNumber;
+	//}
 	
 	auto MyGameState = GetGameState<AZLobbyGameState>();
 	if (MyGameState)
@@ -96,19 +96,19 @@ void AZLobbyGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 	//if (EndPlayReason != EEndPlayReason::LevelTransition)
 	//{
-	//	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	//	if (MyGameInstance)
-	//	{
-	//		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+		auto MyGameInstance = GetGameInstance<UZGameInstance>();
+		if (MyGameInstance)
+		{
+			ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
 
-	//		FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
-	//		URL.Append(TEXT("/delete_game"));
+			FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
+			URL.Append(TEXT("/delete_game"));
 
-	//		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+			FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
 
-	//		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+			MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
 
-	//	}
+		}
 	//}
 
 	Super::EndPlay(EndPlayReason);
@@ -118,7 +118,7 @@ void AZLobbyGameMode::StartGame()
 {
 	ZLOG_S(Error);
 	
-	DestroyClientsSession();
+	//DestroyClientsSession();
 
 	if (!GetWorld()->ServerTravel(TEXT("Stage1")))
 	{
@@ -160,7 +160,7 @@ void AZLobbyGameMode::DestroyClientsSession()
 
 }
 
-int32 AZLobbyGameMode::GetConnectNumber() const
-{
-	return ConnectNumber;
-}
+//int32 AZLobbyGameMode::GetConnectNumber() const
+//{
+//	return ConnectNumber;
+//}

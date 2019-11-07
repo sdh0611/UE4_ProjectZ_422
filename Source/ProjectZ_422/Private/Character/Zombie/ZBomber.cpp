@@ -158,6 +158,11 @@ void AZBomber::OnDead()
 
 void AZBomber::MulticastExplosion_Implementation()
 {
+	if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	{
+		return;
+	}
+
 	/* Sound นื Particle ภ๛ฟ๋ */
 	if (ExplosionSound)
 	{
