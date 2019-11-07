@@ -140,23 +140,23 @@ void AZLobbyGameMode::StartGame()
 
 void AZLobbyGameMode::DestroyClientsSession()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
 
-	for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
-	{
-		auto PC = Cast <AZBasePlayerController>(*Iter);
-		if (PC)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySession~~"));
-			PC->ClientDestroySession();
-		}
-	}
+	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+	//{
+	//	auto PC = Cast <AZBasePlayerController>(*Iter);
+	//	if (PC)
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySession~~"));
+	//		PC->ClientDestroySession();
+	//	}
+	//}
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		MyGameInstance->DestroySession();
-	}
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	MyGameInstance->DestroySession();
+	//}
 
 }
 

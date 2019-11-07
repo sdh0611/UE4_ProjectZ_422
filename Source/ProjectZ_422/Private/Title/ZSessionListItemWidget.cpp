@@ -73,7 +73,7 @@ FReply UZSessionListItemWidget::NativeOnMouseButtonDoubleClick(const FGeometry &
 			if (PS)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In double click3!"));
-				MyGameInstance->SessionJoinByIndex(PS->UniqueId.GetUniqueNetId(), NAME_GameSession, SessionInfo.SessionIndex);
+				//MyGameInstance->SessionJoinByIndex(PS->UniqueId.GetUniqueNetId(), NAME_GameSession, SessionInfo.SessionIndex);
 			}
 		}
 	}

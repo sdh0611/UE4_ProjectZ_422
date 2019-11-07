@@ -134,7 +134,7 @@ void AZBasePlayerController::ClientDestroySession_Implementation()
 		auto MyGameInstance = GetGameInstance<UZGameInstance>();
 		if (MyGameInstance)
 		{
-			MyGameInstance->DestroySession();
+			//MyGameInstance->DestroySession();
 		}
 	}
 }

@@ -42,11 +42,9 @@ void UZSessionListWidget::NativeConstruct()
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (MyGameInstance)
 	{
-		MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
-		MyGameInstance->OnFindSessionsEnd.BindUObject(this, &UZSessionListWidget::OnRefreshEnd);
-		//MyGameInstance->OnFindSessionsEnd.BindLambda([this]() {
-		//	LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
-		//});
+		//MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
+		//MyGameInstance->OnFindSessionsEnd.BindUObject(this, &UZSessionListWidget::OnRefreshEnd);
+
 	}
 }
 
@@ -98,7 +96,7 @@ void UZSessionListWidget::OnRefreshButtonClick()
 				SessionList->ClearChildren();
 
 				LoadingWidget->SetVisibility(ESlateVisibility::Visible);
-				MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, true);
+				//MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, true);
 			}
 		}
 	}

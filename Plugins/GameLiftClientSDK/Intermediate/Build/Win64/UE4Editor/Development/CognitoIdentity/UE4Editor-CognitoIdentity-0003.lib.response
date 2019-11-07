@@ -1,0 +1,13 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-CognitoIdentity-0003.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.h.obj"
+"E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftClientSDK\Intermediate\Build\Win64\UE4Editor\Development\CognitoIdentity\CognitoIdentityModule.cpp.obj"
+"D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Intermediate\Build\Win64\UE4Editor\Development\Default.rc2.res"
+/OUT:"E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftClientSDK\Intermediate\Build\Win64\UE4Editor\Development\CognitoIdentity\UE4Editor-CognitoIdentity-0003.lib"
+/INCLUDE:IMPLEMENT_MODULE_CognitoIdentity

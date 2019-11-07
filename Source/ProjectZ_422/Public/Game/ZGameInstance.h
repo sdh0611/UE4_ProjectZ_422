@@ -13,12 +13,14 @@
 
 #include "OnlineSubsystem.h"
 #include "OnlineSessionInterface.h"
+#include "GameLiftClientTypes.h"
 
 #include "ZGameInstance.generated.h"
 
-DECLARE_DELEGATE_OneParam(FOnFindSessionsSuccess, const TArray<FZSessionInfo>&);
-DECLARE_DELEGATE(FOnFindSessionsEnd);
-
+/*
+	NOTE(11.07) : 
+		DedicatedClient Branch의 Client용 GameInstance.
+*/
 
 USTRUCT(BlueprintType)
 struct PROJECTZ_422_API FZSessionInfo
@@ -56,45 +58,54 @@ public:
 	/* Login server 통신 관련. */
 	UZWebConnector& GetWebConnector();
 
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	UZWebConnector* WebConnector;
+
+
 public:
-	/* Session 관련 */
-	bool HostSession(TSharedPtr<const FUniqueNetId> UserId, const FString& ServerName, bool bIsLAN,
-		bool bIsPresence, int32 MaxNumPlayers);
-	void FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
-	bool SessionJoin(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
-	bool SessionJoinByIndex(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, int32 SessionIndex);
+	/* GameLiftClient 관련 */
+
+	/* Dedicated Server 인스턴스 생성 요청. */
+	UFUNCTION(BlueprintCallable)
+	void CreateGameSession(const FString& AliasID, int32 MaxPlayer);
 
 	UFUNCTION(BlueprintCallable)
-	bool DestroySession();
+	void DescribeGameSession(const FString& GameSessionID);
+	
+	/* Join 요청. */
+	UFUNCTION(BlueprintCallable)
+	void CreatePlayerSession(const FString& GameSessionID, const FString& UniquePlayerID);
 
 private:
-	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
-	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
-	void OnFindSessionsComplete(bool bWasSuccessful);
-	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
+	UFUNCTION()
+	void OnGameCreationSuccess(const FString& GameSessionID);
 
-public:
-	FOnFindSessionsSuccess OnFindSessionsSuccess;
-	FOnFindSessionsEnd OnFindSessionsEnd;
+	UFUNCTION()
+	void OnGameCreationFailed(const FString& ErrorMessage);
 
-private:
-	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
-	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
-	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
-	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
-	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate;
+	UFUNCTION()
+	void OnDescribeGameSessionSuccess(const FString& SessionID, EGameLiftGameSessionStatus SessionStatus);
 
-	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
-	FDelegateHandle OnStartSessionCompleteDelegateHandle;
-	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
-	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
-	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
+	UFUNCTION()
+	void OnDescribeGameSessionFailed(const FString& ErrorMessage);
+	
+	UFUNCTION()
+	void OnPlayerSessionCreateSuccess(const FString& IPAddress, const FString& Port, const FString& PlayerSessionID, const int& PlayerSessionStatus);
 
-	/* Session 옵션 세팅용. */
-	TSharedPtr<class FOnlineSessionSettings> SessionSettings;
-	/* Session Search 결과를 저장하기 위한 변수. */
-	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+	UFUNCTION()
+	void OnPlayerSessionCreateFail(const FString& ErrorMessage);
+
+protected:
+	UPROPERTY()
+	class UGameLiftClientObject* GameLiftClientObject;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString GameLiftAccessKey;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString GameLiftSecretAccessKey;
+
 
 public:
 	void ShowLoadingScreen();
@@ -160,7 +171,7 @@ private:
 	/* 애셋 로딩 */
 	void LoadStaticMesh();
 	void LoadSkeletalMesh();
-	void LoadImage();
+	void LoadImages();
 
 	/* 맵 로딩 */
 	void OnPreLoadMap(const FString& MapName);
@@ -169,9 +180,6 @@ private:
 
 public:
 	FStreamableManager AssetLoader;
-
-	UPROPERTY(BlueprintReadOnly)
-	UZWebConnector* WebConnector;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

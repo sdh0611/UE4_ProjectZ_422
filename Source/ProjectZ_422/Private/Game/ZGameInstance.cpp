@@ -16,20 +16,23 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/ZGameViewportClient.h"
+#include "ConfigCacheIni.h"
 
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemTypes.h"
 
-//#include "GameLiftServerSDK.h"
-
+#include "GameLiftClientSDK.h"
+#include "GameLiftClientObject.h"
+#include "GameLiftClientApi.h"
 
 static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
 UZGameInstance::UZGameInstance()
 {
-	//UFindSessionsCallbackProxy::FindSessions();
-	//UCreateSessionCallbackProxy::CreateSession();
-	//UDestroySessionCallbackProxy::DestroySession();
+	/* Client 관련 */
+	GameLiftAccessKey = TEXT("AKIAUMWLOZXE6L2RTDFJ");
+	GameLiftSecretAccessKey = TEXT("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");
+
 }
 
 void UZGameInstance::Init()
@@ -40,7 +43,7 @@ void UZGameInstance::Init()
 
 	LoadStaticMesh();
 	LoadSkeletalMesh();
-	LoadImage();
+	LoadImages();
 
 	//GEngine->GetGameUserSettings()->LoadSettings();
 	//GEngine->GetGameUserSettings()->ApplySettings(true);
@@ -49,12 +52,15 @@ void UZGameInstance::Init()
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 
-	OnCreateSessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnCreateSessionComplete);
-	OnStartSessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnStartSessionComplete);
-	OnFindSessionsCompleteDelegate.BindUObject(this, &UZGameInstance::OnFindSessionsComplete);
-	OnJoinSessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnJoinSessionComplete);
-	OnDestroySessionCompleteDelegate.BindUObject(this, &UZGameInstance::OnDestroySessionComplete);
-
+	if (!IsDedicatedServerInstance())
+	{
+		/* Client 관련 */
+		GameLiftClientObject = UGameLiftClientObject::CreateGameLiftObject(GameLiftAccessKey, GameLiftSecretAccessKey);
+		if (nullptr == GameLiftClientObject)
+		{
+			ZLOG(Error, TEXT("Failed to create GameLiftClientObject.."));
+		}
+	}
 
 }
 
@@ -71,318 +77,105 @@ UZWebConnector & UZGameInstance::GetWebConnector()
 	return *WebConnector;
 }
 
-bool UZGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, const FString&  ServerName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers)
+void UZGameInstance::CreateGameSession(const FString& AliasID, int32 MaxPlayer)
 {
-	//GetFirstLocalPlayerController()->GetPlayerState<APlayerState>()->UniqueId.GetUniqueNetId();
-
-	IOnlineSubsystem* const OnlineSubSystem = IOnlineSubsystem::Get(TEXT("Steam"));
-	if (OnlineSubSystem)
+	if (nullptr == GameLiftClientObject)
 	{
-		IOnlineSessionPtr Session = OnlineSubSystem->GetSessionInterface();
-		if (Session.IsValid() && UserId.IsValid())
-		{
-			SessionSettings = MakeShareable(new FOnlineSessionSettings());
-			//SessionSettings->bIsLANMatch = true;
-			//SessionSettings->bUsesPresence = true;
-			//SessionSettings->NumPublicConnections = MaxNumPlayers;
-			////SessionSettings->NumPrivateConnections = 0;
-			////SessionSettings->bIsDedicated = false;
-			////SessionSettings->bAllowInvites = true;
-			////SessionSettings->bAllowJoinInProgress = false;
-			//SessionSettings->bShouldAdvertise = true;
-			////SessionSettings->bAllowJoinViaPresence = true;
-			////SessionSettings->bAllowJoinViaPresenceFriendsOnly = false;
-			//SessionSettings->Set(SERVER_NAME_KEY, SessionName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-			////SessionSettings->Set(SETTING_MAPNAME, FString("StartMenu"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-
-			SessionSettings->NumPublicConnections = MaxNumPlayers;
-			SessionSettings->bShouldAdvertise = true;
-			SessionSettings->bAllowJoinInProgress = true;
-			SessionSettings->bIsLANMatch = bIsLAN;
-			SessionSettings->bUsesPresence = true;
-			SessionSettings->bAllowJoinViaPresence = true;
-
-			SessionSettings->Set(SERVER_NAME_KEY, ServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-			OnCreateSessionCompleteDelegateHandle = Session->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
-
-			//FNamedOnlineSession* ExistSession = Session->GetNamedSession(*SessionName);
-			//if (ExistSession)
-			//{
-			//	Session->DestroySession(*SessionName);
-			//}
-
-			return Session->CreateSession(0, NAME_GameSession, *SessionSettings);
-		}
-
+		return;
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("No OnlineSubsystem found!"));
-	}
-
-	/* Session 생성 실패 */
-	return false;
 	
-}
-
-void UZGameInstance::FindSession(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence)
-{
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
-	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		
-		if (Session.IsValid())
-		{
-			SessionSearch = MakeShareable(new FOnlineSessionSearch());
-
-			SessionSearch->bIsLanQuery = true;
-			SessionSearch->MaxSearchResults = 100;
-			//SessionSearch->PingBucketSize = 50;
-			SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-
-			TSharedRef<FOnlineSessionSearch> SearchSettingRef = SessionSearch.ToSharedRef();
-
-			OnFindSessionsCompleteDelegateHandle = Session->AddOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegate);
-			Session->FindSessions(0, SearchSettingRef);
-		}
-	}
-	else
-	{
-		
-		OnFindSessionsComplete(false);
-	}
-
-}
-
-bool UZGameInstance::SessionJoin(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult & SearchResult)
-{
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
-	{
-		GetFirstLocalPlayerController()->GetLocalPlayer();
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			OnJoinSessionCompleteDelegateHandle = Session->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
-
-			return Session->JoinSession(0, SessionName, SearchResult);
-		}
-
-	}
-
-	return false;
-}
-
-bool UZGameInstance::SessionJoinByIndex(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, int32 SessionIndex)
-{
-	if (!SessionSearch->SearchResults.IsValidIndex(SessionIndex))
-	{
-		return false;
-	}
-
+	FGameLiftGameSessionConfig MySessionConfig;
+	MySessionConfig.SetAliasID(AliasID);
+	MySessionConfig.SetMaxPlayers(MaxPlayer);
 	
-	int32 CurrentConnection 
-		= SessionSearch->SearchResults[SessionIndex].Session.SessionSettings.NumPublicConnections 
-		- SessionSearch->SearchResults[SessionIndex].Session.NumOpenPublicConnections;
-	if (CurrentConnection < 1)
+
+	UGameLiftCreateGameSession* MyGameSessionObject = GameLiftClientObject->CreateGameSession(MySessionConfig);
+	if (nullptr == MyGameSessionObject)
 	{
-		return false;
+		ZLOG_S(Error);
+		return;
 	}
-
-	return SessionJoin(UserId, SessionName, SessionSearch->SearchResults[SessionIndex]);
-}
-
-bool UZGameInstance::DestroySession()
-{
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
-	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			OnDestroySessionCompleteDelegateHandle = Session->AddOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegate);
-			return Session->DestroySession(NAME_GameSession);
-		}
-	}
-
-	return false;
-}
-
-void UZGameInstance::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnCreateSession : %s, %d"), *SessionName.ToString(), bWasSuccessful));
-
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
-	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			Session->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
-			if (bWasSuccessful)
-			{
-				OnStartSessionCompleteDelegateHandle = Session->AddOnStartSessionCompleteDelegate_Handle(OnStartSessionCompleteDelegate);
-				Session->StartSession(SessionName);
-			}
-		}
-	}
+	MyGameSessionObject->OnCreateGameSessionSuccess.AddDynamic(this, &UZGameInstance::OnGameCreationSuccess);
+	MyGameSessionObject->OnCreateGameSessionFailed.AddDynamic(this, &UZGameInstance::OnGameCreationFailed);
+	MyGameSessionObject->Activate();
 
 }
 
-void UZGameInstance::OnStartSessionComplete(FName SessionName, bool bWasSuccessful)
+void UZGameInstance::DescribeGameSession(const FString & GameSessionID)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnStartSession : %s, %d"), *SessionName.ToString(), bWasSuccessful));
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
+	if (nullptr == GameLiftClientObject)
 	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			Session->ClearOnStartSessionCompleteDelegate_Handle(OnStartSessionCompleteDelegateHandle);
-		}
-
-	}
-
-	if (bWasSuccessful)
-	{
-		GetWorld()->ServerTravel(TEXT("Lobby?listen"), true);
-
-		//auto LobbyGameMode = GetWorld()->GetAuthGameMode<AZLobbyGameMode>();
-		//if (LobbyGameMode)
-		//{
-		//	LobbyGameMode->StartGame();
-		//}
-	}
-
-
-
-
-}
-
-void UZGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnFindSession : %d"), bWasSuccessful));
-
-	OnFindSessionsEnd.Execute();
-
-	//if (!bWasSuccessful)
-	//{
-	//	return;
-	//}
-
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
-	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			Session->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnFindSession : %d"), SessionSearch->SearchResults.Num()));
-
-			if (SessionSearch->SearchResults.Num() > 0)
-			{
-				TArray<FZSessionInfo> SessionsInfo;
-				FZSessionInfo SessionInfo;
-				for (int i = 0; i < SessionSearch->SearchResults.Num(); ++i)
-				{
-					/* Session 리스트 갱신 */
-					SessionInfo.SessionIndex = i;
-					SessionSearch->SearchResults[i].Session.SessionSettings.Get(SERVER_NAME_KEY, SessionInfo.ServerName);
-					SessionInfo.HostName = GetWebConnector().GetUserNickname();
-					SessionInfo.MaxConnection = SessionSearch->SearchResults[i].Session.SessionSettings.NumPublicConnections;
-					SessionInfo.CurrentConnection = SessionInfo.MaxConnection - SessionSearch->SearchResults[i].Session.NumOpenPublicConnections;
-
-					SessionsInfo.Add(SessionInfo);
-				}
-
-				if (OnFindSessionsSuccess.IsBound())
-				{
-					OnFindSessionsSuccess.Execute(SessionsInfo);
-				}
-			}
-
-		}
-	}
-
-
-}
-
-void UZGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s, %d"), *SessionName.ToString(), static_cast<int32>(Result)));
-	if (Result != EOnJoinSessionCompleteResult::Success)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("JoinSession Fail."));
 		return;
 	}
 
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
+	UGameLiftDescribeGameSession* MyDescribeGameSessionObject = GameLiftClientObject->DescribeGameSession(GameSessionID);
+	if (nullptr == MyDescribeGameSessionObject)
 	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			Session->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
-			if (nullptr == Session->GetNamedSession(SessionName))
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("JoinSession Fail."));
-			}
-
-			/* Debug code. */
-			FNamedOnlineSession* MySession = Session->GetNamedSession(SessionName);
-			if (NULL == MySession)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("MySession Null."));
-			}
-			else
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("MySession Exist."));
-				if (false == MySession->SessionInfo.IsValid())
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Invalid SessionInfo."));
-
-				}
-				else
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Valid SessionInfo."));
-				}
-			}
-
-
-			APlayerController* const PC = GetFirstLocalPlayerController();
-			FString TravelURL;
-			if(!Session->GetResolvedConnectString(SessionName, TravelURL)) 
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Resolve connection fail. : %s"), *SessionName.ToString()));
-			}
-
-			if (PC && Session->GetResolvedConnectString(SessionName, TravelURL))
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSession : %s"), *TravelURL));
-				PC->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
-			}
-
-		}
-
+		ZLOG_S(Error);
+		return;
 	}
-
+	MyDescribeGameSessionObject->OnDescribeGameSessionStateSuccess.AddDynamic(this, &UZGameInstance::OnDescribeGameSessionSuccess);
+	MyDescribeGameSessionObject->OnDescribeGameSessionStateFailed.AddDynamic(this, &UZGameInstance::OnDescribeGameSessionFailed);
+	MyDescribeGameSessionObject->Activate();
 }
 
-void UZGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
+void UZGameInstance::CreatePlayerSession(const FString & GameSessionID, const FString & UniquePlayerID)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnDestroySession : %s, %d"), *SessionName.ToString(), bWasSuccessful));
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-	if (OnlineSubsystem)
+	if (nullptr == GameLiftClientObject)
 	{
-		IOnlineSessionPtr Session = OnlineSubsystem->GetSessionInterface();
-		if (Session.IsValid())
-		{
-			Session->ClearOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegateHandle);
-		}
+		return;
+	}
+
+	UGameLiftCreatePlayerSession* MyCreatePlayerSessionObject = GameLiftClientObject->CreatePlayerSession(GameSessionID, UniquePlayerID);
+	if(nullptr == MyCreatePlayerSessionObject)
+	{
+		ZLOG_S(Error);
+		return;
+	}
+	MyCreatePlayerSessionObject->OnCreatePlayerSessionSuccess.AddDynamic(this, &UZGameInstance::OnPlayerSessionCreateSuccess);
+	MyCreatePlayerSessionObject->OnCreatePlayerSessionFailed.AddDynamic(this, &UZGameInstance::OnPlayerSessionCreateFail);
+	MyCreatePlayerSessionObject->Activate();
+}
+
+void UZGameInstance::OnGameCreationSuccess(const FString & GameSessionID)
+{
+	DescribeGameSession(GameSessionID);
+}
+
+void UZGameInstance::OnGameCreationFailed(const FString & ErrorMessage)
+{
+
+}
+
+void UZGameInstance::OnDescribeGameSessionSuccess(const FString & SessionID, EGameLiftGameSessionStatus SessionStatus)
+{
+	if (SessionStatus == EGameLiftGameSessionStatus::STATUS_Active
+		|| SessionStatus == EGameLiftGameSessionStatus::STATUS_Activating)
+	{
+		CreatePlayerSession(SessionID, WebConnector->GetUserNickname());
+	}
+
+}
+
+void UZGameInstance::OnDescribeGameSessionFailed(const FString & ErrorMessage)
+{
+
+
+}
+
+void UZGameInstance::OnPlayerSessionCreateSuccess(const FString & IPAddress, const FString & Port, const FString & PlayerSessionID, const int& PlayerSessionStatus)
+{
+	const FString TravelURL = IPAddress + ":" + Port;
+	auto PC = GetFirstGamePlayer()->GetPlayerController(GetWorld());
+	if (PC)
+	{
+		PC->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
 	}
 }
 
+void UZGameInstance::OnPlayerSessionCreateFail(const FString & ErrorMessage)
+{
+}
 
 void UZGameInstance::ShowLoadingScreen()
 {
@@ -631,7 +424,7 @@ void UZGameInstance::LoadSkeletalMesh()
 	}
 }
 
-void UZGameInstance::LoadImage()
+void UZGameInstance::LoadImages()
 {
 	if (nullptr == ItemImageDataTable)
 	{

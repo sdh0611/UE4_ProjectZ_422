@@ -64,20 +64,20 @@ void UZMakeGameWidget::OnCreateGameButtonClick()
 	auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	if (MyGameInstance)
 	{
-		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (PC)
-		{
-			auto PS = PC->GetPlayerState<APlayerState>();
-			if (PS)
-			{
-				if (!MyGameInstance->HostSession(PS->UniqueId.GetUniqueNetId(), *Name, true, true, FCString::Atoi(*Num)))
-				{
-					/* ErrorText */
-					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed to host session!"));
-				}
+		//auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		//if (PC)
+		//{
+		//	auto PS = PC->GetPlayerState<APlayerState>();
+		//	if (PS)
+		//	{
+		//		if (!MyGameInstance->HostSession(PS->UniqueId.GetUniqueNetId(), *Name, true, true, FCString::Atoi(*Num)))
+		//		{
+		//			/* ErrorText */
+		//			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed to host session!"));
+		//		}
 
-			}
-		}
+		//	}
+		//}
 	}
 
 

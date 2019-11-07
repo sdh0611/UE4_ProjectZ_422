@@ -6,32 +6,38 @@
 #include "ZCharacter.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameLiftServerSDK.h"
+//#include "GameLiftServerSDK.h"
+//#include "ConfigCacheIni.h"
 
 AZBaseGameMode::AZBaseGameMode()
 {
-	FGameLiftServerSDKModule* GameLiftSDKModule = 
-		&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
+	//GameLiftSDKModule = 
+	//	&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
 
-	GameLiftSDKModule->InitSDK();
+	//GameLiftSDKModule->InitSDK();
 
-	auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
-	{
-		GameLiftSDKModule->ActivateGameSession();
-	};
+	//auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
+	//{
+	//	GameLiftSDKModule->ActivateGameSession();
+	//};
+	//GameLiftSDKModule->TerminateGameSession();
 
-	FProcessParameters* Params = new FProcessParameters();
-	Params->OnStartGameSession.BindLambda(OnGameSession);
-	Params->OnTerminate.BindLambda([=]() {
-		GameLiftSDKModule->ProcessEnding();
-	});
+	//FProcessParameters* Params = new FProcessParameters();
+	//Params->OnStartGameSession.BindLambda(OnGameSession);
+	//Params->OnTerminate.BindLambda([=]() {
+	//	GameLiftSDKModule->ProcessEnding();
+	//});
 
-	Params->OnHealthCheck.BindLambda([]() { return true; });
+	//Params->OnHealthCheck.BindLambda([]() { return true; });
+	//FString Port = "7777";
+	//if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port) == false)
+	//{
+	//	Port = GConfig->GetStr(TEXT("URL"), TEXT("Port"), GEngineIni);
+	//}
+	//Params->port = FCString::Atoi(*Port);
 
-	Params->port = 7777;
-
-	GameLiftSDKModule->ProcessReady(*Params);
-	
+	//GameLiftSDKModule->ProcessReady(*Params);
+	//
 }
 
 void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)
@@ -68,7 +74,7 @@ void AZBaseGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 	//		PC->ClientDestroySession();
 	//	}
 	//}
-
+	
 	Super::EndPlay(EndPlayReason);
 }
 

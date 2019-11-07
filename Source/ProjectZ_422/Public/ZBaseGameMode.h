@@ -25,6 +25,7 @@ public:
 public:
 	void UpdatePlayersName();
 	
+
 public:
 	int32 GetConnectNumber() const;
 
@@ -32,5 +33,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 ConnectNumber = 0;
 
+	class FGameLiftServerSDKModule* GameLiftSDKModule;
 
 };
