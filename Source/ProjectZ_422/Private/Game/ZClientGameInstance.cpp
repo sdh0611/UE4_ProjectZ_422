@@ -3,6 +3,7 @@
 
 #include "ZClientGameInstance.h"
 #include "Engine/LocalPlayer.h"
+#include "ZBasePlayerController.h"
 
 #include "GameLiftClientSDK.h"
 #include "GameLiftClientObject.h"
@@ -10,9 +11,6 @@
 
 UZClientGameInstance::UZClientGameInstance()
 {
-	/* Client ฐüทร */
-	GameLiftAccessKey = TEXT("AKIAUMWLOZXE6L2RTDFJ");
-	GameLiftSecretAccessKey = TEXT("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");
 
 }
 
@@ -48,6 +46,7 @@ void UZClientGameInstance::CreateGameSession(const FString & AliasID, int32 MaxP
 		ZLOG_S(Error);
 		return;
 	}
+
 	MyGameSessionObject->OnCreateGameSessionSuccess.AddDynamic(this, &UZClientGameInstance::OnGameCreationSuccess);
 	MyGameSessionObject->OnCreateGameSessionFailed.AddDynamic(this, &UZClientGameInstance::OnGameCreationFailed);
 	MyGameSessionObject->Activate();
@@ -103,8 +102,7 @@ void UZClientGameInstance::OnGameCreationFailed(const FString & ErrorMessage)
 
 void UZClientGameInstance::OnDescribeGameSessionSuccess(const FString & SessionID, EGameLiftGameSessionStatus SessionStatus)
 {
-	if (SessionStatus == EGameLiftGameSessionStatus::STATUS_Active
-		|| SessionStatus == EGameLiftGameSessionStatus::STATUS_Activating)
+	if (SessionStatus == EGameLiftGameSessionStatus::STATUS_Active)
 	{
 		CreatePlayerSession(SessionID, WebConnector->GetUserNickname());
 	}

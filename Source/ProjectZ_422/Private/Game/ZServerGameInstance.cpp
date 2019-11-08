@@ -43,7 +43,6 @@ void UZServerGameInstance::Init()
 	Params->port = FCString::Atoi(*Port);
 
 	GameLiftSDKModule->ProcessReady(*Params);
-	
 
 }
 
