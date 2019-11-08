@@ -1,0 +1,313 @@
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Intermediate\Build\Win64\ProjectZ_422Server\Development\GameLiftServerSDK\Definitions.GameLiftServerSDK.h
+e:\ue4projects\projectz_4223\ue4_projectz_422\plugins\gameliftserversdk\source\gameliftserversdk\private\GameLiftServerSDKPrivatePCH.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\GameLiftServerSDK.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Windows\AllowWindowsPlatformTypes.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Windows/WindowsHWrapper.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Windows/PreWindowsApi.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Windows/MinWindows.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\Windows.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\sdkddkver.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\excpt.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\windef.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\minwindef.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winnt.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\kernelspecs.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\basetsd.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\guiddef.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack4.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack4.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack4.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack2.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack2.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack2.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack8.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack1.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\pshpack1.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\apiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\ktmtypes.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winbase.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\apisetcconv.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\minwinbase.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\processenv.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\fileapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\debugapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\utilapiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\handleapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\errhandlingapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\fibersapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\namedpipeapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\profileapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\heapapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\ioapiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\synchapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\interlockedapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\processthreadsapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\sysinfoapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\memoryapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\enclaveapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\threadpoollegacyapiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\threadpoolapiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\jobapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\jobapi2.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\wow64apiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\libloaderapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\securitybaseapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\namespaceapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\systemtopologyapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\processtopologyapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\securityappcontainer.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\realtimeapiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\winerror.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\timezoneapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\wingdi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack1.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack2.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack4.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack4.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winuser.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\pshpack2.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\poppack.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\tvout.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winnls.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\datetimeapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\stringapiset.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winnls.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\wincon.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\consoleapi.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winver.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\verrsrc.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winreg.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\reason.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\winnetwk.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\wnnc.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\shared\stralign.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\imm.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\um\ime_cmodes.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Windows/PostWindowsApi.h
+e:\ue4projects\projectz_4223\ue4_projectz_422\plugins\gameliftserversdk\source\gameliftserversdk\public\aws/gamelift/common/Outcome.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/common/GameLiftErrors.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/common/GameLift_EXPORTS.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\string
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\istream
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ostream
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ios
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocnum
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\climits
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cmath
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xtgmath.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cstdio
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\streambuf
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xiosbase
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocale
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cstring
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\stdexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xstring
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xmemory0
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cstdint
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\limits
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ymath.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cfloat
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cwchar
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xutility
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\utility
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\iosfwd
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xatomic0.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\typeinfo
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\vcruntime_typeinfo.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocinfo
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocinfo.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt\locale.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\memory
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xmemory
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xfacet
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\system_error
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cerrno
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xcall_once.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xerrc.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt\share.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xstring_insert.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\vector
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/DescribePlayerSessionsResult.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/PlayerSession.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/PlayerSessionStatus.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/StartMatchBackfillResult.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\future
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\chrono
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ratio
+C:\Program Files (x86)\Windows Kits\10\include\10.0.16299.0\ucrt\time.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xtimec.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xthrcommon.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\condition_variable
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xthread
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xtime
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xthreads.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\tuple
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\mutex
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\functional
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thread
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ppltasks.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\pplwin.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\pplinterface.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\atomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xatomic.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xxatomic
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ppltaskscheduler.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\crtdefs.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\pplcancellation_token.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\algorithm
+e:\ue4projects\projectz_4223\ue4_projectz_422\plugins\gameliftserversdk\source\gameliftserversdk\public\aws/gamelift/server/GameLiftServerAPI.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/DescribePlayerSessionsRequest.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/StartMatchBackfillRequest.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/Player.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/AttributeValue.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/StopMatchBackfillRequest.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/ProcessParameters.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/GameSession.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/GameSessionStatus.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/PlayerSessionCreationPolicy.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/GameProperty.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/UpdateGameSession.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/model/UpdateReason.h
+E:\UE4Projects\ProjectZ_4223\UE4_ProjectZ_422\Plugins\GameLiftServerSDK\Source\GameLiftServerSDK\Public\aws/gamelift/server/LogParameters.h
+e:\ue4projects\projectz_4223\ue4_projectz_422\plugins\gameliftserversdk\source\gameliftserversdk\public\GameLiftServerSDKModels.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\map
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xtree
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Windows\HideWindowsPlatformTypes.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Core\Public\Core.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/MonolithicHeaderBoilerplate.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\GenericPlatform/GenericPlatformStackWalk.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/PlatformStackWalk.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Windows/WindowsPlatformStackWalk.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\GenericPlatform/GenericPlatformNamedPipe.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/PlatformNamedPipe.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Windows/WindowsPlatformNamedPipe.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\GenericPlatform/GenericPlatformCriticalSection.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/PlatformFile.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Windows/WindowsPlatformFile.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/PlatformAffinity.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/PlatformIncludes.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/MonolithicHeaderBoilerplate.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/PlatformFilemanager.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/MessageDialog.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\ProfilingDebugging/ScopedDebugInfo.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\ProfilingDebugging/ExternalProfiler.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/StringUtility.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/ArchiveProxy.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/NameAsStringProxyArchive.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Templates/ScopedPointer.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/MRUArray.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/TransArray.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/ITransaction.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\misc\Change.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/ArrayBuilder.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/BitReader.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/BitArchive.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/BitWriter.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/ScopedEvent.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/RunnableThread.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/SingleThreadEvent.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/SingleThreadRunnable.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/ThreadSafeBool.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/StaticBitArray.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/MapBuilder.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/ResourceArray.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/DynamicRHIResourceArray.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/ThreadingBase.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Internationalization/TextLocalizationManagerGlobals.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Internationalization/Culture.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/NetworkGuid.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Math/SHMath.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Math/RandomStream.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Logging/LogSuppressionInterface.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Logging/LogScopedCategoryAndVerbosityOverride.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\HAL/OutputDevices.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Logging/LogScopedVerbosityOverride.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceNull.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceMemory.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceFile.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceDebug.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceArchiveWrapper.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceError.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceAnsiError.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/BufferedOutputDevice.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Stats/StatsMisc.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/TimeGuard.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/LargeMemoryWriter.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/LargeMemoryData.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/LargeMemoryReader.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/BufferArchive.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/MemoryReader.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/ArrayReader.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/ArrayWriter.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/BufferWriter.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/Variant.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/WildcardString.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/CircularBuffer.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Containers/CircularQueue.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\ProfilingDebugging/ProfilingHelpers.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceHelper.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/ScopedSlowTask.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/AutomationTest.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Async/Future.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Async/Async.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Internationalization/Regex.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Templates/ScopedCallback.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/CallbackDevice.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/ObjectThumbnail.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/LocalTimestampDirectoryVisitor.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Serialization/CustomVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/BlueprintsObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/BuildObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/CoreObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/EditorObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/FrameworkObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/MobileObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/NetworkingObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/OnlineObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/PhysicsObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/PlatformObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/RenderingObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/SequencerObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\UObject/VRObjectVersion.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/OutputDeviceConsole.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/MonitoredProcess.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/Attribute.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\core\public\Misc/EnumRange.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Projects\Public\Interfaces\IPluginManager.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Projects\Public\PluginDescriptor.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\projects\public\ModuleDescriptor.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Json\Public\Serialization/JsonWriter.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Json\Public\Serialization/JsonTypes.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Json\Public\Policies/PrettyJsonPrintPolicy.h
+D:\UnrealBuild\UnrealEngine-4.22\UnrealEngine-4.22\Engine\Source\Runtime\Json\Public\Policies/JsonPrintPolicy.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\projects\public\CustomBuildSteps.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\projects\public\LocalizationDescriptor.h
+d:\unrealbuild\unrealengine-4.22\unrealengine-4.22\engine\source\runtime\projects\public\PluginReferenceDescriptor.h

@@ -1,0 +1,16 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.GameLiftClientSDK.cpp.obj": [
+			"GameLiftClientApi.cpp.obj",
+			"GameLiftClientObject.cpp.obj",
+			"GameLiftClientSDK.cpp.obj"
+		],
+		"Module.GameLiftClientSDK.gen.cpp.obj": [
+			"GameLiftClientApi.gen.cpp.obj",
+			"GameLiftClientObject.gen.cpp.obj",
+			"GameLiftClientSDK.init.gen.cpp.obj",
+			"GameLiftClientTypes.gen.cpp.obj"
+		]
+	}
+}

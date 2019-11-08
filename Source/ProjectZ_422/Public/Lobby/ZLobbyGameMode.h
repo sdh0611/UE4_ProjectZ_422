@@ -30,6 +30,8 @@ public:
 	void StartGame();
 	void DestroyClientsSession();
 
+private:
+	bool bIsStartGame = false;
 //public:
 //	int32 GetConnectNumber() const;
 //

@@ -29,7 +29,7 @@ public:
 
 	/* Dedicated Server 인스턴스 생성 요청. */
 	UFUNCTION(BlueprintCallable)
-	void CreateGameSession(const FString& AliasID, int32 MaxPlayer);
+	void CreateGameSession(const FString& SessionName, int32 MaxPlayer);
 
 	UFUNCTION(BlueprintCallable)
 	void DescribeGameSession(const FString& GameSessionID);
@@ -37,6 +37,9 @@ public:
 	/* Join 요청. */
 	UFUNCTION(BlueprintCallable)
 	void CreatePlayerSession(const FString& GameSessionID, const FString& UniquePlayerID);
+
+	UFUNCTION(BlueprintCallable)
+	void SearchSessions();
 
 private:
 	UFUNCTION()
@@ -55,11 +58,24 @@ private:
 	void OnPlayerSessionCreateSuccess(const FString& IPAddress, const FString& Port, const FString& PlayerSessionID, const int& PlayerSessionStatus);
 
 	UFUNCTION()
-	void OnPlayerSessionCreateFail(const FString& ErrorMessage);
+	void OnPlayerSessionCreateFailed(const FString& ErrorMessage);
+	
+	UFUNCTION()
+	void OnSearchSessionsSuccess(const TArray<FString>& GameSessionIds);
+
+	UFUNCTION()
+	void OnSearchSessionsFailed(const FString& ErrorMessage);
+
 
 protected:
 	UPROPERTY()
 	class UGameLiftClientObject* GameLiftClientObject;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString GameLiftFleetAliasID;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString GameLiftFleetID;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString GameLiftAccessKey;

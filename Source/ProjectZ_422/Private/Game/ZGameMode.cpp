@@ -83,6 +83,18 @@ void AZGameMode::PostLogin(APlayerController * NewPlayer)
 
 }
 
+void AZGameMode::Logout(AController * Exiting)
+{
+	Super::Logout(Exiting);
+
+	if (ConnectNumber < 1)
+	{
+		ZLOG(Error, TEXT("End server."));
+		UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	}
+
+}
+
 void AZGameMode::BeginPlay()
 {
 	Super::BeginPlay();

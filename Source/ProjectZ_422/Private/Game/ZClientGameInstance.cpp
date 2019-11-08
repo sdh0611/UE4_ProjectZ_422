@@ -11,7 +11,6 @@
 
 UZClientGameInstance::UZClientGameInstance()
 {
-
 }
 
 void UZClientGameInstance::Init()
@@ -28,7 +27,7 @@ void UZClientGameInstance::Init()
 
 }
 
-void UZClientGameInstance::CreateGameSession(const FString & AliasID, int32 MaxPlayer)
+void UZClientGameInstance::CreateGameSession(const FString& SessionName, int32 MaxPlayer)
 {
 	if (nullptr == GameLiftClientObject)
 	{
@@ -36,9 +35,13 @@ void UZClientGameInstance::CreateGameSession(const FString & AliasID, int32 MaxP
 	}
 
 	FGameLiftGameSessionConfig MySessionConfig;
-	MySessionConfig.SetAliasID(AliasID);
+	MySessionConfig.SetAliasID(GameLiftFleetAliasID);
 	MySessionConfig.SetMaxPlayers(MaxPlayer);
-
+	
+	FGameLiftGameSessionServerProperties Property;
+	Property.Key = TEXT("SessionName");
+	Property.Value = SessionName;
+	MySessionConfig.SetGameSessionProperties(TArray<FGameLiftGameSessionServerProperties>({ Property }));
 
 	UGameLiftCreateGameSession* MyGameSessionObject = GameLiftClientObject->CreateGameSession(MySessionConfig);
 	if (nullptr == MyGameSessionObject)
@@ -84,8 +87,24 @@ void UZClientGameInstance::CreatePlayerSession(const FString & GameSessionID, co
 		return;
 	}
 	MyCreatePlayerSessionObject->OnCreatePlayerSessionSuccess.AddDynamic(this, &UZClientGameInstance::OnPlayerSessionCreateSuccess);
-	MyCreatePlayerSessionObject->OnCreatePlayerSessionFailed.AddDynamic(this, &UZClientGameInstance::OnPlayerSessionCreateFail);
+	MyCreatePlayerSessionObject->OnCreatePlayerSessionFailed.AddDynamic(this, &UZClientGameInstance::OnPlayerSessionCreateFailed);
 	MyCreatePlayerSessionObject->Activate();
+}
+
+void UZClientGameInstance::SearchSessions()
+{
+	UGameLiftSearchGameSessions* MySearchSessionsObject = 
+		GameLiftClientObject->SearchGameSessions(GameLiftFleetID, GameLiftFleetAliasID, TEXT("hasAvailablePlayerSessions=true"), TEXT(""));
+	if (nullptr == MySearchSessionsObject)
+	{
+		ZLOG_S(Error);
+		return;
+	}
+	
+	MySearchSessionsObject->OnSearchGameSessionsSuccess.AddDynamic(this, &UZClientGameInstance::OnSearchSessionsSuccess);
+	MySearchSessionsObject->OnSearchGameSessionsFailed.AddDynamic(this, &UZClientGameInstance::OnSearchSessionsFailed);
+	MySearchSessionsObject->Activate();
+
 }
 
 void UZClientGameInstance::OnGameCreationSuccess(const FString & GameSessionID)
@@ -96,7 +115,6 @@ void UZClientGameInstance::OnGameCreationSuccess(const FString & GameSessionID)
 
 void UZClientGameInstance::OnGameCreationFailed(const FString & ErrorMessage)
 {
-	
 
 }
 
@@ -124,9 +142,22 @@ void UZClientGameInstance::OnPlayerSessionCreateSuccess(const FString & IPAddres
 	}
 }
 
-void UZClientGameInstance::OnPlayerSessionCreateFail(const FString & ErrorMessage)
+void UZClientGameInstance::OnPlayerSessionCreateFailed(const FString & ErrorMessage)
 {
 
 
+}
+
+void UZClientGameInstance::OnSearchSessionsSuccess(const TArray<FString>& GameSessionIds)
+{
+	for (const auto& GameSessionID : GameSessionIds)
+	{
+		DescribeGameSession(GameSessionID);
+	}
+
+}
+
+void UZClientGameInstance::OnSearchSessionsFailed(const FString & ErrorMessage)
+{
 }
 

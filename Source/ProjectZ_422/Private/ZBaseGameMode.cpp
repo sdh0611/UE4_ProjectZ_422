@@ -66,6 +66,11 @@ void AZBaseGameMode::Logout(AController * Exiting)
 
 void AZBaseGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
+	if (EEndPlayReason::LevelTransition == EndPlayReason)
+	{
+		ZLOG(Error, TEXT("Level transition!"));
+	}
+
 	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
 	//{
 	//	auto PC = Cast <AZBasePlayerController>(*Iter);

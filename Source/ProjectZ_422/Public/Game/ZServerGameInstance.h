@@ -24,6 +24,9 @@ public:
 public:
 	void TerminateSession();
 
+public:
+	bool bIsHealthyProcess = true;
+
 protected:
 	class FGameLiftServerSDKModule* GameLiftSDKModule;
 
