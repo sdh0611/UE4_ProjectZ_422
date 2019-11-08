@@ -33,6 +33,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 ConnectNumber = 0;
 
-	class FGameLiftServerSDKModule* GameLiftSDKModule;
+	//class FGameLiftServerSDKModule* GameLiftSDKModule;
 
 };

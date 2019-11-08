@@ -16,22 +16,14 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/ZGameViewportClient.h"
-#include "ConfigCacheIni.h"
 
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystemTypes.h"
-
-#include "GameLiftClientSDK.h"
-#include "GameLiftClientObject.h"
-#include "GameLiftClientApi.h"
 
 static const FName SERVER_NAME_KEY = FName(TEXT("ServerName"));
 
 UZGameInstance::UZGameInstance()
 {
-	/* Client 관련 */
-	GameLiftAccessKey = TEXT("AKIAUMWLOZXE6L2RTDFJ");
-	GameLiftSecretAccessKey = TEXT("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");
 
 }
 
@@ -52,15 +44,6 @@ void UZGameInstance::Init()
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UZGameInstance::OnPreLoadMap);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UZGameInstance::OnPostLoadMap);
 
-	if (!IsDedicatedServerInstance())
-	{
-		/* Client 관련 */
-		GameLiftClientObject = UGameLiftClientObject::CreateGameLiftObject(GameLiftAccessKey, GameLiftSecretAccessKey);
-		if (nullptr == GameLiftClientObject)
-		{
-			ZLOG(Error, TEXT("Failed to create GameLiftClientObject.."));
-		}
-	}
 
 }
 
@@ -77,105 +60,7 @@ UZWebConnector & UZGameInstance::GetWebConnector()
 	return *WebConnector;
 }
 
-void UZGameInstance::CreateGameSession(const FString& AliasID, int32 MaxPlayer)
-{
-	if (nullptr == GameLiftClientObject)
-	{
-		return;
-	}
-	
-	FGameLiftGameSessionConfig MySessionConfig;
-	MySessionConfig.SetAliasID(AliasID);
-	MySessionConfig.SetMaxPlayers(MaxPlayer);
-	
 
-	UGameLiftCreateGameSession* MyGameSessionObject = GameLiftClientObject->CreateGameSession(MySessionConfig);
-	if (nullptr == MyGameSessionObject)
-	{
-		ZLOG_S(Error);
-		return;
-	}
-	MyGameSessionObject->OnCreateGameSessionSuccess.AddDynamic(this, &UZGameInstance::OnGameCreationSuccess);
-	MyGameSessionObject->OnCreateGameSessionFailed.AddDynamic(this, &UZGameInstance::OnGameCreationFailed);
-	MyGameSessionObject->Activate();
-
-}
-
-void UZGameInstance::DescribeGameSession(const FString & GameSessionID)
-{
-	if (nullptr == GameLiftClientObject)
-	{
-		return;
-	}
-
-	UGameLiftDescribeGameSession* MyDescribeGameSessionObject = GameLiftClientObject->DescribeGameSession(GameSessionID);
-	if (nullptr == MyDescribeGameSessionObject)
-	{
-		ZLOG_S(Error);
-		return;
-	}
-	MyDescribeGameSessionObject->OnDescribeGameSessionStateSuccess.AddDynamic(this, &UZGameInstance::OnDescribeGameSessionSuccess);
-	MyDescribeGameSessionObject->OnDescribeGameSessionStateFailed.AddDynamic(this, &UZGameInstance::OnDescribeGameSessionFailed);
-	MyDescribeGameSessionObject->Activate();
-}
-
-void UZGameInstance::CreatePlayerSession(const FString & GameSessionID, const FString & UniquePlayerID)
-{
-	if (nullptr == GameLiftClientObject)
-	{
-		return;
-	}
-
-	UGameLiftCreatePlayerSession* MyCreatePlayerSessionObject = GameLiftClientObject->CreatePlayerSession(GameSessionID, UniquePlayerID);
-	if(nullptr == MyCreatePlayerSessionObject)
-	{
-		ZLOG_S(Error);
-		return;
-	}
-	MyCreatePlayerSessionObject->OnCreatePlayerSessionSuccess.AddDynamic(this, &UZGameInstance::OnPlayerSessionCreateSuccess);
-	MyCreatePlayerSessionObject->OnCreatePlayerSessionFailed.AddDynamic(this, &UZGameInstance::OnPlayerSessionCreateFail);
-	MyCreatePlayerSessionObject->Activate();
-}
-
-void UZGameInstance::OnGameCreationSuccess(const FString & GameSessionID)
-{
-	DescribeGameSession(GameSessionID);
-}
-
-void UZGameInstance::OnGameCreationFailed(const FString & ErrorMessage)
-{
-
-}
-
-void UZGameInstance::OnDescribeGameSessionSuccess(const FString & SessionID, EGameLiftGameSessionStatus SessionStatus)
-{
-	if (SessionStatus == EGameLiftGameSessionStatus::STATUS_Active
-		|| SessionStatus == EGameLiftGameSessionStatus::STATUS_Activating)
-	{
-		CreatePlayerSession(SessionID, WebConnector->GetUserNickname());
-	}
-
-}
-
-void UZGameInstance::OnDescribeGameSessionFailed(const FString & ErrorMessage)
-{
-
-
-}
-
-void UZGameInstance::OnPlayerSessionCreateSuccess(const FString & IPAddress, const FString & Port, const FString & PlayerSessionID, const int& PlayerSessionStatus)
-{
-	const FString TravelURL = IPAddress + ":" + Port;
-	auto PC = GetFirstGamePlayer()->GetPlayerController(GetWorld());
-	if (PC)
-	{
-		PC->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
-	}
-}
-
-void UZGameInstance::OnPlayerSessionCreateFail(const FString & ErrorMessage)
-{
-}
 
 void UZGameInstance::ShowLoadingScreen()
 {
