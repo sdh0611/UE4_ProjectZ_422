@@ -11,6 +11,41 @@
 #include "Engine/Engine.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Json.h"
+#include "GameLiftServerSDK.h"
+#include "ConfigCacheIni.h"
+
+
+AZLobbyGameMode::AZLobbyGameMode()
+{
+	//FGameLiftServerSDKModule* GameLiftSDKModule =
+	//	&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
+
+	//GameLiftSDKModule->InitSDK();
+
+	//auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
+	//{
+	//	ZLOG(Error, TEXT("Start game session."));
+	//	GameLiftSDKModule->ActivateGameSession();
+	//};
+
+	//FProcessParameters* Params = new FProcessParameters();
+	//Params->OnStartGameSession.BindLambda(OnGameSession);
+	//Params->OnTerminate.BindLambda([=]() {
+	//	ZLOG(Error, TEXT("Terminate game session."));
+	//	GameLiftSDKModule->ProcessEnding();
+	//});
+
+	//Params->OnHealthCheck.BindLambda([]() { return true; });
+	//FString Port = "7777";
+	//if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port) == false)
+	//{
+	//	Port = GConfig->GetStr(TEXT("URL"), TEXT("Port"), GEngineIni);
+	//}
+	//Params->port = FCString::Atoi(*Port);
+
+	//GameLiftSDKModule->ProcessReady(*Params);
+
+}
 
 void AZLobbyGameMode::InitGame(const FString & MapName, const FString & Options, FString & ErrorMessage)
 {

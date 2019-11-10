@@ -35,7 +35,7 @@
 "E:/UE4Projects/ProjectZ_4223/UE4_ProjectZ_422/Content/GameData/Data/Weapon_GunData.uasset" 34
 "E:/UE4Projects/ProjectZ_4223/UE4_ProjectZ_422/Content/GameData/Data/WeaponData.uasset" 35
 "E:/UE4Projects/ProjectZ_4223/UE4_ProjectZ_422/Content/Blueprint/Loading/UI_ZLoadingWidget.uasset" 36
-"E:/UE4Projects/ProjectZ_4223/UE4_ProjectZ_422/Content/Blueprint/BP_ZGameInstance.uasset" 37
+"E:/UE4Projects/ProjectZ_4223/UE4_ProjectZ_422/Content/Blueprint/BP_ZServerGameInstance.uasset" 37
 "../../../Engine/Content/EngineMaterials/BlendFunc_DefBase.uasset" 38
 "../../../Engine/Content/EngineMaterials/BlendFunc_DefBlend.uasset" 39
 "../../../Engine/Content/Functions/Engine_MaterialFunctions03/Blends/Blend_Overlay.uasset" 40

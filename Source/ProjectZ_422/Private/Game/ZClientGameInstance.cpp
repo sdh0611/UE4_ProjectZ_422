@@ -4,160 +4,282 @@
 #include "ZClientGameInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "ZBasePlayerController.h"
+#include "Json.h"
 
-#include "GameLiftClientSDK.h"
-#include "GameLiftClientObject.h"
-#include "GameLiftClientApi.h"
 
-UZClientGameInstance::UZClientGameInstance()
+void UZClientGameInstance::CreateGameSession(const FString & SessionName, int32 MaxPlayer)
 {
+	FString ConnectURL = WebConnector->GetGameLiftClientServiceURL();
+	ConnectURL.Append(TEXT("/create_game_session"));
+
+	FString PostParameters = FString::Printf(TEXT("maxPlayer=%d&creatorID=%s&sessionName=%s"), 
+		MaxPlayer, *WebConnector->GetUserNickname(), *SessionName);
+
+	WebConnector->HttpPost(ConnectURL, PostParameters,
+		FHttpRequestCompleteDelegate::CreateUObject(this, &UZClientGameInstance::OnCreateGameSessionResponse));
+
+
 }
 
-void UZClientGameInstance::Init()
+void UZClientGameInstance::DescribeGameSession(const FString & SessionID)
 {
-	if (!IsDedicatedServerInstance())
+	FString ConnectURL = WebConnector->GetGameLiftClientServiceURL();
+	ConnectURL.Append(TEXT("/describe_game_session"));
+
+	FString PostParameters = FString::Printf(TEXT("sessionID=%s"), *SessionID);
+
+	WebConnector->HttpPost(ConnectURL, PostParameters,
+		FHttpRequestCompleteDelegate::CreateUObject(this, &UZClientGameInstance::OnDescribeGameSessionResponse));
+
+
+}
+
+void UZClientGameInstance::CreatePlayerSession(const FString & SessionID)
+{
+	FString ConnectURL = WebConnector->GetGameLiftClientServiceURL();
+	ConnectURL.Append(TEXT("/create_player_session"));
+
+	FString PostParameters = FString::Printf(TEXT("sessionID=%s"), *SessionID);
+
+	WebConnector->HttpPost(ConnectURL, PostParameters,
+		FHttpRequestCompleteDelegate::CreateUObject(this, &UZClientGameInstance::OnCreatePlayerSessionResponse));
+
+
+}
+
+void UZClientGameInstance::SearchGameSessions(const FString & FilterExpression, const FString & SortExpression)
+{
+	FString ConnectURL = WebConnector->GetGameLiftClientServiceURL();
+	ConnectURL.Append(TEXT("/search_game_sessions"));
+
+	FString PostParameters = FString::Printf(TEXT("filterExpression=%s&sortExpression=%s"), *FilterExpression, *SortExpression);
+
+	WebConnector->HttpPost(ConnectURL, PostParameters,
+		FHttpRequestCompleteDelegate::CreateUObject(this, &UZClientGameInstance::OnSearchGameSessionsResponse));
+
+}
+
+void UZClientGameInstance::OnCreateGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	if (!bWasSuccessful)
 	{
-		/* Client ฐüทร */
-		GameLiftClientObject = UGameLiftClientObject::CreateGameLiftObject(GameLiftAccessKey, GameLiftSecretAccessKey);
-		if (nullptr == GameLiftClientObject)
+		ZLOG(Error, TEXT("Create game http request fail.."));
+		return;
+	}
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	ZLOG(Error, TEXT("%s"), *Response->GetContentAsString());
+
+	if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		if (!JsonObject->GetBoolField(TEXT("result")))
 		{
-			ZLOG(Error, TEXT("Failed to create GameLiftClientObject.."));
+			return;
 		}
+
+		FString SessionID;
+		if (!JsonObject->TryGetStringField(TEXT("sessionID"), SessionID))
+		{
+			ZLOG(Error, TEXT("Failed to load sessionID.."));
+			return;
+		}
+
+		DescribeGameSession(SessionID);
 	}
-
-}
-
-void UZClientGameInstance::CreateGameSession(const FString& SessionName, int32 MaxPlayer)
-{
-	if (nullptr == GameLiftClientObject)
+	else
 	{
-		return;
+		ZLOG(Error, TEXT("Deserialize fail.."));
 	}
 
-	FGameLiftGameSessionConfig MySessionConfig;
-	MySessionConfig.SetAliasID(GameLiftFleetAliasID);
-	MySessionConfig.SetMaxPlayers(MaxPlayer);
 	
-	FGameLiftGameSessionServerProperties Property;
-	Property.Key = TEXT("SessionName");
-	Property.Value = SessionName;
-	MySessionConfig.SetGameSessionProperties(TArray<FGameLiftGameSessionServerProperties>({ Property }));
 
-	UGameLiftCreateGameSession* MyGameSessionObject = GameLiftClientObject->CreateGameSession(MySessionConfig);
-	if (nullptr == MyGameSessionObject)
-	{
-		ZLOG_S(Error);
-		return;
-	}
-
-	MyGameSessionObject->OnCreateGameSessionSuccess.AddDynamic(this, &UZClientGameInstance::OnGameCreationSuccess);
-	MyGameSessionObject->OnCreateGameSessionFailed.AddDynamic(this, &UZClientGameInstance::OnGameCreationFailed);
-	MyGameSessionObject->Activate();
 }
 
-void UZClientGameInstance::DescribeGameSession(const FString & GameSessionID)
+void UZClientGameInstance::OnDescribeGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
-	if (nullptr == GameLiftClientObject)
+	if (!bWasSuccessful)
 	{
-		return;
-	}
-
-	UGameLiftDescribeGameSession* MyDescribeGameSessionObject = GameLiftClientObject->DescribeGameSession(GameSessionID);
-	if (nullptr == MyDescribeGameSessionObject)
-	{
-		ZLOG_S(Error);
-		return;
-	}
-	MyDescribeGameSessionObject->OnDescribeGameSessionStateSuccess.AddDynamic(this, &UZClientGameInstance::OnDescribeGameSessionSuccess);
-	MyDescribeGameSessionObject->OnDescribeGameSessionStateFailed.AddDynamic(this, &UZClientGameInstance::OnDescribeGameSessionFailed);
-	MyDescribeGameSessionObject->Activate();
-}
-
-void UZClientGameInstance::CreatePlayerSession(const FString & GameSessionID, const FString & UniquePlayerID)
-{
-	if (nullptr == GameLiftClientObject)
-	{
-		return;
-	}
-
-	UGameLiftCreatePlayerSession* MyCreatePlayerSessionObject = GameLiftClientObject->CreatePlayerSession(GameSessionID, UniquePlayerID);
-	if (nullptr == MyCreatePlayerSessionObject)
-	{
-		ZLOG_S(Error);
-		return;
-	}
-	MyCreatePlayerSessionObject->OnCreatePlayerSessionSuccess.AddDynamic(this, &UZClientGameInstance::OnPlayerSessionCreateSuccess);
-	MyCreatePlayerSessionObject->OnCreatePlayerSessionFailed.AddDynamic(this, &UZClientGameInstance::OnPlayerSessionCreateFailed);
-	MyCreatePlayerSessionObject->Activate();
-}
-
-void UZClientGameInstance::SearchSessions()
-{
-	UGameLiftSearchGameSessions* MySearchSessionsObject = 
-		GameLiftClientObject->SearchGameSessions(GameLiftFleetID, GameLiftFleetAliasID, TEXT("hasAvailablePlayerSessions=true"), TEXT(""));
-	if (nullptr == MySearchSessionsObject)
-	{
-		ZLOG_S(Error);
+		ZLOG(Error, TEXT("Describe game http request fail.."));
 		return;
 	}
 	
-	MySearchSessionsObject->OnSearchGameSessionsSuccess.AddDynamic(this, &UZClientGameInstance::OnSearchSessionsSuccess);
-	MySearchSessionsObject->OnSearchGameSessionsFailed.AddDynamic(this, &UZClientGameInstance::OnSearchSessionsFailed);
-	MySearchSessionsObject->Activate();
-
-}
-
-void UZClientGameInstance::OnGameCreationSuccess(const FString & GameSessionID)
-{
-	DescribeGameSession(GameSessionID);
-
-}
-
-void UZClientGameInstance::OnGameCreationFailed(const FString & ErrorMessage)
-{
-
-}
-
-void UZClientGameInstance::OnDescribeGameSessionSuccess(const FString & SessionID, EGameLiftGameSessionStatus SessionStatus)
-{
-	if (SessionStatus == EGameLiftGameSessionStatus::STATUS_Active)
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	ZLOG(Error, TEXT("%s"), *Response->GetContentAsString());
+	
+	if (FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
-		CreatePlayerSession(SessionID, WebConnector->GetUserNickname());
+		if (!JsonObject->GetBoolField(TEXT("result")))
+		{
+			return;
+		}
+
+		FString Status;
+		if (!JsonObject->TryGetStringField(TEXT("status"), Status))
+		{
+			return;
+		}
+
+		if (0 != Status.Compare(TEXT("ACTIVE")))
+		{
+			return;
+		}
+
+		FString SessionID;
+		if (!JsonObject->TryGetStringField(TEXT("sessionID"), SessionID))
+		{
+			ZLOG(Error, TEXT("Failed to load sessionID.."));
+			return;
+		}
+
+		CreatePlayerSession(SessionID);
+
 	}
-}
-
-void UZClientGameInstance::OnDescribeGameSessionFailed(const FString & ErrorMessage)
-{
-
-
-}
-
-void UZClientGameInstance::OnPlayerSessionCreateSuccess(const FString & IPAddress, const FString & Port, const FString & PlayerSessionID, const int & PlayerSessionStatus)
-{
-	const FString TravelURL = IPAddress + ":" + Port;
-	auto PC = GetFirstGamePlayer()->GetPlayerController(GetWorld());
-	if (PC)
+	else
 	{
-		PC->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
-	}
-}
-
-void UZClientGameInstance::OnPlayerSessionCreateFailed(const FString & ErrorMessage)
-{
-
-
-}
-
-void UZClientGameInstance::OnSearchSessionsSuccess(const TArray<FString>& GameSessionIds)
-{
-	for (const auto& GameSessionID : GameSessionIds)
-	{
-		DescribeGameSession(GameSessionID);
+		ZLOG(Error, TEXT("Deserialize fail.."));
 	}
 
 }
 
-void UZClientGameInstance::OnSearchSessionsFailed(const FString & ErrorMessage)
+void UZClientGameInstance::OnCreatePlayerSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
+	if (!bWasSuccessful)
+	{
+		ZLOG(Error, TEXT("Create player session http request fail.."));
+		return;
+	}
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	ZLOG(Error, TEXT("%s"), *Response->GetContentAsString());
+
+	if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		if (!JsonObject->GetBoolField(TEXT("result")))
+		{
+			return;
+		}
+
+		FString Status;
+		if (!JsonObject->TryGetStringField(TEXT("status"), Status))
+		{
+			return;
+		}
+
+		if (0 == Status.Compare(TEXT("COMPLETED"))
+			|| 0 == Status.Compare(TEXT("TIMEDOUT")))
+		{
+			return;
+		}
+
+
+		FString IPAddress;
+		if (!JsonObject->TryGetStringField(TEXT("ipAddress"), IPAddress))
+		{
+			return;
+		}
+		
+		FString Port;
+		if (!JsonObject->TryGetStringField(TEXT("port"), Port))
+		{
+			return;
+		}
+				
+		FString TravelURL = IPAddress + TEXT(":") + Port;
+		auto PC = GetFirstGamePlayer()->GetPlayerController(GetWorld());
+		if (PC)
+		{
+			PC->ClientTravel(TravelURL, TRAVEL_Absolute);
+		}
+
+	}
+	else
+	{
+		ZLOG(Error, TEXT("Deserialize fail.."));
+	}
+
 }
 
+void UZClientGameInstance::OnSearchGameSessionsResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	OnSearchGameSessionsEnd.Execute();
+
+	if (!bWasSuccessful)
+	{
+		ZLOG(Error, TEXT("Create game http request fail.."));
+		return;
+	}
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	ZLOG(Error, TEXT("%s"), *Response->GetContentAsString());
+
+
+	if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		if (!JsonObject->GetBoolField(TEXT("result")))
+		{
+			return;
+		}
+
+		int32 Size = 0;
+		if (!JsonObject->TryGetNumberField(TEXT("size"), Size))
+		{
+			return;
+		}
+
+		if (Size < 1)
+		{
+			return;
+		}
+
+		const TSharedPtr<FJsonObject>* OutObjects;
+		if (!JsonObject->TryGetObjectField(TEXT("gameSessions"), OutObjects))
+		{
+			return;
+		}
+
+		TArray<FZSessionInfo> SessionInfos;
+		FZSessionInfo SessionInfo;
+		for (int i = 0; i < Size; ++i)
+		{
+			if (!OutObjects[i]->TryGetStringField(TEXT("GameSessionId"), SessionInfo.SessionID))
+			{
+				return;
+			}
+
+			if (!OutObjects[i]->TryGetStringField(TEXT("Name"), SessionInfo.SessionName))
+			{
+				return;
+			}
+
+			if (!OutObjects[i]->TryGetStringField(TEXT("CreatorId"), SessionInfo.CreatorName))
+			{
+				return;
+			}
+
+			if (!OutObjects[i]->TryGetNumberField(TEXT("MaximumPlayerSessionCount"), SessionInfo.MaxConnection))
+			{
+				return;
+			}
+
+			if (!OutObjects[i]->TryGetNumberField(TEXT("CurrentPlayerSessionCount"), SessionInfo.CurrentConnection))
+			{
+				return;
+			}
+			
+			SessionInfos.Add(SessionInfo);
+		}
+
+		OnSearchGameSessionsSuccesss.Execute(SessionInfos);
+	}
+	else
+	{
+		ZLOG(Error, TEXT("Deserialize fail.."));
+	}
+
+
+
+}

@@ -13,7 +13,7 @@ public class ProjectZ_422 : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG",
             "NavigationSystem", "AIModule", "GameplayTasks", "MoviePlayer",
         "OnlineSubsystem", "OnlineSubsystemUtils", "OnlineSubsystemSteam",
-            "GameLiftServerSDK", "GameLiftClientSDK" });
+            "GameLiftServerSDK" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "ProjectZLoadingScreen" ,
             "Networking", "Http", "Json", "JsonUtilities", "Sockets"});

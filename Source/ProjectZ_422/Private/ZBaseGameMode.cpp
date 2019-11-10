@@ -6,38 +6,18 @@
 #include "ZCharacter.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
-//#include "GameLiftServerSDK.h"
-//#include "ConfigCacheIni.h"
+
 
 AZBaseGameMode::AZBaseGameMode()
 {
-	//GameLiftSDKModule = 
-	//	&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
 
-	//GameLiftSDKModule->InitSDK();
+	
+}
 
-	//auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
-	//{
-	//	GameLiftSDKModule->ActivateGameSession();
-	//};
-	//GameLiftSDKModule->TerminateGameSession();
+void AZBaseGameMode::BeginPlay()
+{
+	Super::BeginPlay();
 
-	//FProcessParameters* Params = new FProcessParameters();
-	//Params->OnStartGameSession.BindLambda(OnGameSession);
-	//Params->OnTerminate.BindLambda([=]() {
-	//	GameLiftSDKModule->ProcessEnding();
-	//});
-
-	//Params->OnHealthCheck.BindLambda([]() { return true; });
-	//FString Port = "7777";
-	//if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port) == false)
-	//{
-	//	Port = GConfig->GetStr(TEXT("URL"), TEXT("Port"), GEngineIni);
-	//}
-	//Params->port = FCString::Atoi(*Port);
-
-	//GameLiftSDKModule->ProcessReady(*Params);
-	//
 }
 
 void AZBaseGameMode::PostLogin(APlayerController * NewPlayer)

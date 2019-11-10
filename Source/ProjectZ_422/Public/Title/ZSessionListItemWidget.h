@@ -4,7 +4,7 @@
 
 #include "ProjectZ_422.h"
 #include "Blueprint/UserWidget.h"
-#include "ZGameInstance.h"
+#include "ZClientGameInstance.h"
 #include "ZSessionListItemWidget.generated.h"
 
 /**

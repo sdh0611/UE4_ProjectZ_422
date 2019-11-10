@@ -2,7 +2,7 @@
 
 
 #include "ZMakeGameWidget.h"
-#include "ZGameInstance.h"
+#include "ZClientGameInstance.h"
 #include "ZTitlePlayerController.h"
 #include "ZPlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -60,24 +60,10 @@ void UZMakeGameWidget::OnCreateGameButtonClick()
 	
 	FString Name = SessionName->GetText().ToString();
 
-
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	auto MyGameInstance = GetGameInstance<UZClientGameInstance>();
 	if (MyGameInstance)
 	{
-		//auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		//if (PC)
-		//{
-		//	auto PS = PC->GetPlayerState<APlayerState>();
-		//	if (PS)
-		//	{
-		//		if (!MyGameInstance->HostSession(PS->UniqueId.GetUniqueNetId(), *Name, true, true, FCString::Atoi(*Num)))
-		//		{
-		//			/* ErrorText */
-		//			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("Failed to host session!"));
-		//		}
-
-		//	}
-		//}
+		MyGameInstance->CreateGameSession(Name, FCString::Atoi(*Num));
 	}
 
 

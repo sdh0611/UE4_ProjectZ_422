@@ -103,6 +103,12 @@ const FString & UZWebConnector::GetWebURL() const
 	return URL;
 }
 
+const FString & UZWebConnector::GetGameLiftClientServiceURL() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return GameLiftClientServiceURL;
+}
+
 const FString & UZWebConnector::GetUserNickname() const
 {
 	return UserNickname;

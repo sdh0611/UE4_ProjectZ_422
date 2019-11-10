@@ -18,13 +18,14 @@ void UZServerGameInstance::Init()
 {	
 	Super::Init();
 
-	GameLiftSDKModule = 
+	FGameLiftServerSDKModule* GameLiftSDKModule =
 		&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
 
 	GameLiftSDKModule->InitSDK();
 
 	auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
 	{
+		ZLOG(Error, TEXT("onStartGameSession."));
 		GameLiftSDKModule->ActivateGameSession();
 	};
 
@@ -55,7 +56,7 @@ void UZServerGameInstance::Init()
 
 void UZServerGameInstance::TerminateSession()
 {
-	GameLiftSDKModule->TerminateGameSession();
+	//GameLiftSDKModule->TerminateGameSession();
 
 }
 

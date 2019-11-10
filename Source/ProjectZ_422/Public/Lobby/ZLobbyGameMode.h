@@ -18,7 +18,10 @@ UCLASS()
 class PROJECTZ_422_API AZLobbyGameMode : public AZBaseGameMode
 {
 	GENERATED_BODY()
-	
+
+public:
+	AZLobbyGameMode();
+
 public:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;

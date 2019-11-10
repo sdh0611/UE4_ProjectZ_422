@@ -4,10 +4,32 @@
 
 #include "ProjectZ_422.h"
 #include "Game/ZGameInstance.h"
-
-#include "GameLiftClientTypes.h"
-
 #include "ZClientGameInstance.generated.h"
+
+DECLARE_DELEGATE_OneParam(FOnSearchGameSessionsSuccess, const TArray<FZSessionInfo>&);
+DECLARE_DELEGATE(FOnSearchGameSessionsEnd);
+
+/*
+	11.11일에 할 것 : RemovePlayerSession 추가하고 빌드할것.
+*/
+
+USTRUCT(BlueprintType)
+struct PROJECTZ_422_API FZSessionInfo
+{
+	GENERATED_BODY()
+
+public:
+	FString SessionID;
+
+	FString SessionName;
+
+	FString CreatorName;
+
+	int32 MaxConnection = 4;
+
+	int32 CurrentConnection = 0;
+};
+
 
 /**
  *  NOTE(11.08) :
@@ -19,68 +41,23 @@ class PROJECTZ_422_API UZClientGameInstance : public UZGameInstance
 	GENERATED_BODY()
 	
 public:
-	UZClientGameInstance();
-
-public:
-	virtual void Init() override;
-
-public:
-	/* GameLiftClient 관련 */
-
-	/* Dedicated Server 인스턴스 생성 요청. */
-	UFUNCTION(BlueprintCallable)
 	void CreateGameSession(const FString& SessionName, int32 MaxPlayer);
-
-	UFUNCTION(BlueprintCallable)
-	void DescribeGameSession(const FString& GameSessionID);
-
-	/* Join 요청. */
-	UFUNCTION(BlueprintCallable)
-	void CreatePlayerSession(const FString& GameSessionID, const FString& UniquePlayerID);
-
-	UFUNCTION(BlueprintCallable)
-	void SearchSessions();
+	void DescribeGameSession(const FString& SessionID);
+	void CreatePlayerSession(const FString& SessionID);
+	void SearchGameSessions(const FString& FilterExpression, const FString& SortExpression);
 
 private:
-	UFUNCTION()
-	void OnGameCreationSuccess(const FString& GameSessionID);
-
-	UFUNCTION()
-	void OnGameCreationFailed(const FString& ErrorMessage);
-
-	UFUNCTION()
-	void OnDescribeGameSessionSuccess(const FString& SessionID, EGameLiftGameSessionStatus SessionStatus);
-
-	UFUNCTION()
-	void OnDescribeGameSessionFailed(const FString& ErrorMessage);
-
-	UFUNCTION()
-	void OnPlayerSessionCreateSuccess(const FString& IPAddress, const FString& Port, const FString& PlayerSessionID, const int& PlayerSessionStatus);
-
-	UFUNCTION()
-	void OnPlayerSessionCreateFailed(const FString& ErrorMessage);
+	void OnCreateGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void OnDescribeGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void OnCreatePlayerSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void OnSearchGameSessionsResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	
-	UFUNCTION()
-	void OnSearchSessionsSuccess(const TArray<FString>& GameSessionIds);
+public:
+	FOnSearchGameSessionsSuccess OnSearchGameSessionsSuccesss;
+	FOnSearchGameSessionsEnd OnSearchGameSessionsEnd;
+	
 
-	UFUNCTION()
-	void OnSearchSessionsFailed(const FString& ErrorMessage);
-
-
-protected:
-	UPROPERTY()
-	class UGameLiftClientObject* GameLiftClientObject;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString GameLiftFleetAliasID;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString GameLiftFleetID;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString GameLiftAccessKey;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FString GameLiftSecretAccessKey;
+private:
+	
 
 };

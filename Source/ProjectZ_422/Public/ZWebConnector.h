@@ -39,6 +39,7 @@ public:
 	
 	bool IsVerified() const;
 	const FString& GetWebURL() const;
+	const FString& GetGameLiftClientServiceURL() const;
 	const FString& GetUserNickname() const;
 	FString GetIP() const;
 
@@ -60,5 +61,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(AllowPrivateAccess=true))
 	FString URL = TEXT("127.0.0.1:8000");
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+	FString GameLiftClientServiceURL = TEXT("127.0.0.1:8000");
+
 
 };

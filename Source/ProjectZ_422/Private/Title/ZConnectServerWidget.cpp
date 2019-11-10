@@ -61,8 +61,10 @@ void UZConnectServerWidget::OnConnectGameButtonClick()
 
 		FString PostParam = FString::Printf(TEXT("ip=%s"), *IP.ToString());
 
-		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam, 
-			FHttpRequestCompleteDelegate::CreateUObject(this, &UZConnectServerWidget::OnConnectGameResponse));
+		UGameplayStatics::OpenLevel(GetWorld(), *IP.ToString());
+
+		//MyGameInstance->GetWebConnector().HttpPost(URL, PostParam, 
+		//	FHttpRequestCompleteDelegate::CreateUObject(this, &UZConnectServerWidget::OnConnectGameResponse));
 	}
 
 }

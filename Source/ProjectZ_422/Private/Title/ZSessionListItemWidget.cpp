@@ -26,7 +26,7 @@ void UZSessionListItemWidget::NativeConstruct()
 void UZSessionListItemWidget::UpdateWidget(const FZSessionInfo & NewSessionInfo)
 {
 	SessionInfo = NewSessionInfo;
-	UpdateSessionName(NewSessionInfo.ServerName);
+	UpdateSessionName(NewSessionInfo.SessionName);
 	UpdateCurrentConnection(NewSessionInfo.CurrentConnection);
 	UpdateMaxConnection(NewSessionInfo.MaxConnection);
 }
@@ -61,21 +61,11 @@ FReply UZSessionListItemWidget::NativeOnMouseButtonDoubleClick(const FGeometry &
 	auto Result = Super::NativeOnMouseButtonDoubleClick(InGeometry, InMouseEvent);
 	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In double click!"));
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	auto MyGameInstance = GetGameInstance<UZClientGameInstance>();
 	if (MyGameInstance)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In double click1!"));
-		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (PC)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In double click2!"));
-			auto PS = PC->GetPlayerState<APlayerState>();
-			if (PS)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("In double click3!"));
-				//MyGameInstance->SessionJoinByIndex(PS->UniqueId.GetUniqueNetId(), NAME_GameSession, SessionInfo.SessionIndex);
-			}
-		}
+		MyGameInstance->DescribeGameSession(SessionInfo.SessionID);
 	}
 
 	return Result;

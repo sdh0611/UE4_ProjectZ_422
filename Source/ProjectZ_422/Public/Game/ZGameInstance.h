@@ -17,23 +17,6 @@
 #include "ZGameInstance.generated.h"
 
 
-USTRUCT(BlueprintType)
-struct PROJECTZ_422_API FZSessionInfo
-{
-	GENERATED_BODY()
-
-public:
-	int32 SessionIndex = -1;
-
-	FString ServerName;
-
-	FString HostName;
-
-	int32 MaxConnection = 4;
-
-	int32 CurrentConnection = 0;
-};
-
 /**
  * 
  */

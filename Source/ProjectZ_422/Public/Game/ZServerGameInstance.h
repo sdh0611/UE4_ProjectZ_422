@@ -28,7 +28,7 @@ public:
 	bool bIsHealthyProcess = true;
 
 protected:
-	class FGameLiftServerSDKModule* GameLiftSDKModule;
+	//class FGameLiftServerSDKModule* GameLiftSDKModule;
 
 
 

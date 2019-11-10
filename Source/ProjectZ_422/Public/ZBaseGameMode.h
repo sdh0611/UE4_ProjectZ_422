@@ -17,6 +17,9 @@ class PROJECTZ_422_API AZBaseGameMode : public AGameModeBase
 public:
 	AZBaseGameMode();
 
+protected:
+	virtual void BeginPlay() override;
+
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
@@ -33,6 +36,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 ConnectNumber = 0;
 
-	//class FGameLiftServerSDKModule* GameLiftSDKModule;
+	
 
 };

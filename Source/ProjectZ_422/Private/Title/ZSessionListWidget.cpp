@@ -2,7 +2,7 @@
 
 
 #include "ZSessionListWidget.h"
-#include "ZGameInstance.h"
+#include "ZClientGameInstance.h"
 #include "ZMakeGameWidget.h"
 #include "ZSessionListItemWidget.h"
 #include "ZTitlePlayerController.h"
@@ -39,11 +39,11 @@ void UZSessionListWidget::NativeConstruct()
 	RefreshList->OnClicked.AddDynamic(this, &UZSessionListWidget::OnRefreshButtonClick);
 	Cancel->OnClicked.AddDynamic(this, &UZSessionListWidget::OnExitButtonClick);
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	auto MyGameInstance = GetGameInstance<UZClientGameInstance>();
 	if (MyGameInstance)
 	{
-		//MyGameInstance->OnFindSessionsSuccess.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
-		//MyGameInstance->OnFindSessionsEnd.BindUObject(this, &UZSessionListWidget::OnRefreshEnd);
+		MyGameInstance->OnSearchGameSessionsSuccesss.BindUObject(this, &UZSessionListWidget::UpdateSessionList);
+		MyGameInstance->OnSearchGameSessionsEnd.BindUObject(this, &UZSessionListWidget::OnRefreshEnd);
 
 	}
 }
@@ -80,25 +80,18 @@ void UZSessionListWidget::OnRefreshButtonClick()
 		MakeGameWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	auto MyGameInstance = GetGameInstance<UZClientGameInstance>();
 	if (MyGameInstance)
 	{
-		auto PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (PC)
-		{
-			auto PS = PC->GetPlayerState<APlayerState>();
-			if (PS)
-			{
-				/* 일단은 풀링방식으로 안하기로 */
-				MakeGame->SetIsEnabled(false);
-				RefreshList->SetIsEnabled(false);
-				Cancel->SetIsEnabled(false);
-				SessionList->ClearChildren();
+		/* 일단은 풀링방식으로 안하기로 */
+		MakeGame->SetIsEnabled(false);
+		RefreshList->SetIsEnabled(false);
+		Cancel->SetIsEnabled(false);
+		SessionList->ClearChildren();
 
-				LoadingWidget->SetVisibility(ESlateVisibility::Visible);
-				//MyGameInstance->FindSession(PS->UniqueId.GetUniqueNetId(), true, true);
-			}
-		}
+		LoadingWidget->SetVisibility(ESlateVisibility::Visible);
+		MyGameInstance->SearchGameSessions(TEXT("hasAvailablePlayerSessions=true"), TEXT("creationTimeMillis ASC"));
+
 	}
 
 }
