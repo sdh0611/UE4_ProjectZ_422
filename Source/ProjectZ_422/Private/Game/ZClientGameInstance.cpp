@@ -7,6 +7,14 @@
 #include "Json.h"
 
 
+void UZClientGameInstance::Shutdown()
+{
+	
+
+
+	Super::Shutdown();
+}
+
 void UZClientGameInstance::CreateGameSession(const FString & SessionName, int32 MaxPlayer)
 {
 	FString ConnectURL = WebConnector->GetGameLiftClientServiceURL();
@@ -39,7 +47,7 @@ void UZClientGameInstance::CreatePlayerSession(const FString & SessionID)
 	FString ConnectURL = WebConnector->GetGameLiftClientServiceURL();
 	ConnectURL.Append(TEXT("/create_player_session"));
 
-	FString PostParameters = FString::Printf(TEXT("sessionID=%s"), *SessionID);
+	FString PostParameters = FString::Printf(TEXT("sessionID=%s&playerID=%s"), *SessionID, *WebConnector->GetUserNickname());
 
 	WebConnector->HttpPost(ConnectURL, PostParameters,
 		FHttpRequestCompleteDelegate::CreateUObject(this, &UZClientGameInstance::OnCreatePlayerSessionResponse));
@@ -57,6 +65,12 @@ void UZClientGameInstance::SearchGameSessions(const FString & FilterExpression, 
 	WebConnector->HttpPost(ConnectURL, PostParameters,
 		FHttpRequestCompleteDelegate::CreateUObject(this, &UZClientGameInstance::OnSearchGameSessionsResponse));
 
+}
+
+const FString & UZClientGameInstance::GetPlayerSessionID() const
+{
+	// TODO: 여기에 반환 구문을 삽입합니다.
+	return PlayerSessionID;
 }
 
 void UZClientGameInstance::OnCreateGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
@@ -85,7 +99,10 @@ void UZClientGameInstance::OnCreateGameSessionResponse(FHttpRequestPtr Request, 
 			return;
 		}
 
-		DescribeGameSession(SessionID);
+		//DescribeGameSession(SessionID);
+
+		/* GameLiftLocal 테스트용 코드 */
+		CreatePlayerSession(SessionID);
 	}
 	else
 	{
@@ -174,6 +191,10 @@ void UZClientGameInstance::OnCreatePlayerSessionResponse(FHttpRequestPtr Request
 			return;
 		}
 
+		if (!JsonObject->TryGetStringField(TEXT("playerSessionID"), PlayerSessionID))
+		{
+			return;
+		} 
 
 		FString IPAddress;
 		if (!JsonObject->TryGetStringField(TEXT("ipAddress"), IPAddress))

@@ -11,14 +11,7 @@
 
 UZServerGameInstance::UZServerGameInstance()
 {
-
-}
-
-void UZServerGameInstance::Init()
-{	
-	Super::Init();
-
-	FGameLiftServerSDKModule* GameLiftSDKModule =
+	GameLiftSDKModule =
 		&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
 
 	GameLiftSDKModule->InitSDK();
@@ -47,16 +40,46 @@ void UZServerGameInstance::Init()
 	Params->port = FCString::Atoi(*Port);
 
 	TArray<FString> logfiles;
-	logfiles.Add(TEXT("aLogFile.txt"));
+	logfiles.Add(TEXT("ZLogFile.txt"));
 	Params->logParameters = logfiles;
 
 	GameLiftSDKModule->ProcessReady(*Params);
+}
 
+void UZServerGameInstance::Init()
+{	
+	Super::Init();
+
+}
+
+void UZServerGameInstance::Shutdown()
+{
+	TerminateSession();
+
+	Super::Shutdown();
 }
 
 void UZServerGameInstance::TerminateSession()
 {
-	//GameLiftSDKModule->TerminateGameSession();
+	ZLOG(Error, TEXT("Terminate game session."));
+	GameLiftSDKModule->TerminateGameSession();
+
+}
+
+void UZServerGameInstance::RemovePlayerSession(const FString & PlayerSessionID)
+{
+	ZLOG(Error, TEXT("Remove player session."));
+	GameLiftSDKModule->RemovePlayerSession(PlayerSessionID);
+
+
+}
+
+void UZServerGameInstance::AcceptPlayerSession(const FString & PlayerSessionID)
+{
+	if (!GameLiftSDKModule->AcceptPlayerSession(PlayerSessionID).IsSuccess())
+	{
+		ZLOG(Error, TEXT("Failed to accept player session."));
+	}
 
 }
 

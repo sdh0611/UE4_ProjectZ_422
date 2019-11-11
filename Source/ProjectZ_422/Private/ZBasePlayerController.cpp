@@ -3,7 +3,8 @@
 
 #include "ZBasePlayerController.h"
 #include "ZCharacter.h"
-#include "ZGameInstance.h"
+#include "ZClientGameInstance.h"
+#include "ZServerGameInstance.h"
 #include "ZBaseGameMode.h"
 #include "ZPlayerState.h"
 #include "Json.h"
@@ -121,22 +122,36 @@ void AZBasePlayerController::ClientRemoveAllWidget_Implementation()
 	//RemoveAllWidget();
 }
 
-bool AZBasePlayerController::ClientDestroySession_Validate()
+
+
+bool AZBasePlayerController::ClientReceiveRemovePlayerSession_Validate()
 {
 	return true;
 }
 
-void AZBasePlayerController::ClientDestroySession_Implementation()
+void AZBasePlayerController::ClientReceiveRemovePlayerSession_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
-	if (IsLocalPlayerController())
+	auto MyGameInstance = GetGameInstance<UZClientGameInstance>();
+	if (MyGameInstance)
 	{
-		auto MyGameInstance = GetGameInstance<UZGameInstance>();
-		if (MyGameInstance)
-		{
-			//MyGameInstance->DestroySession();
-		}
+		ServerRemovePlayerSession(MyGameInstance->GetPlayerSessionID());
 	}
+
+}
+
+bool AZBasePlayerController::ClientReceiveAcceptPlayerSession_Validate()
+{
+	return true;
+}
+
+void AZBasePlayerController::ClientReceiveAcceptPlayerSession_Implementation()
+{
+	auto MyGameInstance = GetGameInstance<UZClientGameInstance>();
+	if (MyGameInstance)
+	{
+		ServerAcceptPlayerSession(MyGameInstance->GetPlayerSessionID());
+	}
+
 }
 
 bool AZBasePlayerController::ServerReceiveUserName_Validate(const FString & UserName)
@@ -147,6 +162,36 @@ bool AZBasePlayerController::ServerReceiveUserName_Validate(const FString & User
 void AZBasePlayerController::ServerReceiveUserName_Implementation(const FString & UserName)
 {
 	OnReceiveUserName(UserName);
+
+}
+
+bool AZBasePlayerController::ServerRemovePlayerSession_Validate(const FString & PlayerSessionID)
+{
+	return true;
+}
+
+void AZBasePlayerController::ServerRemovePlayerSession_Implementation(const FString & PlayerSessionID)
+{
+	auto MyGameInstance = GetGameInstance<UZServerGameInstance>();
+	if (MyGameInstance)
+	{
+		MyGameInstance->RemovePlayerSession(PlayerSessionID);
+	}
+
+}
+
+bool AZBasePlayerController::ServerAcceptPlayerSession_Validate(const FString & PlayerSessionID)
+{
+	return true;
+}
+
+void AZBasePlayerController::ServerAcceptPlayerSession_Implementation(const FString & PlayerSessionID)
+{
+	auto MyGameInstance = GetGameInstance<UZServerGameInstance>();
+	if (MyGameInstance)
+	{
+		MyGameInstance->AcceptPlayerSession(PlayerSessionID);
+	}
 
 }
 

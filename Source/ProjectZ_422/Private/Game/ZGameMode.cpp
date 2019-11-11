@@ -15,7 +15,7 @@
 #include "ZPlayerState.h"
 #include "ZShop.h"
 #include "ZShopSpawnPoint.h"
-#include "ZGameInstance.h"
+#include "ZServerGameInstance.h"
 #include "EngineUtils.h"
 #include "TimerManager.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -90,7 +90,12 @@ void AZGameMode::Logout(AController * Exiting)
 	if (ConnectNumber < 1)
 	{
 		ZLOG(Error, TEXT("End server."));
-		UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+		//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+		auto MyGameInstance = GetGameInstance<UZServerGameInstance>();
+		if (MyGameInstance)
+		{
+			MyGameInstance->TerminateSession();
+		}
 	}
 
 }

@@ -12,7 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
-
+#include "UnrealNetwork.h"
 
 void AZLobbyPlayerController::BeginPlay()
 {
@@ -26,18 +26,20 @@ void AZLobbyPlayerController::BeginPlay()
 
 	if (IsLocalPlayerController())
 	{
-		if (UserHUDClass)
+		if (LobbyHUDClass)
 		{
-			UserHUD = CreateWidget<UZLobbyWidget>(this, UserHUDClass);
-			if (UserHUD)
+			ZLOG(Error, TEXT("CreateLobbyWidget"));
+			LobbyHUD = CreateWidget<UZLobbyWidget>(this, LobbyHUDClass);
+			if (LobbyHUD)
 			{
-				UserHUD->AddToViewport();
+				LobbyHUD->AddToViewport();
 				bShowMouseCursor = true;
 				SetInputMode(FInputModeGameAndUI());
-				if (HasAuthority())
-				{
-					UserHUD->PlayFadeInStartButtonAnim();
-				}
+				ServerIsHost();
+				//if (HasAuthority())
+				//{
+				//	LobbyHUD->PlayFadeInStartButtonAnim();
+				//}
 
 				auto MyGameState = GetWorld()->GetGameState<AZLobbyGameState>();
 				if (MyGameState)
@@ -51,46 +53,22 @@ void AZLobbyPlayerController::BeginPlay()
 
 }
 
-void AZLobbyPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+
+
+void AZLobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	//auto MyGameInstnace = GetGameInstance<UZGameInstance>();
-	//if (MyGameInstnace)
-	//{
-	//	if (MyGameInstnace->DestroySession())
-	//	{
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
-	//		//if (IsLocalPlayerController())
-	//		//{
-	//		//	//PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
-	//		//	//GetWorld()->ServerTravel(TEXT("StartMenu"));
-	//		//}
-	//	}
-	//}
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	Super::EndPlay(EndPlayReason);
-}
-
-void AZLobbyPlayerController::PreClientTravel(const FString & PendingURL, ETravelType TravelType, bool bIsSeamlessTravel)
-{
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC Travel")));
-
-	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	//if (MyGameInstance)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("LC DestroySession success")));
-	//	MyGameInstance->DestroySession();
-	//}
-
-	Super::PreClientTravel(PendingURL, TravelType, bIsSeamlessTravel);
+	//DOREPLIFETIME_CONDITION(AZLobbyPlayerController, bIsHost, COND_OwnerOnly);
 }
 
 void AZLobbyPlayerController::UpdateConnectNumber(int32 NewNumber)
 {
 	if (IsLocalPlayerController())
 	{
-		if (UserHUD)
+		if (LobbyHUD)
 		{
-			UserHUD->UpdateConnectNumber(NewNumber);
+			LobbyHUD->UpdateConnectNumber(NewNumber);
 		}
 	}
 
@@ -100,18 +78,59 @@ void AZLobbyPlayerController::UpdatePlayerName(const FString & PlayerName, bool 
 {
 	if (IsLocalPlayerController())
 	{
-		if (UserHUD)
+		if (LobbyHUD)
 		{
 			if (bErase)
 			{
-				UserHUD->DeletePlayerName(PlayerName);
+				LobbyHUD->DeletePlayerName(PlayerName);
 			}
 			else
 			{
-				UserHUD->UpdatePlayerName(PlayerName);
+				LobbyHUD->UpdatePlayerName(PlayerName);
 			}
 
 		}
+	}
+
+}
+
+bool AZLobbyPlayerController::ClientReceiveChat_Validate(const FString & PlayerName, const FString& RecvChat)
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ClientReceiveChat_Implementation(const FString & PlayerName, const FString& RecvChat)
+{
+	if (nullptr == LobbyHUD)
+	{
+		ZLOG(Error, TEXT("Lobby UserHUD null."));
+		return;
+	}
+
+	LobbyHUD->UpdateChatBox(PlayerName, RecvChat);
+
+}
+
+bool AZLobbyPlayerController::ClientUpdateJoinPlayer_Validate(const FString & JoinPlayer, bool bErase)
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ClientUpdateJoinPlayer_Implementation(const FString & JoinPlayer, bool bErase)
+{
+	UpdatePlayerName(JoinPlayer, bErase);
+}
+
+bool AZLobbyPlayerController::ClientActiveStartButton_Validate()
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ClientActiveStartButton_Implementation()
+{
+	if (LobbyHUD)
+	{
+		LobbyHUD->PlayFadeInStartButtonAnim();
 	}
 
 }
@@ -135,52 +154,6 @@ void AZLobbyPlayerController::ServerReceiveChat_Implementation(const FString & P
 
 }
 
-bool AZLobbyPlayerController::ClientReceiveChat_Validate(const FString & PlayerName, const FString& RecvChat)
-{
-	return true;
-}
-
-void AZLobbyPlayerController::ClientReceiveChat_Implementation(const FString & PlayerName, const FString& RecvChat)
-{
-	if (nullptr == UserHUD)
-	{
-		ZLOG(Error, TEXT("Lobby UserHUD null."));
-		return;
-	}
-
-	UserHUD->UpdateChatBox(PlayerName, RecvChat);
-
-}
-
-bool AZLobbyPlayerController::ClientUpdateJoinPlayer_Validate(const FString & JoinPlayer, bool bErase)
-{
-	return true;
-}
-
-void AZLobbyPlayerController::ClientUpdateJoinPlayer_Implementation(const FString & JoinPlayer, bool bErase)
-{
-	UpdatePlayerName(JoinPlayer, bErase);
-}
-
-//bool AZLobbyPlayerController::ClientDestroySession_Validate()
-//{
-//	return true;
-//}
-//
-//void AZLobbyPlayerController::ClientDestroySession_Implementation()
-//{
-//	if (IsLocalPlayerController())
-//	{
-//		auto MyGameInstance = GetGameInstance<UZGameInstance>();
-//		if (MyGameInstance)
-//		{
-//			MyGameInstance->DestroySession();
-//		}
-//	}
-//
-//
-//}
-
 bool AZLobbyPlayerController::ServerReceiveUpdateJoinPlayer_Validate()
 {
 	return true;
@@ -200,6 +173,51 @@ void AZLobbyPlayerController::ServerReceiveUpdateJoinPlayer_Implementation()
 		}
 	}
 
+
+}
+
+bool AZLobbyPlayerController::ServerStartGame_Validate()
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ServerStartGame_Implementation()
+{
+	ZLOG_S(Error);
+	auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
+	if (MyGameMode)
+	{
+		MyGameMode->StartGame();
+	}
+	else
+	{
+		ZLOG(Error, TEXT("No game mode.."));
+	}
+}
+
+bool AZLobbyPlayerController::ServerIsHost_Validate()
+{
+	return true;
+}
+
+void AZLobbyPlayerController::ServerIsHost_Implementation()
+{
+	if (bIsHost)
+	{
+		ClientActiveStartButton();
+	}
+
+}
+
+void AZLobbyPlayerController::OnRep_IsHost()
+{
+	if (bIsHost)
+	{
+		if (LobbyHUD)
+		{
+			LobbyHUD->PlayFadeInStartButtonAnim();
+		}
+	}
 
 }
 

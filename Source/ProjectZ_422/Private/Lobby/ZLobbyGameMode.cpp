@@ -9,7 +9,7 @@
 #include "..\..\Public\Lobby\ZLobbyGameMode.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Json.h"
 #include "GameLiftServerSDK.h"
 #include "ConfigCacheIni.h"
@@ -51,19 +51,19 @@ void AZLobbyGameMode::InitGame(const FString & MapName, const FString & Options,
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
 
-	auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	if (MyGameInstance)
-	{
-		ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
+	//if (MyGameInstance)
+	//{
+	//	ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
 
-		FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
-		URL.Append(TEXT("/create_game"));
+	//	FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
+	//	URL.Append(TEXT("/create_game"));
 
-		FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+	//	FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
 
-		MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+	//	MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
 
-	}
+	//}
 
 
 }
@@ -72,7 +72,18 @@ void AZLobbyGameMode::PostLogin(APlayerController * NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	//++ConnectNumber;
+	ZLOG_S(Error);
+	auto PC = Cast<AZLobbyPlayerController>(NewPlayer);
+	if (PC)
+	{
+		PC->ClientReceiveAcceptPlayerSession();
+		ZLOG_S(Error);
+		if (ConnectNumber == 1)
+		{
+			ZLOG_S(Error);
+			PC->bIsHost = true;
+		}
+	}
 
 	auto MyGameState = GetGameState<AZLobbyGameState>();
 	if (MyGameState)
@@ -88,14 +99,35 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 
 	if (ConnectNumber > 0)
 	{
-		--ConnectNumber;
+		if (!bIsStartGame)
+		{
+			auto PC = Cast<AZLobbyPlayerController>(Exiting);
+			if (PC)
+			{
+				PC->ClientReceiveRemovePlayerSession();
+			}
+
+			auto NextHost = Cast<AZLobbyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 1));
+			if (NextHost)
+			{
+				NextHost->bIsHost = true;
+				NextHost->ClientActiveStartButton();
+			}
+
+		}
+
 	}
 	else
 	{
 		if (!bIsStartGame)
 		{
 			ZLOG(Error, TEXT("Non start game."));
-			UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+			auto MyGameInstance = GetGameInstance<UZServerGameInstance>();
+			if (MyGameInstance)
+			{
+				MyGameInstance->TerminateSession();
+			}
+			//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 		}
 		else
 		{

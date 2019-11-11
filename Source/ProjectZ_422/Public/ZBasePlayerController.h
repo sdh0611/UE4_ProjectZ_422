@@ -40,9 +40,14 @@ public:
 	void ClientRemoveAllWidget_Implementation();
 
 	UFUNCTION(Client, Reliable, WithValidation)
-	void ClientDestroySession();
-	bool ClientDestroySession_Validate();
-	void ClientDestroySession_Implementation();
+	void ClientReceiveRemovePlayerSession();
+	bool ClientReceiveRemovePlayerSession_Validate();
+	void ClientReceiveRemovePlayerSession_Implementation();
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientReceiveAcceptPlayerSession();
+	bool ClientReceiveAcceptPlayerSession_Validate();
+	void ClientReceiveAcceptPlayerSession_Implementation();
 
 
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -50,6 +55,17 @@ public:
 	bool ServerReceiveUserName_Validate(const FString& UserName);
 	void ServerReceiveUserName_Implementation(const FString& UserName);
 	
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerRemovePlayerSession(const FString& PlayerSessionID);
+	bool ServerRemovePlayerSession_Validate(const FString& PlayerSessionID);
+	void ServerRemovePlayerSession_Implementation(const FString& PlayerSessionID);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerAcceptPlayerSession(const FString& PlayerSessionID);
+	bool ServerAcceptPlayerSession_Validate(const FString& PlayerSessionID);
+	void ServerAcceptPlayerSession_Implementation(const FString& PlayerSessionID);
+
+
 	
 
 protected:

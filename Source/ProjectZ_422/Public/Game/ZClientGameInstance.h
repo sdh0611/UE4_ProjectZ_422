@@ -41,23 +41,37 @@ class PROJECTZ_422_API UZClientGameInstance : public UZGameInstance
 	GENERATED_BODY()
 	
 public:
+	virtual void Shutdown() override;
+
+
+public:
 	void CreateGameSession(const FString& SessionName, int32 MaxPlayer);
+	
 	void DescribeGameSession(const FString& SessionID);
+
+	UFUNCTION(BlueprintCallable)
 	void CreatePlayerSession(const FString& SessionID);
+
 	void SearchGameSessions(const FString& FilterExpression, const FString& SortExpression);
+	
+	const FString& GetPlayerSessionID() const;
 
 private:
 	void OnCreateGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
 	void OnDescribeGameSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
 	void OnCreatePlayerSessionResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
 	void OnSearchGameSessionsResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 	
 public:
 	FOnSearchGameSessionsSuccess OnSearchGameSessionsSuccesss;
+
 	FOnSearchGameSessionsEnd OnSearchGameSessionsEnd;
 	
 
 private:
-	
+	FString PlayerSessionID;
 
 };

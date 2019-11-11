@@ -11,7 +11,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
-#include "ZGameInstance.h"
+#include "ZClientGameInstance.h"
 #include "EngineUtils.h"
 #include "Engine/Engine.h"
 
@@ -181,15 +181,10 @@ void UZLobbyWidget::OnStartButtonClick()
 	//{
 	//	MyGameInstnace->DestroySession();
 	//}
-
-	auto MyGameMode = Cast<AZLobbyGameMode>(GetWorld()->GetAuthGameMode());
-	if (MyGameMode)
+	auto PC = Cast<AZLobbyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC && PC->IsLocalPlayerController())
 	{
-		MyGameMode->StartGame();
-	}
-	else
-	{
-		ZLOG(Error, TEXT("No game mode.."));
+		PC->ServerStartGame();
 	}
 
 
@@ -200,6 +195,12 @@ void UZLobbyWidget::OnExitButtonClick()
 	auto PC = GetOwningPlayer<AZBasePlayerController>();
 	if (PC && PC->IsLocalPlayerController())
 	{
+		auto MyGameInstnace = GetGameInstance<UZClientGameInstance>();
+		if (MyGameInstnace)
+		{
+			PC->ServerRemovePlayerSession(MyGameInstnace->GetPlayerSessionID());
+		}
+
 		PC->ClientTravel(TEXT("StartMenu"), ETravelType::TRAVEL_Absolute);
 		//UGameplayStatics::OpenLevel(GetWorld(), TEXT("StartMenu"));
 		//GetWorld()->ServerTravel(TEXT("StartMenu"));

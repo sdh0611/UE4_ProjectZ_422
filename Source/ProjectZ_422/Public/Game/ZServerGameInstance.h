@@ -20,15 +20,18 @@ public:
 
 public:
 	virtual void Init() override;
+	virtual void Shutdown() override;
 
 public:
 	void TerminateSession();
+	void RemovePlayerSession(const FString& PlayerSessionID);
+	void AcceptPlayerSession(const FString& PlayerSessionID);
 
 public:
 	bool bIsHealthyProcess = true;
 
 protected:
-	//class FGameLiftServerSDKModule* GameLiftSDKModule;
+	class FGameLiftServerSDKModule* GameLiftSDKModule;
 
 
 
