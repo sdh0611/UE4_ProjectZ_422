@@ -90,12 +90,15 @@ void AZGameMode::Logout(AController * Exiting)
 	if (ConnectNumber < 1)
 	{
 		ZLOG(Error, TEXT("End server."));
-		//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 		auto MyGameInstance = GetGameInstance<UZServerGameInstance>();
 		if (MyGameInstance)
 		{
 			MyGameInstance->TerminateSession();
+			MyGameInstance->ProcessEnd();
 		}
+		ZLOG(Error, TEXT("Quit game."));
+		GIsRequestingExit = true;
+		//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 	}
 
 }

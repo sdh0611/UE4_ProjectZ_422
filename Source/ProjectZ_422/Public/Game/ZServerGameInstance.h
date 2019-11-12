@@ -24,6 +24,7 @@ public:
 
 public:
 	void TerminateSession();
+	void ProcessEnd();
 	void RemovePlayerSession(const FString& PlayerSessionID);
 	void AcceptPlayerSession(const FString& PlayerSessionID);
 

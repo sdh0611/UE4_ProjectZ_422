@@ -50,21 +50,34 @@ AZLobbyGameMode::AZLobbyGameMode()
 void AZLobbyGameMode::InitGame(const FString & MapName, const FString & Options, FString & ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Port : %d"), GetWorld()->URL.Port));
+	ZLOG(Error, TEXT("Port : %d"), GetWorld()->URL.Port);
 
-	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	//if (MyGameInstance)
-	//{
-	//	ZLOG(Error, TEXT("Host : %s"), *MyGameInstance->GetWebConnector().GetIP());
+	auto GameLiftSDKModule =
+		&FModuleManager::LoadModuleChecked<FGameLiftServerSDKModule>(TEXT("GameLiftServerSDK"));
 
-	//	FString URL = *MyGameInstance->GetWebConnector().GetWebURL();
-	//	URL.Append(TEXT("/create_game"));
+	auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
+	{
+		ZLOG(Error, TEXT("onStartGameSession."));
+		GameLiftSDKModule->ActivateGameSession();
+	};
 
-	//	FString PostParam = FString::Printf(TEXT("ip=%s"), *MyGameInstance->GetWebConnector().GetIP());
+	FProcessParameters* Params = new FProcessParameters();
+	Params->OnStartGameSession.BindLambda(OnGameSession);
+	Params->OnTerminate.BindLambda([=]() {
+		ZLOG(Error, TEXT("Terminate sessions."));
+		GameLiftSDKModule->ProcessEnding();
+	});
 
-	//	MyGameInstance->GetWebConnector().HttpPost(URL, PostParam);
+	Params->OnHealthCheck.BindLambda([&]() { return true; });
 
-	//}
+	Params->port = GetWorld()->URL.Port;
 
+	TArray<FString> logfiles;
+	logfiles.Add(TEXT("ZLogFile.txt"));
+	Params->logParameters = logfiles;
+
+	GameLiftSDKModule->ProcessReady(*Params);
 
 }
 
@@ -126,7 +139,10 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 			if (MyGameInstance)
 			{
 				MyGameInstance->TerminateSession();
+				MyGameInstance->ProcessEnd();
 			}
+			ZLOG(Error, TEXT("Quit game."));
+			GIsRequestingExit = true;
 			//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 		}
 		else
@@ -164,9 +180,6 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 
 void AZLobbyGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
-	
-
-
 	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
 	//if (MyGameInstance)
 	//{
@@ -181,15 +194,21 @@ void AZLobbyGameMode::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 	//}
 
-
 	Super::EndPlay(EndPlayReason);
+}
+
+void AZLobbyGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	ZLOG(Error, TEXT("Port : %d"), GetWorld()->URL.Port);
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Port : %d"), GetWorld()->URL.Port));
+
+	ZLOG_S(Error);
 }
 
 void AZLobbyGameMode::StartGame()
 {
 	ZLOG_S(Error);
-
-	//DestroyClientsSession();
 
 	bIsStartGame = true;
 
@@ -210,30 +229,3 @@ void AZLobbyGameMode::StartGame()
 	//}
 
 }
-
-void AZLobbyGameMode::DestroyClientsSession()
-{
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySessiond"));
-
-	//for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
-	//{
-	//	auto PC = Cast <AZBasePlayerController>(*Iter);
-	//	if (PC)
-	//	{
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("ClientDestorySession~~"));
-	//		PC->ClientDestroySession();
-	//	}
-	//}
-
-	//auto MyGameInstance = GetGameInstance<UZGameInstance>();
-	//if (MyGameInstance)
-	//{
-	//	MyGameInstance->DestroySession();
-	//}
-
-}
-
-//int32 AZLobbyGameMode::GetConnectNumber() const
-//{
-//	return ConnectNumber;
-//}

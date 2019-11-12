@@ -8,6 +8,7 @@
 
 #include "GameLiftServerSDK.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameModeBase.h"
 
 UZServerGameInstance::UZServerGameInstance()
 {
@@ -16,40 +17,40 @@ UZServerGameInstance::UZServerGameInstance()
 
 	GameLiftSDKModule->InitSDK();
 
-	auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
-	{
-		ZLOG(Error, TEXT("onStartGameSession."));
-		GameLiftSDKModule->ActivateGameSession();
-	};
+	//auto OnGameSession = [=](Aws::GameLift::Server::Model::GameSession NewGameSession)
+	//{
+	//	ZLOG(Error, TEXT("onStartGameSession."));
+	//	GameLiftSDKModule->ActivateGameSession();
+	//};
 
-	FProcessParameters* Params = new FProcessParameters();
-	Params->OnStartGameSession.BindLambda(OnGameSession);
-	Params->OnTerminate.BindLambda([=]() {
-		ZLOG(Error, TEXT("Terminate sessions."));
-		GameLiftSDKModule->ProcessEnding();
-		//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
-	});
+	//FProcessParameters* Params = new FProcessParameters();
+	//Params->OnStartGameSession.BindLambda(OnGameSession);
+	//Params->OnTerminate.BindLambda([=]() {
+	//	ZLOG(Error, TEXT("Terminate sessions."));
+	//	GameLiftSDKModule->ProcessEnding();
+	//});
 
-	Params->OnHealthCheck.BindLambda([&]() { return bIsHealthyProcess; });
+	//Params->OnHealthCheck.BindLambda([&]() { return bIsHealthyProcess; });
 
-	FString Port = "7777";
-	if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port) == false)
-	{
-		Port = GConfig->GetStr(TEXT("URL"), TEXT("Port"), GEngineIni);
-	}
-	Params->port = FCString::Atoi(*Port);
+	//FString Port = "7777";
+	//if (FParse::Value(FCommandLine::Get(), TEXT("Port="), Port) == false)
+	//{
+	//	Port = GConfig->GetStr(TEXT("URL"), TEXT("Port"), GEngineIni);
+	//}
+	//Params->port = FCString::Atoi(*Port);
 
-	TArray<FString> logfiles;
-	logfiles.Add(TEXT("ZLogFile.txt"));
-	Params->logParameters = logfiles;
-
-	GameLiftSDKModule->ProcessReady(*Params);
+	//TArray<FString> logfiles;
+	//logfiles.Add(TEXT("ZLogFile.txt"));
+	//Params->logParameters = logfiles;
+	//
+	//GameLiftSDKModule->ProcessReady(*Params);
 }
 
 void UZServerGameInstance::Init()
 {	
 	Super::Init();
-
+	ZLOG(Error, TEXT("%d"), GetWorld()->URL.Port);
+	
 }
 
 void UZServerGameInstance::Shutdown()
@@ -62,24 +63,42 @@ void UZServerGameInstance::Shutdown()
 void UZServerGameInstance::TerminateSession()
 {
 	ZLOG(Error, TEXT("Terminate game session."));
-	GameLiftSDKModule->TerminateGameSession();
+	if (GameLiftSDKModule)
+	{
+		GameLiftSDKModule->TerminateGameSession();
+		//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+	}
+
+}
+
+void UZServerGameInstance::ProcessEnd()
+{
+	if (GameLiftSDKModule)
+	{
+		ZLOG(Error, TEXT("Process end."));
+		GameLiftSDKModule->ProcessEnding();
+	}
 
 }
 
 void UZServerGameInstance::RemovePlayerSession(const FString & PlayerSessionID)
 {
 	ZLOG(Error, TEXT("Remove player session."));
-	GameLiftSDKModule->RemovePlayerSession(PlayerSessionID);
-
+	if (GameLiftSDKModule)
+	{
+		GameLiftSDKModule->RemovePlayerSession(PlayerSessionID);
+	}
 
 }
 
 void UZServerGameInstance::AcceptPlayerSession(const FString & PlayerSessionID)
 {
-	if (!GameLiftSDKModule->AcceptPlayerSession(PlayerSessionID).IsSuccess())
+	if (GameLiftSDKModule)
 	{
-		ZLOG(Error, TEXT("Failed to accept player session."));
+		if (!GameLiftSDKModule->AcceptPlayerSession(PlayerSessionID).IsSuccess())
+		{
+			ZLOG(Error, TEXT("Failed to accept player session."));
+		}
 	}
-
 }
 

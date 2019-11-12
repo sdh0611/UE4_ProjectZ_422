@@ -28,17 +28,14 @@ public:
 	virtual void Logout(AController* Exiting) override;
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
+protected:
+	virtual void BeginPlay() override;
 
 public:
 	void StartGame();
-	void DestroyClientsSession();
 
 private:
 	bool bIsStartGame = false;
-//public:
-//	int32 GetConnectNumber() const;
-//
-//private:
-//	int32 ConnectNumber = 0;
+
 
 };

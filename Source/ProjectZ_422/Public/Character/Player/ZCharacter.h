@@ -207,7 +207,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Character, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
 	class AZWeapon* CurrentWeapon;
 
-	FRotator Rotate;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ZCharacter)

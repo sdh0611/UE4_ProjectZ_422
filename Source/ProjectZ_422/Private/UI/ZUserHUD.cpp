@@ -14,6 +14,7 @@
 #include "ZCharacterStatusComponent.h"
 #include "ZCharacterItemStatusComponent.h"
 #include "Components/TextBlock.h"
+#include "Components/Border.h"
 
 UZUserHUD::UZUserHUD(const FObjectInitializer & ObjectInitializer)
 	:UUserWidget(ObjectInitializer)
@@ -25,73 +26,67 @@ void UZUserHUD::NativeConstruct()
 	Super::NativeConstruct();
 
 	/* Inventory */
-	auto NewInventoryWidget = Cast<UZInventoryWidget>(GetWidgetFromName(TEXT("UI_Inventory")));
-	check(nullptr != NewInventoryWidget);
-	InventoryWidget = NewInventoryWidget;
+	InventoryWidget = Cast<UZInventoryWidget>(GetWidgetFromName(TEXT("UI_Inventory")));
+	check(InventoryWidget);
 
 	/* Shop widget */
-	auto NewShopWidget = Cast<UZShopWidget>(GetWidgetFromName(TEXT("UI_Shop")));
-	check(nullptr != NewShopWidget);
-	ShopWidget = NewShopWidget;
+	ShopWidget = Cast<UZShopWidget>(GetWidgetFromName(TEXT("UI_Shop")));
+	check(ShopWidget);
 
 	/* HPBar widget */
-	auto NewHPBarWidget = Cast<UZHPBarWidget>(GetWidgetFromName(TEXT("UI_HPBar")));
-	check(nullptr != NewHPBarWidget);
-	HPBarWidget = NewHPBarWidget;
+	HPBarWidget = Cast<UZHPBarWidget>(GetWidgetFromName(TEXT("UI_HPBar")));
+	check(HPBarWidget);
 
 	/* Weapon info widget */
-	auto NewCurrnetWeaponInfoWidget = Cast<UZCurrentWeaponInfoWidget>(GetWidgetFromName(TEXT("UI_CurrentWeaponInfo")));
-	check(nullptr != NewCurrnetWeaponInfoWidget);
-	CurrentWeaponInfoWidget = NewCurrnetWeaponInfoWidget;
+	CurrentWeaponInfoWidget = Cast<UZCurrentWeaponInfoWidget>(GetWidgetFromName(TEXT("UI_CurrentWeaponInfo")));
+	check(CurrentWeaponInfoWidget);
 
 	/* Input number widget */
-	auto NewInputNumberWidget = Cast<UZInputNumberWidget>(GetWidgetFromName(TEXT("UI_InputNumber")));
-	check(nullptr != NewInputNumberWidget);
-	InputNumberWidget = NewInputNumberWidget;
+	InputNumberWidget = Cast<UZInputNumberWidget>(GetWidgetFromName(TEXT("UI_InputNumber")));
+	check(InputNumberWidget);
 
-	/* Dead menu widget */
-	auto NewDeadMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
-	check(nullptr != NewDeadMenuWidget);
-	EndGameMenuWidget = NewDeadMenuWidget;
+	/* End menu widget */
+	EndGameMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
+	check(EndGameMenuWidget);
 	EndGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 
 	/* InGame menu widget */
-	auto NewInGameMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_InGame")));
-	check(nullptr != NewInGameMenuWidget);
-	InGameMenuWidget = NewInGameMenuWidget;
+	InGameMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_InGame")));
+	check(InGameMenuWidget);
 	InGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 
 
 	/* Money text */
-	auto NewCurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
-	check(nullptr != NewCurrentMoneyInfoText);
-	CurrentMoneyInfoText = NewCurrentMoneyInfoText;
+	CurrentMoneyInfoText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrnetMoney")));
+	check(CurrentMoneyInfoText);
 
 	/* Time text */
-	auto NewRemainTimeText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_RemainTimeValue")));
-	check(nullptr != NewRemainTimeText);
-	RemainTimeText = NewRemainTimeText;
+	RemainTimeText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_RemainTimeValue")));
+	check(RemainTimeText);
 
 	/* Phase text */
-	auto NewPhaseText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Phase")));
-	check(nullptr != NewPhaseText);
-	PhaseText = NewPhaseText;
+	PhaseText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_Phase")));
+	check(PhaseText);
 
 	/* Total wave text */
-	auto NewTotalWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_TotalWaveValue")));
-	check(nullptr != NewTotalWaveText);
-	TotalWaveText = NewTotalWaveText;
+	TotalWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_TotalWaveValue")));
+	check(TotalWaveText);
 
 	/* Current wave text */
-	auto NewCurrentWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrentWaveValue")));
-	check(nullptr != NewCurrentWaveText);
-	CurrentWaveText = NewCurrentWaveText;
+	CurrentWaveText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_CurrentWaveValue")));
+	check(CurrentWaveText);
 
 	/* NumZombies text */
-	auto NewCurrentNumZombiesText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_NumZombiesValue")));
-	check(nullptr != NewCurrentNumZombiesText);
-	CurrentNumZombiesText = NewCurrentNumZombiesText;
+	CurrentNumZombiesText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_NumZombiesValue")));
+	check(CurrentNumZombiesText);
 
+	/* InteractionInfo */
+	InteractionInfo = Cast<UBorder>(GetWidgetFromName(TEXT("InteractionInfo")));
+	check(InteractionInfo);
+
+	/* InteractionNameText */
+	InteractionNameText = Cast<UTextBlock>(GetWidgetFromName(TEXT("TXT_InteractionName")));
+	check(InteractionNameText);
 
 	/* HPBar에 StatusComponent 바인딩 */
 	auto Player = Cast<AZCharacter>(GetOwningPlayerPawn());
@@ -116,18 +111,6 @@ void UZUserHUD::NativeConstruct()
 	{
 		UpdatePhaseText(MyGameMode->GetCurrentGamePhase());
 	}
-
-}
-
-void UZUserHUD::NativeTick(const FGeometry & MyGeometry, float InDeltaTime)
-{
-	Super::NativeTick(MyGeometry, InDeltaTime);
-
-}
-
-void UZUserHUD::NativeDestruct()
-{
-	Super::NativeDestruct();
 
 }
 
@@ -198,6 +181,33 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 		break;
 	}
 
+	}
+}
+
+void UZUserHUD::UpdateInteractionName(const FString & Name)
+{
+	if (InteractionNameText)
+	{
+		InteractionNameText->SetText(FText::FromString(Name));
+	}
+
+}
+
+void UZUserHUD::ToggleInteractionInfo(bool bShow)
+{
+	if (bShow)
+	{
+		if (ESlateVisibility::Visible != InteractionInfo->GetVisibility())
+		{
+			InteractionInfo->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+	else
+	{
+		if (ESlateVisibility::Collapsed != InteractionInfo->GetVisibility())
+		{
+			InteractionInfo->SetVisibility(ESlateVisibility::Collapsed);
+		}
 	}
 }
 

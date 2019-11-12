@@ -21,9 +21,7 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
-	virtual void NativeTick(const FGeometry & MyGeometry, float InDeltaTime) override;
-	virtual void NativeDestruct() override;
-	
+
 
 public:
 	/* Currnet Money Info 업데이트 관련 */
@@ -34,6 +32,8 @@ public:
 	void UpdateCurrentWave(int32 NewCurrentWave);
 	void UpdateNumZombies(int32 NewValue);
 	void UpdatePhaseText(EGamePhase NewPhase);
+	void UpdateInteractionName(const FString& Name);
+	void ToggleInteractionInfo(bool bShow);
 
 public:
 	/*
@@ -150,6 +150,11 @@ protected:
 	UPROPERTY()
 	class UTextBlock* CurrentNumZombiesText;
 
+	UPROPERTY()
+	class UBorder* InteractionInfo;
+
+	UPROPERTY()
+	class UTextBlock* InteractionNameText;
 
 private:
 	UPROPERTY(VisibleAnywhere)
