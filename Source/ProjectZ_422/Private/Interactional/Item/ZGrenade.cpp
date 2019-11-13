@@ -80,11 +80,15 @@ void AZGrenade::Fire()
 	Super::Fire();
 }
 
-void AZGrenade::ThrowGrenade()
+bool AZGrenade::ServerThrowGrenade_Validate()
 {
+	return true;
+}
+
+void AZGrenade::ServerThrowGrenade_Implementation()
+{
+	ZLOG_S(Error);
 	FVector HandLocation = ItemOwner->GetMesh()->GetSocketLocation(ItemOwner->GetMainWeaponSocketName());
-	//FRotator DirRotation = FRotationMatrix::MakeFromX(HandLocation).Rotator();
-	//FVector LaunchDirection = DirRotation.Vector();
 	FVector LaunchDirection = FVector::ZeroVector;
 
 	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
@@ -109,10 +113,26 @@ void AZGrenade::ThrowGrenade()
 		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
 		Projectile->SetDamageCauser(ItemOwner->GetController());
 	}
-	
+
 	SetIsThrown(false);
 
 	AdjustQuantity(-1);
+}
+
+void AZGrenade::ThrowGrenade()
+{
+	ZLOG_S(Error);
+	if (::IsValid(ItemOwner))
+	{
+		ZLOG_S(Error);
+		auto PC = ItemOwner->GetController<APlayerController>();
+		if (PC && PC->IsLocalPlayerController())
+		{
+			ZLOG_S(Error);
+			ServerThrowGrenade();
+		}
+	}
+
 }
 
 void AZGrenade::SetIsThrown(bool NewState)

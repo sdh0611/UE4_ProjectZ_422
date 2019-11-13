@@ -130,39 +130,17 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 
 void AZGun::Reload()
 {
-	if (!::IsValid(ItemOwner))
+	if (::IsValid(ItemOwner))
 	{
-		return;
-	}
-
-	SetIsReloading(false);
-	if (CurrentAmmo >= MaxAmmo)
-	{
-		return;
-	}
-	ZLOG_S(Warning);
-
-	while (IsCanReload())
-	{
-		auto Ammo = ItemOwner->GetItemStatusComponent()->GetItemByName(UseAmmoName);
-		if (nullptr == Ammo)
+		auto PC = ItemOwner->GetController<APlayerController>();
+		if (PC && PC->IsLocalPlayerController())
 		{
-			ZLOG(Error, TEXT("Ammo not exist."));
-			break;
+			ServerReload();
+			return;
 		}
-
-		int32 ReloadAmmo = MaxAmmo - CurrentAmmo;
-		if (Ammo->GetCurrentQuantityOfItem() < ReloadAmmo)
-		{
-			ReloadAmmo = Ammo->GetCurrentQuantityOfItem();
-		}
-
-		Ammo->AdjustQuantity(-ReloadAmmo);
-
-		CurrentAmmo += ReloadAmmo;
 	}
-
-	OnItemInfoChanged.Broadcast();
+	
+	
 }
 
 void AZGun::SetIsReloading(bool NewState)
@@ -281,6 +259,49 @@ bool AZGun::ServerSetFireMode_Validate(EFireMode NewMode)
 void AZGun::ServerSetFireMode_Implementation(EFireMode NewMode)
 {
 	SetFireMode(NewMode);
+}
+
+bool AZGun::ServerReload_Validate()
+{
+	return true;
+}
+
+void AZGun::ServerReload_Implementation()
+{
+	ZLOG_S(Error);
+	if (!::IsValid(ItemOwner))
+	{
+		return;
+	}
+
+	SetIsReloading(false);
+	if (CurrentAmmo >= MaxAmmo)
+	{
+		return;
+	}
+	ZLOG_S(Warning);
+
+	while (IsCanReload())
+	{
+		auto Ammo = ItemOwner->GetItemStatusComponent()->GetItemByName(UseAmmoName);
+		if (nullptr == Ammo)
+		{
+			ZLOG(Error, TEXT("Ammo not exist."));
+			break;
+		}
+
+		int32 ReloadAmmo = MaxAmmo - CurrentAmmo;
+		if (Ammo->GetCurrentQuantityOfItem() < ReloadAmmo)
+		{
+			ReloadAmmo = Ammo->GetCurrentQuantityOfItem();
+		}
+
+		Ammo->AdjustQuantity(-ReloadAmmo);
+
+		CurrentAmmo += ReloadAmmo;
+	}
+
+	OnItemInfoChanged.Broadcast();
 }
 
 void AZGun::MulticastSpawnFireEffectAndSound_Implementation()

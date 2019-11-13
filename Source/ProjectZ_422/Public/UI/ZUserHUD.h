@@ -53,7 +53,8 @@ public:
 	*/
 	void DrawInventoryWidget();
 	void DrawShopWidget();
-	void DrawEndGameMenuWidget();
+	void DrawDeadMenuWidget();
+	void DrawWinMenuWidget();
 	void DrawInGameMenuWidget();
 	/*
 		NOTE(9.11):
@@ -66,7 +67,7 @@ public:
 	 */
 	void RemoveInventoryWidget();
 	void RemoveShopWidget();
-	void RemoveEndGameMenuWidget();
+	//void RemoveEndGameMenuWidget();
 	void RemoveInGameMenuWidget();
 	/*
 		NOTE(9.11):
@@ -127,7 +128,7 @@ protected:
 	class UZInputNumberWidget* InputNumberWidget;
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
-	class UZUserWidget* EndGameMenuWidget;
+	class UZEndGameWidget* EndGameMenuWidget;
 
 	UPROPERTY(EditAnywhere, Category = ZHUD, BlueprintReadOnly)
 	class UZUserWidget* InGameMenuWidget;

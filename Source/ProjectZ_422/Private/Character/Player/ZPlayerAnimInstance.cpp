@@ -125,8 +125,10 @@ void UZPlayerAnimInstance::AnimNotify_SwitchEndCheck()
 
 void UZPlayerAnimInstance::AnimNotify_ThrowCheck()
 {
+	ZLOG_S(Error);
 	if (OnGrenadeThrow.IsBound())
 	{
+		ZLOG_S(Error);
 		OnGrenadeThrow.Execute();
 	}
 }

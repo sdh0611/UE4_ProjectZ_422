@@ -40,6 +40,12 @@ public:
 protected:
 	virtual void Fire() override;
 
+private:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerThrowGrenade();
+	bool ServerThrowGrenade_Validate();
+	void ServerThrowGrenade_Implementation();
+
 protected:
 	// 사격시 생성되는 수류탄의 클래스.
 	UPROPERTY(EditAnywhere, Category = Weapon)

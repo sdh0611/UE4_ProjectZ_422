@@ -181,12 +181,12 @@ void AZPlayerController::ClientOpenShop_Implementation()
 
 }
 
-bool AZPlayerController::CloseShop_Validate()
+bool AZPlayerController::ClientCloseShop_Validate()
 {
 	return true;
 }
 
-void AZPlayerController::CloseShop_Implementation()
+void AZPlayerController::ClientCloseShop_Implementation()
 {
 	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("PC CloseShop"));
 	if (UserHUD)
@@ -228,6 +228,37 @@ void AZPlayerController::ClientAddPitchAndYaw_Implementation(float AddPitch, flo
 	{
 		AddYawInput(AddYaw);
 	}
+}
+
+bool AZPlayerController::ClientDrawEndGameMenu_Validate(bool bWin)
+{
+	return true;
+}
+
+void AZPlayerController::ClientDrawEndGameMenu_Implementation(bool bWin)
+{
+	ZLOG_S(Error);
+	if (!IsLocalPlayerController())
+	{
+		ZLOG_S(Error);
+		return;
+	}
+
+	if (!UserHUD)
+	{
+		ZLOG_S(Error);
+		return;
+	}
+
+	if (bWin)
+	{
+		UserHUD->DrawWinMenuWidget();
+	}
+	else
+	{
+		UserHUD->DrawDeadMenuWidget();
+	}
+
 }
 
 void AZPlayerController::ConstructShopWidget()

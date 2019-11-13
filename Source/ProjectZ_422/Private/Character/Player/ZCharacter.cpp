@@ -532,7 +532,7 @@ void AZCharacter::OnDead()
 	auto MyPC = GetController<AZPlayerController>();
 	if (MyPC && MyPC->IsLocalPlayerController())
 	{
-		MyPC->GetUserHUD()->DrawEndGameMenuWidget();
+		MyPC->GetUserHUD()->DrawDeadMenuWidget();
 
 	}
 
@@ -1340,7 +1340,9 @@ void AZCharacter::OnRep_CurrentWeapon()
 			CharacterAnim->SetIsEquipGun(false);
 		}
 
-		if (HasAuthority())
+		//if(HasAuthority())
+		auto PC = GetController<APlayerController>();
+		if (PC && PC->IsLocalPlayerController())
 		{
 			if (EWeaponCategory::Grenade == CurrentWeapon->GetWeaponCategory())
 			{
@@ -1348,6 +1350,7 @@ void AZCharacter::OnRep_CurrentWeapon()
 				/* OnGrenadeThrow에 바인딩. */
 				auto Grenade = Cast<AZGrenade>(CurrentWeapon);
 				check(Grenade);
+				UKismetSystemLibrary::PrintString(GetWorld(), TEXT("BInd Grenade"));
 				ZLOG(Error, TEXT("Bind ThrowGrenade"));
 				CharacterAnim->OnGrenadeThrow.BindUObject(Grenade, &AZGrenade::ThrowGrenade);
 			}

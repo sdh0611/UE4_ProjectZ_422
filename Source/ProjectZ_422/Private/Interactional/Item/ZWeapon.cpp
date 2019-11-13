@@ -71,7 +71,7 @@ void AZWeapon::OnRemoved()
 
 	// Actor∑Œ∫Œ≈Õ ∂ºæÓ≥ø.
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-
+	
 	Super::OnRemoved();
 }
 

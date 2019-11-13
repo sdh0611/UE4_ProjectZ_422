@@ -82,6 +82,8 @@ protected:
 
 	FTimerHandle StopSpawnTimer;
 
+	FTimerHandle WinTimer;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class AZShop> ShopClass;
 

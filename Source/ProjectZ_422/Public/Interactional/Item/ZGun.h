@@ -129,6 +129,11 @@ protected:
 	bool ServerSetFireMode_Validate(EFireMode NewMode);
 	void ServerSetFireMode_Implementation(EFireMode NewMode);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerReload();
+	bool ServerReload_Validate();
+	void ServerReload_Implementation();
+
 	/* NetMulticast */
 	UFUNCTION(NetMulticast, UnReliable)
 	void MulticastSpawnFireEffectAndSound();

@@ -64,9 +64,9 @@ public:
 	void ClientOpenShop_Implementation();
 
 	UFUNCTION(Client, Reliable, WithValidation)
-	void CloseShop();
-	bool CloseShop_Validate();
-	void CloseShop_Implementation();
+	void ClientCloseShop();
+	bool ClientCloseShop_Validate();
+	void ClientCloseShop_Implementation();
 
 	UFUNCTION(Client, Reliable, WithValidation)
 	void ClientBloodSplatter();
@@ -77,6 +77,12 @@ public:
 	void ClientAddPitchAndYaw(float AddPitch, float AddYaw);
 	bool ClientAddPitchAndYaw_Validate(float AddPitch, float AddYaw);
 	void ClientAddPitchAndYaw_Implementation(float AddPitch, float AddYaw);
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void ClientDrawEndGameMenu(bool bWin);
+	bool ClientDrawEndGameMenu_Validate(bool bWin);
+	void ClientDrawEndGameMenu_Implementation(bool bWin);
+
 
 	/* Replicated using */
 

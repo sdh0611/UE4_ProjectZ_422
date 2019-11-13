@@ -8,6 +8,7 @@
 #include "ZInventoryWidget.h"
 #include "ZShopWidget.h"
 #include "ZHPBarWidget.h"
+#include "ZEndGameWidget.h"
 #include "ZCurrentWeaponInfoWidget.h"
 #include "ZInputNumberWidget.h"
 #include "ZCharacter.h"
@@ -46,7 +47,7 @@ void UZUserHUD::NativeConstruct()
 	check(InputNumberWidget);
 
 	/* End menu widget */
-	EndGameMenuWidget = Cast<UZUserWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
+	EndGameMenuWidget = Cast<UZEndGameWidget>(GetWidgetFromName(TEXT("UI_EndGame")));
 	check(EndGameMenuWidget);
 	EndGameMenuWidget->SetVisibility(ESlateVisibility::Hidden);
 
@@ -171,7 +172,7 @@ void UZUserHUD::UpdatePhaseText(EGamePhase NewPhase)
 	case EGamePhase::Lose:
 	{
 		PhaseText->SetColorAndOpacity(FSlateColor(FLinearColor(FVector4(1.f, 1.f, 1.f, 1.f))));
-		PhaseText->SetText(FText::FromString(TEXT("승리하였습니다 !")));
+		PhaseText->SetText(FText::FromString(TEXT("패배하였습니다...")));
 		CallFadeInAnim();
 		break;
 	}
@@ -271,9 +272,38 @@ void UZUserHUD::DrawShopWidget()
 	AddWidgetToList(ShopWidget);
 }
 
-void UZUserHUD::DrawEndGameMenuWidget()
+void UZUserHUD::DrawDeadMenuWidget()
 {
-	AddWidgetToList(EndGameMenuWidget);
+	if (EndGameMenuWidget)
+	{
+		EndGameMenuWidget->SetEndText(TEXT("YOU DEAD"));
+		EndGameMenuWidget->SetVisibility(ESlateVisibility::Visible);
+
+		auto PC = GetOwningPlayer();
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetInputMode(FInputModeUIOnly());
+		}
+
+	}
+}
+
+void UZUserHUD::DrawWinMenuWidget()
+{
+	if (EndGameMenuWidget)
+	{
+		EndGameMenuWidget->SetEndText(TEXT("VICTORY"));
+		EndGameMenuWidget->SetVisibility(ESlateVisibility::Visible);
+
+		auto PC = GetOwningPlayer();
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetInputMode(FInputModeUIOnly());
+		}
+	}
+
 }
 
 void UZUserHUD::DrawInGameMenuWidget()
@@ -296,11 +326,11 @@ void UZUserHUD::RemoveShopWidget()
 	RemoveWidgetFromList(ShopWidget);
 }
 
-void UZUserHUD::RemoveEndGameMenuWidget()
-{
-	RemoveWidgetFromList(EndGameMenuWidget);
-
-}
+//void UZUserHUD::RemoveEndGameMenuWidget()
+//{
+//	RemoveWidgetFromList(EndGameMenuWidget);
+//
+//}
 
 void UZUserHUD::RemoveInGameMenuWidget()
 {

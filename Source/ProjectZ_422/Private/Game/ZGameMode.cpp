@@ -95,9 +95,10 @@ void AZGameMode::Logout(AController * Exiting)
 		{
 			MyGameInstance->TerminateSession();
 			MyGameInstance->ProcessEnd();
+			
+			ZLOG(Error, TEXT("Quit game."));
+			GIsRequestingExit = true;
 		}
-		ZLOG(Error, TEXT("Quit game."));
-		GIsRequestingExit = true;
 		//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 	}
 
@@ -316,10 +317,9 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 				auto PC = Cast<AZPlayerController>(Iter->Get());
 				if (PC)
 				{
-					PC->CloseShop();
+					PC->ClientCloseShop();
 				}
 			}
-
 
 			/* Stop spawner timer µî·Ï */
 			GetWorld()->GetTimerManager().SetTimer(StopSpawnTimer, this, &AZGameMode::StopAllSpawner, CurrentRemainTime);
@@ -336,6 +336,21 @@ void AZGameMode::HandleGamePhase(EGamePhase NewCurrentGamePhase)
 			{
 				Spawner->SetActive(false);
 			}
+			
+			auto Win = [&]() {
+				ZLOG_S(Error);
+				for (auto Iter = GetWorld()->GetPlayerControllerIterator(); Iter; ++Iter)
+				{
+					auto PC = Cast<AZPlayerController>(*Iter);
+					if (PC)
+					{
+						ZLOG_S(Error);
+						PC->ClientDrawEndGameMenu(true);
+					}
+				}
+			};
+
+			GetWorld()->GetTimerManager().SetTimer(WinTimer, Win, 3.f, false);
 
 			break;
 		}

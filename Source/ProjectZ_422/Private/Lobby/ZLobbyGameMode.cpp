@@ -140,9 +140,10 @@ void AZLobbyGameMode::Logout(AController * Exiting)
 			{
 				MyGameInstance->TerminateSession();
 				MyGameInstance->ProcessEnd();
+				
+				ZLOG(Error, TEXT("Quit game."));
+				GIsRequestingExit = true;
 			}
-			ZLOG(Error, TEXT("Quit game."));
-			GIsRequestingExit = true;
 			//UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 		}
 		else
