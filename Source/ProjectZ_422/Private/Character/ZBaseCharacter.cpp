@@ -247,11 +247,6 @@ void AZBaseCharacter::ServerSetCrouchWalkSpeed_Implementation(float NewSpeed)
 
 void AZBaseCharacter::MulticastPlayMontage_Implementation(const FString & MontageName)
 {
-	if (GetNetMode() == ENetMode::NM_DedicatedServer)
-	{
-		return;
-	}
-
 	auto CharacterAnim = GetAnimInstance();
 	if (!::IsValid(CharacterAnim))
 	{
@@ -272,12 +267,13 @@ void AZBaseCharacter::OnDead()
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->DisableMovement();
 
-	if (DeadSound)
+	if (GetNetMode() != ENetMode::NM_DedicatedServer)
 	{
-		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DeadSound, GetActorLocation(), GetActorRotation());
+		if (DeadSound)
+		{
+			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), DeadSound, GetActorLocation(), GetActorRotation());
+		}
 	}
-
-
 
 	GetWorld()->GetTimerManager().SetTimer(InactiveTimer, this, &AZBaseCharacter::OnRemoved, DisappearTime, false);
 
@@ -309,32 +305,25 @@ void AZBaseCharacter::ServerSetSprinting_Implementation(bool bNewState)
 
 void AZBaseCharacter::MulticastOnHit_Implementation()
 {
-	if (GetNetMode() == ENetMode::NM_DedicatedServer)
-	{
-		return;
-	}
-
 	auto Anim = GetAnimInstance();
 	if (::IsValid(Anim))
 	{
 		Anim->bIsDamaged = true;
 	}
 
-	if (HitSound)
+	if (GetNetMode() != ENetMode::NM_DedicatedServer)
 	{
-		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
-			GetActorLocation(), GetActorRotation());
+		if (HitSound)
+		{
+			UGameplayStatics::SpawnSoundAtLocation(GetWorld(), HitSound,
+				GetActorLocation(), GetActorRotation());
+		}
 	}
 
 }
 
 void AZBaseCharacter::MulticastOnDead_Implementation()
 {
-	if (GetNetMode() == ENetMode::NM_DedicatedServer)
-	{
-		return;
-	}
-
 	auto Anim = GetAnimInstance();
 	if (::IsValid(Anim))
 	{

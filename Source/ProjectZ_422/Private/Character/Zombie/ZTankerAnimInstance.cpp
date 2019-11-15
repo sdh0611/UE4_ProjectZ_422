@@ -5,6 +5,7 @@
 #include "ZTanker.h"
 #include "ZZombieAIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UZTankerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
@@ -24,7 +25,6 @@ void UZTankerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UZTankerAnimInstance::AnimNotify_ScreamStart()
 {
-	ZLOG_S(Warning);
 	auto Zombie = Cast<AZTanker>(TryGetPawnOwner());
 	if (!::IsValid(Zombie))
 	{
@@ -39,7 +39,6 @@ void UZTankerAnimInstance::AnimNotify_ScreamStart()
 
 void UZTankerAnimInstance::AnimNotify_ScreamEnd()
 {
-	ZLOG_S(Warning);
 	auto Zombie = Cast<AZTanker>(TryGetPawnOwner());
 	if (!::IsValid(Zombie))
 	{

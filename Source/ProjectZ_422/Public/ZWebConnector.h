@@ -50,6 +50,12 @@ private:
 public:
 	FOnLoginResponse OnLoginResponse;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(AllowPrivateAccess=true))
+	FString URL = TEXT("127.0.0.1:8000");
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
+	FString GameLiftClientServiceURL = TEXT("127.0.0.1:8000");
+
 private:
 	class FHttpModule* Http;
 
@@ -59,11 +65,6 @@ private:
 
 	FString UserNickname;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta=(AllowPrivateAccess=true))
-	FString URL = TEXT("127.0.0.1:8000");
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
-	FString GameLiftClientServiceURL = TEXT("127.0.0.1:8000");
 
 
 };

@@ -1278,10 +1278,10 @@ void AZCharacter::ClientOnDead_Implementation()
 
 void AZCharacter::MulticastPlayItemMontage_Implementation(const FString & MontageName)
 {
-	if (GetNetMode() == ENetMode::NM_DedicatedServer)
-	{
-		return;
-	}
+	//if (GetNetMode() == ENetMode::NM_DedicatedServer)
+	//{
+	//	return;
+	//}
 
 	if (!IsEquipWeapon())
 	{
@@ -1340,9 +1340,9 @@ void AZCharacter::OnRep_CurrentWeapon()
 			CharacterAnim->SetIsEquipGun(false);
 		}
 
-		//if(HasAuthority())
-		auto PC = GetController<APlayerController>();
-		if (PC && PC->IsLocalPlayerController())
+		//auto PC = GetController<APlayerController>();
+		//if (PC && PC->IsLocalPlayerController())
+		if(HasAuthority())
 		{
 			if (EWeaponCategory::Grenade == CurrentWeapon->GetWeaponCategory())
 			{

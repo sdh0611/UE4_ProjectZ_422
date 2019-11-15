@@ -5,6 +5,7 @@
 #include "Engine/LocalPlayer.h"
 #include "ZBasePlayerController.h"
 #include "Json.h"
+#include "JsonObjectConverter.h"
 
 
 void UZClientGameInstance::Shutdown()
@@ -226,80 +227,111 @@ void UZClientGameInstance::OnCreatePlayerSessionResponse(FHttpRequestPtr Request
 void UZClientGameInstance::OnSearchGameSessionsResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
 	OnSearchGameSessionsEnd.Execute();
-
+	
 	if (!bWasSuccessful)
 	{
-		ZLOG(Error, TEXT("Create game http request fail.."));
+		ZLOG(Error, TEXT("Search game http request fail.."));
 		return;
 	}
+
+	TArray<TSharedPtr<FJsonValue>> JsonArray;
+	TArray<FZSessionInfo> SessionInfos;
+	FJsonObjectConverter::JsonArrayToUStruct<FZSessionInfo>(JsonArray, &SessionInfos, 0, 0);
+
 
 	TSharedPtr<FJsonObject> JsonObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
 	ZLOG(Error, TEXT("%s"), *Response->GetContentAsString());
-
-
+	
 	if (FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
+		ZLOG_S(Error);
 		if (!JsonObject->GetBoolField(TEXT("result")))
 		{
+			ZLOG_S(Error);
 			return;
 		}
 
-		int32 Size = 0;
-		if (!JsonObject->TryGetNumberField(TEXT("size"), Size))
+		FZSearchSessionData SearchSessionData;
+		if (!FJsonObjectConverter::JsonObjectStringToUStruct<FZSearchSessionData>(
+			Response->GetContentAsString(), &SearchSessionData, 0, 0))
 		{
+			ZLOG(Error, TEXT("Failed to convert json."));
 			return;
 		}
 
-		if (Size < 1)
+		if (!SearchSessionData.Result)
 		{
+			ZLOG(Error, TEXT("Failed to get session info."));
 			return;
 		}
 
-		const TSharedPtr<FJsonObject>* OutObjects;
-		if (!JsonObject->TryGetObjectField(TEXT("gameSessions"), OutObjects))
-		{
-			return;
-		}
+		OnSearchGameSessionsSuccesss.Execute(SearchSessionData.SessionInfos);
 
-		TArray<FZSessionInfo> SessionInfos;
-		FZSessionInfo SessionInfo;
-		for (int i = 0; i < Size; ++i)
-		{
-			if (!OutObjects[i]->TryGetStringField(TEXT("GameSessionId"), SessionInfo.SessionID))
-			{
-				return;
-			}
 
-			if (!OutObjects[i]->TryGetStringField(TEXT("Name"), SessionInfo.SessionName))
-			{
-				return;
-			}
-
-			if (!OutObjects[i]->TryGetStringField(TEXT("CreatorId"), SessionInfo.CreatorName))
-			{
-				return;
-			}
-
-			if (!OutObjects[i]->TryGetNumberField(TEXT("MaximumPlayerSessionCount"), SessionInfo.MaxConnection))
-			{
-				return;
-			}
-
-			if (!OutObjects[i]->TryGetNumberField(TEXT("CurrentPlayerSessionCount"), SessionInfo.CurrentConnection))
-			{
-				return;
-			}
-			
-			SessionInfos.Add(SessionInfo);
-		}
-
-		OnSearchGameSessionsSuccesss.Execute(SessionInfos);
 	}
-	else
-	{
-		ZLOG(Error, TEXT("Deserialize fail.."));
-	}
+	
+	//if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	//{
+	//	int32 Size = 0;
+	//	if (!JsonObject->TryGetNumberField(TEXT("size"), Size))
+	//	{
+	//		ZLOG_S(Error);
+	//		return;
+	//	}
+
+	//	if (Size < 1)
+	//	{
+	//		ZLOG_S(Error);
+	//		return;
+	//	}
+
+	//	ZLOG_S(Error);
+	//	const TSharedPtr<FJsonObject>* OutObjects;
+	//	if (!JsonObject->TryGetObjectField(TEXT("gameSessions"), OutObjects))
+	//	{
+	//		ZLOG_S(Error);
+	//		return;
+	//	}
+
+	//	TArray<FZSessionInfo> SessionInfos;
+	//	FZSessionInfo SessionInfo;
+	//	for (int i = 0; i < Size; ++i)
+	//	{
+	//		if (!OutObjects[i]->TryGetStringField(TEXT("GameSessionId"), SessionInfo.SessionID))
+	//		{
+	//			ZLOG_S(Error);
+	//			return;
+	//		}
+
+	//		if (!OutObjects[i]->TryGetStringField(TEXT("Name"), SessionInfo.SessionName))
+	//		{
+	//			ZLOG_S(Error);
+	//			return;
+	//		}
+
+	//		if (!OutObjects[i]->TryGetNumberField(TEXT("MaximumPlayerSessionCount"), SessionInfo.MaxConnection))
+	//		{
+	//			ZLOG_S(Error);
+	//			return;
+	//		}
+
+	//		if (!OutObjects[i]->TryGetNumberField(TEXT("CurrentPlayerSessionCount"), SessionInfo.CurrentConnection))
+	//		{
+	//			ZLOG_S(Error);
+	//			return;
+	//		}
+	//		
+	//		ZLOG(Error, TEXT("ID : %s"), *SessionInfo.SessionName);
+	//		SessionInfos.Add(SessionInfo);
+	//	}
+
+	//	OnSearchGameSessionsSuccesss.Execute(SessionInfos);
+	//}
+	//else
+	//{
+	//	ZLOG(Error, TEXT("Deserialize fail.."));
+	//}
 
 
 

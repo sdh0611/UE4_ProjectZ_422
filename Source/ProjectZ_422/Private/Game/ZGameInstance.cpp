@@ -32,6 +32,8 @@ void UZGameInstance::Init()
 	Super::Init();
 	WebConnector = NewObject<UZWebConnector>(this);
 	WebConnector->SetURL(WebURL);
+	/* Test를 위한 임시 URL -> 나중에 Login server랑 client service랑 분리시켜야함. */
+	WebConnector->GameLiftClientServiceURL = TEXT("25.43.176.172:8000");
 
 	LoadStaticMesh();
 	LoadSkeletalMesh();

@@ -9,9 +9,6 @@
 DECLARE_DELEGATE_OneParam(FOnSearchGameSessionsSuccess, const TArray<FZSessionInfo>&);
 DECLARE_DELEGATE(FOnSearchGameSessionsEnd);
 
-/*
-	11.11일에 할 것 : RemovePlayerSession 추가하고 빌드할것.
-*/
 
 USTRUCT(BlueprintType)
 struct PROJECTZ_422_API FZSessionInfo
@@ -19,15 +16,30 @@ struct PROJECTZ_422_API FZSessionInfo
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
 	FString SessionID;
 
+	UPROPERTY()
 	FString SessionName;
 
-	FString CreatorName;
-
+	UPROPERTY()
 	int32 MaxConnection = 4;
 
+	UPROPERTY()
 	int32 CurrentConnection = 0;
+};
+
+USTRUCT()
+struct PROJECTZ_422_API FZSearchSessionData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	bool Result;
+
+	UPROPERTY()
+	TArray<FZSessionInfo> SessionInfos;
+	
 };
 
 

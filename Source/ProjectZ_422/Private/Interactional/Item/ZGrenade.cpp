@@ -121,18 +121,53 @@ void AZGrenade::ServerThrowGrenade_Implementation()
 
 void AZGrenade::ThrowGrenade()
 {
-	ZLOG_S(Error);
-	if (::IsValid(ItemOwner))
+	//ZLOG_S(Error);
+	//if (::IsValid(ItemOwner))
+	//{
+	//	ZLOG_S(Error);
+	//	auto PC = ItemOwner->GetController<APlayerController>();
+	//	if (PC && PC->IsLocalPlayerController())
+	//	{
+	//		ZLOG_S(Error);
+	//		ServerThrowGrenade();
+	//	}
+	//}
+
+	if (!HasAuthority())
 	{
-		ZLOG_S(Error);
-		auto PC = ItemOwner->GetController<APlayerController>();
-		if (PC && PC->IsLocalPlayerController())
-		{
-			ZLOG_S(Error);
-			ServerThrowGrenade();
-		}
+		return;
 	}
 
+	ZLOG_S(Error);
+	FVector HandLocation = ItemOwner->GetMesh()->GetSocketLocation(ItemOwner->GetMainWeaponSocketName());
+	FVector LaunchDirection = FVector::ZeroVector;
+
+	FHitResult Hit = WeaponTrace(TraceDistance, bToggleDebug);
+	if (Hit.bBlockingHit)
+	{
+		LaunchDirection = Hit.ImpactPoint - HandLocation;
+	}
+	else
+	{
+		LaunchDirection = Hit.TraceEnd - HandLocation;
+	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = ItemOwner;
+
+	AZGrenadeProjectile* Projectile = GetWorld()->SpawnActor<AZGrenadeProjectile>(GrenadeProjectileClass, HandLocation, LaunchDirection.Rotation(), SpawnParams);
+	if (Projectile)
+	{
+		Projectile->SetDamage(Damage);
+		Projectile->SetFireDelay(ExplosionDelay);
+		Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+		Projectile->SetDamageCauser(ItemOwner->GetController());
+	}
+
+	SetIsThrown(false);
+
+	AdjustQuantity(-1);
 }
 
 void AZGrenade::SetIsThrown(bool NewState)

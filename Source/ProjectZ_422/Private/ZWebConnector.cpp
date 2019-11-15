@@ -90,6 +90,7 @@ void UZWebConnector::Logout()
 
 void UZWebConnector::SetURL(const FString & NewURL)
 {
+	ZLOG(Error, TEXT("%s"), *NewURL);
 	URL = NewURL;
 }
 

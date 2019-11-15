@@ -130,16 +130,55 @@ void AZGun::InitItemData(const FZItemData * const NewItemData)
 
 void AZGun::Reload()
 {
-	if (::IsValid(ItemOwner))
+	//if (::IsValid(ItemOwner))
+	//{
+	//	auto PC = ItemOwner->GetController<APlayerController>();
+	//	if (PC && PC->IsLocalPlayerController())
+	//	{
+	//		ServerReload();
+	//		return;
+	//	}
+	//}
+
+	if (!HasAuthority())
 	{
-		auto PC = ItemOwner->GetController<APlayerController>();
-		if (PC && PC->IsLocalPlayerController())
-		{
-			ServerReload();
-			return;
-		}
+		return;
 	}
-	
+
+	ZLOG_S(Error);
+	if (!::IsValid(ItemOwner))
+	{
+		return;
+	}
+
+	SetIsReloading(false);
+	if (CurrentAmmo >= MaxAmmo)
+	{
+		return;
+	}
+	ZLOG_S(Warning);
+
+	while (IsCanReload())
+	{
+		auto Ammo = ItemOwner->GetItemStatusComponent()->GetItemByName(UseAmmoName);
+		if (nullptr == Ammo)
+		{
+			ZLOG(Error, TEXT("Ammo not exist."));
+			break;
+		}
+
+		int32 ReloadAmmo = MaxAmmo - CurrentAmmo;
+		if (Ammo->GetCurrentQuantityOfItem() < ReloadAmmo)
+		{
+			ReloadAmmo = Ammo->GetCurrentQuantityOfItem();
+		}
+
+		Ammo->AdjustQuantity(-ReloadAmmo);
+
+		CurrentAmmo += ReloadAmmo;
+	}
+
+	OnItemInfoChanged.Broadcast();
 	
 }
 

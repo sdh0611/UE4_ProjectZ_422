@@ -6,6 +6,7 @@
 #include "Character/Zombie/ZZombieAnimInstance.h"
 #include "ZTankerAnimInstance.generated.h"
 
+
 /**
  * 
  */
@@ -28,8 +29,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsScreaming;
 	
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	//bool bIsRushing;
+	
 
 
 };

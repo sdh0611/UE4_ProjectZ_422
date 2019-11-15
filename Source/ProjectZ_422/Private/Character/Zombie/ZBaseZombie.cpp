@@ -32,7 +32,8 @@ AZBaseZombie::AZBaseZombie()
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ZEnemy"));
 	GetMesh()->SetCollisionProfileName(TEXT("ZEnemyMesh"));
-
+	//GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
 	GetCharacterMovement()->bUseRVOAvoidance = true;
