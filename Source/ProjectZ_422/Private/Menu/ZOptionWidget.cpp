@@ -23,9 +23,6 @@ void UZOptionWidget::NativeConstruct()
 	WindowModeList = Cast<UComboBoxString>(GetWidgetFromName(TEXT("WindowModeList")));
 	check(WindowModeList);
 
-	ResolutionList->OnSelectionChanged.AddDynamic(this, &UZOptionWidget::OnResolutionSelected);
-	WindowModeList->OnSelectionChanged.AddDynamic(this, &UZOptionWidget::OnWindowModeSelected);
-
 	ResolutionList->AddOption(TEXT("1920x1080"));
 	ResolutionList->AddOption(TEXT("1600x900"));
 	ResolutionList->AddOption(TEXT("1280x720"));
@@ -36,6 +33,9 @@ void UZOptionWidget::NativeConstruct()
 	WindowModeList->SetSelectedIndex(0);
 
 	WindowMode = EWindowMode::Fullscreen;
+
+	ResolutionList->OnSelectionChanged.AddDynamic(this, &UZOptionWidget::OnResolutionSelected);
+	WindowModeList->OnSelectionChanged.AddDynamic(this, &UZOptionWidget::OnWindowModeSelected);
 }
 
 void UZOptionWidget::NativeTick(const FGeometry & MyGeometry, float InDeltaTime)

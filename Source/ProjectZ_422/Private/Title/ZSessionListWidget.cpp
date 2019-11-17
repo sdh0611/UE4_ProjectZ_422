@@ -121,6 +121,7 @@ void UZSessionListWidget::UpdateSessionList(const TArray<struct FZSessionInfo>& 
 		if (SessionListItem)
 		{
 			SessionList->AddChild(SessionListItem);
+			SessionListItem->SetPadding(5.f);
 			SessionListItem->UpdateWidget(SessionInfo);
 		}
 	}
